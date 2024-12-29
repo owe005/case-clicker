@@ -64,32 +64,34 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{{ url_for('shop') }}" class="nav-link">Shop</a>
-            <div class="rank-progress">
-                <div class="rank-info">
-                    <span class="current-rank" data-rank="{{ session['user'].get('rank', 0) }}">{{ RANKS[session['user'].get('rank', 0)] }}</span>
-                    <div class="progress-bar">
-                        {% set rank = session['user'].get('rank', 0) %}
-                        {% set exp = session['user'].get('exp', 0) %}
-                        {% if rank < 17 %}
-                            <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
-                        {% else %}
-                            <div class="progress-fill" style="width: 100%"></div>
-                        {% endif %}
+            <div class="nav-links">
+                <a href="{{ url_for('shop') }}" class="nav-link">Shop</a>
+                <div class="rank-progress">
+                    <div class="rank-info">
+                        <span class="current-rank" data-rank="{{ session['user'].get('rank', 0) }}">{{ RANKS[session['user'].get('rank', 0)] }}</span>
+                        <div class="progress-bar">
+                            {% set rank = session['user'].get('rank', 0) %}
+                            {% set exp = session['user'].get('exp', 0) %}
+                            {% if rank < 17 %}
+                                <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
+                            {% else %}
+                                <div class="progress-fill" style="width: 100%"></div>
+                            {% endif %}
+                        </div>
+                        <span class="exp-info">
+                            {% if rank < 17 %}
+                                {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
+                            {% else %}
+                                MAX RANK
+                            {% endif %}
+                        </span>
                     </div>
-                    <span class="exp-info">
-                        {% if rank < 17 %}
-                            {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
-                        {% else %}
-                            MAX RANK
-                        {% endif %}
-                    </span>
                 </div>
+                <a href="{{ url_for('inventory') }}" class="nav-link">Inventory</a>
+                <a href="{{ url_for('clicker') }}" class="nav-link">Clicker</a>
+                <a href="{{ url_for('upgrades') }}" class="nav-link">Upgrades</a>
             </div>
-            <a href="{{ url_for('inventory') }}" class="nav-link">Inventory</a>
-            <a href="{{ url_for('clicker') }}" class="nav-link">Clicker</a>
-            <a href="{{ url_for('upgrades') }}" class="nav-link">Upgrades</a>
-            <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</div>
+            <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</span></div>
         </div>
     </nav>
 

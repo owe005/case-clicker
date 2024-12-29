@@ -765,7 +765,6 @@ def click():
         earned *= 4
     
     user.balance += earned
-    user.add_exp(earned)  # Add exp based on earned amount
     
     # Update session
     session['user'] = {
