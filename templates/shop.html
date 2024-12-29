@@ -89,7 +89,8 @@
             <div class="shop-item">
                 <img src="{{ url_for('static', filename='media/cases/' + case_data.image) }}" 
                      alt="{{ case_data.name }}" 
-                     onclick="showCaseContents('{{ case_type }}')">
+                     onclick="showCaseContents('{{ case_type }}')"
+                     loading="lazy">
                 <div class="item-details">
                     <h3>{{ case_data.name }}</h3>
                     <p class="price">${{ "%.2f"|format(case_data.price) }}</p>
@@ -280,6 +281,7 @@
                 .replace('553', '553');
             const skinName = item.name.toLowerCase().replace(' ', '_');
             const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+            img.loading = 'lazy';
             img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
             img.alt = `${item.weapon} | ${item.name}`;
             

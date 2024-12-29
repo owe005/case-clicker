@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, redirect, url_for, request
+from flask import Flask, render_template, jsonify, session, redirect, url_for, request, send_from_directory
 from dataclasses import dataclass, asdict
 from enum import Enum
 import random
@@ -6,8 +6,10 @@ from typing import List, Dict, Tuple, Union
 import time
 import json
 from functools import wraps
+from datetime import timedelta
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days
 
 # Add login_required decorator
 def login_required(f):
@@ -1064,6 +1066,14 @@ def get_case_contents(case_type):
             return jsonify(json.load(f))
     except FileNotFoundError:
         return jsonify({'error': 'Case data not found'}), 404
+
+@app.route('/static/<path:filename>')
+def custom_static(filename):
+    cache_timeout = app.config['SEND_FILE_MAX_AGE_DEFAULT'].total_seconds()
+    response = send_from_directory('static', filename)
+    response.cache_control.max_age = int(cache_timeout)
+    response.cache_control.public = True
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)

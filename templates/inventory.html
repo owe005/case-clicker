@@ -108,6 +108,16 @@
 
 {% block scripts %}
 <script>
+// Make RANKS available to JavaScript
+const RANKS = {
+    0: "Silver I",
+    1: "Silver II", 
+    2: "Silver III",
+    3: "Silver IV",
+    4: "Silver Elite",
+    5: "Silver Elite Master"
+};
+
 // Set initial view based on server parameter
 document.addEventListener('DOMContentLoaded', async () => {
     const initialView = '{{ initial_view }}';
@@ -282,20 +292,14 @@ async function openCase(caseType) {
         // Load case contents if not already loaded
         await loadCaseContents(caseType);
         
-        // Find the case element and get its quantity
-        const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)
-            ?.closest('.case-item');
-        if (!caseElement) {
-            console.error('Case element not found');
-            return;
-        }
-        
-        const quantityElement = caseElement.querySelector('p');
-        const currentQuantity = parseInt(quantityElement.textContent.match(/\d+/)[0]);
+        // Store initial rank before opening case
+        const initialRank = parseInt(document.querySelector('.current-rank').dataset.rank || '0');
         
         // Send request to open case
         const response = await fetch(`/open/${caseType}`);
         const data = await response.json();
+        
+        console.log('Case opening response:', data);
         
         if (data.error) {
             alert(data.error);
@@ -307,10 +311,33 @@ async function openCase(caseType) {
         
         // Update rank progress if exp data is available
         if (data.exp !== undefined && data.rank !== undefined) {
+            // Check for level up using initial rank
+            if (data.rank > initialRank) {
+                console.log('Level up detected in openCase!', {
+                    initialRank,
+                    newRank: data.rank,
+                    rankName: data.rankName
+                });
+                // Store level up data to show after showcase
+                data.item.levelUp = {
+                    fromRank: initialRank,
+                    toRank: data.rank
+                };
+            }
             updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
         }
         
         // Update case quantity in UI
+        const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)
+            ?.closest('.case-item');
+        if (!caseElement) {
+            console.error('Case element not found');
+            return;
+        }
+        
+        const quantityElement = caseElement.querySelector('p');
+        const currentQuantity = parseInt(quantityElement.textContent.match(/\d+/)[0]);
+        
         const newQuantity = currentQuantity - 1;
         quantityElement.textContent = `Quantity: ${newQuantity}`;
         
@@ -365,6 +392,7 @@ async function openCase(caseType) {
         setTimeout(() => {
             overlay.classList.add('hidden');
             spinningSound.pause();
+            console.log('Showing showcase with item:', data.item);
             showItemShowcase(data.item);
             
             // Clear any stored items to prevent duplicates
@@ -462,57 +490,63 @@ function createItemElement(item) {
     const imageContainer = document.createElement('div');
     imageContainer.className = 'spinner-item-image';
     
-    if (item.rarity === 'GOLD') {
-        // For gold items, always show "Rare Special Item"
-        div.innerHTML = `
-            <div class="spinner-item-image">
-                <img src="/static/media/cases/rare_item.png" alt="Rare Special Item">
-            </div>
-            <div class="item-name">★</div>
-            <div class="item-skin">Rare Special Item</div>
-        `;
+    const weaponName = item.weapon.toLowerCase()
+        .replace('-', '')
+        .replace(' ', '')
+        .replace('553', '553')
+        .replace('galil ar', 'galil')
+        .replace('galilar', 'galil');
+    const skinName = item.name.toLowerCase()
+        .replace(/ /g, '_');
+    
+    // Update case path mapping
+    const casePathMapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo_case',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case'
+    };
+    const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+    
+    const img = document.createElement('img');
+    if (item.rarity === 'GOLD' && !item.weapon.startsWith('★')) {
+        // Only show rare item image during the spinning animation for unrevealed gold items
+        img.src = '/static/media/cases/rare_item.png';
+        img.alt = 'Rare Special Item';
     } else {
-        // For regular skins, add the image
-        const weaponName = item.weapon.toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .replace('553', '553')
-            .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
-        const skinName = item.name.toLowerCase()
-            .replace(/ /g, '_');
-        
-        // Update case path mapping
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
-        };
-        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
-        
-        const img = document.createElement('img');
         img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
         img.alt = `${item.weapon} | ${item.name}`;
-        
-        imageContainer.appendChild(img);
-        div.appendChild(imageContainer);
-        
-        div.innerHTML += `
-            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
-                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
-            </div>
-            <div class="item-skin">
-                ${item.name} (${item.wear})
-            </div>
-        `;
     }
+    
+    imageContainer.appendChild(img);
+    div.appendChild(imageContainer);
+    
+    div.innerHTML += `
+        <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+            ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+        </div>
+        <div class="item-skin">
+            ${item.rarity === 'GOLD' && !item.weapon.startsWith('★') ? 'Rare Special Item' : item.name}
+        </div>
+    `;
     return div;
 }
 
 function showItemShowcase(item) {
+    // Add the rank data to the item if it wasn't included
+    if (item && !item.exp && !item.rank) {
+        item = {
+            ...item,
+            exp: parseFloat(document.querySelector('.exp-info').textContent),
+            rank: parseInt(document.querySelector('.current-rank').dataset.rank),
+            rankName: document.querySelector('.current-rank').textContent,
+            nextRankExp: document.querySelector('.exp-info').textContent.includes('/') ? 
+                parseInt(document.querySelector('.exp-info').textContent.split('/')[1]) : null
+        };
+    }
+
     const showcase = document.getElementById('showcase-overlay');
     const showcaseSound = document.getElementById('showcase-sound');
     const showcaseContainer = showcase.querySelector('.showcase-container');
@@ -638,7 +672,12 @@ function showItemShowcase(item) {
         showcaseSound.pause();
         await refreshSkinsSection();
         
-        // Update rank progress if exp data is available
+        // Show level up celebration if we stored level up data
+        if (item.levelUp) {
+            console.log('Showing level up celebration:', item.levelUp);
+            createConfetti();
+            showLevelUpBanner(RANKS[item.levelUp.toRank]);
+        }
         if (item.exp !== undefined && item.rank !== undefined) {
             updateRankProgress(item.exp, item.rank, item.rankName, item.nextRankExp);
         }
@@ -656,6 +695,16 @@ function showItemShowcase(item) {
             
             // Update balance
             document.getElementById('balance').textContent = data.balance.toFixed(2);
+            
+            // Show level up celebration if we stored level up data
+            if (item.levelUp) {
+                console.log('Showing level up celebration:', item.levelUp);
+                createConfetti();
+                showLevelUpBanner(RANKS[item.levelUp.toRank]);
+            }
+            if (item.exp !== undefined && item.rank !== undefined) {
+                updateRankProgress(item.exp, item.rank, item.rankName, item.nextRankExp);
+            }
             
             // Close showcase
             showcase.style.display = 'none';
@@ -675,10 +724,12 @@ function showItemShowcase(item) {
 
 // Add this new function to update the rank progress UI
 function updateRankProgress(exp, rank, rankName, nextRankExp) {
-    // Update rank name
+    console.log('Updating rank progress:', { exp, rank, rankName, nextRankExp });
+    // Update rank name and store the rank value
     const rankElement = document.querySelector('.current-rank');
     if (rankElement) {
         rankElement.textContent = rankName;
+        rankElement.dataset.rank = rank;  // Store the rank value
     }
     
     // Update progress bar
@@ -1063,6 +1114,43 @@ async function updateInventoryDisplay() {
     } catch (error) {
         console.error('Error updating inventory:', error);
     }
+}
+
+// Add this function after the existing scripts
+function createConfetti() {
+    const confettiContainer = document.createElement('div');
+    confettiContainer.className = 'confetti-container';
+    document.body.appendChild(confettiContainer);
+    
+    const colors = ['#ffd700', '#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#00ffff'];
+    
+    // Create 100 confetti pieces
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animation = `confettiFall ${1 + Math.random() * 2}s linear forwards`;
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confettiContainer.appendChild(confetti);
+    }
+    
+    // Remove the container after animations complete
+    setTimeout(() => {
+        confettiContainer.remove();
+    }, 5000);
+}
+
+function showLevelUpBanner(newRank) {
+    const banner = document.createElement('div');
+    banner.className = 'level-up-banner';
+    banner.innerHTML = `<h2>LEVEL UP: ${newRank}</h2>`;
+    document.body.appendChild(banner);
+    
+    // Remove the banner after animation
+    setTimeout(() => {
+        banner.remove();
+    }, 3000);
 }
 </script>
 {% endblock %} 

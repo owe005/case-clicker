@@ -6,6 +6,60 @@
     <title>{% block title %}Case Clicker{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="{{ url_for('static', filename='media/cases/weapon_case_1.png') }}" as="image">
+    <link rel="preload" href="{{ url_for('static', filename='media/cases/esports_2013_case.png') }}" as="image">
+    <style>
+    .confetti-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+    }
+
+    .level-up-banner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        padding: 20px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        animation: bannerFade 3s ease-in-out forwards;
+        text-align: center;
+    }
+
+    .level-up-banner h2 {
+        margin: 0;
+        color: #fff;
+        font-size: 32px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes bannerFade {
+        0% { opacity: 0; transform: translate(-50%, -40%); }
+        10% { opacity: 1; transform: translate(-50%, -50%); }
+        80% { opacity: 1; transform: translate(-50%, -50%); }
+        100% { opacity: 0; transform: translate(-50%, -60%); }
+    }
+
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #ffd700;
+        opacity: 0;
+    }
+
+    @keyframes confettiFall {
+        0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -13,7 +67,7 @@
             <a href="{{ url_for('shop') }}" class="nav-link">Shop</a>
             <div class="rank-progress">
                 <div class="rank-info">
-                    <span class="current-rank">{{ RANKS[session['user'].get('rank', 0)] }}</span>
+                    <span class="current-rank" data-rank="{{ session['user'].get('rank', 0) }}">{{ RANKS[session['user'].get('rank', 0)] }}</span>
                     <div class="progress-bar">
                         {% set rank = session['user'].get('rank', 0) %}
                         {% set exp = session['user'].get('exp', 0) %}
