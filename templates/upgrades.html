@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrades - Case Clicker{% endblock %}
+
+{% block content %}
+<h1>Clicker Upgrades</h1>
+
+<div class="upgrades-grid">
+    <div class="upgrade-card">
+        <h3>Base Click Value</h3>
+        <p class="current-level">Level: <span id="click_value-level">{{ upgrades.click_value }}</span></p>
+        <p class="upgrade-value">Current: $<span id="click_value-value">{{ "%.3f"|format(0.01 * (1.5 ** (upgrades.click_value - 1))) }}</span> per click</p>
+        <p class="upgrade-cost">Cost: $<span id="click_value-cost">{{ "%.2f"|format(100 * (2 ** (upgrades.click_value - 1))) }}</span></p>
+        <button class="btn upgrade-btn" onclick="purchaseUpgrade('click_value')">Upgrade</button>
+    </div>
+
+    <div class="upgrade-card">
+        <h3>Maximum Multiplier</h3>
+        <p class="current-level">Level: <span id="max_multiplier-level">{{ upgrades.max_multiplier }}</span></p>
+        <p class="upgrade-value">Current: <span id="max_multiplier-value">{{ 1.5 + (0.5 * (upgrades.max_multiplier - 1)) }}</span>x max</p>
+        <p class="upgrade-cost">Cost: $<span id="max_multiplier-cost">{{ "%.2f"|format(250 * (2 ** (upgrades.max_multiplier - 1))) }}</span></p>
+        <button class="btn upgrade-btn" onclick="purchaseUpgrade('max_multiplier')">Upgrade</button>
+    </div>
+
+    <div class="upgrade-card {% if upgrades.auto_clicker == 0 %}locked{% endif %}">
+        <h3>Auto Clicker</h3>
+        <p class="current-level">Level: <span id="auto_clicker-level">{{ upgrades.auto_clicker }}</span></p>
+        <p class="upgrade-value">Current: 
+            {% if upgrades.auto_clicker == 0 %}
+                <span style="color: #666;">Not Unlocked</span>
+            {% elif upgrades.auto_clicker <= 9 %}
+                1 click every {{ 11 - upgrades.auto_clicker }} seconds
+            {% else %}
+                {{ upgrades.auto_clicker - 8 }} clicks per second
+            {% endif %}
+        </p>
+        <p class="upgrade-cost">Cost: $<span id="auto_clicker-cost">{{ "%.2f"|format(500 if upgrades.auto_clicker == 0 else 50 * (1.8 ** (upgrades.auto_clicker - 1))) }}</span></p>
+        <button class="btn upgrade-btn {% if upgrades.auto_clicker == 0 %}unlock-btn{% endif %}" onclick="purchaseUpgrade('auto_clicker')">
+            {% if upgrades.auto_clicker == 0 %}Unlock Auto Clicker{% else %}Upgrade{% endif %}
+        </button>
+    </div>
+
+    <div class="upgrade-card">
+        <h3>Combo Speed</h3>
+        <p class="current-level">Level: <span id="combo_speed-level">{{ upgrades.combo_speed }}</span></p>
+        <p class="upgrade-value">Current: Multiplier increases every <span id="combo_speed-value">{{ 21 - upgrades.combo_speed }}</span> clicks</p>
+        <p class="upgrade-cost">Cost: $<span id="combo_speed-cost">{{ "%.2f"|format(150 * (2 ** (upgrades.combo_speed - 1))) }}</span></p>
+        <button class="btn upgrade-btn" onclick="purchaseUpgrade('combo_speed')">Upgrade</button>
+    </div>
+
+    <div class="upgrade-card {% if upgrades.critical_strike == 0 %}locked{% endif %}">
+        <h3>Critical Strike</h3>
+        <p class="current-level">Level: <span id="critical_strike-level">{{ upgrades.critical_strike }}</span></p>
+        <p class="upgrade-value">
+            {% if upgrades.critical_strike == 0 %}
+                <span style="color: #666;">Not Unlocked</span>
+            {% else %}
+                {{ upgrades.critical_strike }}% chance for 4x multiplier
+            {% endif %}
+        </p>
+        <p class="upgrade-cost">Cost: $<span id="critical_strike-cost">{{ "%.2f"|format(1000 if upgrades.critical_strike == 0 else 200 * (2 ** (upgrades.critical_strike - 1))) }}</span></p>
+        <button class="btn upgrade-btn {% if upgrades.critical_strike == 0 %}unlock-btn{% endif %}" onclick="purchaseUpgrade('critical_strike')">
+            {% if upgrades.critical_strike == 0 %}Unlock Critical Strike{% else %}Upgrade{% endif %}
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function purchaseUpgrade(type) {
+    try {
+        const response = await fetch('/purchase_upgrade', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ upgrade_type: type })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Update affordability
+        updateAffordability();
+        
+        // Update upgrade display using the correct ID format
+        const levelElement = document.getElementById(`${type}-level`);
+        const valueElement = document.getElementById(`${type}-value`);
+        const costElement = document.getElementById(`${type}-cost`);
+        const upgradeButton = document.querySelector(`[onclick="purchaseUpgrade('${type}')"]`);
+        
+        if (levelElement) {
+            levelElement.textContent = data.upgrades[type];
+        }
+        
+        // Update specific upgrade values and costs
+        if (costElement) {
+            costElement.textContent = data.nextCost.toFixed(2);
+            
+            switch(type) {
+                case 'click_value':
+                    if (valueElement) {
+                        valueElement.textContent = (0.01 * (1.5 ** (data.upgrades[type] - 1))).toFixed(3);
+                    }
+                    break;
+                    
+                case 'max_multiplier':
+                    if (valueElement) {
+                        valueElement.textContent = (1.5 + (0.5 * (data.upgrades[type] - 1))).toFixed(1);
+                    }
+                    break;
+                    
+                case 'auto_clicker':
+                    const level = data.upgrades[type];
+                    const upgradeCard = document.querySelector(`#auto_clicker-level`).closest('.upgrade-card');
+                    const upgradeValueElement = upgradeCard.querySelector('.upgrade-value');
+                    
+                    if (level === 0) {
+                        upgradeCard.classList.add('locked');
+                        upgradeValueElement.innerHTML = '<span style="color: #666;">Not Unlocked</span>';
+                        upgradeButton.textContent = 'Unlock Auto Clicker';
+                        upgradeButton.classList.add('unlock-btn');
+                    } else {
+                        upgradeCard.classList.remove('locked');
+                        upgradeButton.classList.remove('unlock-btn');
+                        if (level <= 9) {
+                            upgradeValueElement.textContent = `1 click every ${11 - level} seconds`;
+                        } else {
+                            upgradeValueElement.textContent = `${level - 8} clicks per second`;
+                        }
+                        upgradeButton.textContent = 'Upgrade';
+                    }
+                    break;
+                    
+                case 'combo_speed':
+                    if (valueElement) {
+                        valueElement.textContent = (21 - data.upgrades[type]);
+                    }
+                    break;
+                    
+                case 'critical_strike':
+                    const critLevel = data.upgrades[type];
+                    const critCard = document.querySelector(`#critical_strike-level`).closest('.upgrade-card');
+                    const critValueElement = critCard.querySelector('.upgrade-value');
+                    
+                    if (critLevel === 0) {
+                        critCard.classList.add('locked');
+                        critValueElement.innerHTML = '<span style="color: #666;">Not Unlocked</span>';
+                        upgradeButton.textContent = 'Unlock Critical Strike';
+                        upgradeButton.classList.add('unlock-btn');
+                    } else {
+                        critCard.classList.remove('locked');
+                        upgradeButton.classList.remove('unlock-btn');
+                        critValueElement.textContent = `${critLevel}% chance for 4x multiplier`;
+                        upgradeButton.textContent = 'Upgrade';
+                    }
+                    break;
+            }
+        }
+
+        // Dispatch custom event with new upgrade values
+        const upgradeEvent = new CustomEvent('upgradesPurchased', {
+            detail: data.upgrades
+        });
+        window.dispatchEvent(upgradeEvent);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to purchase upgrade');
+    }
+}
+
+function updateAffordability() {
+    const balance = parseFloat(document.getElementById('balance').textContent);
+    document.querySelectorAll('.upgrade-btn').forEach(button => {
+        const costElement = button.parentElement.querySelector('[id$="-cost"]');
+        if (costElement) {
+            const cost = parseFloat(costElement.textContent);
+            if (cost > balance) {
+                button.classList.add('cannot-afford');
+                // Store original text if not already stored
+                if (!button.dataset.originalText) {
+                    button.dataset.originalText = button.textContent;
+                }
+                button.textContent = 'Too Expensive';
+            } else {
+                button.classList.remove('cannot-afford');
+                // Restore original text if it was stored
+                if (button.dataset.originalText) {
+                    button.textContent = button.dataset.originalText;
+                    delete button.dataset.originalText;
+                }
+            }
+        }
+    });
+}
+
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', updateAffordability);
+
+// Remove the global startAutoClicker implementation from upgrades.html
+</script>
+{% endblock %} 

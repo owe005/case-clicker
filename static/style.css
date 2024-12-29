@@ -1,0 +1,1531 @@
+:root {
+  --primary: #1a1a1a;
+  --secondary: #2d2d2d;
+  --accent: #f4c430;
+  --text: #ffffff;
+  --blue-rarity: #4b69ff;
+  --purple-rarity: #8847ff;
+  --pink-rarity: #d32ce6;
+  --red-rarity: #eb4b4b;
+  --gold-rarity: #caab05;
+  --stattrak: #cf6a32;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--primary);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--accent);
+}
+
+#stats {
+  background: var(--secondary);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#balance {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.case {
+  background: var(--secondary);
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.case:hover {
+  transform: translateY(-5px);
+}
+
+.case h3 {
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.case-price {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #888;
+}
+
+.btn {
+  background: var(--accent);
+  color: var(--primary);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(244, 196, 48, 0.3);
+}
+
+#inventory {
+  background: var(--secondary);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-top: 2rem;
+}
+
+#inventory h2 {
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+#inventory-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.skin {
+  background: var(--secondary);
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.skin:hover {
+  transform: translateY(-2px);
+}
+
+/* Rarity colors */
+.BLUE { color: var(--blue-rarity); }
+.PURPLE { color: var(--purple-rarity); }
+.PINK { color: var(--pink-rarity); }
+.RED { color: var(--red-rarity); }
+.GOLD { color: var(--gold-rarity); }
+.stattrak { color: var(--stattrak); }
+
+.navbar {
+    background: var(--secondary);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+}
+
+.nav-link {
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: var(--primary);
+}
+
+.balance {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.shop-item {
+    background: var(--secondary);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.case-image {
+    width: 200px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.BS { opacity: 0.7; }
+.WW { opacity: 0.8; }
+.FT { opacity: 0.9; }
+.MW { opacity: 0.95; }
+.FN { opacity: 1; }
+
+/* Case Opening Animation Styles */
+#case-opening-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#case-opening-overlay.hidden {
+    display: none;
+}
+
+.spinner-container {
+    width: 800px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    background: var(--primary);
+    border: 2px solid var(--secondary);
+    border-radius: 10px;
+}
+
+.spinner {
+    display: flex;
+    position: absolute;
+    left: 0;
+    transform: translateX(0);
+}
+
+.spinner-item {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    background: var(--secondary);
+    border-right: 2px solid var(--primary);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.spinner-selector {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 20px var(--accent);
+}
+
+/* Add a gradient overlay to fade items at the edges */
+.spinner-container::before,
+.spinner-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.spinner-container::before {
+    left: 0;
+    background: linear-gradient(to right, var(--primary), transparent);
+}
+
+.spinner-container::after {
+    right: 0;
+    background: linear-gradient(to left, var(--primary), transparent);
+}
+
+.item-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-skin {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* Rarity backgrounds with gradients */
+.rarity-BLUE {
+    background: linear-gradient(135deg, #4b69ff 0%, #1e2b66 100%);
+}
+
+.rarity-PURPLE {
+    background: linear-gradient(135deg, #8847ff 0%, #341c66 100%);
+}
+
+.rarity-PINK {
+    background: linear-gradient(135deg, #d32ce6 0%, #531c66 100%);
+}
+
+.rarity-RED {
+    background: linear-gradient(135deg, #eb4b4b 0%, #661c1c 100%);
+}
+
+.rarity-GOLD {
+    background: linear-gradient(135deg, #caab05 0%, #665d1c 100%);
+}
+
+/* Make text more readable on colored backgrounds */
+.spinner-item {
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.item-price {
+    margin: 0.5rem 0;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.sell-btn {
+    width: 100%;
+    margin-top: 1rem;
+    background: #4CAF50;  /* Green color for sell button */
+}
+
+.sell-btn:hover {
+    background: #45a049;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+}
+
+.clicker-container {
+    text-align: center;
+    padding: 2rem;
+}
+
+.clicker-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+}
+
+.multiplier, .crit-chance, .auto-click {
+    background: var(--secondary);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clicker-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.clicker-btn {
+    position: relative;
+    background: var(--secondary);
+    border: none;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.clicker-btn:active {
+    transform: scale(0.95);
+}
+
+.multiplier-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+.clicker-icon {
+    width: 180px;
+    height: 180px;
+    background-image: var(--coin-url);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    opacity: 0.7;
+}
+
+.floating-money {
+    position: fixed;
+    color: var(--accent);
+    font-weight: bold;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+    z-index: 1000;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Item Showcase Styles */
+.showcase-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to { 
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+}
+
+.showcase-container {
+    background: var(--primary);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+    min-width: 400px;
+    max-width: 72%;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.showcase-close {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.showcase-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Add this to ensure the overlay can be clicked to close */
+.case-contents-overlay {
+    cursor: pointer;
+}
+
+.case-contents-container {
+    cursor: default;
+}
+
+.showcase-continue {
+    background: #2d5a27;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 2.5rem;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px rgba(45, 90, 39, 0.3);
+}
+
+.showcase-continue:hover {
+    transform: scale(1.05);
+    background: #346830;
+    box-shadow: 0 0 20px rgba(45, 90, 39, 0.5);
+}
+
+.showcase-item {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.showcase-item img {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    transform: perspective(1000px) rotateY(0deg);
+    transition: transform 0.5s;
+}
+
+.showcase-name {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: glowText 2s infinite;
+    color: var(--text) !important;
+}
+
+@keyframes glowText {
+    0% { text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+    100% { text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+}
+
+.showcase-details {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.showcase-price {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-top: 0.75rem;
+    font-weight: bold;
+    padding: 0.3rem 1.25rem;
+    background: rgba(244, 196, 48, 0.1);
+    border-radius: 50px;
+    display: inline-block;
+    animation: pulsePriceTag 2s infinite;
+}
+
+@keyframes pulsePriceTag {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 196, 48, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(244, 196, 48, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 196, 48, 0); }
+}
+
+/* Rarity-specific showcase styles */
+.showcase-item.rarity-BLUE .showcase-name { color: var(--blue-rarity); }
+.showcase-item.rarity-PURPLE .showcase-name { color: var(--purple-rarity); }
+.showcase-item.rarity-PINK .showcase-name { color: var(--pink-rarity); }
+.showcase-item.rarity-RED .showcase-name { color: var(--red-rarity); }
+.showcase-item.rarity-GOLD .showcase-name { color: var(--gold-rarity); }
+
+/* StatTrak™ specific styles */
+.showcase-name.stattrak {
+    color: var(--stattrak) !important;
+    position: relative;
+}
+
+.showcase-name.stattrak::before {
+    content: 'StatTrak™';
+    display: block;
+    font-size: 1rem;
+    color: var(--stattrak);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: glowStatTrak 2s infinite;
+}
+
+@keyframes glowStatTrak {
+    0% { text-shadow: 0 0 10px rgba(207, 106, 50, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(207, 106, 50, 0.8); }
+    100% { text-shadow: 0 0 10px rgba(207, 106, 50, 0.5); }
+}
+
+/* Add these styles for inventory skin images */
+.skin-image {
+    width: 200px;
+    height: 150px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.skin-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Add these styles for spinner item images */
+.spinner-item-image {
+    width: 150px;
+    height: 100px;
+    margin: 0 auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-item-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Update spinner item styles */
+.spinner-item {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    background: var(--secondary);
+    border-right: 2px solid var(--primary);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Update skin card styles */
+.skin {
+    background: var(--secondary);
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.skin:hover {
+    transform: translateY(-2px);
+}
+
+/* Update the spinner-item styles to include rarity backgrounds */
+.spinner-item.rarity-BLUE {
+    background: linear-gradient(135deg, #4b69ff20 0%, #4b69ff40 100%);
+    border: 2px solid #4b69ff;
+}
+
+.spinner-item.rarity-PURPLE {
+    background: linear-gradient(135deg, #8847ff20 0%, #8847ff40 100%);
+    border: 2px solid #8847ff;
+}
+
+.spinner-item.rarity-PINK {
+    background: linear-gradient(135deg, #d32ce620 0%, #d32ce640 100%);
+    border: 2px solid #d32ce6;
+}
+
+.spinner-item.rarity-RED {
+    background: linear-gradient(135deg, #eb4b4b20 0%, #eb4b4b40 100%);
+    border: 2px solid #eb4b4b;
+}
+
+.spinner-item.rarity-GOLD {
+    background: linear-gradient(135deg, #caab0520 0%, #caab0540 100%);
+    border: 2px solid #caab05;
+    animation: goldGlow 2s infinite;
+}
+
+/* Add a glowing animation for gold items */
+@keyframes goldGlow {
+    0% {
+        box-shadow: 0 0 5px #caab05;
+    }
+    50% {
+        box-shadow: 0 0 20px #caab05;
+    }
+    100% {
+        box-shadow: 0 0 5px #caab05;
+    }
+}
+
+/* Update text colors for better visibility */
+.spinner-item.rarity-BLUE .item-name {
+    color: #4b69ff;
+}
+
+.spinner-item.rarity-PURPLE .item-name {
+    color: #8847ff;
+}
+
+.spinner-item.rarity-PINK .item-name {
+    color: #d32ce6;
+}
+
+.spinner-item.rarity-RED .item-name {
+    color: #eb4b4b;
+}
+
+.spinner-item.rarity-GOLD .item-name {
+    color: #caab05;
+}
+
+/* Add a subtle glow effect for StatTrak items */
+.spinner-item .item-name.stattrak {
+    text-shadow: 0 0 5px var(--stattrak);
+}
+
+/* Update showcase container styles to use rarity backgrounds */
+.showcase-container {
+    background: var(--primary);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+    min-width: 400px;
+    max-width: 72%;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Update rarity-specific showcase styles */
+.showcase-container.rarity-BLUE {
+    background: linear-gradient(135deg, #4b69ff10 0%, var(--primary) 40%);
+    border-color: var(--blue-rarity);
+    box-shadow: 0 0 50px rgba(75, 105, 255, 0.3);
+}
+
+.showcase-container.rarity-PURPLE {
+    background: linear-gradient(135deg, #8847ff10 0%, var(--primary) 40%);
+    border-color: var(--purple-rarity);
+    box-shadow: 0 0 50px rgba(136, 71, 255, 0.3);
+}
+
+.showcase-container.rarity-PINK {
+    background: linear-gradient(135deg, #d32ce610 0%, var(--primary) 40%);
+    border-color: var(--pink-rarity);
+    box-shadow: 0 0 50px rgba(211, 44, 230, 0.3);
+}
+
+.showcase-container.rarity-RED {
+    background: linear-gradient(135deg, #eb4b4b10 0%, var(--primary) 40%);
+    border-color: var(--red-rarity);
+    box-shadow: 0 0 50px rgba(235, 75, 75, 0.3);
+}
+
+.showcase-container.rarity-GOLD {
+    background: linear-gradient(135deg, #caab0510 0%, var(--primary) 40%);
+    border-color: var(--gold-rarity);
+    box-shadow: 0 0 50px rgba(202, 171, 5, 0.3);
+    animation: goldShowcase 2s infinite;
+}
+
+@keyframes goldShowcase {
+    0% { box-shadow: 0 0 50px rgba(202, 171, 5, 0.3); }
+    50% { box-shadow: 0 0 70px rgba(202, 171, 5, 0.5); }
+    100% { box-shadow: 0 0 50px rgba(202, 171, 5, 0.3); }
+}
+
+.showcase-name {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: glowText 2s infinite;
+    color: var(--text) !important;
+}
+
+/* Update the showItemShowcase function in shop.html to add rarity class */ 
+
+/* Add rarity-specific button styles */
+.showcase-container.rarity-BLUE .showcase-continue {
+    border-color: var(--blue-rarity);
+}
+
+.showcase-container.rarity-PURPLE .showcase-continue {
+    border-color: var(--purple-rarity);
+}
+
+.showcase-container.rarity-PINK .showcase-continue {
+    border-color: var(--pink-rarity);
+}
+
+.showcase-container.rarity-RED .showcase-continue {
+    border-color: var(--red-rarity);
+}
+
+.showcase-container.rarity-GOLD .showcase-continue {
+    border-color: var(--gold-rarity);
+    animation: goldButton 2s infinite;
+}
+
+@keyframes goldButton {
+    0% { box-shadow: 0 0 10px rgba(45, 90, 39, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(202, 171, 5, 0.3); }
+    100% { box-shadow: 0 0 10px rgba(45, 90, 39, 0.3); }
+} 
+
+/* Remove the rarity-specific button styles */
+.showcase-container.rarity-BLUE .showcase-continue,
+.showcase-container.rarity-PURPLE .showcase-continue,
+.showcase-container.rarity-PINK .showcase-continue,
+.showcase-container.rarity-RED .showcase-continue,
+.showcase-container.rarity-GOLD .showcase-continue {
+    border-color: transparent;
+}
+
+/* Update gold animation to only affect the shadow */
+.showcase-container.rarity-GOLD .showcase-continue {
+    animation: goldButton 2s infinite;
+}
+
+@keyframes goldButton {
+    0% { box-shadow: 0 0 10px rgba(45, 90, 39, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(45, 90, 39, 0.5); }
+    100% { box-shadow: 0 0 10px rgba(45, 90, 39, 0.3); }
+} 
+
+/* Add these styles after the showcase-continue styles */
+
+.showcase-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.showcase-sell {
+    background: #8B0000;  /* Dark red base color */
+    color: #fff;
+    border: none;
+    padding: 0.5rem 2rem;  /* Slightly smaller padding than continue */
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;  /* Slightly smaller font than continue */
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+}
+
+.showcase-sell:hover {
+    transform: scale(1.05);
+    background: #A00000;  /* Slightly lighter on hover */
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+}
+
+/* Update the showcase-continue styles to match the new layout */
+.showcase-continue {
+    background: #2d5a27;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 2.5rem;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px rgba(45, 90, 39, 0.3);
+}
+
+/* Add these styles after the navbar styles */
+
+.rank-progress {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 2rem;
+}
+
+.rank-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.current-rank {
+    color: var(--accent);
+    font-weight: bold;
+    min-width: 120px;
+    text-align: right;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.exp-info {
+    color: var(--text);
+    font-size: 0.9rem;
+    min-width: 100px;
+}
+
+/* Update the nav-container to accommodate the rank bar */
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+}
+
+/* Add these styles after the clicker styles */
+
+.upgrades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.upgrade-card {
+    background: var(--secondary);
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upgrade-card:hover {
+    transform: translateY(-5px);
+}
+
+.upgrade-card h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.current-level {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.upgrade-value {
+    color: #4CAF50;
+    margin-bottom: 0.5rem;
+}
+
+.upgrade-cost {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.upgrade-btn {
+    width: 100%;
+    background: var(--accent);
+}
+
+.upgrade-btn:hover {
+    background: #e0b12b;
+}
+
+/* Add these styles after the .upgrade-card styles */
+
+.upgrade-card.locked {
+    opacity: 0.8;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a1a1a 100%);
+    border: 2px solid #444;
+    position: relative;
+}
+
+.upgrade-card.locked::before {
+    content: '🔒';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+}
+
+.upgrade-card.locked .upgrade-value {
+    color: #666;
+}
+
+.upgrade-btn.unlock-btn {
+    background: #4a4a4a;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.upgrade-btn.unlock-btn:hover {
+    background: var(--accent);
+    color: var(--primary);
+}
+
+.floating-money.critical {
+    color: #ff0000;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    animation: criticalFloat 1s ease-out forwards;
+}
+
+@keyframes criticalFloat {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Update the critical strike text style */
+.floating-money.critical-text {
+    color: #ff0000;
+    font-size: 1rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    animation: criticalTextFloat 0.8s ease-out forwards;
+}
+
+@keyframes criticalTextFloat {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-30px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* Update the critical money amount style */
+.floating-money.critical-amount {
+    color: #ff0000;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    animation: criticalAmountFloat 1s ease-out forwards;
+}
+
+@keyframes criticalAmountFloat {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50px) scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Add these styles at the end of the file */
+
+.floating-chest {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    left: 0;
+    top: 0;
+    font-family: "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.floating-chest.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.chest-reward {
+    position: fixed;
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.2rem;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    animation: floatReward 1s ease-out forwards;
+}
+
+@keyframes floatReward {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Update the clicker-stats styles */
+.clicker-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+}
+
+.multiplier, .crit-chance, .auto-click {
+    background: var(--secondary);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some color to the stats */
+.multiplier span {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.crit-chance span {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.auto-click span {
+    color: #44ff44;
+    font-weight: bold;
+}
+
+/* Shop Layout */
+.shop-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.shop-categories {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 10px;
+}
+
+.category-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.1em;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.category-btn:hover {
+    color: #fff;
+}
+
+.category-btn.active {
+    color: #fff;
+    border-bottom: 2px solid #ff9800;
+}
+
+.shop-section {
+    margin-bottom: 30px;
+}
+
+.shop-section.hidden {
+    display: none;
+}
+
+.shop-section h2 {
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1.5em;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.shop-item {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.shop-item:hover {
+    transform: translateY(-2px);
+}
+
+.shop-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    background: #2a2a2a;
+    padding: 10px;
+}
+
+.item-details {
+    padding: 12px;
+}
+
+.item-details h3 {
+    font-size: 0.9em;
+    margin: 0 0 8px 0;
+    color: #fff;
+}
+
+.item-details .price {
+    color: #4CAF50;
+    font-size: 0.9em;
+    margin: 0 0 8px 0;
+}
+
+.btn-small {
+    background: #ff9800;
+    color: #000;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.btn-small:hover {
+    background: #ffa726;
+}
+
+.btn-small:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+/* Add these styles for the inventory categories */
+.inventory-categories {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 10px;
+}
+
+.inventory-section.hidden {
+    display: none;
+}
+
+.case-item {
+    background: var(--secondary);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.case-item:hover {
+    transform: translateY(-2px);
+}
+
+.case-item img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.buy-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 0.25rem;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    background: var(--primary);
+    color: var(--text);
+    text-align: center;
+}
+
+/* Case Contents Overlay Styles */
+.case-contents-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.case-contents-container {
+    background: var(--primary);
+    border-radius: 8px;
+    width: 900px;
+    max-width: 95%;
+    max-height: 90vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.case-contents-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--secondary);
+}
+
+.case-name {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin: 0;
+}
+
+.showcase-close {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.showcase-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.case-contents-list {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(90vh - 60px); /* Subtract header height */
+}
+
+.content-row {
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 4px;
+    background: var(--secondary);
+}
+
+.rarity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.rarity-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.drop-chance {
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.contents-item {
+    background: var(--primary);
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.contents-item img {
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    margin-bottom: 0.3rem;
+}
+
+.contents-item .item-name {
+    font-size: 0.8em;
+    margin-bottom: 0.2rem;
+}
+
+.contents-item .item-skin {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
+
+/* Update rarity colors to apply to the whole row */
+.content-row.rarity-GOLD { border-left: 4px solid var(--gold-rarity); }
+.content-row.rarity-RED { border-left: 4px solid var(--red-rarity); }
+.content-row.rarity-PINK { border-left: 4px solid var(--pink-rarity); }
+.content-row.rarity-PURPLE { border-left: 4px solid var(--purple-rarity); }
+.content-row.rarity-BLUE { border-left: 4px solid var(--blue-rarity); }
+
+/* Rarity text colors */
+.content-row.rarity-GOLD .rarity-name { color: var(--gold-rarity); }
+.content-row.rarity-RED .rarity-name { color: var(--red-rarity); }
+.content-row.rarity-PINK .rarity-name { color: var(--pink-rarity); }
+.content-row.rarity-PURPLE .rarity-name { color: var(--purple-rarity); }
+.content-row.rarity-BLUE .rarity-name { color: var(--blue-rarity); }
+
+.case-info {
+    text-align: left;
+}
+
+.stattrak-info {
+    font-size: 0.8em;
+    color: var(--stattrak);
+    margin-top: 0.2rem;
+    opacity: 0.8;
+}
+
+/* Style for when user can't afford upgrade */
+.upgrade-btn.cannot-afford {
+    background: #444;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+.upgrade-btn.cannot-afford:hover {
+    transform: none;
+    background: #444;
+    box-shadow: none;
+}
+
+/* Add a tooltip-style hint */
+.upgrade-btn.cannot-afford::after {
+    content: 'Cannot afford';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    color: #ff4444;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.upgrade-btn.cannot-afford:hover::after {
+    opacity: 1;
+}
+ 

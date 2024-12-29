@@ -1,0 +1,663 @@
+{% extends "base.html" %}
+
+{% block title %}Shop - Case Clicker{% endblock %}
+
+{% block content %}
+<h1>CS2 Case Shop</h1>
+
+<!-- Add the case opening overlay -->
+<div id="case-opening-overlay" class="hidden">
+    <audio id="spinning-sound" preload="auto">
+        <source src="{{ url_for('static', filename='media/case_spinning.mp3') }}" type="audio/mpeg">
+    </audio>
+    <div class="spinner-container">
+        <div class="spinner">
+            <!-- Items will be inserted here dynamically -->
+        </div>
+        <div class="spinner-selector"></div>
+    </div>
+</div>
+
+<!-- Add this right after the case-opening-overlay div -->
+<div id="case-contents-overlay" class="case-contents-overlay" style="display: none;">
+    <div class="case-contents-container">
+        <div class="case-contents-header">
+            <div class="case-info">
+                <h2 class="case-name"></h2>
+                <div class="stattrak-info">StatTrak™ (10% Chance)</div>
+            </div>
+            <button class="showcase-close" onclick="closeContentsOverlay()">×</button>
+        </div>
+        <div class="case-contents-list">
+            <div class="content-row rarity-GOLD">
+                <div class="rarity-header">
+                    <span class="rarity-name">★ Rare Special Item (Patterns available)</span>
+                    <span class="drop-chance">(0.26%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
+            <div class="content-row rarity-RED">
+                <div class="rarity-header">
+                    <span class="rarity-name">Covert Weapons</span>
+                    <span class="drop-chance">(0.90%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
+            <div class="content-row rarity-PINK">
+                <div class="rarity-header">
+                    <span class="rarity-name">Classified Weapons</span>
+                    <span class="drop-chance">(4.10%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
+            <div class="content-row rarity-PURPLE">
+                <div class="rarity-header">
+                    <span class="rarity-name">Restricted Weapons</span>
+                    <span class="drop-chance">(20.08%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
+            <div class="content-row rarity-BLUE">
+                <div class="rarity-header">
+                    <span class="rarity-name">Mil-Spec Weapons</span>
+                    <span class="drop-chance">(74.66%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New shop layout with categories -->
+<div class="shop-container">
+    <!-- Category navigation -->
+    <div class="shop-categories">
+        <button class="category-btn active" data-category="cases">Cases</button>
+    </div>
+
+    <!-- Cases Section -->
+    <div class="shop-section" id="cases-section">
+        <h2>Cases</h2>
+        <div class="items-grid">
+            <div class="shop-item">
+                <img src="{{ url_for('static', filename='media/cases/weapon_case_1.png') }}" alt="CS:GO Weapon Case" onclick="showCaseContents('csgo')">
+                <div class="item-details">
+                    <h3>CS:GO Weapon Case</h3>
+                    <p class="price">$125.00</p>
+                    <div class="buy-controls">
+                        <input type="number" min="1" value="1" class="quantity-input" id="csgo-quantity">
+                        <button class="btn-small" onclick="buyCase('csgo')">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="shop-item">
+                <img src="{{ url_for('static', filename='media/cases/esports_2013_case.png') }}" alt="eSports 2013 Case" onclick="showCaseContents('esports')">
+                <div class="item-details">
+                    <h3>eSports 2013 Case</h3>
+                    <p class="price">$55.00</p>
+                    <div class="buy-controls">
+                        <input type="number" min="1" value="1" class="quantity-input" id="esports-quantity">
+                        <button class="btn-small" onclick="buyCase('esports')">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="shop-item">
+                <img src="{{ url_for('static', filename='media/cases/operation_bravo_case.png') }}" alt="Operation Bravo Case" onclick="showCaseContents('bravo')">
+                <div class="item-details">
+                    <h3>Operation Bravo Case</h3>
+                    <p class="price">$55.00</p>
+                    <div class="buy-controls">
+                        <input type="number" min="1" value="1" class="quantity-input" id="bravo-quantity">
+                        <button class="btn-small" onclick="buyCase('bravo')">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more cases here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function generateRandomItems(actualItem) {
+        const itemPools = {
+            BLUE: caseContents[actualItem.case_type].contents.BLUE,
+            PURPLE: caseContents[actualItem.case_type].contents.PURPLE,
+            PINK: caseContents[actualItem.case_type].contents.PINK,
+            RED: caseContents[actualItem.case_type].contents.RED,
+            GOLD: caseContents[actualItem.case_type].contents.GOLD
+        };
+
+        function randomFromPool(rarity, retryCount = 0) {
+            const pool = itemPools[rarity];
+            const item = {...pool[Math.floor(Math.random() * pool.length)]};
+            const hasStattrak = Math.random() < 0.1;
+            
+                
+                // Choose from valid wear values only
+                const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
+                
+                // Get price from skinPrices
+                const priceKey = skinKey;
+                const prices = skinPrices[priceKey] || {};
+                const priceIndex = hasStattrak ? `ST_${wear}` : wear;
+                const price = prices[priceIndex] || prices[wear] || 0;
+                
+                return {
+                    weapon: item.weapon,
+                    name: item.name,
+                    rarity: rarity,
+                    stattrak: hasStattrak,
+                    wear: wear,
+                    price: price,
+                    case_type: actualItem.case_type
+                };
+            }
+            
+            // Normal skin handling
+            const skinKey = `${item.weapon}|${item.name}`;
+            const availableWears = validWears[skinKey] || ["FT"];
+            const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
+            
+            const prices = skinPrices[skinKey] || {};
+            const priceIndex = hasStattrak ? `ST_${wear}` : wear;
+            const price = prices[priceIndex] || prices[wear] || 0;
+            
+            return {
+                ...item,
+                stattrak: hasStattrak,
+                wear: wear,
+                price: price,
+                case_type: actualItem.case_type
+            };
+        }
+
+        function generateRandomItem() {
+            // Roll for rarity
+            const roll = Math.random() * 100;
+            let chosenRarity;
+            
+            if (roll < 0.26) {
+                chosenRarity = "GOLD";
+            } else if (roll < 0.26 + 0.90) {
+                chosenRarity = "RED";
+            } else if (roll < 0.26 + 0.90 + 4.10) {
+                chosenRarity = "PINK";
+            } else if (roll < 0.26 + 0.90 + 4.10 + 20.08) {
+                chosenRarity = "PURPLE";
+            } else {
+                chosenRarity = "BLUE";
+            }
+
+            return randomFromPool(chosenRarity);
+        }
+
+        const items = [];
+        const totalItems = 100;
+        const winningPosition = 85;
+        
+        // Generate random items for the wheel
+        for (let i = 0; i < totalItems; i++) {
+            if (i === winningPosition) {
+                // Place the actual item from the server exactly at the winning position
+                items.push({
+                    weapon: actualItem.weapon,
+                    name: actualItem.name,
+                    rarity: actualItem.rarity,
+                    wear: actualItem.wear,
+                    stattrak: actualItem.stattrak,
+                    price: actualItem.price
+                });
+            } else {
+                // Generate a random item based on rarity percentages
+                items.push(generateRandomItem());
+            }
+        }
+        
+        return { items, winningPosition };
+    }
+
+    function createItemElement(item) {
+        const div = document.createElement('div');
+        div.className = `spinner-item rarity-${item.rarity}`;
+        div.classList.add(item.wear);
+        
+        div.dataset.item = JSON.stringify(item);
+        
+        // Create image container
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'spinner-item-image';
+        
+        // Create and set up image
+        const img = document.createElement('img');
+        if (item.rarity === 'GOLD') {
+            // For knives, we'll keep the existing behavior
+            div.innerHTML = `
+                <div class="item-name">★</div>
+                <div class="item-skin">Rare Special Item</div>
+            `;
+        } else {
+            // For regular skins, add the image
+            const weaponName = item.weapon.toLowerCase()
+                .replace('-', '')
+                .replace(' ', '')
+                .replace('553', '553')
+                .replace('galil ar', 'galil')
+                .replace('galilar', 'galil');
+            const skinName = item.name.toLowerCase().replace(/ /g, '_');
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 
+                            item.case_type === 'bravo' ? 'operation_bravo_case' : 
+                            'weapon_case_1';
+            img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+            img.alt = `${item.weapon} | ${item.name}`;
+            
+            imageContainer.appendChild(img);
+            div.appendChild(imageContainer);
+            
+            div.innerHTML += `
+                <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                    ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                </div>
+                <div class="item-skin">
+                    ${item.name} (${item.wear})
+                </div>
+            `;
+        }
+        return div;
+    }
+
+    function showItemShowcase(item) {
+        const showcase = document.getElementById('showcase-overlay');
+        const showcaseSound = document.getElementById('showcase-sound');
+        const showcaseContainer = showcase.querySelector('.showcase-container');
+        
+        // Clear any existing buttons container
+        const existingButtons = showcaseContainer.querySelector('.showcase-buttons');
+        if (existingButtons) {
+            existingButtons.remove();
+        }
+        
+        // Rest of the showcase update code...
+        const nameElement = showcase.querySelector('.showcase-name');
+        const detailsElement = showcase.querySelector('.showcase-details');
+        const priceElement = showcase.querySelector('.showcase-price');
+        
+        // Remove any existing rarity classes
+        showcaseContainer.className = 'showcase-container';
+        // Add the new rarity class
+        showcaseContainer.classList.add(`rarity-${item.rarity}`);
+        
+        // Create image element
+        const imageElement = document.createElement('img');
+        if (item.rarity === 'GOLD') {
+            // For knives, use the knife image
+            const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
+            const skinName = item.name.toLowerCase().replace(' ', '_');
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 
+                            item.case_type === 'bravo' ? 'operation_bravo_case' : 
+                            'weapon_case_1';
+            imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+        } else {
+            // For regular skins, construct the image path
+            const weaponName = item.weapon.toLowerCase()
+                .replace('-', '')
+                .replace(' ', '')
+                .replace('553', '553')
+                .replace('galil ar', 'galil')
+                .replace('galilar', 'galil');
+            const skinName = item.name.toLowerCase().replace(' ', '_');
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 
+                            item.case_type === 'bravo' ? 'operation_bravo_case' : 
+                            'weapon_case_1';
+            imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+        }
+        
+        imageElement.style.maxWidth = '300px';
+        imageElement.style.marginBottom = '1rem';
+        
+        // Update showcase content
+        const itemContainer = showcase.querySelector('.showcase-item');
+        itemContainer.innerHTML = ''; // Clear existing content
+        itemContainer.appendChild(imageElement);
+        
+        // Set item details
+        nameElement.className = `showcase-name ${item.stattrak ? 'stattrak' : ''}`;
+        nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
+        
+        itemContainer.appendChild(nameElement);
+        
+        detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
+        itemContainer.appendChild(detailsElement);
+        
+        priceElement.textContent = `$${item.price.toFixed(2)}`;
+        itemContainer.appendChild(priceElement);
+        
+        // Create new buttons container
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'showcase-buttons';
+        
+        const continueButton = document.createElement('button');
+        continueButton.className = 'showcase-continue';
+        continueButton.textContent = 'Continue';
+        
+        const sellButton = document.createElement('button');
+        sellButton.className = 'showcase-sell';
+        sellButton.textContent = 'Sell';
+        
+        buttonsContainer.appendChild(continueButton);
+        buttonsContainer.appendChild(sellButton);
+        
+        // Add the buttons container to the showcase container
+        showcaseContainer.appendChild(buttonsContainer);
+        
+        // Add button handlers
+        continueButton.onclick = async () => {
+            showcase.style.display = 'none';
+            showcaseSound.pause();
+            
+            // Fetch updated user data after case opening
+            try {
+                const response = await fetch('/get_user_data');
+                const userData = await response.json();
+                
+                // Update rank and exp display
+                const rankInfo = document.querySelector('.current-rank');
+                const expInfo = document.querySelector('.exp-info');
+                const progressFill = document.querySelector('.progress-fill');
+                
+                if (rankInfo && expInfo && progressFill) {
+                    rankInfo.textContent = userData.rankName;
+                    
+                    if (userData.nextRankExp) {
+                        expInfo.textContent = `${userData.exp}/${userData.nextRankExp} EXP`;
+                        const progressPercentage = (userData.exp / userData.nextRankExp) * 100;
+                        progressFill.style.width = `${progressPercentage}%`;
+                    } else {
+                        expInfo.textContent = 'MAX RANK';
+                        progressFill.style.width = '100%';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating user data:', error);
+            }
+            
+            // Navigate to inventory and update display
+            const inventorySection = document.getElementById('inventory-items');
+            if (inventorySection) {
+                // We're already on the inventory page, just update it
+                await updateInventoryDisplay();
+            } else {
+                // Store the new item in session storage before navigating
+                sessionStorage.setItem('newItem', JSON.stringify(item));
+                // Navigate to inventory page
+                window.location.href = '/inventory?view=skins';
+            }
+        };
+        
+        sellButton.onclick = async () => {
+            try {
+                const response = await fetch('/sell/last', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Update balance
+                document.getElementById('balance').textContent = data.balance.toFixed(2);
+                
+                // Close showcase
+                showcase.style.display = 'none';
+                showcaseSound.pause();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to sell item');
+            }
+        };
+        
+        // Show overlay and play sound
+        showcase.style.display = 'flex';
+        showcaseSound.currentTime = 0;
+        showcaseSound.play();
+    }
+
+    async function openCase(caseType) {
+        const response = await fetch(`/open/${caseType}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+
+        // Update rank and exp immediately after case opens
+        const rankInfo = document.querySelector('.current-rank');
+        const expInfo = document.querySelector('.exp-info');
+        const progressFill = document.querySelector('.progress-fill');
+        
+        if (rankInfo && expInfo && progressFill) {
+            rankInfo.textContent = data.rankName;
+            
+            if (data.nextRankExp) {
+                expInfo.textContent = `${data.exp}/${data.nextRankExp} EXP`;
+                const progressPercentage = (data.exp / data.nextRankExp) * 100;
+                progressFill.style.width = `${progressPercentage}%`;
+            } else {
+                expInfo.textContent = 'MAX RANK';
+                progressFill.style.width = '100%';
+            }
+        }
+
+        alert(`You unboxed: ${data.item.stattrak ? 'StatTrak™ ' : ''}${data.item.weapon} | ${data.item.name} (${data.item.wear.replace('_', ' ')})`);
+    }
+
+    // Add category switching functionality
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.shop-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            const category = button.dataset.category;
+            document.getElementById(`${category}-section`).classList.remove('hidden');
+        });
+    });
+
+    async function buyCase(caseType) {
+        const quantity = document.getElementById(`${caseType}-quantity`).value;
+        try {
+            const response = await fetch('/buy_case', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    case_type: caseType,
+                    quantity: parseInt(quantity)
+                })
+            });
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Update balance
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            alert(`Successfully purchased ${quantity} ${caseType.toUpperCase()} case(s)!`);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to purchase cases');
+        }
+    }
+
+    // Add this new function to fetch and update inventory
+    async function updateInventoryDisplay() {
+        try {
+            const response = await fetch('/get_inventory');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+            
+            const inventoryItems = document.getElementById('inventory-items');
+            if (!inventoryItems) return;
+            
+            // Clear current inventory
+            inventoryItems.innerHTML = '';
+            
+            // Add each item
+            data.inventory.forEach((item, index) => {
+                if (!item.is_case) {  // Only show skins, not cases
+                    const skinDiv = document.createElement('div');
+                    skinDiv.className = `skin rarity-${item.rarity}`;
+                    skinDiv.dataset.index = index;
+                    
+                    const weaponName = item.weapon.toLowerCase()
+                        .replace('-', '')
+                        .replace(' ', '')
+                        .replace('553', '553');
+                    const skinName = item.name.toLowerCase().replace(' ', '_');
+                    
+                    skinDiv.innerHTML = `
+                        <div class="skin-image">
+                            ${!item.weapon.startsWith('★') ? `
+                                <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                                     alt="${item.weapon} | ${item.name}">
+                            ` : ''}
+                        </div>
+                        <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                            ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                        </div>
+                        <div class="item-skin">
+                            ${item.name} (${item.wear})
+                        </div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                        <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
+                    `;
+                    
+                    // Add sell button handler
+                    const sellBtn = skinDiv.querySelector('.sell-btn');
+                    sellBtn.addEventListener('click', function() {
+                        sellItem(this.dataset.sellIndex);
+                    });
+                    
+                    inventoryItems.appendChild(skinDiv);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function showCaseContents(caseType) {
+        const overlay = document.getElementById('case-contents-overlay');
+        const container = overlay.querySelector('.case-contents-container');
+        const caseName = overlay.querySelector('.case-name');
+        const caseData = caseContents[caseType];
+
+        // Add click event listener to close overlay when clicking outside
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                closeContentsOverlay();
+            }
+        };
+
+        // Set case name
+        caseName.textContent = caseData.name;
+
+        // Clear existing items
+        const itemGrids = overlay.querySelectorAll('.items-grid');
+        itemGrids.forEach(grid => grid.innerHTML = '');
+
+        // Add vanilla knives to GOLD section
+        const goldGrid = overlay.querySelector('.rarity-GOLD .items-grid');
+        const vanillaKnives = [
+            { weapon: "★ Karambit", name: "Vanilla" },
+            { weapon: "★ M9 Bayonet", name: "Vanilla" },
+            { weapon: "★ Bayonet", name: "Vanilla" },
+            { weapon: "★ Flip Knife", name: "Vanilla" },
+            { weapon: "★ Gut Knife", name: "Vanilla" }
+        ];
+
+        vanillaKnives.forEach(knife => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'contents-item';
+            
+            const weaponName = knife.weapon.toLowerCase()
+                .replace('★ ', '')
+                .replace(' ', '');
+            
+            itemDiv.innerHTML = `
+                <img src="/static/media/skins/weapon_case_1/${weaponName}_vanilla.png" 
+                     alt="${knife.weapon}">
+                <div class="item-name">${knife.weapon}</div>
+            `;
+            
+            goldGrid.appendChild(itemDiv);
+        });
+
+        // Populate items for each rarity
+        Object.entries(caseData.contents).forEach(([rarity, items]) => {
+            if (rarity === 'GOLD') return; // Skip GOLD as we handled it above
+            
+            const grid = overlay.querySelector(`.rarity-${rarity} .items-grid`);
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'contents-item';
+                
+                // Create weapon image
+                const weaponName = item.weapon.toLowerCase()
+                    .replace('-', '')
+                    .replace(' ', '')
+                    .replace('553', '553')
+                    .replace('galil ar', 'galil')
+                    .replace('galilar', 'galil');
+                const skinName = item.name.toLowerCase()
+                    .replace(/ /g, '_');
+                
+                // Determine case path based on case type
+                const casePath = caseType === 'esports' ? 'esports_2013' : 
+                                caseType === 'bravo' ? 'operation_bravo_case' : 
+                                'weapon_case_1';
+                
+                itemDiv.innerHTML = `
+                    <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                         alt="${item.weapon} | ${item.name}">
+                    <div class="item-name">${item.weapon}</div>
+                    <div class="item-skin">${item.name}</div>
+                `;
+                
+                grid.appendChild(itemDiv);
+            });
+        });
+
+        overlay.style.display = 'flex';
+    }
+
+    function closeContentsOverlay() {
+        document.getElementById('case-contents-overlay').style.display = 'none';
+    }
+</script>
+{% endblock %} 

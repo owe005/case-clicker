@@ -1,0 +1,15 @@
+{
+    "default": {
+        "balance": 1000.0,
+        "inventory": [],
+        "exp": 0,
+        "rank": 0,
+        "upgrades": {
+            "click_value": 1,
+            "max_multiplier": 1,
+            "auto_clicker": 0,
+            "combo_speed": 1,
+            "critical_strike": 0
+        }
+    }
+}

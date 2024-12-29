@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+
+{% block title %}Clicker - Case Clicker{% endblock %}
+
+{% block content %}
+<div id="floating-chest" class="floating-chest">🎁</div>
+
+<div class="clicker-container">
+    <div class="clicker-stats">
+        <div class="multiplier">
+            Multiplier: <span id="current-multiplier">1</span>x
+        </div>
+        <div class="crit-chance">
+            Crit Chance: <span id="crit-chance">0</span>%
+        </div>
+        <div class="auto-click">
+            Auto Click: <span id="auto-click-rate">0</span>/s
+        </div>
+    </div>
+
+    <div class="clicker-area">
+        <button class="clicker-btn" id="clicker">
+            <div class="multiplier-overlay"><span id="multiplier">1.0</span>x</div>
+            <div class="clicker-icon" style="--coin-url: url('{{ url_for('static', filename='media/coin.png') }}')"></div>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let clickCount = 0;
+let currentMultiplier = 1.0;
+let maxMultiplier = 2.0;
+let baseClickValue = 0.01;
+let autoClickerInterval;
+let clicksToCombo = 20; // Default value
+let comboClickCount = 0; // Track clicks for combo
+let chestTimeout;
+let chestInterval;
+
+// Add the createFloatingMoney function
+function createFloatingMoney(amount, x, y) {
+    const floatingMoney = document.createElement('div');
+    floatingMoney.className = 'floating-money';
+    floatingMoney.textContent = `+$${amount.toFixed(3)}`;
+    
+    // Position the element
+    floatingMoney.style.position = 'fixed';
+    floatingMoney.style.left = `${x}px`;
+    floatingMoney.style.top = `${y}px`;
+    
+    document.body.appendChild(floatingMoney);
+    
+    // Remove the element after animation completes
+    setTimeout(() => {
+        floatingMoney.remove();
+    }, 1000);
+}
+
+// Function to start auto clicker with a given level
+function startAutoClicker(level) {
+    // Clear any existing interval
+    if (autoClickerInterval) {
+        clearInterval(autoClickerInterval);
+    }
+    
+    // If level is greater than 0, start new interval
+    if (level > 0) {
+        const baseInterval = 10000; // 10 seconds in milliseconds
+        let interval;
+        
+        if (level <= 9) {
+            interval = (11 - level) * 1000; // Convert seconds to milliseconds
+        } else {
+            const clicksPerSecond = level - 8;
+            interval = 1000 / clicksPerSecond;
+        }
+        
+        autoClickerInterval = setInterval(() => window.handleClick(true), interval);
+    }
+}
+
+// Make startAutoClicker available globally
+window.startAutoClicker = startAutoClicker;
+
+// Modified initialize upgrades function
+async function initializeUpgrades() {
+    try {
+        const response = await fetch('/get_upgrades');
+        const data = await response.json();
+        console.log('Initial upgrades:', data);
+        
+        if (data) {
+            // Base click value starts at 0.01 at level 1
+            baseClickValue = 0.01 * (1.5 ** (data.click_value - 1));
+            
+            // Max multiplier starts at 1.5x at level 1
+            maxMultiplier = 1.5 + (0.5 * (data.max_multiplier - 1));
+            
+            // Combo speed starts at 20 clicks at level 1
+            clicksToCombo = Math.max(1, 21 - (data.combo_speed || 1));
+            
+            // Auto clicker starts at level 0 (not unlocked)
+            startAutoClicker(data.auto_clicker || 0);
+            
+            // Update auto click rate display
+            updateAutoClickRate(data.auto_clicker || 0);
+            
+            // Reset multiplier to initial state
+            currentMultiplier = 1.0;
+            comboClickCount = 0;
+            
+            // Update displays
+            document.getElementById('current-multiplier').textContent = '1.0';
+            document.getElementById('multiplier').textContent = '1.0';
+            
+            // Add critical strike level to window object and update display
+            window.criticalStrikeLevel = data.critical_strike || 0;
+            document.getElementById('crit-chance').textContent = window.criticalStrikeLevel;
+            
+            console.log('Critical Strike Level:', window.criticalStrikeLevel);
+        }
+    } catch (error) {
+        console.error('Error initializing upgrades:', error);
+        // Set default values on error
+        clicksToCombo = 20;
+        maxMultiplier = 1.5;
+        baseClickValue = 0.01;
+        window.criticalStrikeLevel = 0;
+    }
+}
+
+// Add this new function to calculate and display auto click rate
+function updateAutoClickRate(level) {
+    let clicksPerSecond = 0;
+    if (level > 0) {
+        if (level <= 9) {
+            clicksPerSecond = 1 / (11 - level);
+        } else {
+            clicksPerSecond = level - 8;
+        }
+    }
+    document.getElementById('auto-click-rate').textContent = clicksPerSecond.toFixed(2);
+}
+
+// Update the event listener for upgradesPurchased
+window.addEventListener('upgradesPurchased', function(e) {
+    const upgrades = e.detail;
+    console.log('Upgrades received:', upgrades);
+    
+    // Base click value starts at 0.01 at level 1
+    baseClickValue = 0.01 * (1.5 ** (upgrades.click_value - 1));
+    
+    // Max multiplier starts at 1.5x at level 1
+    maxMultiplier = 1.5 + (0.5 * (upgrades.max_multiplier - 1));
+    
+    // Combo speed starts at 20 clicks at level 1
+    clicksToCombo = Math.max(1, 21 - upgrades.combo_speed);
+    
+    // Auto clicker starts at level 0 (not unlocked)
+    startAutoClicker(upgrades.auto_clicker);
+    
+    // Update auto click rate display
+    updateAutoClickRate(upgrades.auto_clicker);
+    
+    // Reset combo when upgrades change
+    currentMultiplier = 1.0;
+    comboClickCount = 0;
+    
+    // Update displays
+    document.getElementById('current-multiplier').textContent = '1.0';
+    document.getElementById('multiplier').textContent = '1.0';
+    
+    // Update critical strike level and display
+    window.criticalStrikeLevel = upgrades.critical_strike || 0;
+    document.getElementById('crit-chance').textContent = window.criticalStrikeLevel;
+    
+    console.log('New Critical Strike Level:', window.criticalStrikeLevel);
+});
+
+// Replace the existing handleClick function with this updated version
+window.handleClick = async function(isAutoClick = false) {
+    // Only increase combo on manual clicks
+    if (!isAutoClick) {
+        comboClickCount++;
+        console.log(`Combo clicks: ${comboClickCount}/${clicksToCombo}`);
+        
+        if (comboClickCount >= clicksToCombo) {
+            comboClickCount = 0;
+            currentMultiplier = Math.min(currentMultiplier + 0.1, maxMultiplier);
+            console.log(`New multiplier: ${currentMultiplier}`);
+            
+            const multiplierValue = currentMultiplier.toFixed(1);
+            document.getElementById('current-multiplier').textContent = multiplierValue;
+            document.getElementById('multiplier').textContent = multiplierValue;
+        }
+    }
+    
+    // Calculate critical strike using stored level
+    let criticalMultiplier = 1;
+    let isCritical = false;
+    const criticalChance = window.criticalStrikeLevel / 100;  // Convert percentage to decimal
+    
+    if (criticalChance > 0) {
+        const roll = Math.random();
+        console.log(`Critical Roll: ${roll}, Chance: ${criticalChance}`);
+        if (roll < criticalChance) {
+            criticalMultiplier = 4;
+            isCritical = true;
+            console.log('Critical Strike!');
+        }
+    }
+    
+    try {
+        const response = await fetch('/click', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                amount: currentMultiplier,
+                critical: isCritical 
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error(data.error);
+            return;
+        }
+        
+        // Create floating money text for both manual and auto clicks
+        const clickerBtn = document.getElementById('clicker');
+        const rect = clickerBtn.getBoundingClientRect();
+        
+        // Add some randomness to the position for auto-clicks
+        const randomOffset = isAutoClick ? {
+            x: (Math.random() - 0.5) * rect.width,
+            y: (Math.random() - 0.5) * rect.height
+        } : { x: 0, y: 0 };
+        
+        const x = rect.left + (rect.width / 2) + randomOffset.x;
+        const y = rect.top + (rect.height / 2) + randomOffset.y;
+        
+        // Create floating money with critical class if it was a critical hit
+        const moneyText = document.createElement('div');
+        moneyText.className = `floating-money ${isCritical ? 'critical-amount' : ''}`;
+        moneyText.textContent = `+$${data.earned.toFixed(3)}`;
+        moneyText.style.left = `${x}px`;
+        moneyText.style.top = `${y}px`;
+        document.body.appendChild(moneyText);
+        setTimeout(() => moneyText.remove(), 1000);
+        
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Update rank progress if provided
+        if (data.rank !== undefined) {
+            const rankInfo = document.querySelector('.current-rank');
+            const expInfo = document.querySelector('.exp-info');
+            const progressFill = document.querySelector('.progress-fill');
+            
+            rankInfo.textContent = data.rankName;
+            
+            if (data.nextRankExp) {
+                expInfo.textContent = `${data.exp}/${data.nextRankExp} EXP`;
+                progressFill.style.width = `${(data.exp / data.nextRankExp) * 100}%`;
+            } else {
+                expInfo.textContent = 'MAX RANK';
+                progressFill.style.width = '100%';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+document.getElementById('clicker').addEventListener('click', () => window.handleClick(false));
+
+// Reset multiplier when mouse leaves clicker area
+document.querySelector('.clicker-area').addEventListener('mouseleave', () => {
+    currentMultiplier = 1.0;
+    comboClickCount = 0;
+    document.getElementById('current-multiplier').textContent = '1.0';
+    document.getElementById('multiplier').textContent = '1.0';
+});
+
+// Initialize upgrades when page loads
+initializeUpgrades();
+
+function spawnChest() {
+    const chest = document.getElementById('floating-chest');
+    const clickerArea = document.querySelector('.clicker-area');
+    const clickerRect = clickerArea.getBoundingClientRect();
+    
+    if (chestTimeout) {
+        clearTimeout(chestTimeout);
+    }
+    
+    const centerX = clickerRect.left + clickerRect.width / 2;
+    const centerY = clickerRect.top + clickerRect.height / 2;
+    
+    // Start at center
+    chest.style.transform = `translate(${centerX}px, ${centerY}px) rotate(0deg)`;
+    chest.classList.add('active');
+    
+    // Update position more frequently for smoother animation
+    const moveInterval = setInterval(moveChest, 16); // ~60fps
+    
+    // Remove chest after 20 seconds
+    chestTimeout = setTimeout(() => {
+        chest.classList.remove('active');
+        clearInterval(moveInterval);
+    }, 20000);
+}
+
+function moveChest() {
+    const chest = document.getElementById('floating-chest');
+    const clickerArea = document.querySelector('.clicker-area');
+    const clickerRect = clickerArea.getBoundingClientRect();
+    
+    const centerX = clickerRect.left + clickerRect.width / 2;
+    const centerY = clickerRect.top + clickerRect.height / 2;
+    
+    // Get the current time for continuous movement
+    const time = Date.now() / 1000; // Convert to seconds
+    
+    // Increased radius for larger movement area
+    const radiusX = 250; // Horizontal radius
+    const radiusY = 150; // Vertical radius
+    const wobble = Math.sin(time * 2) * 40; // Increased wobble
+    
+    // Calculate position using parametric equations with time
+    // Slower movement with time * 0.5
+    const x = centerX + Math.sin(time * 0.5) * (radiusX + wobble);
+    const y = centerY + Math.sin(time * 1) * (radiusY + wobble);
+    
+    // Add a larger random offset for more natural movement
+    const randomOffset = 25;
+    const finalX = x + (Math.sin(time * 3) * randomOffset);
+    const finalY = y + (Math.cos(time * 3) * randomOffset);
+    
+    // Calculate rotation based on movement direction
+    const rotation = (Math.sin(time * 0.5) * 20) + (Math.cos(time * 1) * 10);
+    
+    chest.style.transform = `translate(${finalX}px, ${finalY}px) rotate(${rotation}deg)`;
+}
+
+function scheduleNextChest() {
+    // Clear any existing interval
+    if (chestInterval) {
+        clearTimeout(chestInterval);
+    }
+    
+    function spawnWithRandomDelay() {
+        // Random delay between 2-10 minutes (120000-600000 milliseconds)
+        const minDelay = 120000;
+        const maxDelay = 600000;
+        const randomDelay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+        
+        // Schedule next spawn
+        chestInterval = setTimeout(() => {
+            spawnChest();
+            spawnWithRandomDelay(); // Schedule next spawn after current one appears
+        }, randomDelay);
+    }
+    
+    // Start the spawn cycle with first random delay
+    spawnWithRandomDelay();
+}
+
+function handleChestClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const chest = event.target;
+    chest.classList.remove('active');
+    
+    // Clear any existing intervals/timeouts
+    if (chestTimeout) {
+        clearTimeout(chestTimeout);
+    }
+    
+    // Random reward between 1-100 USD
+    const reward = Math.floor(Math.random() * 100) + 1;
+    
+    // Create floating reward text
+    const rewardText = document.createElement('div');
+    rewardText.className = 'chest-reward';
+    rewardText.textContent = `+$${reward.toFixed(2)}`;
+    const rect = chest.getBoundingClientRect();
+    rewardText.style.left = `${rect.left + rect.width/2}px`;
+    rewardText.style.top = `${rect.top}px`;
+    document.body.appendChild(rewardText);
+    
+    // Remove reward text after animation
+    setTimeout(() => rewardText.remove(), 1000);
+    
+    // Update balance via API
+    fetch('/chest_reward', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount: reward })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Initialize chest system
+const chest = document.getElementById('floating-chest');
+chest.addEventListener('click', handleChestClick);
+chest.addEventListener('mousedown', (e) => e.preventDefault());
+
+// Start chest spawning when page loads
+scheduleNextChest();
+
+// Clean up when page is left
+window.addEventListener('beforeunload', () => {
+    if (chestTimeout) clearTimeout(chestTimeout);
+    if (chestInterval) clearTimeout(chestInterval); // Changed from clearInterval to clearTimeout
+});
+</script>
+{% endblock %} 

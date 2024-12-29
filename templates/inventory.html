@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory - Case Clicker{% endblock %}
+
+{% block content %}
+<div class="inventory-container">
+    <div class="inventory-header">
+        <h1>Your Inventory</h1>
+        <div class="inventory-stats">
+            <div class="inventory-value">
+                Total Value: $<span id="total-value">0.00</span>
+            </div>
+            <div class="inventory-count">
+                Items: <span id="item-count">0</span>/<span id="max-items">100</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="inventory-filters">
+        <select id="sort-select" class="inventory-filter">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="value-high">Highest Value</option>
+            <option value="value-low">Lowest Value</option>
+        </select>
+        <input type="text" id="search-input" class="inventory-filter" placeholder="Search items...">
+    </div>
+
+    <div class="inventory-grid" id="inventory-grid">
+        <!-- Items will be dynamically loaded here -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize inventory
+    loadInventory();
+
+    // Add event listeners for filters
+    document.getElementById('sort-select').addEventListener('change', function() {
+        loadInventory();
+    });
+
+    document.getElementById('search-input').addEventListener('input', function() {
+        loadInventory();
+    });
+});
+
+function loadInventory() {
+    // TODO: Add API call to load inventory items
+    // For now, we'll just show a placeholder message
+    const inventoryGrid = document.getElementById('inventory-grid');
+    inventoryGrid.innerHTML = '<div class="empty-inventory">Your inventory is empty</div>';
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Case Clicker{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('shop') }}" class="nav-link">Shop</a>
+            <div class="rank-progress">
+                <div class="rank-info">
+                    <span class="current-rank">{{ RANKS[session['user'].get('rank', 0)] }}</span>
+                    <div class="progress-bar">
+                        {% set rank = session['user'].get('rank', 0) %}
+                        {% set exp = session['user'].get('exp', 0) %}
+                        {% if rank < 5 %}
+                            <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
+                        {% else %}
+                            <div class="progress-fill" style="width: 100%"></div>
+                        {% endif %}
+                    </div>
+                    <span class="exp-info">
+                        {% if rank < 5 %}
+                            {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
+                        {% else %}
+                            MAX RANK
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <a href="{{ url_for('inventory') }}" class="nav-link">Inventory</a>
+            <a href="{{ url_for('clicker') }}" class="nav-link">Clicker</a>
+            <a href="{{ url_for('upgrades') }}" class="nav-link">Upgrades</a>
+            <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

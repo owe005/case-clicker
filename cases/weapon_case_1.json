@@ -1,0 +1,144 @@
+{
+    "name": "CS:GO Weapon Case",
+    "image": "weapon_case_1.png",
+    "price": 125.00,
+    "skins": {
+        "red": [
+            {
+                "weapon": "AWP",
+                "name": "Lightning Strike",
+                "image": "awp_lightning_strike.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 713.77,
+                    "MW": 1190.00,
+                    "ST_FN": 1100.00,
+                    "ST_MW": 1800.00
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "AK-47",
+                "name": "Case Hardened",
+                "image": "ak47_case_hardened.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 491.67,
+                    "MW": 368.12,
+                    "FT": 240.23,
+                    "WW": 260.56,
+                    "BS": 230.38,
+                    "ST_FN": 980.33,
+                    "ST_MW": 676.91,
+                    "ST_FT": 550.00,
+                    "ST_WW": 435.00,
+                    "ST_BS": 499.99
+                }
+            },
+            {
+                "weapon": "Desert Eagle",
+                "name": "Hypnotic",
+                "image": "deagle_hypnotic.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 119.91,
+                    "MW": 88.32,
+                    "ST_FN": 177.37,
+                    "ST_MW": 332.38
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "USP-S",
+                "name": "Dark Water",
+                "image": "usps_dark_water.png",
+                "grade": "purple",
+                "valid_wears": ["MW", "FT"],
+                "prices": {
+                    "MW": 114.90,
+                    "FT": 99.05,
+                    "ST_MW": 189.93,
+                    "ST_FT": 169.19
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Dragon Tattoo",
+                "image": "glock_dragon_tattoo.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 148.08,
+                    "MW": 130.34,
+                    "ST_FN": 558.50,
+                    "ST_MW": 240.40
+                }
+            },
+            {
+                "weapon": "M4A1-S",
+                "name": "Dark Water",
+                "image": "m4a1s_dark_water.png",
+                "grade": "purple",
+                "valid_wears": ["MW", "FT"],
+                "prices": {
+                    "MW": 113.49,
+                    "FT": 98.32,
+                    "ST_MW": 193.23,
+                    "ST_FT": 139.28
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "SG 553",
+                "name": "Ultraviolet",
+                "image": "sg553_ultraviolet.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 55.20,
+                    "MW": 34.13,
+                    "FT": 31.99,
+                    "WW": 33.17,
+                    "BS": 31.81,
+                    "ST_FN": 176.39,
+                    "ST_MW": 149.39,
+                    "ST_FT": 31.99,
+                    "ST_WW": 31.14,
+                    "ST_BS": 31.18
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Skulls",
+                "image": "mp7_skulls.png",
+                "grade": "blue",
+                "valid_wears": ["MW", "FT"],
+                "prices": {
+                    "MW": 33.08,
+                    "FT": 34.78,
+                    "ST_MW": 32.20,
+                    "ST_FT": 31.69
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Wings",
+                "image": "aug_wings.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 32.34,
+                    "MW": 31.21,
+                    "ST_FN": 33.98,
+                    "ST_MW": 31.02
+                }
+            }
+        ]
+    }
+} 
