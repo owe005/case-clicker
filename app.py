@@ -32,27 +32,26 @@ class Skin:
     case_type: str = 'weapon_case_1'  # Add default case type
     
     def get_price(self) -> float:
-        # Map case_type to filename
-        case_file_mapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo'
-        }
-        
         try:
-            # Get the correct case file name
-            case_file = case_file_mapping.get(self.case_type, 'weapon_case_1')
+            # Get the correct case file based on case_type
+            case_file = {
+                'csgo': 'weapon_case_1',
+                'esports': 'esports_2013',
+                'bravo': 'operation_bravo'
+            }.get(self.case_type, 'weapon_case_1')
+            
             with open(f'cases/{case_file}.json', 'r') as f:
                 case_data = json.load(f)
                 
             # Search through all rarity categories
-            for rarity in case_data['skins'].values():
-                for skin in rarity:
+            for grade, skins in case_data['skins'].items():
+                for skin in skins:
                     if skin['weapon'] == self.weapon and skin['name'] == self.name:
                         prices = skin['prices']
+                        wear_key = 'NO' if 'NO' in prices else self.wear.name
                         if self.stattrak:
-                            return prices.get(f"ST_{self.wear.name}", 0)
-                        return prices.get(self.wear.name, 0)
+                            return prices.get(f"ST_{wear_key}", 0)
+                        return prices.get(wear_key, 0)
             return 0
         except Exception as e:
             print(f"Error getting price: {e}")
@@ -934,15 +933,14 @@ def get_user_data():
 def get_case_contents(case_type):
     case_file_mapping = {
         'csgo': 'weapon_case_1.json',
-        'esports': 'weapon_case_1.json',  # Temporarily use same file
-        'bravo': 'weapon_case_1.json'     # Temporarily use same file
+        'esports': 'esports_2013.json',  # Updated to use correct file
+        'bravo': 'weapon_case_1.json'     
     }
     
     if case_type not in case_file_mapping:
         return jsonify({'error': 'Invalid case type'}), 404
         
     try:
-        # Updated path to use the 'cases' directory
         with open(f'cases/{case_file_mapping[case_type]}', 'r') as f:
             return jsonify(json.load(f))
     except FileNotFoundError:

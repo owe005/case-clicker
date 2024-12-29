@@ -403,7 +403,6 @@ async function sellItem(index) {
 }
 
 function generateRandomItems(actualItem) {
-    // Create weighted pools based on rarity percentages and case type
     const itemPools = {
         BLUE: caseContents[actualItem.case_type].contents.BLUE,
         PURPLE: caseContents[actualItem.case_type].contents.PURPLE,
@@ -412,72 +411,21 @@ function generateRandomItems(actualItem) {
         GOLD: caseContents[actualItem.case_type].contents.GOLD
     };
 
-    function randomFromPool(rarity, retryCount = 0) {
-        // Add retry limit to prevent infinite recursion
-        if (retryCount > 10) {
-            console.error('Max retry count reached, defaulting to basic item');
-            return {
-                weapon: "AK-47",
-                name: "Case Hardened",
-                rarity: "PINK",
-                stattrak: false,
-                wear: "FT",
-                price: 211.26
-            };
-        }
-
+    function randomFromPool(rarity) {
         const pool = itemPools[rarity];
         const item = {...pool[Math.floor(Math.random() * pool.length)]};
         const hasStattrak = Math.random() < 0.1;
         
-        // Special handling for gold items (knives)
-        if (rarity === 'GOLD') {
-            // Select random knife type
-            const knifeTypes = Object.keys(knives);
-            const randomKnifeType = knifeTypes[Math.floor(Math.random() * knifeTypes.length)];
-            
-            // Select random skin from available skins for this knife
-            const possibleSkins = knives[randomKnifeType];
-            const randomSkinObj = possibleSkins[Math.floor(Math.random() * possibleSkins.length)];
-            
-            // Get random wear from available wears for this skin
-            const availableWears = randomSkinObj.wears;
-            const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
-            
-            const weapon = `★ ${randomKnifeType}`;
-            const name = randomSkinObj.name;
-            
-            // Get price
-            const skinKey = `${weapon}|${name}`;
-            const prices = skinPrices[skinKey] || {};
-            const priceIndex = hasStattrak ? `ST_${wear}` : wear;
-            const price = prices[priceIndex] || prices[wear] || 0;
-            
-            return {
-                weapon: weapon,
-                name: name,
-                rarity: rarity,
-                stattrak: hasStattrak,
-                wear: wear,
-                price: price
-            };
-        }
-        
-        // Normal skin handling
+        // Get valid wears and price from the correct case file
         const skinKey = `${item.weapon}|${item.name}`;
         const availableWears = validWears[skinKey] || ["FT"];
         const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
-        
-        const prices = skinPrices[skinKey] || {};
-        const priceIndex = hasStattrak ? `ST_${wear}` : wear;
-        const price = prices[priceIndex] || 0;
         
         return {
             ...item,
             stattrak: hasStattrak,
             wear: wear,
-            price: price,
-            case_type: actualItem.case_type  // Add case_type to the returned item
+            case_type: actualItem.case_type  // Include case_type in generated items
         };
     }
 
@@ -591,24 +539,25 @@ function showItemShowcase(item) {
         existingButtons.remove();
     }
     
-    // Rest of the showcase update code...
-    const nameElement = showcase.querySelector('.showcase-name');
-    const detailsElement = showcase.querySelector('.showcase-details');
-    const priceElement = showcase.querySelector('.showcase-price');
+    // Create and set up all elements first
+    const nameElement = document.createElement('div');
+    nameElement.className = `showcase-name ${item.stattrak ? 'stattrak' : ''}`;
     
-    // Remove any existing rarity classes
-    showcaseContainer.className = 'showcase-container';
-    // Add the new rarity class
-    showcaseContainer.classList.add(`rarity-${item.rarity}`);
+    const detailsElement = document.createElement('div');
+    detailsElement.className = 'showcase-details';
+    
+    const priceElement = document.createElement('div');
+    priceElement.className = 'showcase-price';
     
     // Create image element
     const imageElement = document.createElement('img');
+    const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+    
     if (item.rarity === 'GOLD') {
         const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
         const skinName = item.name.toLowerCase().replace(' ', '_');
-        imageElement.src = `/static/media/skins/${item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1'}/${weaponName}_${skinName}.png`;
+        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
     } else {
-        const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
         const weaponName = item.weapon.toLowerCase()
             .replace('-', '')
             .replace(' ', '')
@@ -625,21 +574,52 @@ function showItemShowcase(item) {
     // Update showcase content
     const itemContainer = showcase.querySelector('.showcase-item');
     itemContainer.innerHTML = ''; // Clear existing content
+    
+    // Add all elements to the container
     itemContainer.appendChild(imageElement);
-    
-    // Set item details
-    nameElement.className = `showcase-name ${item.stattrak ? 'stattrak' : ''}`;
-    nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
-    
     itemContainer.appendChild(nameElement);
-    
-    detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
     itemContainer.appendChild(detailsElement);
-    
-    priceElement.textContent = `$${item.price.toFixed(2)}`;
     itemContainer.appendChild(priceElement);
     
-    // Create new buttons container
+    // Remove any existing rarity classes from container
+    showcaseContainer.className = 'showcase-container';
+    showcaseContainer.classList.add(`rarity-${item.rarity}`);
+    
+    // Set text content
+    nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
+    detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
+    
+    // Fetch price from the correct case file
+    fetch(`/data/case_contents/${item.case_type}`)
+        .then(response => response.json())
+        .then(caseData => {
+            let price = 0;
+            for (const [grade, skins] of Object.entries(caseData.skins)) {
+                for (const skin of skins) {
+                    if (skin.weapon === item.weapon && skin.name === item.name) {
+                        const prices = skin.prices;
+                        const wearKey = 'NO' in prices ? 'NO' : item.wear;
+                        price = item.stattrak ? 
+                            (prices[`ST_${wearKey}`] || 0) : 
+                            (prices[wearKey] || 0);
+                        break;
+                    }
+                }
+                if (price > 0) break;
+            }
+            
+            // Update the showcase with the correct price
+            priceElement.textContent = `$${price.toFixed(2)}`;
+            
+            // Update the item object with the correct price
+            item.price = price;
+        })
+        .catch(error => {
+            console.error('Error fetching case data:', error);
+            priceElement.textContent = '$0.00';
+        });
+    
+    // Create buttons container and buttons
     const buttonsContainer = document.createElement('div');
     buttonsContainer.className = 'showcase-buttons';
     
@@ -653,15 +633,12 @@ function showItemShowcase(item) {
     
     buttonsContainer.appendChild(continueButton);
     buttonsContainer.appendChild(sellButton);
-    
-    // Add the buttons container to the showcase container
     showcaseContainer.appendChild(buttonsContainer);
     
     // Add button handlers
     continueButton.onclick = async () => {
         showcase.style.display = 'none';
         showcaseSound.pause();
-        // Update inventory display
         await updateInventoryDisplay();
     };
     
@@ -681,19 +658,6 @@ function showItemShowcase(item) {
             // Close showcase
             showcase.style.display = 'none';
             showcaseSound.pause();
-            
-            // Update case quantity display without refresh
-            const currentView = document.querySelector('.category-btn.active').dataset.category;
-            if (currentView === 'cases') {
-                const caseElements = document.querySelectorAll('.case-item');
-                caseElements.forEach(caseElement => {
-                    const quantityElement = caseElement.querySelector('p');
-                    const quantity = parseInt(quantityElement.textContent.split(': ')[1]);
-                    if (quantity === 0) {
-                        caseElement.remove();
-                    }
-                });
-            }
             
         } catch (error) {
             console.error('Error:', error);
@@ -859,8 +823,36 @@ async function updateInventoryDisplay() {
         
         // Add each item
         let skinIndex = 0;
-        data.inventory.forEach((item) => {
+        for (const item of data.inventory) {
             if (!item.is_case) {
+                // Fetch price from the correct case file
+                try {
+                    const caseResponse = await fetch(`/data/case_contents/${item.case_type}`);
+                    const caseData = await caseResponse.json();
+                    
+                    // Find the item's price in the case data
+                    let price = 0;
+                    for (const [grade, skins] of Object.entries(caseData.skins)) {
+                        for (const skin of skins) {
+                            if (skin.weapon === item.weapon && skin.name === item.name) {
+                                const prices = skin.prices;
+                                const wearKey = 'NO' in prices ? 'NO' : item.wear;
+                                price = item.stattrak ? 
+                                    (prices[`ST_${wearKey}`] || 0) : 
+                                    (prices[wearKey] || 0);
+                                break;
+                            }
+                        }
+                        if (price > 0) break;
+                    }
+                    
+                    // Update the item's price
+                    item.price = price;
+                } catch (error) {
+                    console.error('Error fetching case data:', error);
+                    item.price = 0;
+                }
+                
                 const skinDiv = document.createElement('div');
                 skinDiv.className = `skin rarity-${item.rarity}`;
                 skinDiv.dataset.index = skinIndex;
@@ -895,45 +887,14 @@ async function updateInventoryDisplay() {
                 const sellBtn = skinDiv.querySelector('.sell-btn');
                 if (sellBtn) {
                     sellBtn.addEventListener('click', async function() {
-                        const itemElement = this.closest('.skin');
-                        if (!itemElement) return;
-                        const index = parseInt(itemElement.dataset.index);
-                        try {
-                            const response = await fetch(`/sell/${index}`, {
-                                method: 'POST'
-                            });
-                            const data = await response.json();
-                            
-                            if (data.error) {
-                                alert(data.error);
-                                return;
-                            }
-                            
-                            // Update balance
-                            document.getElementById('balance').textContent = data.balance.toFixed(2);
-                            
-                            // Remove the sold item
-                            itemElement.style.animation = 'fadeOut 0.3s';
-                            setTimeout(() => {
-                                itemElement.remove();
-                                
-                                // Update remaining indices
-                                document.querySelectorAll('.skin').forEach((skin, newIndex) => {
-                                    skin.dataset.index = newIndex;
-                                });
-                            }, 300);
-                            
-                        } catch (error) {
-                            console.error('Error:', error);
-                            alert('Failed to sell item');
-                        }
+                        await sellItem(skinIndex);
                     });
                 }
                 
                 inventoryItems.appendChild(skinDiv);
                 skinIndex++;
             }
-        });
+        }
         
     } catch (error) {
         console.error('Error updating inventory:', error);

@@ -285,13 +285,14 @@
                 <div class="item-skin">Rare Special Item</div>
             `;
         } else {
-            // For regular skins, add the image
+            // For regular skins, add the image with correct case path
             const weaponName = item.weapon.toLowerCase()
                 .replace('-', '')
-                .replace(' ', '')  // Remove spaces completely
-                .replace('553', '553');  // Keep the number
+                .replace(' ', '')
+                .replace('553', '553');
             const skinName = item.name.toLowerCase().replace(' ', '_');
-            img.src = `/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png`;
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+            img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
             img.alt = `${item.weapon} | ${item.name}`;
             
             imageContainer.appendChild(img);
@@ -336,7 +337,8 @@
             // For knives, use the knife image
             const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
             const skinName = item.name.toLowerCase().replace(' ', '_');
-            imageElement.src = `/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png`;
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+            imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
         } else {
             // For regular skins, construct the image path
             const weaponName = item.weapon.toLowerCase()
@@ -344,7 +346,8 @@
                 .replace(' ', '')
                 .replace('553', '553');
             const skinName = item.name.toLowerCase().replace(' ', '_');
-            imageElement.src = `/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png`;
+            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+            imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
         }
         
         imageElement.style.maxWidth = '300px';
