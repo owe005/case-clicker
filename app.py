@@ -4,9 +4,6 @@ from enum import Enum
 import random
 from typing import List, Dict, Tuple, Union
 import time
-import os
-import json
-from pathlib import Path
 
 app = Flask(__name__)
 
@@ -32,21 +29,11 @@ class Skin:
     wear: Wear
     stattrak: bool = False
     
-    # Update price lookup method
+    # Add price lookup method
     def get_price(self) -> float:
-        # Normalize weapon name for lookup
-        weapon = self.weapon.replace('Galil AR', 'Galil')
-        
-        # Create lookup key
-        skin_key = f"{weapon}|{self.name}"
-        
-        # Get price dictionary for this skin
-        base_price = SKIN_PRICES.get(skin_key, {})
-        
-        # Get price for specific wear
+        base_price = SKIN_PRICES.get(f"{self.weapon}|{self.name}", {})
         wear_price = base_price.get(self.wear.name, 0)
         
-        # Apply StatTrak multiplier if applicable
         if self.stattrak:
             stattrak_price = base_price.get(f"ST_{self.wear.name}", wear_price * 2)
             return stattrak_price
@@ -536,36 +523,6 @@ class User:
             self.rank += 1
 
 def create_user_from_dict(data: dict) -> User:
-    # Create a mapping of skins to their correct case types
-    case_skin_mapping = {
-        # eSports 2013 Case skins
-        "FAMAS|Doomkitty": "esports",
-        "M4A4|Faded Zebra": "esports",
-        "MAG-7|Memento": "esports",
-        "P90|Death by Kitty": "esports",
-        "AWP|BOOM": "esports",
-        "AK-47|Red Laminate": "esports",
-        "Galil AR|Orange DDPAT": "esports",
-        "P250|Splash": "esports",
-        "Sawed-Off|Orange DDPAT": "esports",
-        
-        # Operation Bravo Case skins
-        "AK-47|Fire Serpent": "bravo",
-        "Desert Eagle|Golden Koi": "bravo",
-        "AWP|Graphite": "bravo",
-        "P90|Emerald Dragon": "bravo",
-        "P2000|Ocean Foam": "bravo",
-        "USP-S|Overgrowth": "bravo",
-        "MAC-10|Graven": "bravo",
-        "M4A1-S|Bright Water": "bravo",
-        "M4A4|Zirka": "bravo",
-        "Dual Berettas|Black Limba": "bravo",
-        "SG 553|Wave Spray": "bravo",
-        "Nova|Tempest": "bravo",
-        "Galil AR|Shattered": "bravo",
-        "UMP-45|Bone Pile": "bravo"
-    }
-
     upgrades_data = data.get('upgrades', {})
     upgrades = Upgrades(
         click_value=upgrades_data.get('click_value', 1),
@@ -590,9 +547,6 @@ def create_user_from_dict(data: dict) -> User:
                 user.inventory.append(item)
             else:
                 # Create Skin object for weapon skins and preserve case_type
-                skin_key = f"{item['weapon']}|{item['name']}"
-                correct_case_type = case_skin_mapping.get(skin_key, item.get('case_type', 'csgo'))
-                
                 skin_dict = {
                     'weapon': item['weapon'],
                     'name': item['name'],
@@ -601,7 +555,7 @@ def create_user_from_dict(data: dict) -> User:
                     'stattrak': item.get('stattrak', False),
                     'price': item.get('price', 0),
                     'timestamp': item.get('timestamp', 0),
-                    'case_type': correct_case_type
+                    'case_type': item.get('case_type', 'csgo')  # Default to 'csgo' if not present
                 }
                 user.inventory.append(skin_dict)
     return user
@@ -610,7 +564,7 @@ def create_user_from_dict(data: dict) -> User:
 CASE_PRICES = {
     'csgo': 125.00,  # CS:GO Weapon Case
     'esports': 55.00,   # eSports 2013 Case
-    'bravo': 55.00  # Operation Bravo Case price updated to $55.00
+    'bravo': 150.00  # Add Operation Bravo Case price
 }
 
 VALID_WEARS.update({
@@ -693,118 +647,6 @@ OPERATION_BRAVO_CASE = Case("Operation Bravo Case", {
     ]
 })
 
-# Add this case_data dictionary before the buy_case route
-case_data = {
-    'csgo': {
-        'name': 'CS:GO Weapon Case',
-        'image': 'weapon_case_1.png',
-        'is_case': True,
-        'type': 'csgo'
-    },
-    'esports': {
-        'name': 'eSports 2013 Case',
-        'image': 'esports_2013_case.png',
-        'is_case': True,
-        'type': 'esports'
-    },
-    'bravo': {
-        'name': 'Operation Bravo Case',
-        'image': 'operation_bravo_case.png',
-        'is_case': True,
-        'type': 'bravo'
-    }
-}
-
-# Add this function near the top of the file with other helper functions
-def get_correct_case_type(weapon: str, name: str) -> str:
-    case_skin_mapping = {
-        # eSports 2013 Case skins
-        "FAMAS|Doomkitty": "esports",
-        "M4A4|Faded Zebra": "esports",
-        "MAG-7|Memento": "esports",
-        "P90|Death by Kitty": "esports",
-        "AWP|BOOM": "esports",
-        "AK-47|Red Laminate": "esports",
-        "Galil AR|Orange DDPAT": "esports",
-        "P250|Splash": "esports",
-        "Sawed-Off|Orange DDPAT": "esports",
-        
-        # Operation Bravo Case skins
-        "AK-47|Fire Serpent": "bravo",
-        "Desert Eagle|Golden Koi": "bravo",
-        "AWP|Graphite": "bravo",
-        "P90|Emerald Dragon": "bravo",
-        "P2000|Ocean Foam": "bravo",
-        "USP-S|Overgrowth": "bravo",
-        "MAC-10|Graven": "bravo",
-        "M4A1-S|Bright Water": "bravo",
-        "M4A4|Zirka": "bravo",
-        "Dual Berettas|Black Limba": "bravo",
-        "SG 553|Wave Spray": "bravo",
-        "Nova|Tempest": "bravo",
-        "Galil AR|Shattered": "bravo",
-        "UMP-45|Bone Pile": "bravo"
-    }
-    
-    skin_key = f"{weapon}|{name}"
-    return case_skin_mapping.get(skin_key, "csgo")
-
-def load_user_data():
-    try:
-        with open('data/user_inventory.json', 'r') as f:
-            data = json.load(f)
-            return data.get('default', {
-                'balance': 1000.0,
-                'inventory': [],
-                'exp': 0,
-                'rank': 0,
-                'upgrades': {
-                    'click_value': 1,
-                    'max_multiplier': 1,
-                    'auto_clicker': 0,
-                    'combo_speed': 1,
-                    'critical_strike': 0
-                }
-            })
-    except (FileNotFoundError, json.JSONDecodeError):
-        # Create default data structure if file doesn't exist or is invalid
-        default_data = {
-            'default': {
-                'balance': 1000.0,
-                'inventory': [],
-                'exp': 0,
-                'rank': 0,
-                'upgrades': {
-                    'click_value': 1,
-                    'max_multiplier': 1,
-                    'auto_clicker': 0,
-                    'combo_speed': 1,
-                    'critical_strike': 0
-                }
-            }
-        }  # Added missing closing brace here
-        # Ensure data directory exists
-        Path('data').mkdir(exist_ok=True)
-        # Save default data
-        with open('data/user_inventory.json', 'w') as f:
-            json.dump(default_data, f, indent=4)
-        return default_data['default']
-
-def save_user_data(user_data):
-    # Ensure data directory exists
-    Path('data').mkdir(exist_ok=True)
-    
-    try:
-        with open('data/user_inventory.json', 'r') as f:
-            data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
-    
-    data['default'] = user_data
-    
-    with open('data/user_inventory.json', 'w') as f:
-        json.dump(data, f, indent=4)
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if 'user' not in session:
@@ -847,24 +689,38 @@ def shop():
 
 @app.route('/inventory')
 def inventory():
-    user_data = load_user_data()
+    if 'user' not in session:
+        session['user'] = {
+            'balance': 1000.0,
+            'inventory': [],
+            'exp': 0,
+            'rank': 0,
+            'upgrades': {
+                'click_value': 1,
+                'max_multiplier': 1,
+                'auto_clicker': 0,
+                'combo_speed': 1,
+                'critical_strike': 0
+            }
+        }
     
-    # Fix case_type for existing items
-    inventory_items = user_data.get('inventory', [])
-    for item in inventory_items:
-        if not item.get('is_case'):
-            item['case_type'] = get_correct_case_type(item['weapon'], item['name'])
+    # Get the current inventory from session
+    inventory_items = session['user'].get('inventory', [])
     
     # Sort items so newest appears first
-    inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
-                           reverse=True)
+    inventory_items = sorted(inventory_items, key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, reverse=True)
+    
+    # Add debug logging
+    print("Inventory route - items being sent to template:", inventory_items)
+    
+    view = request.args.get('view', 'skins')  # Get the view parameter, default to skins
     
     return render_template('inventory.html', 
-                         balance=user_data['balance'], 
-                         inventory=inventory_items,
+                         balance=session['user']['balance'], 
+                         inventory=inventory_items,  # Pass the inventory directly
                          RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+                         RANKS=RANKS,
+                         initial_view=view)
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
@@ -897,16 +753,7 @@ def open_case(case_type):
         print("No cases found in inventory")
         return jsonify({'error': 'No cases of this type in inventory'})
     
-    # Select the appropriate case
-    if case_type == 'csgo':
-        case = CSGO_WEAPON_CASE
-    elif case_type == 'esports':
-        case = ESPORTS_2013_CASE
-    elif case_type == 'bravo':
-        case = OPERATION_BRAVO_CASE
-    else:
-        return jsonify({'error': 'Invalid case type'})
-
+    case = CSGO_WEAPON_CASE if case_type == 'csgo' else ESPORTS_2013_CASE
     skin = case.open()
     
     if skin:
@@ -918,40 +765,6 @@ def open_case(case_type):
         user.add_exp(case_price)
         print(f"New EXP: {user.exp}, Rank: {user.rank}")
         
-        # Create a mapping of skins to their correct case types
-        case_skin_mapping = {
-            # eSports 2013 Case skins
-            "FAMAS|Doomkitty": "esports",
-            "M4A4|Faded Zebra": "esports",
-            "MAG-7|Memento": "esports",
-            "P90|Death by Kitty": "esports",
-            "AWP|BOOM": "esports",
-            "AK-47|Red Laminate": "esports",
-            "Galil AR|Orange DDPAT": "esports",
-            "P250|Splash": "esports",
-            "Sawed-Off|Orange DDPAT": "esports",
-            
-            # Operation Bravo Case skins
-            "AK-47|Fire Serpent": "bravo",
-            "Desert Eagle|Golden Koi": "bravo",
-            "AWP|Graphite": "bravo",
-            "P90|Emerald Dragon": "bravo",
-            "P2000|Ocean Foam": "bravo",
-            "USP-S|Overgrowth": "bravo",
-            "MAC-10|Graven": "bravo",
-            "M4A1-S|Bright Water": "bravo",
-            "M4A4|Zirka": "bravo",
-            "Dual Berettas|Black Limba": "bravo",
-            "SG 553|Wave Spray": "bravo",
-            "Nova|Tempest": "bravo",
-            "Galil AR|Shattered": "bravo",
-            "UMP-45|Bone Pile": "bravo"
-        }
-        
-        # Determine the correct case_type for the skin
-        skin_key = f"{skin.weapon}|{skin.name}"
-        correct_case_type = case_skin_mapping.get(skin_key, case_type)
-        
         # Convert skin to dictionary format with timestamp and case_type
         skin_dict = {
             'weapon': skin.weapon,
@@ -961,7 +774,7 @@ def open_case(case_type):
             'stattrak': skin.stattrak,
             'price': skin.get_price(),
             'timestamp': time.time(),
-            'case_type': correct_case_type  # Use the correct case type
+            'case_type': case_type  # Make sure this is set
         }
         
         print(f"Created skin_dict with case_type: {skin_dict}")  # Debug log
@@ -1015,8 +828,11 @@ def reset_session():
 @app.route('/sell/last', methods=['POST'])
 @app.route('/sell/<int:item_index>', methods=['POST'])
 def sell_item(item_index=None):
-    user_data = load_user_data()
-    inventory = user_data.get('inventory', [])
+    if 'user' not in session:
+        return jsonify({'error': 'User not found'})
+    
+    user = create_user_from_dict(session['user'])
+    inventory = session['user']['inventory']
     
     try:
         # Get only skin items (not cases) for selling
@@ -1026,22 +842,28 @@ def sell_item(item_index=None):
         item = skin_items[actual_index]
         sale_price = item.get('price', 0)
         
-        user_data['balance'] += sale_price
+        user.balance += sale_price
         
         # Remove the sold item from inventory
         inventory.remove(item)
         
-        # Save updated user data
-        save_user_data(user_data)
+        # Update session with ALL user data, preserving cases and case_type
+        session['user'] = {
+            'balance': user.balance,
+            'inventory': inventory,  # Keep the entire inventory including cases and case_type
+            'exp': user.exp,
+            'rank': user.rank,
+            'upgrades': asdict(user.upgrades)
+        }
         
         return jsonify({
             'success': True,
-            'balance': user_data['balance'],
+            'balance': user.balance,
             'sold_price': sale_price,
-            'exp': int(user_data['exp']),
-            'rank': user_data['rank'],
-            'rankName': RANKS[user_data['rank']],
-            'nextRankExp': RANK_EXP[user_data['rank']] if user_data['rank'] < len(RANK_EXP) else None
+            'exp': int(user.exp),
+            'rank': user.rank,
+            'rankName': RANKS[user.rank],
+            'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None
         })
         
     except IndexError:
@@ -1076,7 +898,7 @@ def click():
     
     data = request.get_json()
     multiplier = data.get('amount', 0)
-    critical = data.get('critical', False)  # Get critical status from client
+    critical = data.get('critical', False)
     
     user = create_user_from_dict(session['user'])
     
@@ -1093,7 +915,7 @@ def click():
     # Update session with ALL user data
     session['user'] = {
         'balance': user.balance,
-        'inventory': user.inventory,  # The inventory is already in dictionary format
+        'inventory': user.inventory,  # Just pass the inventory directly since it's already in dict format
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -1102,7 +924,7 @@ def click():
     return jsonify({
         'success': True,
         'balance': user.balance,
-        'earned': earned,  # Send the actual earned amount back
+        'earned': earned,
         'exp': int(user.exp),
         'rank': user.rank,
         'rankName': RANKS[user.rank],
@@ -1157,62 +979,57 @@ def purchase_upgrade():
     if 'user' not in session:
         return jsonify({'error': 'User not found'})
     
-    try:
-        user = create_user_from_dict(session['user'])
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({'error': 'No data received'}), 400
-            
-        upgrade_type = data.get('upgrade_type')
-        
-        if not upgrade_type:
-            return jsonify({'error': 'No upgrade type specified'}), 400
-        
-        # Update the costs dictionary to include critical strike
-        costs = {
-            'click_value': lambda level: 100 * (2 ** (level - 1)),  # Starts at 100
-            'max_multiplier': lambda level: 250 * (2 ** (level - 1)),  # Starts at 250
-            'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),  # Starts at 500, then 50
-            'combo_speed': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
-            'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1))  # Starts at 1000, then 200
-        }
-        
-        if upgrade_type not in costs:
-            return jsonify({'error': 'Invalid upgrade type'}), 400
-        
-        current_level = getattr(user.upgrades, upgrade_type)
-        cost = costs[upgrade_type](current_level)
-        
-        if user.balance < cost:
-            return jsonify({'error': 'Insufficient funds'}), 400
-        
-        # Purchase the upgrade
-        user.balance -= cost
-        setattr(user.upgrades, upgrade_type, current_level + 1)
-        
-        # Calculate next cost after level increase
-        next_cost = costs[upgrade_type](current_level + 1)
-        
-        # Update session with all user data
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': user.inventory,  # Keep the existing inventory
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
-        
-        return jsonify({
-            'success': True,
-            'balance': user.balance,
-            'upgrades': asdict(user.upgrades),
-            'nextCost': next_cost
-        })
-        
-    except Exception as e:
-        print(f"Error in purchase_upgrade: {str(e)}")  # Log the error
-        return jsonify({'error': 'Server error occurred'}), 500
+    user = create_user_from_dict(session['user'])
+    data = request.get_json()
+    upgrade_type = data.get('upgrade_type')
+    
+    # Update the costs dictionary to include critical strike
+    costs = {
+        'click_value': lambda level: 100 * (2 ** (level - 1)),  # Starts at 100
+        'max_multiplier': lambda level: 250 * (2 ** (level - 1)),  # Starts at 250
+        'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),  # Starts at 500, then 50
+        'combo_speed': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
+        'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1))  # Starts at 1000, then 200
+    }
+    
+    if upgrade_type not in costs:
+        return jsonify({'error': 'Invalid upgrade type'})
+    
+    current_level = getattr(user.upgrades, upgrade_type)
+    cost = costs[upgrade_type](current_level)
+    
+    if user.balance < cost:
+        return jsonify({'error': 'Insufficient funds'})
+    
+    # Purchase the upgrade
+    user.balance -= cost
+    setattr(user.upgrades, upgrade_type, current_level + 1)
+    
+    # Calculate next cost after level increase
+    next_cost = costs[upgrade_type](current_level + 1)
+    
+    # Update session
+    session['user'] = {
+        'balance': user.balance,
+        'inventory': [{
+            'weapon': s.weapon,
+            'name': s.name,
+            'rarity': s.rarity.name,
+            'wear': s.wear.name,
+            'stattrak': s.stattrak,
+            'price': s.get_price()
+        } for s in user.inventory],
+        'exp': user.exp,
+        'rank': user.rank,
+        'upgrades': asdict(user.upgrades)
+    }
+    
+    return jsonify({
+        'success': True,
+        'balance': user.balance,
+        'upgrades': asdict(user.upgrades),
+        'nextCost': next_cost  # Send the next cost to the frontend
+    })
 
 @app.route('/get_upgrades')
 def get_upgrades():
@@ -1321,6 +1138,22 @@ def buy_case():
     
     user.balance -= total_cost
     
+    # Add cases to inventory
+    case_data = {
+        'csgo': {
+            'name': 'CS:GO Weapon Case',
+            'image': 'weapon_case_1.png',
+            'is_case': True,
+            'type': 'csgo'
+        },
+        'esports': {
+            'name': 'eSports 2013 Case',
+            'image': 'esports_2013_case.png',
+            'is_case': True,
+            'type': 'esports'
+        }
+    }
+    
     # Get current inventory
     inventory = session['user'].get('inventory', [])
     
@@ -1355,13 +1188,12 @@ def buy_case():
 
 @app.route('/get_inventory')
 def get_inventory():
-    user_data = load_user_data()
-    inventory_items = user_data.get('inventory', [])
+    if 'user' not in session:
+        return jsonify({'error': 'User not found'})
     
-    # Fix case_type for existing items
-    for item in inventory_items:
-        if not item.get('is_case'):
-            item['case_type'] = get_correct_case_type(item['weapon'], item['name'])
+    inventory_items = session['user'].get('inventory', [])
+    # Add debug logging
+    print("Current inventory items:", inventory_items)
     
     # Sort items so newest appears first
     inventory_items = sorted(inventory_items, 

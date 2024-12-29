@@ -3,56 +3,861 @@
 {% block title %}Inventory - Case Clicker{% endblock %}
 
 {% block content %}
-<div class="inventory-container">
-    <div class="inventory-header">
-        <h1>Your Inventory</h1>
-        <div class="inventory-stats">
-            <div class="inventory-value">
-                Total Value: $<span id="total-value">0.00</span>
+<h1>Your Inventory</h1>
+
+<!-- Inventory categories -->
+<div class="inventory-categories">
+    <button class="category-btn active" data-category="skins">Skins</button>
+    <button class="category-btn" data-category="cases">Cases</button>
+</div>
+
+<!-- Skins section -->
+<div class="inventory-section" id="skins-section">
+    <h2>Skins</h2>
+    <div id="inventory-items" class="items-grid">
+        {% for item in inventory if not item.is_case %}
+        <div class="skin rarity-{{ item.rarity }}" data-index="{{ loop.index0 }}">
+            <div class="skin-image">
+                {% if not item.weapon.startswith('★') %}
+                    {% set weapon_name = item.weapon.lower()
+                        .replace('-', '')
+                        .replace(' ', '')
+                        .replace('galil ar', 'galil')
+                        .replace('galilar', 'galil') %}
+                    {% set skin_name = item.name.lower().replace(' ', '_') %}
+                    {% set case_path = 'esports_2013' if item.case_type == 'esports' else 'weapon_case_1' %}
+                    <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
+                         alt="{{ item.weapon }} | {{ item.name }}">
+                {% endif %}
             </div>
-            <div class="inventory-count">
-                Items: <span id="item-count">0</span>/<span id="max-items">100</span>
+            <div class="item-name {{ 'stattrak' if item.stattrak else '' }}">
+                {{ 'StatTrak™ ' if item.stattrak }}{{ item.weapon }}
             </div>
+            <div class="item-skin">
+                {{ item.name }} ({{ item.wear }})
+            </div>
+            <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
+            <button class="btn sell-btn" data-sell-index="{{ loop.index0 }}">Sell</button>
         </div>
+        {% endfor %}
     </div>
+</div>
 
-    <div class="inventory-filters">
-        <select id="sort-select" class="inventory-filter">
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="value-high">Highest Value</option>
-            <option value="value-low">Lowest Value</option>
-        </select>
-        <input type="text" id="search-input" class="inventory-filter" placeholder="Search items...">
+<!-- Cases section -->
+<div class="inventory-section hidden" id="cases-section">
+    <h2>Cases</h2>
+    <div class="items-grid">
+        {% for item in inventory %}
+            {% if item.is_case %}
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='media/cases/' + item.image) }}" alt="{{ item.name }}">
+                <div class="item-details">
+                    <h3>{{ item.name }}</h3>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <button class="btn-small" onclick="openCase('{{ item.type }}')">Open Case</button>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
+</div>
 
-    <div class="inventory-grid" id="inventory-grid">
-        <!-- Items will be dynamically loaded here -->
+<!-- Add the case opening overlay -->
+<div id="case-opening-overlay" class="hidden">
+    <audio id="spinning-sound" preload="auto">
+        <source src="{{ url_for('static', filename='media/case_spinning.mp3') }}" type="audio/mpeg">
+    </audio>
+    <div class="spinner-container">
+        <div class="spinner">
+            <!-- Items will be inserted here dynamically -->
+        </div>
+        <div class="spinner-selector"></div>
+    </div>
+</div>
+
+<!-- Add the showcase overlay -->
+<div id="showcase-overlay" class="showcase-overlay" style="display: none;">
+    <audio id="showcase-sound" preload="auto">
+        <source src="{{ url_for('static', filename='media/case_showcase.mp3') }}" type="audio/mpeg">
+    </audio>
+    <div class="showcase-container">
+        <div class="showcase-item">
+            <div class="showcase-name"></div>
+            <div class="showcase-details"></div>
+            <div class="showcase-price"></div>
+        </div>
+        <div class="showcase-buttons">
+            <button class="showcase-continue">Continue</button>
+            <button class="showcase-sell">Sell</button>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize inventory
-    loadInventory();
+// Set initial view based on server parameter
+document.addEventListener('DOMContentLoaded', () => {
+    const initialView = '{{ initial_view }}';
+    if (initialView) {
+        document.querySelector(`[data-category="${initialView}"]`).click();
+    }
+});
 
-    // Add event listeners for filters
-    document.getElementById('sort-select').addEventListener('change', function() {
-        loadInventory();
-    });
+// Update the knives object to only include supported combinations
+const knives = {
+    "Karambit": [
+        {
+            name: "Urban Masked",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Blue Steel",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Stained",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Safari Mesh",
+            wears: ["FT", "WW", "BS"]
+        }
+    ],
+    "M9 Bayonet": [
+        {
+            name: "Safari Mesh",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Blue Steel",
+            wears: ["FT", "WW", "BS"]
+        }
+    ],
+    "Bayonet": [
+        {
+            name: "Blue Steel",
+            wears: ["FT", "WW", "BS"]
+        }
+    ],
+    "Flip Knife": [
+        {
+            name: "Safari Mesh",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Stained",
+            wears: ["FT", "WW", "BS"]
+        }
+    ],
+    "Gut Knife": [
+        {
+            name: "Safari Mesh",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Blue Steel",
+            wears: ["FT", "WW", "BS"]
+        },
+        {
+            name: "Stained",
+            wears: ["FT", "WW", "BS"]
+        }
+    ]
+};
 
-    document.getElementById('search-input').addEventListener('input', function() {
-        loadInventory();
+const validWears = {
+    "AWP|Lightning Strike": ["FN", "MW"],
+    "AK-47|Case Hardened": ["FN", "MW", "FT", "WW", "BS"],
+    "Desert Eagle|Hypnotic": ["FN", "MW"],
+    "USP-S|Dark Water": ["MW", "FT"],
+    "Glock-18|Dragon Tattoo": ["FN", "MW"],
+    "M4A1-S|Dark Water": ["MW", "FT"],
+    "AUG|Wings": ["FN", "MW"],
+    "MP7|Skulls": ["MW", "FT"],
+    "SG 553|Ultraviolet": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Flip Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Flip Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Flip Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
+    "★ M9 Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
+    "★ M9 Bayonet|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
+    "★ M9 Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
+    "★ M9 Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Karambit|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Karambit|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Karambit|Stained": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Karambit|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Gut Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Gut Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Gut Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
+    "★ Gut Knife|Blue Steel": ["FN", "MW", "FT", "WW", "BS"]
+};
+
+// Copy the entire skinPrices object from shop.html
+const skinPrices = {
+    // ... (copy the entire skinPrices object from shop.html)
+};
+
+// Add category switching functionality
+document.querySelectorAll('.category-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Hide all sections
+        document.querySelectorAll('.inventory-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        
+        // Show selected section
+        const category = button.dataset.category;
+        document.getElementById(`${category}-section`).classList.remove('hidden');
     });
 });
 
-function loadInventory() {
-    // TODO: Add API call to load inventory items
-    // For now, we'll just show a placeholder message
-    const inventoryGrid = document.getElementById('inventory-grid');
-    inventoryGrid.innerHTML = '<div class="empty-inventory">Your inventory is empty</div>';
+// Keep existing sell functionality
+document.querySelectorAll('.sell-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const index = this.dataset.sellIndex;
+        sellItem(index);
+    });
+});
+
+async function openCase(caseType) {
+    try {
+        // Update case quantity display immediately
+        const caseElement = document.querySelector(`[onclick="openCase('${caseType}')"]`).closest('.case-item');
+        const quantityElement = caseElement.querySelector('p');
+        let currentQuantity = parseInt(quantityElement.textContent.split(': ')[1]);
+        quantityElement.textContent = `Quantity: ${currentQuantity - 1}`;
+        
+        // If this was the last case, remove the case item
+        if (currentQuantity - 1 === 0) {
+            caseElement.remove();
+        }
+
+        const response = await fetch(`/open/${caseType}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
+            // Restore the quantity if there was an error
+            quantityElement.textContent = `Quantity: ${currentQuantity}`;
+            return;
+        }
+        
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Show case opening animation
+        const overlay = document.getElementById('case-opening-overlay');
+        const spinner = document.querySelector('.spinner');
+        const spinningSound = document.getElementById('spinning-sound');
+        
+        spinner.innerHTML = '';
+        overlay.classList.remove('hidden');
+
+        // Play the spinning sound
+        spinningSound.currentTime = 0;
+        spinningSound.play();
+
+        // Generate random items with the actual item
+        const { items, winningPosition } = generateRandomItems(data.item);
+        
+        // Create spinner items
+        const elements = items.map((item, index) => {
+            const element = createItemElement(item);
+            if (index === winningPosition) {
+                element.dataset.winning = 'true';
+            }
+            return element;
+        });
+
+        elements.forEach(element => spinner.appendChild(element));
+
+        // Initial position
+        spinner.style.transition = 'none';
+        spinner.style.transform = 'translateX(0)';
+        spinner.offsetHeight; // Force reflow
+        
+        const itemWidth = 200;
+        const spinnerContainer = document.querySelector('.spinner-container');
+        const containerWidth = spinnerContainer.offsetWidth;
+        const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+        const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2);
+        const finalPosition = (winningPosition * itemWidth) - centerOffset + randomOffset;
+        
+        // Spin animation
+        spinner.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)';
+        spinner.style.transform = `translateX(-${finalPosition}px)`;
+        
+        // Hide overlay and show result
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            spinningSound.pause();
+            showItemShowcase(data.item);
+        }, 6300);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to open case');
+    }
 }
+
+async function sellItem(index) {
+    try {
+        const response = await fetch(`/sell/${index}`, {
+            method: 'POST'
+        });
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Remove the sold item from display
+        const itemElement = document.querySelector(`[data-index="${index}"]`);
+        itemElement.style.animation = 'fadeOut 0.3s';
+        setTimeout(() => {
+            itemElement.remove();
+            
+            // Update remaining items' indices
+            document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                skin.dataset.index = newIndex;
+            });
+        }, 300);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to sell item');
+    }
+}
+
+function generateRandomItems(actualItem) {
+    // Create weighted pools based on rarity percentages and case type
+    const itemPools = {
+        BLUE: caseContents[actualItem.case_type].contents.BLUE,
+        PURPLE: caseContents[actualItem.case_type].contents.PURPLE,
+        PINK: caseContents[actualItem.case_type].contents.PINK,
+        RED: caseContents[actualItem.case_type].contents.RED,
+        GOLD: caseContents[actualItem.case_type].contents.GOLD
+    };
+
+    function randomFromPool(rarity, retryCount = 0) {
+        // Add retry limit to prevent infinite recursion
+        if (retryCount > 10) {
+            console.error('Max retry count reached, defaulting to basic item');
+            return {
+                weapon: "AK-47",
+                name: "Case Hardened",
+                rarity: "PINK",
+                stattrak: false,
+                wear: "FT",
+                price: 211.26
+            };
+        }
+
+        const pool = itemPools[rarity];
+        const item = {...pool[Math.floor(Math.random() * pool.length)]};
+        const hasStattrak = Math.random() < 0.1;
+        
+        // Special handling for gold items (knives)
+        if (rarity === 'GOLD') {
+            // Select random knife type
+            const knifeTypes = Object.keys(knives);
+            const randomKnifeType = knifeTypes[Math.floor(Math.random() * knifeTypes.length)];
+            
+            // Select random skin from available skins for this knife
+            const possibleSkins = knives[randomKnifeType];
+            const randomSkinObj = possibleSkins[Math.floor(Math.random() * possibleSkins.length)];
+            
+            // Get random wear from available wears for this skin
+            const availableWears = randomSkinObj.wears;
+            const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
+            
+            const weapon = `★ ${randomKnifeType}`;
+            const name = randomSkinObj.name;
+            
+            // Get price
+            const skinKey = `${weapon}|${name}`;
+            const prices = skinPrices[skinKey] || {};
+            const priceIndex = hasStattrak ? `ST_${wear}` : wear;
+            const price = prices[priceIndex] || prices[wear] || 0;
+            
+            return {
+                weapon: weapon,
+                name: name,
+                rarity: rarity,
+                stattrak: hasStattrak,
+                wear: wear,
+                price: price
+            };
+        }
+        
+        // Normal skin handling
+        const skinKey = `${item.weapon}|${item.name}`;
+        const availableWears = validWears[skinKey] || ["FT"];
+        const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
+        
+        const prices = skinPrices[skinKey] || {};
+        const priceIndex = hasStattrak ? `ST_${wear}` : wear;
+        const price = prices[priceIndex] || 0;
+        
+        return {
+            ...item,
+            stattrak: hasStattrak,
+            wear: wear,
+            price: price,
+            case_type: actualItem.case_type  // Add case_type to the returned item
+        };
+    }
+
+    function generateRandomItem() {
+        // Roll for rarity
+        const roll = Math.random() * 100;
+        let chosenRarity;
+        
+        if (roll < 0.26) {  // Changed from 10 to 0.26 for 0.26% chance
+            chosenRarity = "GOLD";
+        } else if (roll < 0.26 + 0.90) {  // Adjusted starting point to 0.26
+            chosenRarity = "RED";
+        } else if (roll < 0.26 + 0.90 + 4.10) {  // Adjusted starting point to 0.26
+            chosenRarity = "PINK";
+        } else if (roll < 0.26 + 0.90 + 4.10 + 20.08) {  // Adjusted starting point to 0.26
+            chosenRarity = "PURPLE";
+        } else {
+            chosenRarity = "BLUE";
+        }
+
+        return randomFromPool(chosenRarity);
+    }
+
+    const items = [];
+    const totalItems = 100;
+    const winningPosition = 85;
+    
+    // Generate random items for the wheel
+    for (let i = 0; i < totalItems; i++) {
+        if (i === winningPosition) {
+            // Place the actual item from the server exactly at the winning position
+            items.push({
+                weapon: actualItem.weapon,
+                name: actualItem.name,
+                rarity: actualItem.rarity,
+                wear: actualItem.wear,
+                stattrak: actualItem.stattrak,
+                price: actualItem.price,
+                case_type: actualItem.case_type
+            });
+        } else {
+            // Generate a random item based on rarity percentages
+            items.push(generateRandomItem());
+        }
+    }
+    
+    return { items, winningPosition };
+}
+
+function createItemElement(item) {
+    const div = document.createElement('div');
+    div.className = `spinner-item rarity-${item.rarity}`;
+    div.classList.add(item.wear);
+    
+    div.dataset.item = JSON.stringify(item);
+    
+    // Create image container
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'spinner-item-image';
+    
+    if (item.rarity === 'GOLD') {
+        // For gold items, always show "Rare Special Item"
+        div.innerHTML = `
+            <div class="spinner-item-image">
+                <img src="/static/media/cases/rare_item.png" alt="Rare Special Item">
+            </div>
+            <div class="item-name">★</div>
+            <div class="item-skin">Rare Special Item</div>
+        `;
+    } else {
+        // For regular skins, add the image
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase()
+            .replace(/ /g, '_');
+        
+        // Determine case path based on case type
+        const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+        
+        const img = document.createElement('img');
+        img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+        img.alt = `${item.weapon} | ${item.name}`;
+        
+        imageContainer.appendChild(img);
+        div.appendChild(imageContainer);
+        
+        div.innerHTML += `
+            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+            </div>
+            <div class="item-skin">
+                ${item.name} (${item.wear})
+            </div>
+        `;
+    }
+    return div;
+}
+
+function showItemShowcase(item) {
+    const showcase = document.getElementById('showcase-overlay');
+    const showcaseSound = document.getElementById('showcase-sound');
+    const showcaseContainer = showcase.querySelector('.showcase-container');
+    
+    // Clear any existing buttons container
+    const existingButtons = showcaseContainer.querySelector('.showcase-buttons');
+    if (existingButtons) {
+        existingButtons.remove();
+    }
+    
+    // Rest of the showcase update code...
+    const nameElement = showcase.querySelector('.showcase-name');
+    const detailsElement = showcase.querySelector('.showcase-details');
+    const priceElement = showcase.querySelector('.showcase-price');
+    
+    // Remove any existing rarity classes
+    showcaseContainer.className = 'showcase-container';
+    // Add the new rarity class
+    showcaseContainer.classList.add(`rarity-${item.rarity}`);
+    
+    // Create image element
+    const imageElement = document.createElement('img');
+    if (item.rarity === 'GOLD') {
+        const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
+        const skinName = item.name.toLowerCase().replace(' ', '_');
+        imageElement.src = `/static/media/skins/${item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1'}/${weaponName}_${skinName}.png`;
+    } else {
+        const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+    }
+    
+    imageElement.style.maxWidth = '300px';
+    imageElement.style.marginBottom = '1rem';
+    
+    // Update showcase content
+    const itemContainer = showcase.querySelector('.showcase-item');
+    itemContainer.innerHTML = ''; // Clear existing content
+    itemContainer.appendChild(imageElement);
+    
+    // Set item details
+    nameElement.className = `showcase-name ${item.stattrak ? 'stattrak' : ''}`;
+    nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
+    
+    itemContainer.appendChild(nameElement);
+    
+    detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
+    itemContainer.appendChild(detailsElement);
+    
+    priceElement.textContent = `$${item.price.toFixed(2)}`;
+    itemContainer.appendChild(priceElement);
+    
+    // Create new buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'showcase-buttons';
+    
+    const continueButton = document.createElement('button');
+    continueButton.className = 'showcase-continue';
+    continueButton.textContent = 'Continue';
+    
+    const sellButton = document.createElement('button');
+    sellButton.className = 'showcase-sell';
+    sellButton.textContent = 'Sell';
+    
+    buttonsContainer.appendChild(continueButton);
+    buttonsContainer.appendChild(sellButton);
+    
+    // Add the buttons container to the showcase container
+    showcaseContainer.appendChild(buttonsContainer);
+    
+    // Add button handlers
+    continueButton.onclick = async () => {
+        showcase.style.display = 'none';
+        showcaseSound.pause();
+        // Update inventory display
+        await updateInventoryDisplay();
+    };
+    
+    sellButton.onclick = async () => {
+        try {
+            const response = await fetch('/sell/last', { method: 'POST' });
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Update balance
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            
+            // Close showcase
+            showcase.style.display = 'none';
+            showcaseSound.pause();
+            
+            // Update case quantity display without refresh
+            const currentView = document.querySelector('.category-btn.active').dataset.category;
+            if (currentView === 'cases') {
+                const caseElements = document.querySelectorAll('.case-item');
+                caseElements.forEach(caseElement => {
+                    const quantityElement = caseElement.querySelector('p');
+                    const quantity = parseInt(quantityElement.textContent.split(': ')[1]);
+                    if (quantity === 0) {
+                        caseElement.remove();
+                    }
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to sell item');
+        }
+    };
+    
+    // Show overlay and play sound
+    showcase.style.display = 'flex';
+    showcaseSound.currentTime = 0;
+    showcaseSound.play();
+}
+
+// Add this at the start of your script section
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if there's a new item to add
+    const newItemJson = sessionStorage.getItem('newItem');
+    if (newItemJson) {
+        const item = JSON.parse(newItemJson);
+        const inventoryItems = document.getElementById('inventory-items');
+        const newIndex = inventoryItems.children.length;
+        
+        const skinDiv = document.createElement('div');
+        skinDiv.className = `skin rarity-${item.rarity}`;
+        skinDiv.dataset.index = newIndex;
+        
+        // Create weapon image
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553');
+        const skinName = item.name.toLowerCase().replace(' ', '_');
+        
+        skinDiv.innerHTML = `
+            <div class="skin-image">
+                ${!item.weapon.startsWith('★') ? `
+                    <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                         alt="${item.weapon} | ${item.name}">
+                ` : ''}
+            </div>
+            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+            </div>
+            <div class="item-skin">
+                ${item.name} (${item.wear})
+            </div>
+            <div class="item-price">$${item.price.toFixed(2)}</div>
+            <button class="btn sell-btn" data-sell-index="${newIndex}">Sell</button>
+        `;
+        
+        // Add sell button handler
+        const sellBtn = skinDiv.querySelector('.sell-btn');
+        sellBtn.addEventListener('click', function() {
+            sellItem(this.dataset.sellIndex);
+        });
+        
+        inventoryItems.appendChild(skinDiv);
+        
+        // Clear the stored item
+        sessionStorage.removeItem('newItem');
+    }
+});
+
+// Add the updateInventoryDisplay function here too
+async function updateInventoryDisplay() {
+    try {
+        const response = await fetch('/get_inventory');
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        
+        console.log('Received inventory data:', data.inventory);
+        
+        const inventoryItems = document.getElementById('inventory-items');
+        if (!inventoryItems) return;
+        
+        // Clear current inventory
+        inventoryItems.innerHTML = '';
+        
+        // Add each item
+        data.inventory.forEach((item, index) => {
+            if (!item.is_case) {  // Only show skins, not cases
+                console.log('Processing inventory item:', item);
+                console.log('Item case_type:', item.case_type);
+                
+                const skinDiv = document.createElement('div');
+                skinDiv.className = `skin rarity-${item.rarity}`;
+                skinDiv.dataset.index = index;
+                
+                const weaponName = item.weapon.toLowerCase()
+                    .replace('-', '')
+                    .replace(' ', '')
+                    .replace('553', '553')
+                    .replace('galil ar', 'galil')
+                    .replace('galilar', 'galil');
+                const skinName = item.name.toLowerCase().replace(/ /g, '_');
+                
+                // Default to weapon_case_1 if case_type is not present
+                const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+                
+                skinDiv.innerHTML = `
+                    <div class="skin-image">
+                        ${!item.weapon.startsWith('★') ? `
+                            <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                                 alt="${item.weapon} | ${item.name}">
+                        ` : ''}
+                    </div>
+                    <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                        ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                    </div>
+                    <div class="item-skin">
+                        ${item.name} (${item.wear})
+                    </div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                    <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
+                `;
+                
+                // Add sell button handler
+                const sellBtn = skinDiv.querySelector('.sell-btn');
+                sellBtn.addEventListener('click', function() {
+                    sellItem(this.dataset.sellIndex);
+                });
+                
+                inventoryItems.appendChild(skinDiv);
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Add this after the knives object and before generateRandomItems function
+const caseContents = {
+    'csgo': {
+        name: "CS:GO Weapon Case",
+        contents: {
+            GOLD: [
+                { weapon: "★ Karambit", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Blue Steel", rarity: "GOLD" }
+            ],
+            RED: [
+                { weapon: "AWP", name: "Lightning Strike", rarity: "RED" }
+            ],
+            PINK: [
+                { weapon: "AK-47", name: "Case Hardened", rarity: "PINK" },
+                { weapon: "Desert Eagle", name: "Hypnotic", rarity: "PINK" }
+            ],
+            PURPLE: [
+                { weapon: "Glock-18", name: "Dragon Tattoo", rarity: "PURPLE" },
+                { weapon: "M4A1-S", name: "Dark Water", rarity: "PURPLE" },
+                { weapon: "USP-S", name: "Dark Water", rarity: "PURPLE" }
+            ],
+            BLUE: [
+                { weapon: "SG 553", name: "Ultraviolet", rarity: "BLUE" },
+                { weapon: "MP7", name: "Skulls", rarity: "BLUE" },
+                { weapon: "AUG", name: "Wings", rarity: "BLUE" }
+            ]
+        }
+    },
+    'esports': {
+        name: "eSports 2013 Case",
+        contents: {
+            GOLD: [
+                { weapon: "★ Karambit", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Karambit", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ M9 Bayonet", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Bayonet", name: "Blue Steel", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ Flip Knife", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Urban Masked", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Safari Mesh", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Stained", rarity: "GOLD" },
+                { weapon: "★ Gut Knife", name: "Blue Steel", rarity: "GOLD" }
+            ],
+            RED: [
+                { weapon: "P90", name: "Death by Kitty", rarity: "RED" }
+            ],
+            PINK: [
+                { weapon: "AWP", name: "BOOM", rarity: "PINK" },
+                { weapon: "AK-47", name: "Red Laminate", rarity: "PINK" }
+            ],
+            PURPLE: [
+                { weapon: "Galil AR", name: "Orange DDPAT", rarity: "PURPLE" },
+                { weapon: "P250", name: "Splash", rarity: "PURPLE" },
+                { weapon: "Sawed-Off", name: "Orange DDPAT", rarity: "PURPLE" }
+            ],
+            BLUE: [
+                { weapon: "M4A4", name: "Faded Zebra", rarity: "BLUE" },
+                { weapon: "MAG-7", name: "Memento", rarity: "BLUE" },
+                { weapon: "FAMAS", name: "Doomkitty", rarity: "BLUE" }
+            ]
+        }
+    }
+};
 </script>
 {% endblock %} 
