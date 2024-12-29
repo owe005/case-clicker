@@ -71,14 +71,14 @@
                     <div class="progress-bar">
                         {% set rank = session['user'].get('rank', 0) %}
                         {% set exp = session['user'].get('exp', 0) %}
-                        {% if rank < 5 %}
+                        {% if rank < 17 %}
                             <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
                         {% else %}
                             <div class="progress-fill" style="width: 100%"></div>
                         {% endif %}
                     </div>
                     <span class="exp-info">
-                        {% if rank < 5 %}
+                        {% if rank < 17 %}
                             {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
                         {% else %}
                             MAX RANK

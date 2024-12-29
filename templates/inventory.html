@@ -115,7 +115,19 @@ const RANKS = {
     2: "Silver III",
     3: "Silver IV",
     4: "Silver Elite",
-    5: "Silver Elite Master"
+    5: "Silver Elite Master",
+    6: "Gold Nova I",
+    7: "Gold Nova II",
+    8: "Gold Nova III",
+    9: "Gold Nova Master",
+    10: "Master Guardian I",
+    11: "Master Guardian II",
+    12: "Master Guardian Elite",
+    13: "Distinguished Master Guardian",
+    14: "Legendary Eagle",
+    15: "Legendary Eagle Master",
+    16: "Supreme Master First Class",
+    17: "The Global Elite"
 };
 
 // Set initial view based on server parameter
@@ -490,47 +502,53 @@ function createItemElement(item) {
     const imageContainer = document.createElement('div');
     imageContainer.className = 'spinner-item-image';
     
-    const weaponName = item.weapon.toLowerCase()
-        .replace('-', '')
-        .replace(' ', '')
-        .replace('553', '553')
-        .replace('galil ar', 'galil')
-        .replace('galilar', 'galil');
-    const skinName = item.name.toLowerCase()
-        .replace(/ /g, '_');
-    
-    // Update case path mapping
-    const casePathMapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo_case',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'
-    };
-    const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
-    
-    const img = document.createElement('img');
-    if (item.rarity === 'GOLD' && !item.weapon.startsWith('★')) {
-        // Only show rare item image during the spinning animation for unrevealed gold items
-        img.src = '/static/media/cases/rare_item.png';
-        img.alt = 'Rare Special Item';
+    if (item.rarity === 'GOLD') {
+        // For gold items, always show "Rare Special Item"
+        div.innerHTML = `
+            <div class="spinner-item-image">
+                <img src="/static/media/cases/rare_item.png" alt="Rare Special Item">
+            </div>
+            <div class="item-name">★</div>
+            <div class="item-skin">Rare Special Item</div>
+        `;
     } else {
+        // For regular skins, add the image
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase()
+            .replace(/ /g, '_');
+        
+        // Update case path mapping
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+        
+        const img = document.createElement('img');
         img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
         img.alt = `${item.weapon} | ${item.name}`;
+        
+        imageContainer.appendChild(img);
+        div.appendChild(imageContainer);
+        
+        div.innerHTML += `
+            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+            </div>
+            <div class="item-skin">
+                ${item.name}
+            </div>
+        `;
     }
-    
-    imageContainer.appendChild(img);
-    div.appendChild(imageContainer);
-    
-    div.innerHTML += `
-        <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
-            ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
-        </div>
-        <div class="item-skin">
-            ${item.rarity === 'GOLD' && !item.weapon.startsWith('★') ? 'Rare Special Item' : item.name}
-        </div>
-    `;
     return div;
 }
 
@@ -570,16 +588,56 @@ function showItemShowcase(item) {
     // Create image element
     const imageElement = document.createElement('img');
     
-    // Add case path mapping
-    const casePathMapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo_case',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'
-    };
-    const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+    // For knives/gold items, use the actual knife image instead of rare_item.png
+    if (item.rarity === 'GOLD') {
+        // Get case path mapping
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+        
+        // Get the weapon and skin name from the item
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('★', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+            
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        // Set the image source to the actual knife image
+        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+    } else {
+        // For non-knife skins, use the same image logic as before
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+        
+        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+    }
+    
+    imageElement.alt = `${item.weapon} | ${item.name}`;
     
     // Fetch the price from case data
     fetch(`/data/case_contents/${item.case_type}`)
@@ -618,20 +676,7 @@ function showItemShowcase(item) {
             console.error('Error fetching case data:', error);
             priceElement.textContent = '$0.00';
         });
-    
-    if (item.rarity === 'GOLD') {
-        imageElement.src = '/static/media/cases/rare_item.png';
-    } else {
-        const weaponName = item.weapon.toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .replace('553', '553')
-            .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
-        const skinName = item.name.toLowerCase().replace(/ /g, '_');
-        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
-    }
-    
+
     // Update showcase content
     const itemContainer = showcase.querySelector('.showcase-item');
     itemContainer.innerHTML = ''; // Clear existing content

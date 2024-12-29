@@ -88,17 +88,16 @@ class Case:
         self.case_type = case_type
     
     def open(self) -> Skin:
-        # Determine rarity first
-        rarity_roll = random.random() * 100  # Roll between 0 and 100
+        # Roll for rarity based on percentages
+        roll = random.random() * 100
         
-        # Define rarity thresholds based on given percentages
-        if rarity_roll < 0.26:  # 0.26% chance for Gold
+        if roll < 0.26:  # 0.26% chance for Gold/Knives
             chosen_rarity = Rarity.GOLD
-        elif rarity_roll < 0.90 + 0.26:  # 0.90% chance for Red
+        elif roll < 0.26 + 0.90:  # 0.90% chance for Red
             chosen_rarity = Rarity.RED
-        elif rarity_roll < 4.10 + 0.90 + 0.26:  # 4.10% chance for Pink
+        elif roll < 0.26 + 0.90 + 4.10:  # 4.10% chance for Pink
             chosen_rarity = Rarity.PINK
-        elif rarity_roll < 20.08 + 4.10 + 0.90 + 0.26:  # 20.08% chance for Purple
+        elif roll < 0.26 + 0.90 + 4.10 + 20.08:  # 20.08% chance for Purple
             chosen_rarity = Rarity.PURPLE
         else:  # Remaining ~74.66% chance for Blue
             chosen_rarity = Rarity.BLUE
@@ -228,15 +227,39 @@ RANKS = {
     2: "Silver III",
     3: "Silver IV",
     4: "Silver Elite",
-    5: "Silver Elite Master"
+    5: "Silver Elite Master",
+    6: "Gold Nova I",
+    7: "Gold Nova II",
+    8: "Gold Nova III",
+    9: "Gold Nova Master",
+    10: "Master Guardian I",
+    11: "Master Guardian II",
+    12: "Master Guardian Elite",
+    13: "Distinguished Master Guardian",
+    14: "Legendary Eagle",
+    15: "Legendary Eagle Master",
+    16: "Supreme Master First Class",
+    17: "The Global Elite"
 }
 
 RANK_EXP = {
-    0: 10,    # Silver I to Silver II
-    1: 50,    # Silver II to Silver III  
-    2: 100,   # Silver III to Silver IV
-    3: 200,   # Silver IV to Silver Elite
-    4: 500    # Silver Elite to Silver Elite Master
+    0: 10,     # Silver I to Silver II
+    1: 50,     # Silver II to Silver III  
+    2: 100,    # Silver III to Silver IV
+    3: 200,    # Silver IV to Silver Elite
+    4: 500,    # Silver Elite to Silver Elite Master
+    5: 1000,   # Silver Elite Master to Gold Nova I
+    6: 2000,   # Gold Nova I to Gold Nova II
+    7: 5000,   # Gold Nova II to Gold Nova III
+    8: 10000,  # Gold Nova III to Gold Nova Master
+    9: 20000,  # Gold Nova Master to Master Guardian I
+    10: 50000, # Master Guardian I to Master Guardian II
+    11: 75000, # Master Guardian II to Master Guardian Elite
+    12: 100000,# Master Guardian Elite to Distinguished Master Guardian
+    13: 150000,# Distinguished Master Guardian to Legendary Eagle
+    14: 250000,# Legendary Eagle to Legendary Eagle Master
+    15: 500000,# Legendary Eagle Master to Supreme Master First Class
+    16: 1000000 # Supreme Master First Class to The Global Elite
 }
 
 @dataclass
@@ -649,6 +672,50 @@ def sell_item(item_index=None):
         
     except Exception as e:
         print(f"Error in sell_item: {e}")
+        return jsonify({'error': 'Failed to sell item'})
+
+@app.route('/sell/last', methods=['POST'])
+def sell_last_item():
+    if 'user' not in session:
+        return jsonify({'error': 'User not found'})
+    
+    try:
+        inventory = session['user']['inventory']
+        
+        # Get only non-case items
+        skin_items = [item for item in inventory if not item.get('is_case')]
+        
+        if not skin_items:
+            return jsonify({'error': 'No items to sell'})
+        
+        # Get the most recently added skin (last item in the list)
+        last_skin_index = max(
+            range(len(inventory)),
+            key=lambda i: inventory[i].get('timestamp', 0) if not inventory[i].get('is_case') else 0
+        )
+        
+        # Get the item before removing it
+        item = inventory[last_skin_index]
+        if item.get('is_case'):
+            return jsonify({'error': 'Cannot sell cases'})
+            
+        sale_price = float(item.get('price', 0))
+        
+        # Remove the item and update user's balance
+        inventory.pop(last_skin_index)
+        session['user']['balance'] = float(session['user']['balance']) + sale_price
+        
+        # Ensure the session is updated
+        session.modified = True
+        
+        return jsonify({
+            'success': True,
+            'balance': session['user']['balance'],
+            'sold_price': sale_price
+        })
+        
+    except Exception as e:
+        print(f"Error in sell_last_item: {e}")
         return jsonify({'error': 'Failed to sell item'})
 
 @app.route('/clicker')
