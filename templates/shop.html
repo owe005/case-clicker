@@ -5,6 +5,9 @@
 {% block content %}
 <h1>CS2 Case Shop</h1>
 
+<!-- Add the floating notification element -->
+<div id="floating-notification" class="floating-notification"></div>
+
 <!-- Add the case opening overlay -->
 <div id="case-opening-overlay" class="hidden">
     <audio id="spinning-sound" preload="auto">
@@ -82,39 +85,21 @@
     <div class="shop-section" id="cases-section">
         <h2>Cases</h2>
         <div class="items-grid">
+            {% for case_type, case_data in cases.items() %}
             <div class="shop-item">
-                <img src="{{ url_for('static', filename='media/cases/weapon_case_1.png') }}" alt="CS:GO Weapon Case" onclick="showCaseContents('csgo')">
+                <img src="{{ url_for('static', filename='media/cases/' + case_data.image) }}" 
+                     alt="{{ case_data.name }}" 
+                     onclick="showCaseContents('{{ case_type }}')">
                 <div class="item-details">
-                    <h3>CS:GO Weapon Case</h3>
-                    <p class="price">$125.00</p>
+                    <h3>{{ case_data.name }}</h3>
+                    <p class="price">${{ "%.2f"|format(case_data.price) }}</p>
                     <div class="buy-controls">
-                        <input type="number" min="1" value="1" class="quantity-input" id="csgo-quantity">
-                        <button class="btn-small" onclick="buyCase('csgo')">Buy</button>
+                        <input type="number" min="1" value="1" class="quantity-input" id="{{ case_type }}-quantity">
+                        <button class="btn-small" onclick="buyCase('{{ case_type }}')">Buy</button>
                     </div>
                 </div>
             </div>
-            <div class="shop-item">
-                <img src="{{ url_for('static', filename='media/cases/esports_2013_case.png') }}" alt="eSports 2013 Case" onclick="showCaseContents('esports')">
-                <div class="item-details">
-                    <h3>eSports 2013 Case</h3>
-                    <p class="price">$55.00</p>
-                    <div class="buy-controls">
-                        <input type="number" min="1" value="1" class="quantity-input" id="esports-quantity">
-                        <button class="btn-small" onclick="buyCase('esports')">Buy</button>
-                    </div>
-                </div>
-            </div>
-            <div class="shop-item">
-                <img src="{{ url_for('static', filename='media/cases/operation_bravo_case.png') }}" alt="Operation Bravo Case" onclick="showCaseContents('bravo')">
-                <div class="item-details">
-                    <h3>Operation Bravo Case</h3>
-                    <p class="price">$150.00</p>
-                    <div class="buy-controls">
-                        <input type="number" min="1" value="1" class="quantity-input" id="bravo-quantity">
-                        <button class="btn-small" onclick="buyCase('bravo')">Buy</button>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -141,6 +126,9 @@
         await loadCaseContents('csgo');
         await loadCaseContents('esports');
         await loadCaseContents('bravo');
+        await loadCaseContents('csgo2');
+        await loadCaseContents('esports_winter');
+        await loadCaseContents('winter_offensive');
     });
 
     function generateRandomItems(actualItem) {
@@ -532,18 +520,89 @@
             const data = await response.json();
             
             if (data.error) {
-                alert(data.error);
+                showFloatingNotification(data.error);
                 return;
             }
             
             // Update balance
             document.getElementById('balance').textContent = data.balance.toFixed(2);
-            alert(`Successfully purchased ${quantity} ${caseType.toUpperCase()} case(s)!`);
+            showFloatingNotification(`Purchased ${quantity} ${caseType.toUpperCase()} case(s)!`);
             
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to purchase cases');
+            showFloatingNotification('Failed to purchase cases');
         }
+    }
+
+    // Replace the existing showFloatingNotification function
+    let notificationTimeout;
+    let currentNotification = {
+        caseType: null,
+        count: 0
+    };
+
+    function showFloatingNotification(message) {
+        const notification = document.getElementById('floating-notification');
+        
+        // Check if this is a case purchase notification
+        const purchaseMatch = message.match(/Purchased (\d+) (\w+) case/i);
+        
+        if (purchaseMatch) {
+            const [_, quantity, caseType] = purchaseMatch;
+            
+            // If we have an active notification for the same case type
+            if (currentNotification.caseType === caseType && notification.classList.contains('show')) {
+                // Increment the count
+                currentNotification.count += parseInt(quantity);
+                // Update the message
+                notification.textContent = `Purchased ${currentNotification.count} ${caseType} case${currentNotification.count > 1 ? 's' : ''}!`;
+                
+                // Reset the animation
+                notification.style.animation = 'none';
+                notification.offsetHeight; // Trigger reflow
+                notification.style.animation = 'floatAndFade 2s ease-out forwards';
+                
+                // Clear existing timeout
+                if (notificationTimeout) {
+                    clearTimeout(notificationTimeout);
+                }
+            } else {
+                // New case type or no active notification
+                currentNotification.caseType = caseType;
+                currentNotification.count = parseInt(quantity);
+                
+                if (!notification.classList.contains('show')) {
+                    notification.classList.add('show');
+                }
+                notification.textContent = message;
+                
+                // Reset animation
+                notification.style.animation = 'none';
+                notification.offsetHeight; // Trigger reflow
+                notification.style.animation = 'floatAndFade 2s ease-out forwards';
+            }
+        } else {
+            // Non-case purchase notification
+            currentNotification.caseType = null;
+            currentNotification.count = 0;
+            
+            if (!notification.classList.contains('show')) {
+                notification.classList.add('show');
+            }
+            notification.textContent = message;
+            
+            // Reset animation
+            notification.style.animation = 'none';
+            notification.offsetHeight; // Trigger reflow
+            notification.style.animation = 'floatAndFade 2s ease-out forwards';
+        }
+        
+        // Set new timeout
+        notificationTimeout = setTimeout(() => {
+            notification.classList.remove('show');
+            currentNotification.caseType = null;
+            currentNotification.count = 0;
+        }, 2000);
     }
 
     // Add this new function to fetch and update inventory
@@ -704,6 +763,15 @@
                     case 'esports':
                         casePath = 'esports_2013';
                         break;
+                    case 'csgo2':
+                        casePath = 'weapon_case_2';
+                        break;
+                    case 'esports_winter':
+                        casePath = 'esports_2013_winter';
+                        break;
+                    case 'winter_offensive':
+                        casePath = 'winter_offensive_case';
+                        break;
                     default:
                         casePath = 'weapon_case_1';
                 }
@@ -733,4 +801,47 @@
         }
     });
 </script>
+
+<!-- Add this CSS in the head section or before the closing body tag -->
+<style>
+.floating-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 5px;
+    font-size: 18px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.floating-notification.show {
+    opacity: 1;
+    visibility: visible;
+    animation: floatAndFade 2s ease-out forwards;
+}
+
+@keyframes floatAndFade {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -60%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -70%);
+    }
+}
+</style>
 {% endblock %} 

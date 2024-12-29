@@ -5,8 +5,30 @@ import random
 from typing import List, Dict, Tuple, Union
 import time
 import json
+from functools import wraps
 
 app = Flask(__name__)
+
+# Add login_required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            session['user'] = {
+                'balance': 1000.0,
+                'inventory': [],
+                'exp': 0,
+                'rank': 0,
+                'upgrades': {
+                    'click_value': 1,      # Start at level 1
+                    'max_multiplier': 1,   # Start at level 1
+                    'auto_clicker': 0,     # Start at level 0 (not unlocked)
+                    'combo_speed': 1,      # Start at level 1
+                    'critical_strike': 0    # Add critical strike
+                }
+            }
+        return f(*args, **kwargs)
+    return decorated_function
 
 class Rarity(Enum):
     BLUE = "Mil-Spec"
@@ -131,7 +153,21 @@ class Case:
 
 def load_case(case_type: str) -> Case:
     try:
-        with open(f'cases/{case_type}.json', 'r') as f:
+        case_file_mapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'  # Add Winter Offensive Case
+        }
+        
+        file_name = case_file_mapping.get(case_type)
+        if not file_name:
+            print(f"Invalid case type: {case_type}")
+            return None
+            
+        with open(f'cases/{file_name}.json', 'r') as f:
             data = json.load(f)
             
         contents = {
@@ -155,8 +191,7 @@ def load_case(case_type: str) -> Case:
             for item in items:
                 contents[rarity].append((item['weapon'], item['name']))
         
-        # Pass the case_type to the Case constructor
-        return Case(data['name'], contents, case_type)
+        return Case(data['name'], contents, file_name)  # Pass the correct file name
     except Exception as e:
         print(f"Error loading case {case_type}: {e}")
         return None
@@ -164,7 +199,6 @@ def load_case(case_type: str) -> Case:
 # Replace hardcoded case definitions with loaded ones
 CSGO_WEAPON_CASE = load_case('weapon_case_1')
 ESPORTS_2013_CASE = load_case('esports_2013')  # You'll need to create this JSON file
-OPERATION_BRAVO_CASE = load_case('operation_bravo')  # You'll need to create this JSON file
 
 # Update the case prices to load from JSON files
 def get_case_price(case_type: str) -> float:
@@ -180,7 +214,10 @@ def get_case_prices() -> Dict[str, float]:
     return {
         'csgo': get_case_price('weapon_case_1'),
         'esports': get_case_price('esports_2013'),
-        'bravo': get_case_price('operation_bravo')
+        'bravo': get_case_price('operation_bravo'),
+        'csgo2': get_case_price('weapon_case_2'),
+        'esports_winter': get_case_price('esports_2013_winter'),
+        'winter_offensive': get_case_price('winter_offensive_case')  # Add Winter Offensive Case
     }
 
 RANKS = {
@@ -280,7 +317,10 @@ def create_user_from_dict(data: dict) -> User:
 CASE_PRICES = {
     'csgo': 125.00,  # CS:GO Weapon Case
     'esports': 55.00,   # eSports 2013 Case
-    'bravo': 150.00  # Add Operation Bravo Case price
+    'bravo': 150.00,  # Operation Bravo Case price
+    'csgo2': 13.00,   # CS:GO Weapon Case 2 price
+    'esports_winter': 11.00,  # eSports 2013 Winter Case price
+    'winter_offensive': 10.00  # Winter Offensive Case price
 }
 
 VALID_WEARS = {
@@ -300,51 +340,31 @@ VALID_WEARS = {
     "UMP-45|Bone Pile": ["FN", "MW", "FT", "WW", "BS"]
 }
 
-# Add the Operation Bravo Case definition
-OPERATION_BRAVO_CASE = Case("Operation Bravo Case", {
-    Rarity.RED: [
-        ("AK-47", "Fire Serpent"),
-        ("Desert Eagle", "Golden Koi")
-    ],
-    Rarity.PINK: [
-        ("AWP", "Graphite"),
-        ("P90", "Emerald Dragon"),
-        ("P2000", "Ocean Foam")
-    ],
-    Rarity.PURPLE: [
-        ("USP-S", "Overgrowth"),
-        ("MAC-10", "Graven"),
-        ("M4A1-S", "Bright Water"),
-        ("M4A4", "Zirka")
-    ],
-    Rarity.BLUE: [
-        ("Dual Berettas", "Black Limba"),
-        ("SG 553", "Wave Spray"),
-        ("Nova", "Tempest"),
-        ("Galil AR", "Shattered"),
-        ("UMP-45", "Bone Pile")
-    ],
-    Rarity.GOLD: [
-        ("★ Karambit", "Urban Masked"),
-        ("★ Karambit", "Blue Steel"),
-        ("★ Karambit", "Stained"),
-        ("★ Karambit", "Safari Mesh"),
-        ("★ M9 Bayonet", "Urban Masked"),
-        ("★ M9 Bayonet", "Safari Mesh"),
-        ("★ M9 Bayonet", "Stained"),
-        ("★ M9 Bayonet", "Blue Steel"),
-        ("★ Bayonet", "Urban Masked"),
-        ("★ Bayonet", "Stained"),
-        ("★ Bayonet", "Blue Steel"),
-        ("★ Flip Knife", "Urban Masked"),
-        ("★ Flip Knife", "Safari Mesh"),
-        ("★ Flip Knife", "Stained"),
-        ("★ Gut Knife", "Urban Masked"),
-        ("★ Gut Knife", "Safari Mesh"),
-        ("★ Gut Knife", "Stained"),
-        ("★ Gut Knife", "Blue Steel")
-    ]
-})
+# Add this function to load case data
+def load_case_data():
+    cases = {}
+    case_files = {
+        'csgo': 'cases/weapon_case_1.json',
+        'esports': 'cases/esports_2013.json',
+        'bravo': 'cases/operation_bravo.json',
+        'csgo2': 'cases/weapon_case_2.json',
+        'esports_winter': 'cases/esports_2013_winter.json',
+        'winter_offensive': 'cases/winter_offensive_case.json'  # Add Winter Offensive Case
+    }
+    
+    for case_type, file_path in case_files.items():
+        try:
+            with open(file_path, 'r') as f:
+                case_data = json.load(f)
+                cases[case_type] = {
+                    'name': case_data['name'],
+                    'image': case_data['image'],
+                    'price': case_data['price']
+                }
+        except Exception as e:
+            print(f"Error loading {file_path}: {e}")
+            
+    return cases
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -365,26 +385,16 @@ def index():
     return redirect(url_for('shop'))
 
 @app.route('/shop')
+@login_required
 def shop():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 1,      # Start at level 1
-                'max_multiplier': 1,   # Start at level 1
-                'auto_clicker': 0,     # Start at level 0 (not unlocked)
-                'combo_speed': 1,      # Start at level 1
-                'critical_strike': 0    # Add critical strike
-            }
-        }
+    cases = load_case_data()
     user = create_user_from_dict(session['user'])
-    return render_template('shop.html', 
-                         balance=user.balance, 
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+    return render_template('shop.html',
+        cases=cases,
+        balance=user.balance,
+        RANKS=RANKS,
+        RANK_EXP=RANK_EXP
+    )
 
 @app.route('/inventory')
 def inventory():
@@ -406,106 +416,179 @@ def inventory():
     # Get the current inventory from session
     inventory_items = session['user'].get('inventory', [])
     
+    # Update prices for all non-case items
+    for item in inventory_items:
+        if not item.get('is_case'):
+            try:
+                # Get the case file path
+                case_type = item.get('case_type', 'csgo')
+                case_file_mapping = {
+                    'csgo': 'weapon_case_1',
+                    'esports': 'esports_2013',
+                    'bravo': 'operation_bravo',
+                    'csgo2': 'weapon_case_2',
+                    'esports_winter': 'esports_2013_winter',
+                    'winter_offensive': 'winter_offensive_case'
+                }
+                case_file = case_file_mapping.get(case_type, 'weapon_case_1')
+                
+                # Load case data
+                with open(f'cases/{case_file}.json', 'r') as f:
+                    case_data = json.load(f)
+                
+                # Find the item's price in the case data
+                for grade, skins in case_data['skins'].items():
+                    for skin in skins:
+                        if skin['weapon'] == item['weapon'] and skin['name'] == item['name']:
+                            prices = skin['prices']
+                            wear_key = 'NO' if 'NO' in prices else item['wear']
+                            price = prices[f"ST_{wear_key}"] if item.get('stattrak') else prices[wear_key]
+                            item['price'] = price
+                            break
+            except Exception as e:
+                print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
+                continue
+    
+    # Update session with new prices
+    session['user']['inventory'] = inventory_items
+    
     # Sort items so newest appears first
-    inventory_items = sorted(inventory_items, key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, reverse=True)
-    
-    # Add debug logging
-    print("Inventory route - items being sent to template:", inventory_items)
-    
-    view = request.args.get('view', 'skins')  # Get the view parameter, default to skins
+    inventory_items = sorted(inventory_items, 
+                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
+                           reverse=True)
     
     return render_template('inventory.html', 
                          balance=session['user']['balance'], 
-                         inventory=inventory_items,  # Pass the inventory directly
+                         inventory=inventory_items,
                          RANK_EXP=RANK_EXP,
                          RANKS=RANKS,
-                         initial_view=view)
+                         initial_view=request.args.get('view', 'skins'))
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
     if 'user' not in session:
         return jsonify({'error': 'User not found'})
     
-    user = create_user_from_dict(session['user'])
     inventory = session['user'].get('inventory', [])
-    
-    print(f"Opening case type: {case_type}")
-    print(f"Current inventory before opening: {inventory}")
     
     # Find the case in inventory
     case_found = False
-    case_to_remove = None
-    for item in inventory:
+    for i in range(len(inventory)):
+        item = inventory[i]
         if item.get('is_case') and item.get('type') == case_type:
-            if item.get('quantity', 0) > 0:
+            quantity = item.get('quantity', 0)
+            if quantity > 0:
                 case_found = True
-                item['quantity'] -= 1  # Decrease case quantity
-                if item['quantity'] == 0:
-                    case_to_remove = item  # Mark for removal
+                # Decrease case quantity
+                inventory[i]['quantity'] = quantity - 1
+                # If quantity is 0, remove the case
+                if inventory[i]['quantity'] <= 0:
+                    inventory.pop(i)
                 break
     
-    # Remove case if quantity is 0
-    if case_to_remove:
-        inventory.remove(case_to_remove)
-    
     if not case_found:
-        print("No cases found in inventory")
         return jsonify({'error': 'No cases of this type in inventory'})
     
-    case = CSGO_WEAPON_CASE if case_type == 'csgo' else ESPORTS_2013_CASE
+    # Load the appropriate case
+    case = load_case(case_type)
+    if not case:
+        return jsonify({'error': 'Invalid case type'})
+
+    # Get case price and add exp
+    try:
+        case_file_mapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        }
+        
+        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+            case_data = json.load(f)
+            case_price = float(case_data.get('price', 0))
+            
+            # Add exp based on case price
+            current_exp = session['user'].get('exp', 0)
+            current_rank = session['user'].get('rank', 0)
+            
+            # Add exp equal to case price
+            new_exp = current_exp + case_price
+            
+            # Check for rank up
+            while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+                new_exp -= RANK_EXP[current_rank]
+                current_rank += 1
+            
+            # Update session with new exp and rank
+            session['user']['exp'] = new_exp
+            session['user']['rank'] = current_rank
+            
+    except Exception as e:
+        print(f"Error getting case price: {e}")
+    
     skin = case.open()
+    if not skin:
+        return jsonify({'error': 'Failed to open case'})
     
-    if skin:
-        print(f"Successfully opened case. Got skin: {skin.weapon} | {skin.name}")
-        
-        # Add experience based on case price and log it
-        case_price = CASE_PRICES[case_type]
-        print(f"Adding {case_price} EXP from case price")
-        user.add_exp(case_price)
-        print(f"New EXP: {user.exp}, Rank: {user.rank}")
-        
-        # Convert skin to dictionary format with timestamp and case_type
-        skin_dict = {
-            'weapon': skin.weapon,
-            'name': skin.name,
-            'rarity': skin.rarity.name,
-            'wear': skin.wear.name,
-            'stattrak': skin.stattrak,
-            'price': skin.get_price(),
-            'timestamp': time.time(),
-            'case_type': case_type  # Make sure this is set
+    # Get the price from case data
+    try:
+        case_file_mapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
         }
         
-        print(f"Created skin_dict with case_type: {skin_dict}")  # Debug log
-        
-        # Add the skin dictionary to inventory
-        inventory.append(skin_dict)
-        
-        print(f"Updated inventory after opening: {inventory}")
-        
-        # Update session with all user data
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
-        
-        # Verify the case_type is still present
-        print(f"Verifying case_type in session: {session['user']['inventory'][-1].get('case_type')}")
-        
-        return jsonify({
-            'item': skin_dict,
-            'balance': user.balance,
-            'exp': int(user.exp),
-            'rank': user.rank,
-            'rankName': RANKS[user.rank],
-            'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None
-        })
+        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+            case_data = json.load(f)
+            
+        # Find the item's price in the case data
+        price = 0
+        for grade, skins in case_data['skins'].items():
+            for case_skin in skins:
+                if case_skin['weapon'] == skin.weapon and case_skin['name'] == skin.name:
+                    prices = case_skin['prices']
+                    wear_key = 'NO' if 'NO' in prices else skin.wear.name
+                    price = prices[f"ST_{wear_key}"] if skin.stattrak else prices[wear_key]
+                    break
+            if price > 0:
+                break
+    except Exception as e:
+        print(f"Error getting price: {e}")
+        price = 0
     
-    print("Failed to open case - no skin generated")
-    return jsonify({'error': 'Failed to open case'})
+    # Convert skin to dictionary format
+    skin_dict = {
+        'weapon': skin.weapon,
+        'name': skin.name,
+        'rarity': skin.rarity.name,
+        'wear': skin.wear.name,
+        'stattrak': skin.stattrak,
+        'price': float(price),  # Ensure price is float
+        'timestamp': time.time(),
+        'case_type': case_type,
+        'is_case': False
+    }
+    
+    # Add the skin to inventory
+    inventory.append(skin_dict)
+    
+    # Update session
+    session['user']['inventory'] = inventory
+    session.modified = True
+    
+    return jsonify({
+        'item': skin_dict,
+        'balance': session['user']['balance'],
+        'exp': new_exp,
+        'rank': current_rank,
+        'rankName': RANKS[current_rank],
+        'nextRankExp': RANK_EXP[current_rank] if current_rank < len(RANK_EXP) else None
+    })
 
 @app.route('/reset_session')
 def reset_session():
@@ -524,61 +607,47 @@ def reset_session():
     }
     return redirect(url_for('shop'))
 
-@app.route('/sell/last', methods=['POST'])
 @app.route('/sell/<int:item_index>', methods=['POST'])
 def sell_item(item_index=None):
     if 'user' not in session:
         return jsonify({'error': 'User not found'})
     
-    user = create_user_from_dict(session['user'])
-    inventory = session['user']['inventory']
-    
     try:
-        if item_index is None:
-            # For selling the last opened item
-            skin_indices = [i for i, item in enumerate(inventory) if not item.get('is_case')]
-            if not skin_indices:
-                return jsonify({'error': 'No items to sell'})
-            item_index = skin_indices[-1]
+        inventory = session['user']['inventory']
         
-        # Get only skin indices for validation
-        skin_indices = [i for i, item in enumerate(inventory) if not item.get('is_case')]
-        if item_index not in skin_indices:
+        # Get only non-case items
+        skin_items = [item for item in inventory if not item.get('is_case')]
+        
+        if item_index is None or item_index >= len(skin_items):
             return jsonify({'error': 'Item not found'})
         
+        # Find the actual inventory index of the skin
+        skin_indices = [i for i, item in enumerate(inventory) if not item.get('is_case')]
+        actual_index = skin_indices[item_index]
+        
         # Get the item before removing it
-        item = inventory[item_index]
+        item = inventory[actual_index]
         if item.get('is_case'):
             return jsonify({'error': 'Cannot sell cases'})
             
-        sale_price = item.get('price', 0)
+        sale_price = float(item.get('price', 0))
         
         # Remove the item and update user's balance
-        inventory.pop(item_index)
-        user.balance += sale_price
+        inventory.pop(actual_index)
+        session['user']['balance'] = float(session['user']['balance']) + sale_price
         
-        # Update session
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
+        # Ensure the session is updated
+        session.modified = True
         
         return jsonify({
             'success': True,
-            'balance': user.balance,
-            'sold_price': sale_price,
-            'exp': int(user.exp),
-            'rank': user.rank,
-            'rankName': RANKS[user.rank],
-            'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None
+            'balance': session['user']['balance'],
+            'sold_price': sale_price
         })
         
-    except (IndexError, ValueError) as e:
-        print(f"Error in sell_item: {e}")  # Add debugging
-        return jsonify({'error': 'Item not found'})
+    except Exception as e:
+        print(f"Error in sell_item: {e}")
+        return jsonify({'error': 'Failed to sell item'})
 
 @app.route('/clicker')
 def clicker():
@@ -782,17 +851,10 @@ def cheat():
     user = create_user_from_dict(session['user'])
     user.balance += 10000.0
     
-    # Update session
+    # Update session - just pass the inventory directly since items are already dictionaries
     session['user'] = {
         'balance': user.balance,
-        'inventory': [{
-            'weapon': s.weapon,
-            'name': s.name,
-            'rarity': s.rarity.name,
-            'wear': s.wear.name,
-            'stattrak': s.stattrak,
-            'price': s.get_price()
-        } for s in user.inventory],
+        'inventory': user.inventory,  # The inventory already contains dictionaries
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -863,6 +925,30 @@ def buy_case():
             'image': 'esports_2013_case.png',
             'is_case': True,
             'type': 'esports'
+        },
+        'bravo': {
+            'name': 'Operation Bravo Case',
+            'image': 'operation_bravo_case.png',
+            'is_case': True,
+            'type': 'bravo'
+        },
+        'csgo2': {
+            'name': 'CS:GO Weapon Case 2',
+            'image': 'weapon_case_2.png',
+            'is_case': True,
+            'type': 'csgo2'
+        },
+        'esports_winter': {
+            'name': 'eSports 2013 Winter Case',
+            'image': 'esports_2013_winter_case.png',
+            'is_case': True,
+            'type': 'esports_winter'
+        },
+        'winter_offensive': {
+            'name': 'Winter Offensive Case',
+            'image': 'winter_offensive_case.png',
+            'is_case': True,
+            'type': 'winter_offensive'
         }
     }
     
@@ -904,13 +990,43 @@ def get_inventory():
         return jsonify({'error': 'User not found'})
     
     inventory_items = session['user'].get('inventory', [])
-    # Add debug logging
-    print("Current inventory items:", inventory_items)
     
-    # Sort items so newest appears first
-    inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
-                           reverse=True)
+    # Update prices for non-case items
+    for item in inventory_items:
+        if not item.get('is_case'):
+            try:
+                case_type = item.get('case_type', 'csgo')
+                case_file_mapping = {
+                    'csgo': 'weapon_case_1',
+                    'esports': 'esports_2013',
+                    'bravo': 'operation_bravo',
+                    'csgo2': 'weapon_case_2',
+                    'esports_winter': 'esports_2013_winter',
+                    'winter_offensive': 'winter_offensive_case'
+                }
+                
+                with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                    case_data = json.load(f)
+                
+                # Find the item's price in the case data
+                for grade, skins in case_data['skins'].items():
+                    for skin in skins:
+                        if skin['weapon'] == item['weapon'] and skin['name'] == item['name']:
+                            prices = skin['prices']
+                            wear_key = 'NO' if 'NO' in prices else item['wear']
+                            price = prices[f"ST_{wear_key}"] if item.get('stattrak') else prices[wear_key]
+                            item['price'] = float(price)  # Ensure price is float
+                            break
+                    if item['price'] > 0:
+                        break
+                        
+            except Exception as e:
+                print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
+                continue
+    
+    # Update session with new prices
+    session['user']['inventory'] = inventory_items
+    session.modified = True
     
     return jsonify({
         'inventory': inventory_items
@@ -932,16 +1048,19 @@ def get_user_data():
 @app.route('/data/case_contents/<case_type>')
 def get_case_contents(case_type):
     case_file_mapping = {
-        'csgo': 'weapon_case_1.json',
-        'esports': 'esports_2013.json',  # Updated to use correct file
-        'bravo': 'weapon_case_1.json'     
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case'  # Add Winter Offensive Case
     }
     
     if case_type not in case_file_mapping:
         return jsonify({'error': 'Invalid case type'}), 404
         
     try:
-        with open(f'cases/{case_file_mapping[case_type]}', 'r') as f:
+        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
             return jsonify(json.load(f))
     except FileNotFoundError:
         return jsonify({'error': 'Case data not found'}), 404

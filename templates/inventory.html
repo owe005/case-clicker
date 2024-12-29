@@ -15,10 +15,10 @@
 <div class="inventory-section" id="skins-section">
     <h2>Skins</h2>
     <div id="inventory-items" class="items-grid">
-        {% set skin_index = namespace(value=0) %}
+        {% set skin_count = namespace(value=0) %}
         {% for item in inventory %}
         {% if not item.is_case %}
-        <div class="skin rarity-{{ item.rarity }}" data-index="{{ skin_index.value }}">
+        <div class="skin rarity-{{ item.rarity }}" data-index="{{ skin_count.value }}">
             <div class="skin-image">
                 {% if not item.weapon.startswith('★') %}
                     {% set weapon_name = item.weapon.lower()
@@ -27,7 +27,15 @@
                         .replace('galil ar', 'galil')
                         .replace('galilar', 'galil') %}
                     {% set skin_name = item.name.lower().replace(' ', '_') %}
-                    {% set case_path = 'esports_2013' if item.case_type == 'esports' else 'weapon_case_1' %}
+                    {% set case_mapping = {
+                        'csgo': 'weapon_case_1',
+                        'esports': 'esports_2013',
+                        'bravo': 'operation_bravo_case',
+                        'csgo2': 'weapon_case_2', 
+                        'esports_winter': 'esports_2013_winter',
+                        'winter_offensive': 'winter_offensive_case'
+                    } %}
+                    {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
                     <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
                          alt="{{ item.weapon }} | {{ item.name }}">
                 {% endif %}
@@ -39,9 +47,9 @@
                 {{ item.name }} ({{ item.wear }})
             </div>
             <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
-            <button class="btn sell-btn" data-sell-index="{{ skin_index.value }}">Sell</button>
+            <button class="btn sell-btn" data-sell-index="{{ skin_count.value }}">Sell</button>
         </div>
-        {% set skin_index.value = skin_index.value + 1 %}
+        {% set skin_count.value = skin_count.value + 1 %}
         {% endif %}
         {% endfor %}
     </div>
@@ -101,113 +109,24 @@
 {% block scripts %}
 <script>
 // Set initial view based on server parameter
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const initialView = '{{ initial_view }}';
     if (initialView) {
-        document.querySelector(`[data-category="${initialView}"]`).click();
+        const button = document.querySelector(`[data-category="${initialView}"]`);
+        if (button) {
+            button.click();
+        }
+    }
+    
+    // If we're starting on the skins view, refresh it
+    if (initialView === 'skins' || !initialView) {
+        await refreshSkinsSection();
     }
 });
 
-// Update the knives object to only include supported combinations
-const knives = {
-    "Karambit": [
-        {
-            name: "Urban Masked",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Blue Steel",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Stained",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Safari Mesh",
-            wears: ["FT", "WW", "BS"]
-        }
-    ],
-    "M9 Bayonet": [
-        {
-            name: "Safari Mesh",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Blue Steel",
-            wears: ["FT", "WW", "BS"]
-        }
-    ],
-    "Bayonet": [
-        {
-            name: "Blue Steel",
-            wears: ["FT", "WW", "BS"]
-        }
-    ],
-    "Flip Knife": [
-        {
-            name: "Safari Mesh",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Stained",
-            wears: ["FT", "WW", "BS"]
-        }
-    ],
-    "Gut Knife": [
-        {
-            name: "Safari Mesh",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Blue Steel",
-            wears: ["FT", "WW", "BS"]
-        },
-        {
-            name: "Stained",
-            wears: ["FT", "WW", "BS"]
-        }
-    ]
-};
-
-const validWears = {
-    "AWP|Lightning Strike": ["FN", "MW"],
-    "AK-47|Case Hardened": ["FN", "MW", "FT", "WW", "BS"],
-    "Desert Eagle|Hypnotic": ["FN", "MW"],
-    "USP-S|Dark Water": ["MW", "FT"],
-    "Glock-18|Dragon Tattoo": ["FN", "MW"],
-    "M4A1-S|Dark Water": ["MW", "FT"],
-    "AUG|Wings": ["FN", "MW"],
-    "MP7|Skulls": ["MW", "FT"],
-    "SG 553|Ultraviolet": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Blue Steel": ["FN", "MW", "FT", "WW", "BS"]
-};
-
-// Copy the entire skinPrices object from shop.html
-const skinPrices = {
-    // ... (copy the entire skinPrices object from shop.html)
-};
-
 // Add category switching functionality
 document.querySelectorAll('.category-btn').forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
         // Remove active class from all buttons
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -223,11 +142,17 @@ document.querySelectorAll('.category-btn').forEach(button => {
         
         // Show selected section
         const category = button.dataset.category;
-        document.getElementById(`${category}-section`).classList.remove('hidden');
+        const section = document.getElementById(`${category}-section`);
+        section.classList.remove('hidden');
+        
+        // If switching to skins section, refresh it
+        if (category === 'skins') {
+            await refreshSkinsSection();
+        }
     });
 });
 
-// Update the sell button click handler in the DOMContentLoaded event
+// Update the sell button click handler
 document.querySelectorAll('.sell-btn').forEach(button => {
     button.addEventListener('click', async function() {
         // Prevent double-clicking
@@ -241,17 +166,26 @@ document.querySelectorAll('.sell-btn').forEach(button => {
             return;
         }
         
-        const index = parseInt(itemElement.dataset.index);
+        // Get the index from the sell button's data attribute
+        const index = parseInt(this.dataset.sellIndex);
         if (isNaN(index)) {
-            console.error('Invalid index:', itemElement.dataset.index);
+            console.error('Invalid sell index:', this.dataset.sellIndex);
             this.disabled = false;
             return;
         }
-        
+
         try {
             const response = await fetch(`/sell/${index}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
             if (data.error) {
@@ -288,31 +222,102 @@ document.querySelectorAll('.sell-btn').forEach(button => {
     });
 });
 
+// Replace the hardcoded caseContents object with dynamic loading
+const caseContents = {};
+
+// Function to load case contents
+async function loadCaseContents(caseType) {
+    if (!caseContents[caseType]) {
+        try {
+            const response = await fetch(`/data/case_contents/${caseType}`);
+            const data = await response.json();
+            
+            // Transform the data into the required format and include valid wears
+            caseContents[caseType] = {
+                name: data.name,
+                contents: {
+                    GOLD: data.skins.gold.map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "GOLD",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    })),
+                    RED: data.skins.red.map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "RED",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    })),
+                    PINK: data.skins.pink.map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "PINK",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    })),
+                    PURPLE: data.skins.purple.map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "PURPLE",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    })),
+                    BLUE: data.skins.blue.map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "BLUE",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    }))
+                }
+            };
+        } catch (error) {
+            console.error(`Error loading case contents for ${caseType}:`, error);
+            return null;
+        }
+    }
+    return caseContents[caseType];
+}
+
+// Update the openCase function
 async function openCase(caseType) {
     try {
-        // Update case quantity display immediately
-        const caseElement = document.querySelector(`[onclick="openCase('${caseType}')"]`).closest('.case-item');
-        const quantityElement = caseElement.querySelector('p');
-        let currentQuantity = parseInt(quantityElement.textContent.split(': ')[1]);
-        quantityElement.textContent = `Quantity: ${currentQuantity - 1}`;
+        // Load case contents if not already loaded
+        await loadCaseContents(caseType);
         
-        // If this was the last case, remove the case item
-        if (currentQuantity - 1 === 0) {
-            caseElement.remove();
+        // Find the case element and get its quantity
+        const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)
+            ?.closest('.case-item');
+        if (!caseElement) {
+            console.error('Case element not found');
+            return;
         }
-
+        
+        const quantityElement = caseElement.querySelector('p');
+        const currentQuantity = parseInt(quantityElement.textContent.match(/\d+/)[0]);
+        
+        // Send request to open case
         const response = await fetch(`/open/${caseType}`);
         const data = await response.json();
         
         if (data.error) {
             alert(data.error);
-            // Restore the quantity if there was an error
-            quantityElement.textContent = `Quantity: ${currentQuantity}`;
             return;
         }
         
         // Update balance
         document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Update rank progress if exp data is available
+        if (data.exp !== undefined && data.rank !== undefined) {
+            updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
+        }
+        
+        // Update case quantity in UI
+        const newQuantity = currentQuantity - 1;
+        quantityElement.textContent = `Quantity: ${newQuantity}`;
+        
+        // If quantity is 0, remove the case item
+        if (newQuantity <= 0) {
+            caseElement.remove();
+        }
         
         // Show case opening animation
         const overlay = document.getElementById('case-opening-overlay');
@@ -361,44 +366,14 @@ async function openCase(caseType) {
             overlay.classList.add('hidden');
             spinningSound.pause();
             showItemShowcase(data.item);
+            
+            // Clear any stored items to prevent duplicates
+            sessionStorage.removeItem('newItem');
         }, 6300);
         
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to open case');
-    }
-}
-
-async function sellItem(index) {
-    try {
-        const response = await fetch(`/sell/${index}`, {
-            method: 'POST'
-        });
-        const data = await response.json();
-        
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-        
-        // Update balance
-        document.getElementById('balance').textContent = data.balance.toFixed(2);
-        
-        // Remove the sold item from display
-        const itemElement = document.querySelector(`[data-index="${index}"]`);
-        itemElement.style.animation = 'fadeOut 0.3s';
-        setTimeout(() => {
-            itemElement.remove();
-            
-            // Update remaining items' indices
-            document.querySelectorAll('.skin').forEach((skin, newIndex) => {
-                skin.dataset.index = newIndex;
-            });
-        }, 300);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to sell item');
     }
 }
 
@@ -413,19 +388,20 @@ function generateRandomItems(actualItem) {
 
     function randomFromPool(rarity) {
         const pool = itemPools[rarity];
-        const item = {...pool[Math.floor(Math.random() * pool.length)]};
+        const randomItem = {...pool[Math.floor(Math.random() * pool.length)]};
         const hasStattrak = Math.random() < 0.1;
         
-        // Get valid wears and price from the correct case file
-        const skinKey = `${item.weapon}|${item.name}`;
-        const availableWears = validWears[skinKey] || ["FT"];
-        const wear = availableWears[Math.floor(Math.random() * availableWears.length)];
+        // Use the valid wears from the item data
+        const validWears = randomItem.validWears && randomItem.validWears.length > 0 
+            ? randomItem.validWears 
+            : ['FN', 'MW', 'FT', 'WW', 'BS'];
+        const wear = validWears[Math.floor(Math.random() * validWears.length)];
         
         return {
-            ...item,
+            ...randomItem,
             stattrak: hasStattrak,
             wear: wear,
-            case_type: actualItem.case_type  // Include case_type in generated items
+            case_type: actualItem.case_type
         };
     }
 
@@ -506,8 +482,16 @@ function createItemElement(item) {
         const skinName = item.name.toLowerCase()
             .replace(/ /g, '_');
         
-        // Determine case path based on case type
-        const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+        // Update case path mapping
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
         const img = document.createElement('img');
         img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
@@ -551,12 +535,58 @@ function showItemShowcase(item) {
     
     // Create image element
     const imageElement = document.createElement('img');
-    const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+    
+    // Add case path mapping
+    const casePathMapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo_case',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case'
+    };
+    const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+    
+    // Fetch the price from case data
+    fetch(`/data/case_contents/${item.case_type}`)
+        .then(response => response.json())
+        .then(caseData => {
+            // Find the item's price in the case data
+            let price = 0;
+            for (const [grade, skins] of Object.entries(caseData.skins)) {
+                for (const skin of skins) {
+                    if (skin.weapon === item.weapon && skin.name === item.name) {
+                        const prices = skin.prices;
+                        const wearKey = 'NO' in prices ? 'NO' : item.wear;
+                        price = item.stattrak ? 
+                            (prices[`ST_${wearKey}`] || 0) : 
+                            (prices[wearKey] || 0);
+                        break;
+                    }
+                }
+                if (price > 0) break;
+            }
+            
+            // Update the item's price
+            item.price = price;
+            priceElement.textContent = `$${price.toFixed(2)}`;
+            
+            // Update the price in the inventory display if it exists
+            const inventoryItem = document.querySelector(`[data-index="${document.querySelectorAll('.skin').length}"]`);
+            if (inventoryItem) {
+                const priceDisplay = inventoryItem.querySelector('.item-price');
+                if (priceDisplay) {
+                    priceDisplay.textContent = `$${price.toFixed(2)}`;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching case data:', error);
+            priceElement.textContent = '$0.00';
+        });
     
     if (item.rarity === 'GOLD') {
-        const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
-        const skinName = item.name.toLowerCase().replace(' ', '_');
-        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+        imageElement.src = '/static/media/cases/rare_item.png';
     } else {
         const weaponName = item.weapon.toLowerCase()
             .replace('-', '')
@@ -567,9 +597,6 @@ function showItemShowcase(item) {
         const skinName = item.name.toLowerCase().replace(/ /g, '_');
         imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
     }
-    
-    imageElement.style.maxWidth = '300px';
-    imageElement.style.marginBottom = '1rem';
     
     // Update showcase content
     const itemContainer = showcase.querySelector('.showcase-item');
@@ -588,36 +615,6 @@ function showItemShowcase(item) {
     // Set text content
     nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
     detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
-    
-    // Fetch price from the correct case file
-    fetch(`/data/case_contents/${item.case_type}`)
-        .then(response => response.json())
-        .then(caseData => {
-            let price = 0;
-            for (const [grade, skins] of Object.entries(caseData.skins)) {
-                for (const skin of skins) {
-                    if (skin.weapon === item.weapon && skin.name === item.name) {
-                        const prices = skin.prices;
-                        const wearKey = 'NO' in prices ? 'NO' : item.wear;
-                        price = item.stattrak ? 
-                            (prices[`ST_${wearKey}`] || 0) : 
-                            (prices[wearKey] || 0);
-                        break;
-                    }
-                }
-                if (price > 0) break;
-            }
-            
-            // Update the showcase with the correct price
-            priceElement.textContent = `$${price.toFixed(2)}`;
-            
-            // Update the item object with the correct price
-            item.price = price;
-        })
-        .catch(error => {
-            console.error('Error fetching case data:', error);
-            priceElement.textContent = '$0.00';
-        });
     
     // Create buttons container and buttons
     const buttonsContainer = document.createElement('div');
@@ -639,7 +636,12 @@ function showItemShowcase(item) {
     continueButton.onclick = async () => {
         showcase.style.display = 'none';
         showcaseSound.pause();
-        await updateInventoryDisplay();
+        await refreshSkinsSection();
+        
+        // Update rank progress if exp data is available
+        if (item.exp !== undefined && item.rank !== undefined) {
+            updateRankProgress(item.exp, item.rank, item.rankName, item.nextRankExp);
+        }
     };
     
     sellButton.onclick = async () => {
@@ -669,6 +671,185 @@ function showItemShowcase(item) {
     showcase.style.display = 'flex';
     showcaseSound.currentTime = 0;
     showcaseSound.play();
+}
+
+// Add this new function to update the rank progress UI
+function updateRankProgress(exp, rank, rankName, nextRankExp) {
+    // Update rank name
+    const rankElement = document.querySelector('.current-rank');
+    if (rankElement) {
+        rankElement.textContent = rankName;
+    }
+    
+    // Update progress bar
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        if (nextRankExp) {
+            const percentage = (exp / nextRankExp * 100).toFixed(2);
+            progressFill.style.width = `${percentage}%`;
+        } else {
+            progressFill.style.width = '100%';
+        }
+    }
+    
+    // Update exp text
+    const expInfo = document.querySelector('.exp-info');
+    if (expInfo) {
+        if (nextRankExp) {
+            expInfo.textContent = `${Math.floor(exp)}/${nextRankExp} EXP`;
+        } else {
+            expInfo.textContent = 'MAX RANK';
+        }
+    }
+}
+
+// Update the refreshSkinsSection function
+async function refreshSkinsSection() {
+    try {
+        // Disable all sell buttons while refreshing to prevent double-selling
+        document.querySelectorAll('.sell-btn').forEach(btn => btn.disabled = true);
+        
+        const response = await fetch('/get_inventory');
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        
+        const inventoryItems = document.getElementById('inventory-items');
+        if (!inventoryItems) {
+            console.error('Could not find inventory-items element');
+            return;
+        }
+        
+        // Clear current inventory immediately
+        inventoryItems.innerHTML = '';
+        
+        // Get only non-case items and maintain their original order
+        const skinItems = data.inventory.filter(item => !item.is_case);
+        
+        // Create and append all items at once
+        const fragment = document.createDocumentFragment();
+        
+        skinItems.forEach((item, skinIndex) => {
+            const skinDiv = document.createElement('div');
+            skinDiv.className = `skin rarity-${item.rarity}`;
+            skinDiv.dataset.index = skinIndex;
+            
+            const weaponName = item.weapon.toLowerCase()
+                .replace('-', '')
+                .replace(' ', '')
+                .replace('553', '553')
+                .replace('galil ar', 'galil')
+                .replace('galilar', 'galil');
+            const skinName = item.name.toLowerCase().replace(/ /g, '_');
+            
+            const caseMapping = {
+                'csgo': 'weapon_case_1',
+                'esports': 'esports_2013',
+                'bravo': 'operation_bravo_case',
+                'csgo2': 'weapon_case_2',
+                'esports_winter': 'esports_2013_winter',
+                'winter_offensive': 'winter_offensive_case'
+            };
+            const casePath = caseMapping[item.case_type] || 'weapon_case_1';
+            
+            skinDiv.innerHTML = `
+                <div class="skin-image">
+                    ${!item.weapon.startsWith('★') ? `
+                        <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                             alt="${item.weapon} | ${item.name}">
+                    ` : ''}
+                </div>
+                <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                    ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                </div>
+                <div class="item-skin">
+                    ${item.name} (${item.wear})
+                </div>
+                <div class="item-price">$${item.price.toFixed(2)}</div>
+                <button class="btn sell-btn" data-sell-index="${skinIndex}">Sell</button>
+            `;
+            
+            fragment.appendChild(skinDiv);
+        });
+        
+        // Add all items to the DOM at once
+        inventoryItems.appendChild(fragment);
+        
+        // Add click handlers to all sell buttons
+        document.querySelectorAll('.sell-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                if (this.disabled) return;
+                this.disabled = true;
+                
+                const itemElement = this.closest('.skin');
+                if (!itemElement) {
+                    console.error('Could not find parent skin element');
+                    this.disabled = false;
+                    return;
+                }
+                
+                const index = parseInt(this.dataset.sellIndex);
+                if (isNaN(index)) {
+                    console.error('Invalid sell index:', this.dataset.sellIndex);
+                    this.disabled = false;
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/sell/${index}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    
+                    // Update balance
+                    document.getElementById('balance').textContent = data.balance.toFixed(2);
+                    
+                    // Remove the sold item with animation
+                    itemElement.style.animation = 'fadeOut 0.3s';
+                    setTimeout(() => {
+                        itemElement.remove();
+                        
+                        // Update remaining items' indices
+                        document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                            skin.dataset.index = newIndex;
+                            const sellBtn = skin.querySelector('.sell-btn');
+                            if (sellBtn) {
+                                sellBtn.dataset.sellIndex = newIndex;
+                            }
+                        });
+                    }, 300);
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to sell item');
+                } finally {
+                    this.disabled = false;
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error refreshing skins section:', error);
+    } finally {
+        // Re-enable all sell buttons
+        document.querySelectorAll('.sell-btn').forEach(btn => btn.disabled = false);
+    }
 }
 
 // Update the DOMContentLoaded event handler
@@ -821,41 +1002,24 @@ async function updateInventoryDisplay() {
         // Clear current inventory
         inventoryItems.innerHTML = '';
         
+        // Update case path mapping
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        
         // Add each item
         let skinIndex = 0;
         for (const item of data.inventory) {
             if (!item.is_case) {
-                // Fetch price from the correct case file
-                try {
-                    const caseResponse = await fetch(`/data/case_contents/${item.case_type}`);
-                    const caseData = await caseResponse.json();
-                    
-                    // Find the item's price in the case data
-                    let price = 0;
-                    for (const [grade, skins] of Object.entries(caseData.skins)) {
-                        for (const skin of skins) {
-                            if (skin.weapon === item.weapon && skin.name === item.name) {
-                                const prices = skin.prices;
-                                const wearKey = 'NO' in prices ? 'NO' : item.wear;
-                                price = item.stattrak ? 
-                                    (prices[`ST_${wearKey}`] || 0) : 
-                                    (prices[wearKey] || 0);
-                                break;
-                            }
-                        }
-                        if (price > 0) break;
-                    }
-                    
-                    // Update the item's price
-                    item.price = price;
-                } catch (error) {
-                    console.error('Error fetching case data:', error);
-                    item.price = 0;
-                }
-                
+                // Create the skin element
                 const skinDiv = document.createElement('div');
                 skinDiv.className = `skin rarity-${item.rarity}`;
-                skinDiv.dataset.index = skinIndex;
+                skinDiv.dataset.index = skinIndex;  // Set the correct index
                 
                 const weaponName = item.weapon.toLowerCase()
                     .replace('-', '')
@@ -864,7 +1028,7 @@ async function updateInventoryDisplay() {
                     .replace('galil ar', 'galil')
                     .replace('galilar', 'galil');
                 const skinName = item.name.toLowerCase().replace(/ /g, '_');
-                const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+                const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
                 
                 skinDiv.innerHTML = `
                     <div class="skin-image">
@@ -900,93 +1064,5 @@ async function updateInventoryDisplay() {
         console.error('Error updating inventory:', error);
     }
 }
-
-// Add this after the knives object and before generateRandomItems function
-const caseContents = {
-    'csgo': {
-        name: "CS:GO Weapon Case",
-        contents: {
-            GOLD: [
-                { weapon: "★ Karambit", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Blue Steel", rarity: "GOLD" }
-            ],
-            RED: [
-                { weapon: "AWP", name: "Lightning Strike", rarity: "RED" }
-            ],
-            PINK: [
-                { weapon: "AK-47", name: "Case Hardened", rarity: "PINK" },
-                { weapon: "Desert Eagle", name: "Hypnotic", rarity: "PINK" }
-            ],
-            PURPLE: [
-                { weapon: "Glock-18", name: "Dragon Tattoo", rarity: "PURPLE" },
-                { weapon: "M4A1-S", name: "Dark Water", rarity: "PURPLE" },
-                { weapon: "USP-S", name: "Dark Water", rarity: "PURPLE" }
-            ],
-            BLUE: [
-                { weapon: "SG 553", name: "Ultraviolet", rarity: "BLUE" },
-                { weapon: "MP7", name: "Skulls", rarity: "BLUE" },
-                { weapon: "AUG", name: "Wings", rarity: "BLUE" }
-            ]
-        }
-    },
-    'esports': {
-        name: "eSports 2013 Case",
-        contents: {
-            GOLD: [
-                { weapon: "★ Karambit", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Karambit", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ M9 Bayonet", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Bayonet", name: "Blue Steel", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ Flip Knife", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Urban Masked", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Safari Mesh", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Stained", rarity: "GOLD" },
-                { weapon: "★ Gut Knife", name: "Blue Steel", rarity: "GOLD" }
-            ],
-            RED: [
-                { weapon: "P90", name: "Death by Kitty", rarity: "RED" }
-            ],
-            PINK: [
-                { weapon: "AWP", name: "BOOM", rarity: "PINK" },
-                { weapon: "AK-47", name: "Red Laminate", rarity: "PINK" }
-            ],
-            PURPLE: [
-                { weapon: "Galil AR", name: "Orange DDPAT", rarity: "PURPLE" },
-                { weapon: "P250", name: "Splash", rarity: "PURPLE" },
-                { weapon: "Sawed-Off", name: "Orange DDPAT", rarity: "PURPLE" }
-            ],
-            BLUE: [
-                { weapon: "M4A4", name: "Faded Zebra", rarity: "BLUE" },
-                { weapon: "MAG-7", name: "Memento", rarity: "BLUE" },
-                { weapon: "FAMAS", name: "Doomkitty", rarity: "BLUE" }
-            ]
-        }
-    }
-};
 </script>
 {% endblock %} 
