@@ -1140,5 +1140,176 @@ def custom_static(filename):
     response.cache_control.public = True
     return response
 
+@app.route('/casino')
+@login_required
+def casino():
+    return render_template('casino.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/coinflip')
+@login_required
+def coinflip():
+    return render_template('coinflip.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/play_coinflip', methods=['POST'])
+@login_required
+def play_coinflip():
+    try:
+        data = request.get_json()
+        bet_amount = float(data.get('amount', 0))
+        chosen_side = data.get('side')
+        
+        if not chosen_side or chosen_side not in ['ct', 't']:
+            return jsonify({'error': 'Invalid side selection'})
+        
+        if bet_amount <= 0:
+            return jsonify({'error': 'Invalid bet amount'})
+        
+        user = create_user_from_dict(session['user'])
+        
+        if bet_amount > user.balance:
+            return jsonify({'error': 'Insufficient funds'})
+        
+        # Determine result (50/50 chance)
+        result = random.choice(['ct', 't'])
+        won = result == chosen_side
+        
+        # Calculate new balance but don't update session yet
+        new_balance = user.balance + bet_amount if won else user.balance - bet_amount
+        
+        return jsonify({
+            'success': True,
+            'won': won,
+            'result': result,
+            'balance': new_balance,
+            'currentBalance': user.balance
+        })
+        
+    except Exception as e:
+        print(f"Error in play_coinflip: {e}")
+        return jsonify({'error': 'Failed to play coinflip'})
+
+# Add new route to update balance after animation
+@app.route('/update_coinflip_balance', methods=['POST'])
+@login_required
+def update_coinflip_balance():
+    try:
+        data = request.get_json()
+        new_balance = float(data.get('balance', 0))
+        
+        user = create_user_from_dict(session['user'])
+        user.balance = new_balance
+        
+        # Update session
+        session['user'] = {
+            'balance': user.balance,
+            'inventory': user.inventory,
+            'exp': user.exp,
+            'rank': user.rank,
+            'upgrades': asdict(user.upgrades)
+        }
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error updating balance: {e}")
+        return jsonify({'error': 'Failed to update balance'})
+
+@app.route('/roulette')
+@login_required
+def roulette():
+    return render_template('roulette.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/play_roulette', methods=['POST'])
+@login_required
+def play_roulette():
+    try:
+        data = request.get_json()
+        bets = data.get('bets', {})  # Dictionary of bets {bet_type: amount}
+        total_bet = sum(bets.values())
+        
+        user = create_user_from_dict(session['user'])
+        
+        if total_bet > user.balance:
+            return jsonify({'error': 'Insufficient funds'})
+        
+        # Determine result
+        result = random.randint(0, 36)
+        
+        # Calculate winnings
+        winnings = 0
+        for bet_type, amount in bets.items():
+            if bet_type.isdigit():  # Single number bet
+                if int(bet_type) == result:
+                    winnings += amount * 36
+            elif bet_type in ['red', 'black']:
+                if (bet_type == 'red' and result in RED_NUMBERS) or \
+                   (bet_type == 'black' and result in BLACK_NUMBERS):
+                    winnings += amount * 2
+            elif bet_type in ['even', 'odd']:
+                if result != 0 and \
+                   ((bet_type == 'even' and result % 2 == 0) or \
+                    (bet_type == 'odd' and result % 2 == 1)):
+                    winnings += amount * 2
+            elif bet_type in ['1-18', '19-36']:
+                if (bet_type == '1-18' and 1 <= result <= 18) or \
+                   (bet_type == '19-36' and 19 <= result <= 36):
+                    winnings += amount * 2
+            elif bet_type in ['1st12', '2nd12', '3rd12']:
+                if (bet_type == '1st12' and 1 <= result <= 12) or \
+                   (bet_type == '2nd12' and 13 <= result <= 24) or \
+                   (bet_type == '3rd12' and 25 <= result <= 36):
+                    winnings += amount * 3
+        
+        # Calculate new balance only if there were bets
+        new_balance = user.balance - total_bet + winnings if total_bet > 0 else user.balance
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'winnings': winnings,
+            'balance': new_balance,
+            'currentBalance': user.balance
+        })
+        
+    except Exception as e:
+        print(f"Error in play_roulette: {e}")
+        return jsonify({'error': 'Failed to play roulette'})
+
+@app.route('/update_roulette_balance', methods=['POST'])
+@login_required
+def update_roulette_balance():
+    try:
+        data = request.get_json()
+        new_balance = float(data.get('balance', 0))
+        
+        user = create_user_from_dict(session['user'])
+        user.balance = new_balance
+        
+        # Update session
+        session['user'] = {
+            'balance': user.balance,
+            'inventory': user.inventory,
+            'exp': user.exp,
+            'rank': user.rank,
+            'upgrades': asdict(user.upgrades)
+        }
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error updating balance: {e}")
+        return jsonify({'error': 'Failed to update balance'})
+
+# Add these constants at the top of the file with other constants
+RED_NUMBERS = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}
+BLACK_NUMBERS = {2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35}
+
 if __name__ == '__main__':
     app.run(debug=True)

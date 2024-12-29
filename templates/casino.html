@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Casino - Case Clicker{% endblock %}
+
+{% block content %}
+<div class="casino-container">
+    <h1>Casino Games</h1>
+    
+    <!-- Game selection grid -->
+    <div class="casino-games">
+        <!-- Blackjack -->
+        <div class="game-card">
+            <h2>Blackjack</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/blackjack.png') }}" alt="Blackjack">
+            </div>
+            <p>Classic casino blackjack - try to beat the dealer to 21!</p>
+            <button class="btn game-btn" disabled>Coming Soon</button>
+        </div>
+
+        <!-- Jackpot -->
+        <div class="game-card">
+            <h2>Jackpot</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/jackpot.png') }}" alt="Jackpot">
+            </div>
+            <p>Bet your skins against other players for a chance to win big!</p>
+            <button class="btn game-btn" disabled>Coming Soon</button>
+        </div>
+
+        <!-- Crash -->
+        <div class="game-card">
+            <h2>Crash</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/crash.png') }}" alt="Crash">
+            </div>
+            <p>Cash out before the line crashes! The longer you wait, the more you win.</p>
+            <button class="btn game-btn" disabled>Coming Soon</button>
+        </div>
+
+        <!-- Upgrade -->
+        <div class="game-card">
+            <h2>Upgrade</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/upgrade.png') }}" alt="Upgrade">
+            </div>
+            <p>Try to upgrade your skins to more valuable ones!</p>
+            <button class="btn game-btn" disabled>Coming Soon</button>
+        </div>
+
+        <!-- Coinflip -->
+        <div class="game-card">
+            <h2>Coinflip</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/coinflip.png') }}" alt="Coinflip">
+            </div>
+            <p>50/50 chance to double your bet!</p>
+            <a href="{{ url_for('coinflip') }}" class="btn game-btn">Play Now</a>
+        </div>
+
+        <!-- Roulette -->
+        <div class="game-card">
+            <h2>Roulette</h2>
+            <div class="game-preview">
+                <img src="{{ url_for('static', filename='media/casino/roulette.png') }}" alt="Roulette">
+            </div>
+            <p>Classic casino roulette with CS:GO skins!</p>
+            <button class="btn game-btn" disabled>Coming Soon</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.casino-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.casino-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #e4e4e4;
+}
+
+.casino-games {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.game-card {
+    background: #2a2a2a;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+}
+
+.game-card h2 {
+    color: #e4e4e4;
+    margin-bottom: 15px;
+}
+
+.game-preview {
+    width: 100%;
+    height: 200px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.game-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.game-card p {
+    color: #999;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.game-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #4a4a4a;
+    color: #e4e4e4;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transition: background 0.2s;
+}
+
+.game-btn:not(:disabled):hover {
+    background: #5a5a5a;
+}
+</style>
+{% endblock %} 
