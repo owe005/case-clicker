@@ -60,7 +60,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Crimson Web",
-                "image": "m9_bayonet_crimson_web.png",
+                "image": "m9bayonet_crimson_web.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -79,7 +79,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Forest DDPAT",
-                "image": "m9_bayonet_forest_ddpat.png",
+                "image": "m9bayonet_forest_ddpat.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -98,7 +98,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Forest DDPAT",
-                "image": "flip_knife_forest_ddpat.png",
+                "image": "flipknife_forest_ddpat.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -155,7 +155,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Scorched",
-                "image": "flip_knife_scorched.png",
+                "image": "flipknife_scorched.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -255,7 +255,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Vanilla",
-                "image": "flip_knife_vanilla.png",
+                "image": "flipknife_vanilla.png",
                 "grade": "gold",
                 "valid_wears": ["NO"],
                 "prices": {
@@ -361,7 +361,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Urban Masked",
-                "image": "flip_knife_urban_masked.png",
+                "image": "flipknife_urban_masked.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -399,7 +399,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Case Hardened",
-                "image": "flip_knife_case_hardened.png",
+                "image": "flipknife_case_hardened.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -418,7 +418,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Blue Steel",
-                "image": "flip_knife_blue_steel.png",
+                "image": "flipknife_blue_steel.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -437,7 +437,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Crimson Web",
-                "image": "flip_knife_crimson_web.png",
+                "image": "flipknife_crimson_web.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -494,7 +494,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Stained",
-                "image": "flip_knife_stained.png",
+                "image": "flipknife_stained.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -513,7 +513,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Boreal Forest",
-                "image": "flip_knife_boreal_forest.png",
+                "image": "flipknife_boreal_forest.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -532,7 +532,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Safari Mesh",
-                "image": "flip_knife_safari_mesh.png",
+                "image": "flipknife_safari_mesh.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -608,7 +608,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Vanilla",
-                "image": "m9_bayonet_vanilla.png",
+                "image": "m9bayonet_vanilla.png",
                 "grade": "gold",
                 "valid_wears": ["NO"],
                 "prices": {
@@ -641,7 +641,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Urban Masked",
-                "image": "m9_bayonet_urban_masked.png",
+                "image": "m9bayonet_urban_masked.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -660,7 +660,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Safari Mesh",
-                "image": "m9_bayonet_safari_mesh.png",
+                "image": "m9bayonet_safari_mesh.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -679,7 +679,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Scorched",
-                "image": "m9_bayonet_scorched.png",
+                "image": "m9bayonet_scorched.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -698,7 +698,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Night",
-                "image": "m9_bayonet_night.png",
+                "image": "m9bayonet_night.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -717,7 +717,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Boreal Forest",
-                "image": "m9_bayonet_boreal_forest.png",
+                "image": "m9bayonet_boreal_forest.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -736,7 +736,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Case Hardened",
-                "image": "m9_bayonet_case_hardened.png",
+                "image": "m9bayonet_case_hardened.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -755,7 +755,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Stained",
-                "image": "m9_bayonet_stained.png",
+                "image": "m9bayonet_stained.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -774,7 +774,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Blue Steel",
-                "image": "m9_bayonet_blue_steel.png",
+                "image": "m9bayonet_blue_steel.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -793,7 +793,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Slaughter",
-                "image": "m9_bayonet_slaughter.png",
+                "image": "m9bayonet_slaughter.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT"],
                 "prices": {
@@ -808,7 +808,7 @@
             {
                 "weapon": "M9 Bayonet",
                 "name": "Fade",
-                "image": "m9_bayonet_fade.png",
+                "image": "m9bayonet_fade.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW"],
                 "prices": {
@@ -997,7 +997,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Night",
-                "image": "flip_knife_night.png",
+                "image": "flipknife_night.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -1016,7 +1016,7 @@
             {
                 "weapon": "Flip Knife",
                 "name": "Fade",
-                "image": "flip_knife_fade.png",
+                "image": "flipknife_fade.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW"],
                 "prices": {

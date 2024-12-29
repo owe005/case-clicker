@@ -29,328 +29,40 @@ class Skin:
     rarity: Rarity
     wear: Wear
     stattrak: bool = False
+    case_type: str = 'weapon_case_1'  # Add default case type
     
-    # Add price lookup method
     def get_price(self) -> float:
-        base_price = SKIN_PRICES.get(f"{self.weapon}|{self.name}", {})
-        wear_price = base_price.get(self.wear.name, 0)
+        # Map case_type to filename
+        case_file_mapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo'
+        }
         
-        if self.stattrak:
-            stattrak_price = base_price.get(f"ST_{self.wear.name}", wear_price * 2)
-            return stattrak_price
-        return wear_price
-
-# Add price dictionary after the Rarity and Wear enums
-SKIN_PRICES = {
-    "AWP|Lightning Strike": {
-        "FN": 495.00,
-        "MW": 547.00,
-        "ST_FN": 919.00,
-        "ST_MW": 900.00
-    },
-    "AK-47|Case Hardened": {
-        "FN": 324.41,
-        "MW": 237.90,
-        "FT": 211.26,
-        "WW": 169.45,
-        "BS": 163.70,
-        "ST_FN": 680.80,
-        "ST_MW": 478.39,
-        "ST_FT": 364.98,
-        "ST_WW": 315.49,
-        "ST_BS": 291.58
-    },
-    "Desert Eagle|Hypnotic": {
-        "FN": 84.06,
-        "MW": 85.17,
-        "ST_FN": 121.19,
-        "ST_MW": 180.99
-    },
-    "USP-S|Dark Water": {
-        "MW": 78.00,
-        "FT": 71.80,
-        "ST_MW": 122.00,
-        "ST_FT": 106.45
-    },
-    "Glock-18|Dragon Tattoo": {
-        "FN": 85.98,
-        "MW": 85.00,
-        "ST_FN": 347.49,
-        "ST_MW": 242.00
-    },
-    "M4A1-S|Dark Water": {
-        "MW": 76.28,
-        "FT": 72.00,
-        "ST_MW": 135.56,
-        "ST_FT": 101.56
-    },
-    "AUG|Wings": {
-        "FN": 22.95,
-        "MW": 23.55,
-        "ST_FN": 23.64,
-        "ST_MW": 23.88
-    },
-    "MP7|Skulls": {
-        "MW": 23.36,
-        "FT": 22.52,
-        "ST_MW": 22.63,
-        "ST_FT": 21.24
-    },
-    "SG 553|Ultraviolet": {
-        "FN": 33.89,
-        "MW": 23.40,
-        "FT": 22.81,
-        "WW": 22.36,
-        "BS": 22.03,
-        "ST_FN": 87.24,
-        "ST_MW": 24.40,
-        "ST_FT": 21.80,
-        "ST_WW": 21.16,
-        "ST_BS": 18.91
-    },
-    "★ Karambit|Urban Masked": {
-        "FN": 744.37,
-        "MW": 613.80,
-        "FT": 561.00,
-        "WW": 527.49,
-        "BS": 520.00,
-        "ST_FN": 987.20,
-        "ST_MW": 613.80,
-        "ST_FT": 523.98,
-        "ST_WW": 561.74,
-        "ST_BS": 534.34
-    },
-    "★ Karambit|Blue Steel": {
-        "FN": 1145.27,
-        "MW": 960.00,
-        "FT": 902.18,
-        "WW": 830.00,
-        "BS": 834.80,
-        "ST_FN": 2740.21,
-        "ST_MW": 986.47,
-        "ST_FT": 854.94,
-        "ST_WW": 808.36,
-        "ST_BS": 817.26
-    },
-    "★ Bayonet|Blue Steel": {
-        "FN": 437.88,
-        "MW": 322.58,
-        "FT": 299.00,
-        "WW": 273.07,
-        "BS": 251.68,
-        "ST_FN": 640.39,
-        "ST_MW": 337.45,
-        "ST_FT": 304.00,
-        "ST_WW": 287.51,
-        "ST_BS": 265.25
-    },
-    "★ M9 Bayonet|Urban Masked": {
-        "FN": 657.65,
-        "MW": 480.00,
-        "FT": 453.99,
-        "WW": 443.91,
-        "BS": 471.99,
-        "ST_FN": 3912.20,
-        "ST_MW": 465.99,
-        "ST_FT": 445.28,
-        "ST_WW": 438.29,
-        "ST_BS": 451.45
-    },
-    "★ M9 Bayonet|Safari Mesh": {
-        "FN": 749.99,
-        "MW": 451.92,
-        "FT": 432.83,
-        "WW": 438.16,
-        "BS": 445.76,
-        "ST_FN": 3275.24,
-        "ST_MW": 476.43,
-        "ST_FT": 432.54,
-        "ST_WW": 430.32,
-        "ST_BS": 438.29
-    },
-    "★ M9 Bayonet|Stained": {
-        "FN": 691.90,
-        "MW": 610.31,
-        "FT": 579.99,
-        "WW": 532.28,
-        "BS": 539.95,
-        "ST_FN": 684.36,
-        "ST_MW": 616.54,
-        "ST_FT": 566.08,
-        "ST_WW": 530.23,
-        "ST_BS": 527.49
-    },
-    "★ M9 Bayonet|Blue Steel": {
-        "FN": 893.24,
-        "MW": 748.59,
-        "FT": 719.49,
-        "WW": 697.06,
-        "BS": 688.61,
-        "ST_FN": 860.84,
-        "ST_MW": 705.00,
-        "ST_FT": 684.91,
-        "ST_WW": 657.79,
-        "ST_BS": 705.74
-    },
-    "★ Bayonet|Urban Masked": {
-        "FN": 328.82,
-        "MW": 212.79,
-        "FT": 178.47,
-        "WW": 177.29,
-        "BS": 175.23,
-        "ST_FN": 839.39,
-        "ST_MW": 239.76,
-        "ST_FT": 177.08,
-        "ST_WW": 220.00,
-        "ST_BS": 177.97
-    },
-    "★ Bayonet|Stained": {
-        "FN": 311.01,
-        "MW": 250.30,
-        "FT": 234.70,
-        "WW": 209.51,
-        "BS": 206.88,
-        "ST_FN": 548.04,
-        "ST_MW": 247.99,
-        "ST_FT": 229.33,
-        "ST_WW": 262.12,
-        "ST_BS": 210.57
-    },
-    "★ Flip Knife|Urban Masked": {
-        "FN": 270.00,
-        "MW": 166.00,
-        "FT": 145.79,
-        "WW": 138.18,
-        "BS": 134.95,
-        "ST_FN": 5000.00,
-        "ST_MW": 164.41,
-        "ST_FT": 143.69,
-        "ST_WW": 150.71,
-        "ST_BS": 135.50
-    },
-    "★ Flip Knife|Safari Mesh": {
-        "FN": 211.93,
-        "MW": 142.97,
-        "FT": 134.27,
-        "WW": 134.25,
-        "BS": 129.88,
-        "ST_FN": 520.00,
-        "ST_MW": 145.09,
-        "ST_FT": 135.96,
-        "ST_WW": 135.23,
-        "ST_BS": 134.20
-    },
-    "★ Flip Knife|Stained": {
-        "FN": 215.89,
-        "MW": 184.96,
-        "FT": 171.49,
-        "WW": 163.04,
-        "BS": 156.19,
-        "ST_FN": 233.24,
-        "ST_MW": 182.15,
-        "ST_FT": 173.47,
-        "ST_WW": 164.41,
-        "ST_BS": 157.56
-    },
-    "★ Gut Knife|Urban Masked": {
-        "FN": 132.62,
-        "MW": 95.13,
-        "FT": 94.00,
-        "WW": 110.00,
-        "BS": 91.29,
-        "ST_FN": 590.20,
-        "ST_MW": 97.69,
-        "ST_FT": 95.90,
-        "ST_WW": 145.90,
-        "ST_BS": 107.43
-    },
-    "★ Gut Knife|Safari Mesh": {
-        "FN": 393.48,
-        "MW": 96.52,
-        "FT": 92.75,
-        "WW": 98.95,
-        "BS": 90.57,
-        "ST_FN": 1590.14,
-        "ST_MW": 99.88,
-        "ST_FT": 90.42,
-        "ST_WW": 145.62,
-        "ST_BS": 306.10
-    },
-    "★ Gut Knife|Stained": {
-        "FN": 113.03,
-        "MW": 94.38,
-        "FT": 97.96,
-        "WW": 93.90,
-        "BS": 95.83,
-        "ST_FN": 199.90,
-        "ST_MW": 123.30,
-        "ST_FT": 126.81,
-        "ST_WW": 105.53,
-        "ST_BS": 97.00
-    },
-    "★ Gut Knife|Blue Steel": {
-        "FN": 164.13,
-        "MW": 106.10,
-        "FT": 101.02,
-        "WW": 95.94,
-        "BS": 102.13,
-        "ST_FN": 1096.08,
-        "ST_MW": 133.90,
-        "ST_FT": 126.10,
-        "ST_WW": 98.64,
-        "ST_BS": 118.00
-    },
-    "★ Karambit|Slaughter": {
-        "FN": 1272.21,
-        "MW": 1149.18,
-        "FT": 1035.00,
-        "ST_FN": 1279.99,
-        "ST_MW": 1094.01,
-        "ST_FT": 986.46
-    },
-    "★ Karambit|Fade": {
-        "FN": 2397.95,
-        "MW": 2327.23,
-        "ST_FN": 19294.89,
-        "ST_MW": 18272.21
-    }
-}
-
-# Add valid wear ranges for each skin after SKIN_PRICES
-VALID_WEARS = {
-    "AWP|Lightning Strike": ["FN", "MW"],
-    "AK-47|Case Hardened": ["FN", "MW", "FT", "WW", "BS"],
-    "Desert Eagle|Hypnotic": ["FN", "MW"],
-    "USP-S|Dark Water": ["MW", "FT"],
-    "Glock-18|Dragon Tattoo": ["FN", "MW"],
-    "M4A1-S|Dark Water": ["MW", "FT"],
-    "AUG|Wings": ["FN", "MW"],
-    "MP7|Skulls": ["MW", "FT"],
-    "SG 553|Ultraviolet": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ M9 Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Flip Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Gut Knife|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-    "★ Karambit|Slaughter": ["FN", "MW", "FT"],
-    "★ Karambit|Fade": ["FN", "MW"]
-}
+        try:
+            # Get the correct case file name
+            case_file = case_file_mapping.get(self.case_type, 'weapon_case_1')
+            with open(f'cases/{case_file}.json', 'r') as f:
+                case_data = json.load(f)
+                
+            # Search through all rarity categories
+            for rarity in case_data['skins'].values():
+                for skin in rarity:
+                    if skin['weapon'] == self.weapon and skin['name'] == self.name:
+                        prices = skin['prices']
+                        if self.stattrak:
+                            return prices.get(f"ST_{self.wear.name}", 0)
+                        return prices.get(self.wear.name, 0)
+            return 0
+        except Exception as e:
+            print(f"Error getting price: {e}")
+            return 0
 
 class Case:
-    def __init__(self, name: str, skins: dict):
+    def __init__(self, name: str, skins: dict, case_type: str = 'weapon_case_1'):
         self.name = name
         self.skins = skins
+        self.case_type = case_type
     
     def open(self) -> Skin:
         # Determine rarity first
@@ -375,22 +87,54 @@ class Case:
         
         chosen_skin = random.choice(possible_skins)
         
-        # For gold items, we still generate the actual knife but it's hidden in the animation
-        skin_key = f"{chosen_skin[0]}|{chosen_skin[1]}"
-        valid_wears = VALID_WEARS.get(skin_key, ["FT"])
-        chosen_wear = Wear[random.choice(valid_wears)]
+        try:
+            # Load case data to get valid wears
+            with open(f'cases/{self.case_type}.json', 'r') as f:
+                case_data = json.load(f)
+                
+            # Find the skin in the case data
+            skin_data = None
+            for rarity in case_data['skins'].values():
+                for skin in rarity:
+                    if skin['weapon'] == chosen_skin[0] and skin['name'] == chosen_skin[1]:
+                        skin_data = skin
+                        break
+                if skin_data:
+                    break
+            
+            if skin_data:
+                valid_wears = skin_data['valid_wears']
+                chosen_wear = Wear[random.choice(valid_wears)]
+                
+                # StatTrak™ chance (10% for all rarities)
+                stattrak = random.random() < 0.10
+                
+                return Skin(
+                    chosen_skin[0], 
+                    chosen_skin[1], 
+                    chosen_rarity, 
+                    chosen_wear, 
+                    stattrak,
+                    self.case_type
+                )
+        except Exception as e:
+            print(f"Error in Case.open(): {e}")
         
-        # StatTrak™ chance (10% for all rarities)
-        stattrak = random.random() < 0.10
-        
-        return Skin(chosen_skin[0], chosen_skin[1], chosen_rarity, chosen_wear, stattrak)
+        # Fallback to FT wear if something goes wrong
+        return Skin(
+            chosen_skin[0],
+            chosen_skin[1],
+            chosen_rarity,
+            Wear.FT,
+            False,
+            self.case_type
+        )
 
-def load_case_contents(case_type):
+def load_case(case_type: str) -> Case:
     try:
         with open(f'cases/{case_type}.json', 'r') as f:
             data = json.load(f)
             
-        # Convert the JSON structure to our Case format
         contents = {
             Rarity.GOLD: [],
             Rarity.RED: [],
@@ -399,7 +143,6 @@ def load_case_contents(case_type):
             Rarity.BLUE: []
         }
         
-        # Map JSON grades to Rarity
         grade_map = {
             'gold': Rarity.GOLD,
             'red': Rarity.RED,
@@ -408,68 +151,38 @@ def load_case_contents(case_type):
             'blue': Rarity.BLUE
         }
         
-        # Process each rarity category
         for grade, items in data['skins'].items():
             rarity = grade_map[grade]
             for item in items:
                 contents[rarity].append((item['weapon'], item['name']))
-                
-                # Update VALID_WEARS and SKIN_PRICES if not already present
-                skin_key = f"{item['weapon']}|{item['name']}"
-                if skin_key not in VALID_WEARS:
-                    VALID_WEARS[skin_key] = item['valid_wears']
-                if skin_key not in SKIN_PRICES:
-                    SKIN_PRICES[skin_key] = item['prices']
         
-        return Case(data['name'], contents)
+        # Pass the case_type to the Case constructor
+        return Case(data['name'], contents, case_type)
     except Exception as e:
-        print(f"Error loading case contents: {e}")
+        print(f"Error loading case {case_type}: {e}")
         return None
 
-# Replace the CSGO_WEAPON_CASE instantiation with:
-CSGO_WEAPON_CASE = load_case_contents('weapon_case_1')
+# Replace hardcoded case definitions with loaded ones
+CSGO_WEAPON_CASE = load_case('weapon_case_1')
+ESPORTS_2013_CASE = load_case('esports_2013')  # You'll need to create this JSON file
+OPERATION_BRAVO_CASE = load_case('operation_bravo')  # You'll need to create this JSON file
 
-ESPORTS_2013_CASE = Case("eSports 2013 Case", {
-    Rarity.RED: [
-        ("P90", "Death by Kitty")
-    ],
-    Rarity.PINK: [
-        ("AWP", "BOOM"),
-        ("AK-47", "Red Laminate")
-    ],
-    Rarity.PURPLE: [
-        ("Galil AR", "Orange DDPAT"),
-        ("P250", "Splash"),
-        ("Sawed-Off", "Orange DDPAT")
-    ],
-    Rarity.BLUE: [
-        ("M4A4", "Faded Zebra"),
-        ("MAG-7", "Memento"),
-        ("FAMAS", "Doomkitty")
-    ],
-    Rarity.GOLD: [
-        ("★ Karambit", "Fade"),
-        ("★ Karambit", "Slaughter"),
-        ("★ Karambit", "Urban Masked"),
-        ("★ Karambit", "Blue Steel"),
-        ("★ Karambit", "Stained"),
-        ("★ Karambit", "Safari Mesh"),
-        ("★ M9 Bayonet", "Urban Masked"),
-        ("★ M9 Bayonet", "Safari Mesh"),
-        ("★ M9 Bayonet", "Stained"),
-        ("★ M9 Bayonet", "Blue Steel"),
-        ("★ Bayonet", "Urban Masked"),
-        ("★ Bayonet", "Stained"),
-        ("★ Bayonet", "Blue Steel"),
-        ("★ Flip Knife", "Urban Masked"),
-        ("★ Flip Knife", "Safari Mesh"),
-        ("★ Flip Knife", "Stained"),
-        ("★ Gut Knife", "Urban Masked"),
-        ("★ Gut Knife", "Safari Mesh"),
-        ("★ Gut Knife", "Stained"),
-        ("★ Gut Knife", "Blue Steel")
-    ]
-})
+# Update the case prices to load from JSON files
+def get_case_price(case_type: str) -> float:
+    try:
+        with open(f'cases/{case_type}.json', 'r') as f:
+            data = json.load(f)
+            return data.get('price', 0)
+    except Exception:
+        return 0
+
+# Replace hardcoded CASE_PRICES with dynamic loading
+def get_case_prices() -> Dict[str, float]:
+    return {
+        'csgo': get_case_price('weapon_case_1'),
+        'esports': get_case_price('esports_2013'),
+        'bravo': get_case_price('operation_bravo')
+    }
 
 RANKS = {
     0: "Silver I",
@@ -571,7 +284,7 @@ CASE_PRICES = {
     'bravo': 150.00  # Add Operation Bravo Case price
 }
 
-VALID_WEARS.update({
+VALID_WEARS = {
     "AK-47|Fire Serpent": ["FN", "MW", "FT", "WW", "BS"],
     "Desert Eagle|Golden Koi": ["FN", "MW"],
     "AWP|Graphite": ["FN", "MW"],
@@ -586,24 +299,7 @@ VALID_WEARS.update({
     "Nova|Tempest": ["FN", "MW", "FT", "WW", "BS"],
     "Galil AR|Shattered": ["FN", "MW", "FT", "WW", "BS"],
     "UMP-45|Bone Pile": ["FN", "MW", "FT", "WW", "BS"]
-})
-
-SKIN_PRICES.update({
-    "AK-47|Fire Serpent": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "Desert Eagle|Golden Koi": {"FN": 0.00, "MW": 0.00},
-    "AWP|Graphite": {"FN": 0.00, "MW": 0.00},
-    "P90|Emerald Dragon": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "P2000|Ocean Foam": {"FN": 0.00, "MW": 0.00},
-    "USP-S|Overgrowth": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "MAC-10|Graven": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "M4A1-S|Bright Water": {"MW": 0.00, "FT": 0.00},
-    "M4A4|Zirka": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "Dual Berettas|Black Limba": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "SG 553|Wave Spray": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "Nova|Tempest": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "Galil AR|Shattered": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00},
-    "UMP-45|Bone Pile": {"FN": 0.00, "MW": 0.00, "FT": 0.00, "WW": 0.00, "BS": 0.00}
-})
+}
 
 # Add the Operation Bravo Case definition
 OPERATION_BRAVO_CASE = Case("Operation Bravo Case", {
@@ -1143,10 +839,11 @@ def buy_case():
     case_type = data.get('case_type')
     quantity = data.get('quantity', 1)
     
-    if case_type not in CASE_PRICES:
+    case_prices = get_case_prices()
+    if case_type not in case_prices:
         return jsonify({'error': 'Invalid case type'})
     
-    total_cost = CASE_PRICES[case_type] * quantity
+    total_cost = case_prices[case_type] * quantity
     user = create_user_from_dict(session['user'])
     
     if not user.can_afford(total_cost):
