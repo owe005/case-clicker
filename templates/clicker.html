@@ -32,8 +32,6 @@
 let clickCount = 0;
 let currentMultiplier = 1.0;
 let maxMultiplier = 2.0;
-let baseClickValue = 0.01;
-let autoClickerInterval;
 let clicksToCombo = 20; // Default value
 let comboClickCount = 0; // Track clicks for combo
 let chestTimeout;
@@ -89,7 +87,6 @@ async function initializeUpgrades() {
     try {
         const response = await fetch('/get_upgrades');
         const data = await response.json();
-        console.log('Initial upgrades:', data);
         
         if (data) {
             // Base click value starts at 0.01 at level 1
@@ -100,9 +97,6 @@ async function initializeUpgrades() {
             
             // Combo speed starts at 20 clicks at level 1
             clicksToCombo = Math.max(1, 21 - (data.combo_speed || 1));
-            
-            // Auto clicker starts at level 0 (not unlocked)
-            startAutoClicker(data.auto_clicker || 0);
             
             // Update auto click rate display
             updateAutoClickRate(data.auto_clicker || 0);
@@ -118,8 +112,6 @@ async function initializeUpgrades() {
             // Add critical strike level to window object and update display
             window.criticalStrikeLevel = data.critical_strike || 0;
             document.getElementById('crit-chance').textContent = window.criticalStrikeLevel;
-            
-            console.log('Critical Strike Level:', window.criticalStrikeLevel);
         }
     } catch (error) {
         console.error('Error initializing upgrades:', error);

@@ -748,23 +748,29 @@ def click():
     data = request.get_json()
     multiplier = data.get('amount', 0)
     critical = data.get('critical', False)
+    is_auto = data.get('auto', False)  # New flag for auto clicks
     
     user = create_user_from_dict(session['user'])
     
-    # Apply click value multiplier
-    base_click = 0.01 * (1.5 ** user.upgrades.click_value)
-    earned = base_click * multiplier
+    # For auto clicks, use base value without combo multiplier
+    if is_auto:
+        base_click = 0.01 * (1.5 ** user.upgrades.click_value)
+        earned = base_click
+    else:
+        base_click = 0.01 * (1.5 ** user.upgrades.click_value)
+        earned = base_click * multiplier
     
     # Apply critical multiplier if it was a critical hit
     if critical:
         earned *= 4
     
     user.balance += earned
+    user.add_exp(earned)  # Add exp based on earned amount
     
-    # Update session with ALL user data
+    # Update session
     session['user'] = {
         'balance': user.balance,
-        'inventory': user.inventory,  # Just pass the inventory directly since it's already in dict format
+        'inventory': user.inventory,
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -860,14 +866,7 @@ def purchase_upgrade():
     # Update session
     session['user'] = {
         'balance': user.balance,
-        'inventory': [{
-            'weapon': s.weapon,
-            'name': s.name,
-            'rarity': s.rarity.name,
-            'wear': s.wear.name,
-            'stattrak': s.stattrak,
-            'price': s.get_price()
-        } for s in user.inventory],
+        'inventory': user.inventory,  # The inventory already contains dictionaries
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
