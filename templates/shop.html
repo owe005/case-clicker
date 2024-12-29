@@ -122,207 +122,26 @@
 
 {% block scripts %}
 <script>
-    const knives = {
-        "Karambit": [
-            "Fade",
-            "Slaughter",
-            "Urban Masked",
-            "Blue Steel",
-            "Stained", 
-            "Safari Mesh"
-        ],
-        "M9 Bayonet": [
-            "Urban Masked",
-            "Safari Mesh",
-            "Stained",
-            "Blue Steel"
-        ],
-        "Bayonet": [
-            "Urban Masked",
-            "Stained",
-            "Blue Steel"
-        ],
-        "Flip Knife": [
-            "Urban Masked",
-            "Safari Mesh",
-            "Stained"
-        ],
-        "Gut Knife": [
-            "Urban Masked",
-            "Safari Mesh",
-            "Stained",
-            "Blue Steel"
-        ]
-    };
+    let caseContents = {};  // Will be populated dynamically
+    const validWears = {};
 
-    const skinPrices = {
-        // Remove all skin prices - these should be in a separate file
-    };
-
-    const caseContents = {
-        'csgo': {
-            name: "CS:GO Weapon Case",
-            contents: {
-                GOLD: [
-                    { weapon: "★ Karambit", name: "Urban Masked" },
-                    { weapon: "★ Karambit", name: "Blue Steel" },
-                    { weapon: "★ Karambit", name: "Stained" },
-                    { weapon: "★ Karambit", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Urban Masked" },
-                    { weapon: "★ M9 Bayonet", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Stained" },
-                    { weapon: "★ M9 Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Bayonet", name: "Urban Masked" },
-                    { weapon: "★ Bayonet", name: "Stained" },
-                    { weapon: "★ Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Flip Knife", name: "Urban Masked" },
-                    { weapon: "★ Flip Knife", name: "Safari Mesh" },
-                    { weapon: "★ Flip Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Urban Masked" },
-                    { weapon: "★ Gut Knife", name: "Safari Mesh" },
-                    { weapon: "★ Gut Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Blue Steel" }
-                ],
-                RED: [
-                    { weapon: "AWP", name: "Lightning Strike" }
-                ],
-                PINK: [
-                    { weapon: "AK-47", name: "Case Hardened" },
-                    { weapon: "Desert Eagle", name: "Hypnotic" }
-                ],
-                PURPLE: [
-                    { weapon: "Glock-18", name: "Dragon Tattoo" },
-                    { weapon: "M4A1-S", name: "Dark Water" },
-                    { weapon: "USP-S", name: "Dark Water" }
-                ],
-                BLUE: [
-                    { weapon: "SG 553", name: "Ultraviolet" },
-                    { weapon: "MP7", name: "Skulls" },
-                    { weapon: "AUG", name: "Wings" }
-                ]
-            }
-        },
-        'esports': {
-            name: "eSports 2013 Case",
-            contents: {
-                GOLD: [
-                    { weapon: "★ Karambit", name: "Urban Masked" },
-                    { weapon: "★ Karambit", name: "Blue Steel" },
-                    { weapon: "★ Karambit", name: "Stained" },
-                    { weapon: "★ Karambit", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Urban Masked" },
-                    { weapon: "★ M9 Bayonet", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Stained" },
-                    { weapon: "★ M9 Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Bayonet", name: "Urban Masked" },
-                    { weapon: "★ Bayonet", name: "Stained" },
-                    { weapon: "★ Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Flip Knife", name: "Urban Masked" },
-                    { weapon: "★ Flip Knife", name: "Safari Mesh" },
-                    { weapon: "★ Flip Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Urban Masked" },
-                    { weapon: "★ Gut Knife", name: "Safari Mesh" },
-                    { weapon: "★ Gut Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Blue Steel" }
-                ],
-                RED: [
-                    { weapon: "P90", name: "Death by Kitty" }
-                ],
-                PINK: [
-                    { weapon: "AWP", name: "BOOM" },
-                    { weapon: "AK-47", name: "Red Laminate" }
-                ],
-                PURPLE: [
-                    { weapon: "Galil AR", name: "Orange DDPAT" },
-                    { weapon: "P250", name: "Splash" },
-                    { weapon: "Sawed-Off", name: "Orange DDPAT" }
-                ],
-                BLUE: [
-                    { weapon: "M4A4", name: "Faded Zebra" },
-                    { weapon: "MAG-7", name: "Memento" },
-                    { weapon: "FAMAS", name: "Doomkitty" }
-                ]
-            }
-        },
-        'bravo': {
-            name: "Operation Bravo Case",
-            contents: {
-                GOLD: [
-                    { weapon: "★ Karambit", name: "Urban Masked" },
-                    { weapon: "★ Karambit", name: "Blue Steel" },
-                    { weapon: "★ Karambit", name: "Stained" },
-                    { weapon: "★ Karambit", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Urban Masked" },
-                    { weapon: "★ M9 Bayonet", name: "Safari Mesh" },
-                    { weapon: "★ M9 Bayonet", name: "Stained" },
-                    { weapon: "★ M9 Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Bayonet", name: "Urban Masked" },
-                    { weapon: "★ Bayonet", name: "Stained" },
-                    { weapon: "★ Bayonet", name: "Blue Steel" },
-                    { weapon: "★ Flip Knife", name: "Urban Masked" },
-                    { weapon: "★ Flip Knife", name: "Safari Mesh" },
-                    { weapon: "★ Flip Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Urban Masked" },
-                    { weapon: "★ Gut Knife", name: "Safari Mesh" },
-                    { weapon: "★ Gut Knife", name: "Stained" },
-                    { weapon: "★ Gut Knife", name: "Blue Steel" }
-                ],
-                RED: [
-                    { weapon: "AK-47", name: "Fire Serpent" },
-                    { weapon: "Desert Eagle", name: "Golden Koi" }
-                ],
-                PINK: [
-                    { weapon: "AWP", name: "Graphite" },
-                    { weapon: "P90", name: "Emerald Dragon" },
-                    { weapon: "P2000", name: "Ocean Foam" }
-                ],
-                PURPLE: [
-                    { weapon: "USP-S", name: "Overgrowth" },
-                    { weapon: "MAC-10", name: "Graven" },
-                    { weapon: "M4A1-S", name: "Bright Water" },
-                    { weapon: "M4A4", name: "Zirka" }
-                ],
-                BLUE: [
-                    { weapon: "Dual Berettas", name: "Black Limba" },
-                    { weapon: "SG 553", name: "Wave Spray" },
-                    { weapon: "Nova", name: "Tempest" },
-                    { weapon: "Galil AR", name: "Shattered" },
-                    { weapon: "UMP-45", name: "Bone Pile" }
-                ]
-            }
+    // Add this function to load case contents
+    async function loadCaseContents(caseType) {
+        try {
+            const response = await fetch(`/data/case_contents/${caseType}`);
+            const data = await response.json();
+            caseContents[caseType] = data;
+        } catch (error) {
+            console.error('Error loading case contents:', error);
         }
-    };
+    }
 
-    const validWears = {
-        "AWP|Lightning Strike": ["FN", "MW"],
-        "AK-47|Case Hardened": ["FN", "MW", "FT", "WW", "BS"],
-        "Desert Eagle|Hypnotic": ["FN", "MW"],
-        "USP-S|Dark Water": ["MW", "FT"],
-        "Glock-18|Dragon Tattoo": ["FN", "MW"],
-        "M4A1-S|Dark Water": ["MW", "FT"],
-        "AUG|Wings": ["FN", "MW"],
-        "MP7|Skulls": ["MW", "FT"],
-        "SG 553|Ultraviolet": ["FN", "MW", "FT", "WW", "BS"],
-        // Add knife wear ranges
-        "★ Flip Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Flip Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Flip Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-        "★ M9 Bayonet|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-        "★ M9 Bayonet|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-        "★ M9 Bayonet|Stained": ["FN", "MW", "FT", "WW", "BS"],
-        "★ M9 Bayonet|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Karambit|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Karambit|Blue Steel": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Karambit|Stained": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Karambit|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Gut Knife|Urban Masked": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Gut Knife|Safari Mesh": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Gut Knife|Stained": ["FN", "MW", "FT", "WW", "BS"],
-        "★ Gut Knife|Blue Steel": ["FN", "MW", "FT", "WW", "BS"]
-    };
+    // Load case contents when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadCaseContents('csgo');
+        await loadCaseContents('esports');
+        await loadCaseContents('bravo');
+    });
 
     function generateRandomItems(actualItem) {
         const itemPools = {
@@ -786,11 +605,26 @@
         }
     }
 
-    function showCaseContents(caseType) {
+    async function showCaseContents(caseType) {
         const overlay = document.getElementById('case-contents-overlay');
         const container = overlay.querySelector('.case-contents-container');
         const caseName = overlay.querySelector('.case-name');
+        
+        // Make sure we have the case data
+        if (!caseContents[caseType]) {
+            try {
+                await loadCaseContents(caseType);
+            } catch (error) {
+                console.error('Failed to load case contents:', error);
+                return;
+            }
+        }
+
         const caseData = caseContents[caseType];
+        if (!caseData) {
+            console.error('Case data not found for type:', caseType);
+            return;
+        }
 
         // Set case name
         caseName.textContent = caseData.name;
@@ -826,11 +660,24 @@
             goldGrid.appendChild(itemDiv);
         });
 
-        // Populate items for each rarity
-        Object.entries(caseData.contents).forEach(([rarity, items]) => {
-            if (rarity === 'GOLD') return; // Skip GOLD as we handled it above
+        // Map JSON rarity keys to display rarity classes
+        const rarityMapping = {
+            'red': 'RED',
+            'pink': 'PINK',
+            'purple': 'PURPLE',
+            'blue': 'BLUE'
+        };
+
+        // Populate items for each rarity from the skins object
+        Object.entries(caseData.skins).forEach(([rarity, items]) => {
+            if (rarity === 'gold') return; // Skip gold as we handled it above
             
-            const grid = overlay.querySelector(`.rarity-${rarity} .items-grid`);
+            const upperRarity = rarityMapping[rarity];
+            if (!upperRarity) return;
+
+            const grid = overlay.querySelector(`.rarity-${upperRarity} .items-grid`);
+            if (!grid) return;
+
             items.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'contents-item';
@@ -846,7 +693,17 @@
                     .replace(/ /g, '_');
                 
                 // Determine case path based on case type
-                const casePath = caseType === 'esports' ? 'esports_2013' : 'weapon_case_1';
+                let casePath;
+                switch(caseType) {
+                    case 'bravo':
+                        casePath = 'operation_bravo_case';
+                        break;
+                    case 'esports':
+                        casePath = 'esports_2013';
+                        break;
+                    default:
+                        casePath = 'weapon_case_1';
+                }
                 
                 itemDiv.innerHTML = `
                     <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 

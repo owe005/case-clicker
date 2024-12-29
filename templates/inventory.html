@@ -15,8 +15,10 @@
 <div class="inventory-section" id="skins-section">
     <h2>Skins</h2>
     <div id="inventory-items" class="items-grid">
-        {% for item in inventory if not item.is_case %}
-        <div class="skin rarity-{{ item.rarity }}" data-index="{{ loop.index0 }}">
+        {% set skin_index = namespace(value=0) %}
+        {% for item in inventory %}
+        {% if not item.is_case %}
+        <div class="skin rarity-{{ item.rarity }}" data-index="{{ skin_index.value }}">
             <div class="skin-image">
                 {% if not item.weapon.startswith('★') %}
                     {% set weapon_name = item.weapon.lower()
@@ -37,8 +39,10 @@
                 {{ item.name }} ({{ item.wear }})
             </div>
             <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
-            <button class="btn sell-btn" data-sell-index="{{ loop.index0 }}">Sell</button>
+            <button class="btn sell-btn" data-sell-index="{{ skin_index.value }}">Sell</button>
         </div>
+        {% set skin_index.value = skin_index.value + 1 %}
+        {% endif %}
         {% endfor %}
     </div>
 </div>
@@ -223,11 +227,64 @@ document.querySelectorAll('.category-btn').forEach(button => {
     });
 });
 
-// Keep existing sell functionality
+// Update the sell button click handler in the DOMContentLoaded event
 document.querySelectorAll('.sell-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const index = this.dataset.sellIndex;
-        sellItem(index);
+    button.addEventListener('click', async function() {
+        // Prevent double-clicking
+        if (this.disabled) return;
+        this.disabled = true;
+
+        const itemElement = this.closest('.skin');
+        if (!itemElement) {
+            console.error('Could not find parent skin element');
+            this.disabled = false;
+            return;
+        }
+        
+        const index = parseInt(itemElement.dataset.index);
+        if (isNaN(index)) {
+            console.error('Invalid index:', itemElement.dataset.index);
+            this.disabled = false;
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/sell/${index}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                this.disabled = false;
+                return;
+            }
+            
+            // Update balance
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            
+            // Remove the sold item from display with animation
+            itemElement.style.animation = 'fadeOut 0.3s';
+            setTimeout(() => {
+                itemElement.remove();
+                
+                // Update remaining items' indices
+                document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                    skin.dataset.index = newIndex;
+                    // Update the sell button's data-sell-index
+                    const sellBtn = skin.querySelector('.sell-btn');
+                    if (sellBtn) {
+                        sellBtn.dataset.sellIndex = newIndex;
+                    }
+                });
+            }, 300);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to sell item');
+        } finally {
+            this.disabled = false;
+        }
     });
 });
 
@@ -429,15 +486,15 @@ function generateRandomItems(actualItem) {
         const roll = Math.random() * 100;
         let chosenRarity;
         
-        if (roll < 0.26) {  // Changed from 10 to 0.26 for 0.26% chance
+        if (roll < 0.26) {  // 0.26% chance for Gold
             chosenRarity = "GOLD";
-        } else if (roll < 0.26 + 0.90) {  // Adjusted starting point to 0.26
+        } else if (roll < 0.26 + 0.90) {  // 0.90% chance for Red
             chosenRarity = "RED";
-        } else if (roll < 0.26 + 0.90 + 4.10) {  // Adjusted starting point to 0.26
+        } else if (roll < 0.26 + 0.90 + 4.10) {  // 4.10% chance for Pink
             chosenRarity = "PINK";
-        } else if (roll < 0.26 + 0.90 + 4.10 + 20.08) {  // Adjusted starting point to 0.26
+        } else if (roll < 0.26 + 0.90 + 4.10 + 20.08) {  // 20.08% chance for Purple
             chosenRarity = "PURPLE";
-        } else {
+        } else {  // Remaining ~74.66% chance for Blue
             chosenRarity = "BLUE";
         }
 
@@ -650,7 +707,7 @@ function showItemShowcase(item) {
     showcaseSound.play();
 }
 
-// Add this at the start of your script section
+// Update the DOMContentLoaded event handler
 document.addEventListener('DOMContentLoaded', () => {
     // Check if there's a new item to add
     const newItemJson = sessionStorage.getItem('newItem');
@@ -689,18 +746,98 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add sell button handler
         const sellBtn = skinDiv.querySelector('.sell-btn');
-        sellBtn.addEventListener('click', function() {
-            sellItem(this.dataset.sellIndex);
-        });
+        if (sellBtn) {
+            sellBtn.addEventListener('click', async function() {
+                const itemElement = this.closest('.skin');
+                if (!itemElement) return;
+                const index = parseInt(itemElement.dataset.index);
+                try {
+                    const response = await fetch(`/sell/${index}`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    
+                    // Update balance
+                    document.getElementById('balance').textContent = data.balance.toFixed(2);
+                    
+                    // Remove the sold item
+                    itemElement.style.animation = 'fadeOut 0.3s';
+                    setTimeout(() => {
+                        itemElement.remove();
+                        
+                        // Update remaining indices
+                        document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                            skin.dataset.index = newIndex;
+                        });
+                    }, 300);
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to sell item');
+                }
+            });
+        }
         
         inventoryItems.appendChild(skinDiv);
         
         // Clear the stored item
         sessionStorage.removeItem('newItem');
     }
+    
+    // Add click handlers to all existing sell buttons
+    document.querySelectorAll('.sell-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+            const itemElement = this.closest('.skin');
+            if (!itemElement) {
+                console.error('Could not find parent skin element');
+                return;
+            }
+            
+            const index = parseInt(itemElement.dataset.index);
+            if (isNaN(index)) {
+                console.error('Invalid index:', itemElement.dataset.index);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/sell/${index}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Update balance
+                document.getElementById('balance').textContent = data.balance.toFixed(2);
+                
+                // Remove the sold item from display with animation
+                itemElement.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    itemElement.remove();
+                    
+                    // Update remaining items' indices
+                    document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                        skin.dataset.index = newIndex;
+                    });
+                }, 300);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to sell item');
+            }
+        });
+    });
 });
 
-// Add the updateInventoryDisplay function here too
+// Update the updateInventoryDisplay function
 async function updateInventoryDisplay() {
     try {
         const response = await fetch('/get_inventory');
@@ -711,23 +848,22 @@ async function updateInventoryDisplay() {
             return;
         }
         
-        console.log('Received inventory data:', data.inventory);
-        
         const inventoryItems = document.getElementById('inventory-items');
-        if (!inventoryItems) return;
+        if (!inventoryItems) {
+            console.error('Could not find inventory-items element');
+            return;
+        }
         
         // Clear current inventory
         inventoryItems.innerHTML = '';
         
         // Add each item
-        data.inventory.forEach((item, index) => {
-            if (!item.is_case) {  // Only show skins, not cases
-                console.log('Processing inventory item:', item);
-                console.log('Item case_type:', item.case_type);
-                
+        let skinIndex = 0;
+        data.inventory.forEach((item) => {
+            if (!item.is_case) {
                 const skinDiv = document.createElement('div');
                 skinDiv.className = `skin rarity-${item.rarity}`;
-                skinDiv.dataset.index = index;
+                skinDiv.dataset.index = skinIndex;
                 
                 const weaponName = item.weapon.toLowerCase()
                     .replace('-', '')
@@ -736,8 +872,6 @@ async function updateInventoryDisplay() {
                     .replace('galil ar', 'galil')
                     .replace('galilar', 'galil');
                 const skinName = item.name.toLowerCase().replace(/ /g, '_');
-                
-                // Default to weapon_case_1 if case_type is not present
                 const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
                 
                 skinDiv.innerHTML = `
@@ -754,21 +888,55 @@ async function updateInventoryDisplay() {
                         ${item.name} (${item.wear})
                     </div>
                     <div class="item-price">$${item.price.toFixed(2)}</div>
-                    <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
+                    <button class="btn sell-btn" data-sell-index="${skinIndex}">Sell</button>
                 `;
                 
                 // Add sell button handler
                 const sellBtn = skinDiv.querySelector('.sell-btn');
-                sellBtn.addEventListener('click', function() {
-                    sellItem(this.dataset.sellIndex);
-                });
+                if (sellBtn) {
+                    sellBtn.addEventListener('click', async function() {
+                        const itemElement = this.closest('.skin');
+                        if (!itemElement) return;
+                        const index = parseInt(itemElement.dataset.index);
+                        try {
+                            const response = await fetch(`/sell/${index}`, {
+                                method: 'POST'
+                            });
+                            const data = await response.json();
+                            
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+                            
+                            // Update balance
+                            document.getElementById('balance').textContent = data.balance.toFixed(2);
+                            
+                            // Remove the sold item
+                            itemElement.style.animation = 'fadeOut 0.3s';
+                            setTimeout(() => {
+                                itemElement.remove();
+                                
+                                // Update remaining indices
+                                document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+                                    skin.dataset.index = newIndex;
+                                });
+                            }, 300);
+                            
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to sell item');
+                        }
+                    });
+                }
                 
                 inventoryItems.appendChild(skinDiv);
+                skinIndex++;
             }
         });
         
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error updating inventory:', error);
     }
 }
 
