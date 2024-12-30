@@ -225,7 +225,7 @@
 }
 
 .coin.flipping {
-    animation: flip 3s ease-out forwards;
+    animation: flip 3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .side {
@@ -799,16 +799,22 @@ document.addEventListener('DOMContentLoaded', () => {
             flipBtn.classList.add('hidden');
             
             // Calculate final rotation based on result
-            const rotations = 5;
-            const finalRotation = (rotations * 360) + (data.result === 't' ? 180 : 0);
-            coin.style.setProperty('--final-rotation', `${finalRotation}deg`);
+            const rotations = 10; // Increased number of rotations
+            const finalRotation = `${(rotations * 360) + (data.result === 't' ? 180 : 0)}deg`;
+            
+            // Remove any existing animation class
+            coin.classList.remove('flipping');
+            
+            // Force a reflow to ensure the animation runs
+            void coin.offsetWidth;
+            
+            // Set the final rotation and start animation
+            coin.style.setProperty('--final-rotation', finalRotation);
             coin.classList.add('flipping');
             
             // Wait for animation to finish
             setTimeout(() => {
-                coin.classList.remove('flipping');
-                
-                // Show the result and buttons
+                // Show the result only after animation is completely finished
                 const resultDisplay = document.querySelector('.coin-animation .result-display');
                 const gameButtons = document.querySelector('.coin-animation .game-buttons');
                 
@@ -844,7 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     balance.textContent = data.balance.toFixed(2);
                 }, 500);
-            }, 3000);
+            }, 3100); // Slightly longer than animation duration
             
         } catch (error) {
             console.error('Error:', error);

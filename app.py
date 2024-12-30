@@ -1,17 +1,18 @@
 from flask import Flask, render_template, jsonify, session, redirect, url_for, request, send_from_directory
-from dataclasses import dataclass, asdict
-from enum import Enum
+from dataclasses import asdict
 import random
-from typing import List, Dict, Tuple, Union
+from typing import Dict, Union
 import time
 import json
 from functools import wraps
 from datetime import timedelta
 
-app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days
+from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS
+from models import Case, User, Upgrades
 
-# Add login_required decorator
+app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days to reduce server load
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -26,143 +27,44 @@ def login_required(f):
                     'max_multiplier': 1,   # Start at level 1
                     'auto_clicker': 0,     # Start at level 0 (not unlocked)
                     'combo_speed': 1,      # Start at level 1
-                    'critical_strike': 0    # Add critical strike
+                    'critical_strike': 0   # Start at level 0 (not unlocked)
                 }
             }
         return f(*args, **kwargs)
     return decorated_function
 
-class Rarity(Enum):
-    BLUE = "Mil-Spec"
-    PURPLE = "Restricted"
-    PINK = "Classified"
-    RED = "Covert"
-    GOLD = "Rare Special"
-
-class Wear(Enum):
-    BS = "Battle-Scarred"
-    WW = "Well-Worn"
-    FT = "Field-Tested"
-    MW = "Minimal Wear"
-    FN = "Factory New"
-
-@dataclass
-class Skin:
-    weapon: str
-    name: str
-    rarity: Rarity
-    wear: Wear
-    stattrak: bool = False
-    case_type: str = 'weapon_case_1'  # Add default case type
+def load_case(case_type: str) -> Union[Case, Dict, None]:
+    """
+    Load case data from JSON file. Returns either a Case object for opening cases,
+    or a dictionary with basic case info for the shop display.
+    """
+    case_file_mapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case'
+    }
     
-    def get_price(self) -> float:
-        try:
-            # Get the correct case file based on case_type
-            case_file = {
-                'csgo': 'weapon_case_1',
-                'esports': 'esports_2013',
-                'bravo': 'operation_bravo'
-            }.get(self.case_type, 'weapon_case_1')
-            
-            with open(f'cases/{case_file}.json', 'r') as f:
-                case_data = json.load(f)
-                
-            # Search through all rarity categories
-            for grade, skins in case_data['skins'].items():
-                for skin in skins:
-                    if skin['weapon'] == self.weapon and skin['name'] == self.name:
-                        prices = skin['prices']
-                        wear_key = 'NO' if 'NO' in prices else self.wear.name
-                        if self.stattrak:
-                            return prices.get(f"ST_{wear_key}", 0)
-                        return prices.get(wear_key, 0)
-            return 0
-        except Exception as e:
-            print(f"Error getting price: {e}")
-            return 0
-
-class Case:
-    def __init__(self, name: str, skins: dict, case_type: str = 'weapon_case_1'):
-        self.name = name
-        self.skins = skins
-        self.case_type = case_type
-    
-    def open(self) -> Skin:
-        # Roll for rarity based on percentages
-        roll = random.random() * 100
-        
-        if roll < 0.26:  # 0.26% chance for Gold/Knives
-            chosen_rarity = Rarity.GOLD
-        elif roll < 0.26 + 0.90:  # 0.90% chance for Red
-            chosen_rarity = Rarity.RED
-        elif roll < 0.26 + 0.90 + 4.10:  # 4.10% chance for Pink
-            chosen_rarity = Rarity.PINK
-        elif roll < 0.26 + 0.90 + 4.10 + 20.08:  # 20.08% chance for Purple
-            chosen_rarity = Rarity.PURPLE
-        else:  # Remaining ~74.66% chance for Blue
-            chosen_rarity = Rarity.BLUE
-        
-        # Select random skin from chosen rarity
-        possible_skins = self.skins.get(chosen_rarity, [])
-        if not possible_skins:
-            return None
-        
-        chosen_skin = random.choice(possible_skins)
-        
-        try:
-            # Load case data to get valid wears
-            with open(f'cases/{self.case_type}.json', 'r') as f:
-                case_data = json.load(f)
-                
-            # Find the skin in the case data
-            skin_data = None
-            for rarity in case_data['skins'].values():
-                for skin in rarity:
-                    if skin['weapon'] == chosen_skin[0] and skin['name'] == chosen_skin[1]:
-                        skin_data = skin
-                        break
-                if skin_data:
-                    break
-            
-            if skin_data:
-                valid_wears = skin_data['valid_wears']
-                chosen_wear = Wear[random.choice(valid_wears)]
-                
-                # StatTrak™ chance (10% for all rarities)
-                stattrak = random.random() < 0.10
-                
-                return Skin(
-                    chosen_skin[0], 
-                    chosen_skin[1], 
-                    chosen_rarity, 
-                    chosen_wear, 
-                    stattrak,
-                    self.case_type
-                )
-        except Exception as e:
-            print(f"Error in Case.open(): {e}")
-        
-        # Fallback to FT wear if something goes wrong
-        return Skin(
-            chosen_skin[0],
-            chosen_skin[1],
-            chosen_rarity,
-            Wear.FT,
-            False,
-            self.case_type
-        )
-
-def load_case(case_type: str) -> Case:
     try:
-        case_file_mapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'  # Add Winter Offensive Case
-        }
-        
+        # If we just need basic case info for the shop
+        if case_type == 'all':
+            cases = {}
+            for case_key, file_name in case_file_mapping.items():
+                try:
+                    with open(f'cases/{file_name}.json', 'r') as f:
+                        case_data = json.load(f)
+                        cases[case_key] = {
+                            'name': case_data['name'],
+                            'image': case_data['image'],
+                            'price': case_data['price']
+                        }
+                except Exception as e:
+                    print(f"Error loading {file_name}: {e}")
+            return cases
+            
+        # For opening specific cases
         file_name = case_file_mapping.get(case_type)
         if not file_name:
             print(f"Invalid case type: {case_type}")
@@ -171,6 +73,7 @@ def load_case(case_type: str) -> Case:
         with open(f'cases/{file_name}.json', 'r') as f:
             data = json.load(f)
             
+        # For opening cases, create a Case object with full skin data
         contents = {
             Rarity.GOLD: [],
             Rarity.RED: [],
@@ -192,14 +95,11 @@ def load_case(case_type: str) -> Case:
             for item in items:
                 contents[rarity].append((item['weapon'], item['name']))
         
-        return Case(data['name'], contents, file_name)  # Pass the correct file name
+        return Case(data['name'], contents, file_name)
+        
     except Exception as e:
         print(f"Error loading case {case_type}: {e}")
         return None
-
-# Replace hardcoded case definitions with loaded ones
-CSGO_WEAPON_CASE = load_case('weapon_case_1')
-ESPORTS_2013_CASE = load_case('esports_2013')  # You'll need to create this JSON file
 
 # Update the case prices to load from JSON files
 def get_case_price(case_type: str) -> float:
@@ -220,85 +120,6 @@ def get_case_prices() -> Dict[str, float]:
         'esports_winter': get_case_price('esports_2013_winter'),
         'winter_offensive': get_case_price('winter_offensive_case')  # Add Winter Offensive Case
     }
-
-RANKS = {
-    0: "Silver I",
-    1: "Silver II", 
-    2: "Silver III",
-    3: "Silver IV",
-    4: "Silver Elite",
-    5: "Silver Elite Master",
-    6: "Gold Nova I",
-    7: "Gold Nova II",
-    8: "Gold Nova III",
-    9: "Gold Nova Master",
-    10: "Master Guardian I",
-    11: "Master Guardian II",
-    12: "Master Guardian Elite",
-    13: "Distinguished Master Guardian",
-    14: "Legendary Eagle",
-    15: "Legendary Eagle Master",
-    16: "Supreme Master First Class",
-    17: "The Global Elite"
-}
-
-RANK_EXP = {
-    0: 10,     # Silver I to Silver II
-    1: 50,     # Silver II to Silver III  
-    2: 100,    # Silver III to Silver IV
-    3: 200,    # Silver IV to Silver Elite
-    4: 500,    # Silver Elite to Silver Elite Master
-    5: 1000,   # Silver Elite Master to Gold Nova I
-    6: 2000,   # Gold Nova I to Gold Nova II
-    7: 5000,   # Gold Nova II to Gold Nova III
-    8: 10000,  # Gold Nova III to Gold Nova Master
-    9: 20000,  # Gold Nova Master to Master Guardian I
-    10: 50000, # Master Guardian I to Master Guardian II
-    11: 75000, # Master Guardian II to Master Guardian Elite
-    12: 100000,# Master Guardian Elite to Distinguished Master Guardian
-    13: 150000,# Distinguished Master Guardian to Legendary Eagle
-    14: 250000,# Legendary Eagle to Legendary Eagle Master
-    15: 500000,# Legendary Eagle Master to Supreme Master First Class
-    16: 1000000 # Supreme Master First Class to The Global Elite
-}
-
-@dataclass
-class Upgrades:
-    click_value: int = 1  # Start at level 1
-    max_multiplier: int = 1  # Start at level 1
-    auto_clicker: int = 0  # Start at level 0 (not unlocked)
-    combo_speed: int = 1  # Start at level 1
-    critical_strike: int = 0  # Start at level 0 (not unlocked)
-
-@dataclass
-class User:
-    balance: float = 1000.0
-    inventory: List[Union[Skin, dict]] = None  # Can contain both Skin objects and case dictionaries
-    exp: float = 0.0
-    rank: int = 0
-    upgrades: Upgrades = None
-
-    def __post_init__(self):
-        if self.inventory is None:
-            self.inventory = []
-        if self.upgrades is None:
-            self.upgrades = Upgrades()
-
-    def can_afford(self, amount: float) -> bool:
-        return self.balance >= amount
-
-    def add_skin(self, skin: Skin):
-        self.inventory.append(skin)
-
-    def subtract_balance(self, amount: float):
-        self.balance -= amount
-        self.add_exp(amount)
-    
-    def add_exp(self, amount: float):
-        self.exp += amount
-        while self.rank < len(RANK_EXP) and int(self.exp) >= RANK_EXP[self.rank]:
-            self.exp -= RANK_EXP[self.rank]
-            self.rank += 1
 
 def create_user_from_dict(data: dict) -> User:
     upgrades_data = data.get('upgrades', {})
@@ -333,12 +154,11 @@ def create_user_from_dict(data: dict) -> User:
                     'stattrak': item.get('stattrak', False),
                     'price': item.get('price', 0),
                     'timestamp': item.get('timestamp', 0),
-                    'case_type': item.get('case_type', 'csgo')  # Default to 'csgo' if not present
+                    'case_type': item.get('case_type', 'csgo')
                 }
                 user.inventory.append(skin_dict)
     return user
 
-# Update the case prices
 CASE_PRICES = {
     'csgo': 125.00,  # CS:GO Weapon Case
     'esports': 55.00,   # eSports 2013 Case
@@ -347,49 +167,6 @@ CASE_PRICES = {
     'esports_winter': 11.00,  # eSports 2013 Winter Case price
     'winter_offensive': 10.00  # Winter Offensive Case price
 }
-
-VALID_WEARS = {
-    "AK-47|Fire Serpent": ["FN", "MW", "FT", "WW", "BS"],
-    "Desert Eagle|Golden Koi": ["FN", "MW"],
-    "AWP|Graphite": ["FN", "MW"],
-    "P90|Emerald Dragon": ["FN", "MW", "FT", "WW", "BS"],
-    "P2000|Ocean Foam": ["FN", "MW"],
-    "USP-S|Overgrowth": ["FN", "MW", "FT", "WW", "BS"],
-    "MAC-10|Graven": ["FN", "MW", "FT", "WW", "BS"],
-    "M4A1-S|Bright Water": ["MW", "FT"],
-    "M4A4|Zirka": ["FN", "MW", "FT", "WW", "BS"],
-    "Dual Berettas|Black Limba": ["FN", "MW", "FT", "WW", "BS"],
-    "SG 553|Wave Spray": ["FN", "MW", "FT", "WW", "BS"],
-    "Nova|Tempest": ["FN", "MW", "FT", "WW", "BS"],
-    "Galil AR|Shattered": ["FN", "MW", "FT", "WW", "BS"],
-    "UMP-45|Bone Pile": ["FN", "MW", "FT", "WW", "BS"]
-}
-
-# Add this function to load case data
-def load_case_data():
-    cases = {}
-    case_files = {
-        'csgo': 'cases/weapon_case_1.json',
-        'esports': 'cases/esports_2013.json',
-        'bravo': 'cases/operation_bravo.json',
-        'csgo2': 'cases/weapon_case_2.json',
-        'esports_winter': 'cases/esports_2013_winter.json',
-        'winter_offensive': 'cases/winter_offensive_case.json'  # Add Winter Offensive Case
-    }
-    
-    for case_type, file_path in case_files.items():
-        try:
-            with open(file_path, 'r') as f:
-                case_data = json.load(f)
-                cases[case_type] = {
-                    'name': case_data['name'],
-                    'image': case_data['image'],
-                    'price': case_data['price']
-                }
-        except Exception as e:
-            print(f"Error loading {file_path}: {e}")
-            
-    return cases
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -412,7 +189,7 @@ def index():
 @app.route('/shop')
 @login_required
 def shop():
-    cases = load_case_data()
+    cases = load_case('all')  # Get all case data for shop display
     user = create_user_from_dict(session['user'])
     return render_template('shop.html',
         cases=cases,
@@ -506,9 +283,11 @@ def open_case(case_type):
                 case_found = True
                 # Decrease case quantity
                 inventory[i]['quantity'] = quantity - 1
+
                 # If quantity is 0, remove the case
                 if inventory[i]['quantity'] <= 0:
                     inventory.pop(i)
+
                 break
     
     if not case_found:
@@ -805,7 +584,7 @@ def update_session():
     return jsonify({'success': True})
 
 # Required for session handling
-app.secret_key = 'your-secret-key-here'  # Change this to a secure key in production
+app.secret_key = 'GHJy79fuRYt79UyfF68YGIftR6+90iUOHtdR68ohHIOpjU+9gRD68r'
 
 @app.route('/upgrades')
 def upgrades():
@@ -865,7 +644,7 @@ def purchase_upgrade():
     # Update session
     session['user'] = {
         'balance': user.balance,
-        'inventory': user.inventory,  # The inventory already contains dictionaries
+        'inventory': user.inventory,  
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -875,7 +654,7 @@ def purchase_upgrade():
         'success': True,
         'balance': user.balance,
         'upgrades': asdict(user.upgrades),
-        'nextCost': next_cost  # Send the next cost to the frontend
+        'nextCost': next_cost 
     })
 
 @app.route('/get_upgrades')
@@ -886,7 +665,7 @@ def get_upgrades():
             'max_multiplier': 0,
             'auto_clicker': 0,
             'combo_speed': 0,
-            'critical_strike': 0  # Add critical strike
+            'critical_strike': 0  
         })
     
     user = create_user_from_dict(session['user'])
@@ -895,7 +674,7 @@ def get_upgrades():
         'max_multiplier': user.upgrades.max_multiplier,
         'auto_clicker': user.upgrades.auto_clicker,
         'combo_speed': user.upgrades.combo_speed,
-        'critical_strike': user.upgrades.critical_strike  # Add critical strike
+        'critical_strike': user.upgrades.critical_strike 
     })
 
 @app.route('/cheat')
@@ -911,17 +690,17 @@ def cheat():
                 'max_multiplier': 1,
                 'auto_clicker': 0,
                 'combo_speed': 1,
-                'critical_strike': 0    # Add critical strike
+                'critical_strike': 0 
             }
         }
     
     user = create_user_from_dict(session['user'])
     user.balance += 10000.0
     
-    # Update session - just pass the inventory directly since items are already dictionaries
+    
     session['user'] = {
         'balance': user.balance,
-        'inventory': user.inventory,  # The inventory already contains dictionaries
+        'inventory': user.inventory,  
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -946,7 +725,7 @@ def chest_reward():
     # Update session while preserving cases
     session['user'] = {
         'balance': user.balance,
-        'inventory': inventory,  # Keep the entire inventory including cases
+        'inventory': inventory,  
         'exp': user.exp,
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
@@ -1043,9 +822,7 @@ def buy_case():
         'rank': user.rank,
         'upgrades': asdict(user.upgrades)
     }
-    
-    print("Updated inventory:", inventory)  # Debug print
-    
+
     return jsonify({
         'success': True,
         'balance': user.balance
@@ -1120,7 +897,7 @@ def get_case_contents(case_type):
         'bravo': 'operation_bravo',
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'  # Add Winter Offensive Case
+        'winter_offensive': 'winter_offensive_case' 
     }
     
     if case_type not in case_file_mapping:
@@ -1194,7 +971,6 @@ def play_coinflip():
         print(f"Error in play_coinflip: {e}")
         return jsonify({'error': 'Failed to play coinflip'})
 
-# Add new route to update balance after animation
 @app.route('/update_coinflip_balance', methods=['POST'])
 @login_required
 def update_coinflip_balance():
@@ -1306,10 +1082,6 @@ def update_roulette_balance():
     except Exception as e:
         print(f"Error updating balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
-
-# Add these constants at the top of the file with other constants
-RED_NUMBERS = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}
-BLACK_NUMBERS = {2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35}
 
 if __name__ == '__main__':
     app.run(debug=True)
