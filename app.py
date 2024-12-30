@@ -1197,7 +1197,6 @@ class BlackjackGame:
         # Determine winner if game is over
         message = ""
         won = [False] * len(self.player_hands)
-        
         if self.game_over:
             for i, score in enumerate(player_scores):
                 if score > 21:
@@ -1394,6 +1393,113 @@ def play_blackjack():
             state['error'] = 'Failed to process game action'
             return jsonify(state)
         return jsonify({'error': 'Failed to process game action'})
+
+@app.route('/crash')
+@login_required
+def crash():
+    return render_template('crash.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/play_crash', methods=['POST'])
+@login_required
+def play_crash():
+    try:
+        data = request.get_json()
+        bet_amount = float(data.get('amount', 0))
+        auto_cashout = data.get('auto_cashout')
+        if auto_cashout is not None:
+            auto_cashout = float(auto_cashout)
+        
+        if bet_amount <= 0:
+            return jsonify({'error': 'Invalid bet amount'})
+        
+        user = create_user_from_dict(session['user'])
+        
+        if bet_amount > user.balance:
+            return jsonify({'error': 'Insufficient funds'})
+        
+        # Deduct bet amount immediately
+        user.balance -= bet_amount
+        
+        # Store the bet amount in session
+        session['crash_bet'] = bet_amount
+        
+        # Update session with new balance
+        session['user'] = {
+            'balance': user.balance,
+            'inventory': user.inventory,
+            'exp': user.exp,
+            'rank': user.rank,
+            'upgrades': asdict(user.upgrades)
+        }
+        
+        # Return the new balance so we can update the UI
+        return jsonify({
+            'success': True,
+            'balance': user.balance
+        })
+        
+    except Exception as e:
+        print(f"Error in play_crash: {e}")
+        return jsonify({'error': 'Failed to place bet'})
+
+@app.route('/crash_cashout', methods=['POST'])
+@login_required
+def crash_cashout():
+    try:
+        data = request.get_json()
+        multiplier = float(data.get('multiplier', 1))
+        
+        # Get the current bet amount from session
+        current_game_bet = session.get('crash_bet')
+        
+        if current_game_bet is None:  # Changed condition
+            return jsonify({'error': 'No active bet found'})
+        
+        # Calculate winnings
+        winnings = current_game_bet * multiplier
+        
+        # Update user balance
+        user = create_user_from_dict(session['user'])
+        user.balance += winnings
+        
+        # Update session
+        session['user'] = {
+            'balance': user.balance,
+            'inventory': user.inventory,
+            'exp': user.exp,
+            'rank': user.rank,
+            'upgrades': asdict(user.upgrades)
+        }
+        session['crash_bet'] = None  # Changed to None instead of 0
+        
+        return jsonify({
+            'success': True,
+            'balance': user.balance
+        })
+        
+    except Exception as e:
+        print(f"Error in crash_cashout: {e}")
+        return jsonify({'error': 'Failed to process cashout'})
+
+@app.route('/crash_end', methods=['POST'])
+@login_required
+def crash_end():
+    try:
+        data = request.get_json()
+        crashed = data.get('crashed', False)
+        
+        if crashed:
+            # Reset current bet
+            session['crash_bet'] = None  # Changed to None instead of 0
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        print(f"Error in crash_end: {e}")
+        return jsonify({'error': 'Failed to process game end'})
 
 if __name__ == '__main__':
     app.run(debug=True)
