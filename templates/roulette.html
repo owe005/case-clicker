@@ -68,7 +68,9 @@
             <button class="quick-bet double-bet">x2</button>
             <button class="quick-bet half-balance">1/2</button>
             <button class="quick-bet max-balance">Max</button>
-            <button class="quick-bet clear-bets">Clear</button>
+            <button class="quick-bet repeat-bet" disabled>Repeat</button>
+            <button class="quick-bet clear-input">Clear Input</button>
+            <button class="quick-bet clear-bets">Clear Bets</button>
         </div>
 
         <div class="bet-input">
@@ -292,7 +294,7 @@
 
 .quick-bet-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -490,6 +492,16 @@
     color: #dc3545;
     animation: pulse 1s infinite;
 }
+
+/* Add styles for disabled repeat button */
+.quick-bet:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quick-bet:disabled:hover {
+    background: #3a3a3a;
+}
 </style>
 
 <script>
@@ -526,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const incrementAmount = parseFloat(btn.dataset.amount);
                 newAmount = currentBet + incrementAmount;
             } else if (btn.classList.contains('half-balance')) {
-                newAmount = currentBalance / 2;
+                newAmount = currentBet / 2;
             } else if (btn.classList.contains('double-bet')) {
                 newAmount = Math.min(currentBet * 2, currentBalance);
             } else if (btn.classList.contains('max-balance')) {
@@ -534,10 +546,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (btn.classList.contains('clear-bets')) {
                 clearBets();
                 return;
+            } else if (btn.classList.contains('clear-input')) {
+                betInput.value = '1.00';
+                return;
             }
             
-            // Ensure bet doesn't exceed balance
-            newAmount = Math.min(newAmount, currentBalance);
+            // Ensure bet doesn't go below 0.01 and doesn't exceed balance
+            newAmount = Math.max(0.01, Math.min(newAmount, currentBalance));
             betInput.value = newAmount.toFixed(2);
         });
     });
@@ -583,12 +598,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    let lastBetPattern = null;
+    
     function placeBet(betType, amount) {
         if (currentBets[betType]) {
             currentBets[betType] += amount;
         } else {
             currentBets[betType] = amount;
         }
+        
+        // Store last bet pattern when a new bet is placed
+        lastBetPattern = {...currentBets};
+        
+        // Enable repeat button when we have a pattern
+        document.querySelector('.repeat-bet').disabled = false;
         
         // Update visual selection
         const element = document.querySelector(`[data-number="${betType}"]`) || 
@@ -740,6 +763,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGameCycle() {
         timeRemaining = BETTING_TIME;
         bettingOpen = true;
+        
+        // Re-enable all betting buttons
+        document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet').forEach(el => {
+            el.disabled = false;
+        });
+        
         updateTimerDisplay();
 
         // Clear any existing intervals
@@ -908,6 +937,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modify the play again button handler
     document.querySelector('.play-again-btn').addEventListener('click', () => {
         document.querySelector('.result-overlay').classList.add('hidden');
+        
+        // Re-enable betting
+        bettingOpen = true;
+        
+        // Re-enable all betting buttons
+        document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet').forEach(el => {
+            el.disabled = false;
+        });
+        
+        // Start a new game cycle
+        startGameCycle();
+    });
+
+    // Add repeat bet functionality
+    document.querySelector('.repeat-bet').addEventListener('click', () => {
+        if (!lastBetPattern || !bettingOpen) {
+            return;
+        }
+        
+        const currentBalance = parseFloat(document.getElementById('balance').textContent);
+        const totalLastBet = Object.values(lastBetPattern).reduce((sum, amount) => sum + amount, 0);
+        
+        if (totalLastBet > currentBalance) {
+            alert('Insufficient funds to repeat last bet');
+            return;
+        }
+        
+        // Clear current bets before repeating
+        clearBets();
+        
+        // Replay the last bet pattern
+        for (const [betType, amount] of Object.entries(lastBetPattern)) {
+            placeBet(betType, amount);
+        }
+        
+        updateBetsList();
     });
 
     // Start the game cycle when the page loads
