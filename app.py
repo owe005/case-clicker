@@ -6,11 +6,14 @@ import time
 import json
 from functools import wraps
 from datetime import timedelta
+from dataclasses import dataclass
+from typing import List, Optional
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS
 from models import Case, User, Upgrades
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-here'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days to reduce server load
 
 def login_required(f):
@@ -1082,6 +1085,315 @@ def update_roulette_balance():
     except Exception as e:
         print(f"Error updating balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
+
+@dataclass
+class Card:
+    rank: str
+    suit: str
+    value: int
+
+class BlackjackGame:
+    def __init__(self):
+        self.deck = []
+        self.dealer_cards = []
+        self.player_hands = [[]]  # List of hands (each hand is a list of cards)
+        self.current_hand = 0     # Index of the current hand being played
+        self.bet_amount = 0
+        self.split_bet_amount = 0  # Additional bet for split hand
+        self.game_over = False
+        self._create_deck()
+        self._shuffle()
+    
+    def _create_deck(self):
+        suits = ['♠', '♥', '♣', '♦']
+        ranks = {
+            'A': 11, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+            '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
+        }
+        self.deck = [Card(rank, suit, value) for suit in suits 
+                    for rank, value in ranks.items()]
+    
+    def _shuffle(self):
+        random.shuffle(self.deck)
+    
+    def deal(self, bet_amount: float):
+        self.bet_amount = bet_amount
+        self.split_bet_amount = 0
+        self.dealer_cards = [self.deck.pop(), self.deck.pop()]
+        self.player_hands = [[self.deck.pop(), self.deck.pop()]]
+        self.current_hand = 0
+        self.game_over = False
+        
+        # Check for natural blackjack
+        if self.get_score(self.player_hands[0]) == 21:
+            self.game_over = True
+    
+    def hit(self):
+        current_hand = self.player_hands[self.current_hand]
+        current_hand.append(self.deck.pop())
+        
+        if self.get_score(current_hand) > 21:
+            if self.current_hand < len(self.player_hands) - 1:
+                # Move to next split hand if available
+                self.current_hand += 1
+            else:
+                self.game_over = True
+    
+    def stand(self):
+        if self.current_hand < len(self.player_hands) - 1:
+            # Move to next split hand
+            self.current_hand += 1
+        else:
+            # All hands complete, dealer's turn
+            while self.get_score(self.dealer_cards) < 17:
+                self.dealer_cards.append(self.deck.pop())
+            self.game_over = True
+    
+    def double_down(self):
+        self.bet_amount *= 2
+        self.player_hands[self.current_hand].append(self.deck.pop())
+        self.game_over = True
+        self.stand()
+    
+    def can_split(self) -> bool:
+        current_hand = self.player_hands[self.current_hand]
+        return (len(current_hand) == 2 and 
+                current_hand[0].rank == current_hand[1].rank and 
+                len(self.player_hands) == 1)  # Can only split once
+    
+    def split(self):
+        if not self.can_split():
+            raise ValueError("Cannot split current hand")
+        
+        # Create new hand with second card
+        current_hand = self.player_hands[self.current_hand]
+        new_hand = [current_hand.pop()]
+        
+        # Deal one new card to each hand
+        current_hand.append(self.deck.pop())
+        new_hand.append(self.deck.pop())
+        
+        # Add new hand to player_hands
+        self.player_hands.append(new_hand)
+        self.split_bet_amount = self.bet_amount  # Match original bet
+    
+    @staticmethod
+    def get_score(cards: List[Card]) -> int:
+        score = sum(card.value for card in cards)
+        num_aces = sum(1 for card in cards if card.rank == 'A')
+        
+        # Adjust for aces
+        while score > 21 and num_aces:
+            score -= 10
+            num_aces -= 1
+            
+        return score
+    
+    def get_game_state(self) -> dict:
+        dealer_score = self.get_score(self.dealer_cards)
+        player_scores = [self.get_score(hand) for hand in self.player_hands]
+        current_hand_score = player_scores[self.current_hand]
+        
+        # Determine winner if game is over
+        message = ""
+        won = [False] * len(self.player_hands)
+        
+        if self.game_over:
+            for i, score in enumerate(player_scores):
+                if score > 21:
+                    won[i] = False
+                elif dealer_score > 21:
+                    won[i] = True
+                elif score == 21 and len(self.player_hands[i]) == 2:
+                    won[i] = True
+                elif score > dealer_score:
+                    won[i] = True
+                elif score == dealer_score:
+                    won[i] = None
+            
+            # Set appropriate message
+            if all(w is False for w in won):
+                message = "All hands lost!"
+            elif all(w is True for w in won):
+                message = "All hands won!"
+            elif len(won) > 1:
+                wins = sum(1 for w in won if w is True)
+                message = f"Won {wins} hand{'s' if wins != 1 else ''}!"
+            else:
+                if won[0] is True:
+                    message = "You win!"
+                elif won[0] is None:
+                    message = "Push! It's a tie"
+                else:
+                    message = "Dealer wins!"
+        
+        return {
+            'dealer': {
+                'cards': [{'rank': c.rank, 'suit': c.suit} for c in self.dealer_cards],
+                'score': dealer_score
+            },
+            'player': {
+                'hands': [[{'rank': c.rank, 'suit': c.suit} for c in hand] 
+                         for hand in self.player_hands],
+                'scores': player_scores,
+                'currentHand': self.current_hand
+            },
+            'gameOver': self.game_over,
+            'message': message,
+            'won': won,
+            'betAmount': self.bet_amount,
+            'splitBetAmount': self.split_bet_amount,
+            'canHit': not self.game_over and current_hand_score < 21,
+            'canStand': not self.game_over and current_hand_score <= 21,
+            'canDouble': not self.game_over and len(self.player_hands[self.current_hand]) == 2,
+            'canSplit': not self.game_over and self.can_split()
+        }
+    
+    def serialize(self) -> dict:
+        """Convert game state to a dictionary for session storage"""
+        return {
+            'deck': [{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in self.deck],
+            'dealer_cards': [{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in self.dealer_cards],
+            'player_hands': [[{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in hand] 
+                           for hand in self.player_hands],
+            'current_hand': self.current_hand,
+            'bet_amount': self.bet_amount,
+            'split_bet_amount': self.split_bet_amount,
+            'game_over': self.game_over
+        }
+    
+    @classmethod
+    def deserialize(cls, data: dict) -> 'BlackjackGame':
+        """Create a game instance from serialized data"""
+        game = cls()
+        if data:
+            game.deck = [Card(**card) for card in data['deck']]
+            game.dealer_cards = [Card(**card) for card in data['dealer_cards']]
+            game.player_hands = [[Card(**card) for card in hand] 
+                               for hand in data['player_hands']]
+            game.current_hand = data['current_hand']
+            game.bet_amount = data['bet_amount']
+            game.split_bet_amount = data['split_bet_amount']
+            game.game_over = data['game_over']
+        return game
+
+@app.route('/blackjack')
+@login_required
+def blackjack():
+    return render_template('blackjack.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/play_blackjack', methods=['POST'])
+@login_required
+def play_blackjack():
+    try:
+        data = request.get_json()
+        action = data.get('action')
+        
+        # Initialize game if not exists
+        if 'blackjack_game' not in session:
+            session['blackjack_game'] = None
+        
+        # Deserialize game from session
+        game = BlackjackGame.deserialize(session.get('blackjack_game')) if session.get('blackjack_game') else None
+        
+        if not game and action != 'deal':
+            return jsonify({'error': 'No game in progress'})
+        
+        if action == 'deal':
+            bet_amount = round(float(data.get('amount', 0)), 2)  # Round to 2 decimal places
+            current_balance = round(float(session['user']['balance']), 2)  # Round to 2 decimal places
+            
+            # Add debug logging
+            print(f"Bet amount: {bet_amount}, Current balance: {current_balance}")
+            
+            if bet_amount <= 0:
+                return jsonify({'error': 'Bet amount must be greater than 0'})
+            if bet_amount > current_balance:
+                return jsonify({'error': f'Insufficient funds (bet: ${bet_amount:.2f}, balance: ${current_balance:.2f})'})
+            
+            # Create new game
+            game = BlackjackGame()
+            game.deal(bet_amount)
+            
+            # Store initial bet
+            session['user']['balance'] = round(current_balance - bet_amount, 2)  # Round result
+            session.modified = True
+            
+        elif action == 'split':
+            if not game:
+                return jsonify({'error': 'No game in progress'})
+            
+            # Check if player can afford split
+            current_balance = float(session['user']['balance'])
+            if game.bet_amount > current_balance:
+                return jsonify({'error': 'Insufficient funds to split'})
+            
+            # Deduct split bet amount
+            session['user']['balance'] = current_balance - game.bet_amount
+            game.split()
+            
+        elif action == 'hit':
+            if not game:
+                return jsonify({'error': 'No game in progress'})
+            game.hit()
+            
+        elif action == 'stand':
+            if not game:
+                return jsonify({'error': 'No game in progress'})
+            game.stand()
+            
+        elif action == 'double':
+            # Check if player can afford double down
+            current_balance = float(session['user']['balance'])
+            if game.bet_amount > current_balance:
+                # Return current game state along with error
+                state = game.get_game_state()
+                state['error'] = 'Insufficient funds to double down'
+                return jsonify(state)
+            
+            # Deduct additional bet amount
+            session['user']['balance'] = current_balance - game.bet_amount
+            game.double_down()
+        
+        # Get game state
+        state = game.get_game_state()
+        
+        # Update balance if game is over
+        if state['gameOver']:
+            current_balance = float(session['user']['balance'])
+            total_won = 0
+            
+            for i, won in enumerate(state['won']):
+                bet = game.bet_amount if i == 0 else game.split_bet_amount
+                if won is True:
+                    total_won += bet * 2
+                elif won is None:  # Push
+                    total_won += bet
+            
+            session['user']['balance'] = current_balance + total_won
+            
+            # Clear game
+            session['blackjack_game'] = None
+        else:
+            # Store serialized game state in session
+            session['blackjack_game'] = game.serialize()
+        
+        # Add balance to response
+        state['balance'] = session['user']['balance']
+        
+        return jsonify(state)
+        
+    except Exception as e:
+        print(f"Error in play_blackjack: {e}")
+        if game:
+            # If we have a game state, return it along with the error
+            state = game.get_game_state()
+            state['error'] = 'Failed to process game action'
+            return jsonify(state)
+        return jsonify({'error': 'Failed to process game action'})
 
 if __name__ == '__main__':
     app.run(debug=True)
