@@ -1100,6 +1100,7 @@ class BlackjackGame:
         self.current_hand = 0     # Index of the current hand being played
         self.bet_amount = 0
         self.split_bet_amount = 0  # Additional bet for split hand
+        self.insurance_bet = 0  # Add this line
         self.game_over = False
         self._create_deck()
         self._shuffle()
@@ -1124,8 +1125,15 @@ class BlackjackGame:
         self.current_hand = 0
         self.game_over = False
         
-        # Check for natural blackjack
-        if self.get_score(self.player_hands[0]) == 21:
+        # Check for dealer blackjack
+        dealer_score = self.get_score(self.dealer_cards)
+        player_score = self.get_score(self.player_hands[0])
+        
+        # End game immediately if dealer has blackjack
+        if dealer_score == 21 and len(self.dealer_cards) == 2:
+            self.game_over = True
+        # Also end game if player has blackjack (either push or win)
+        elif player_score == 21 and len(self.player_hands[0]) == 2:
             self.game_over = True
     
     def hit(self):
@@ -1198,33 +1206,50 @@ class BlackjackGame:
         message = ""
         won = [False] * len(self.player_hands)
         if self.game_over:
+            dealer_blackjack = dealer_score == 21 and len(self.dealer_cards) == 2
+            
             for i, score in enumerate(player_scores):
                 if score > 21:
                     won[i] = False
-                elif dealer_score > 21:
-                    won[i] = True
+                # Check for natural blackjack (21 with first two cards)
                 elif score == 21 and len(self.player_hands[i]) == 2:
+                    if dealer_blackjack:
+                        won[i] = None  # Push if both have blackjack
+                        message = "Push! Both have blackjack"
+                    else:
+                        won[i] = 'blackjack'  # Player wins with blackjack
+                elif dealer_blackjack:
+                    won[i] = False  # Dealer wins with blackjack
+                    message = "Dealer Blackjack!"
+                elif dealer_score > 21:
                     won[i] = True
                 elif score > dealer_score:
                     won[i] = True
                 elif score == dealer_score:
                     won[i] = None
-            
-            # Set appropriate message
-            if all(w is False for w in won):
-                message = "All hands lost!"
-            elif all(w is True for w in won):
-                message = "All hands won!"
-            elif len(won) > 1:
-                wins = sum(1 for w in won if w is True)
-                message = f"Won {wins} hand{'s' if wins != 1 else ''}!"
-            else:
-                if won[0] is True:
-                    message = "You win!"
-                elif won[0] is None:
-                    message = "Push! It's a tie"
                 else:
-                    message = "Dealer wins!"
+                    won[i] = False
+            
+            # Set appropriate message if not already set
+            if not message:
+                if all(w is False for w in won):
+                    message = "You lost!"
+                elif all(w == 'blackjack' for w in won):
+                    message = "Blackjack!"
+                elif all(w in [True, 'blackjack'] for w in won):
+                    message = "You won!"
+                elif len(won) > 1:
+                    wins = sum(1 for w in won if w in [True, 'blackjack'])
+                    message = f"Won {wins} hand{'s' if wins != 1 else ''}!"
+                else:
+                    if won[0] == 'blackjack':
+                        message = "Blackjack!"
+                    elif won[0] is True:
+                        message = "You win!"
+                    elif won[0] is None:
+                        message = "Push! It's a tie"
+                    else:
+                        message = "Dealer wins!"
         
         return {
             'dealer': {
@@ -1242,6 +1267,8 @@ class BlackjackGame:
             'won': won,
             'betAmount': self.bet_amount,
             'splitBetAmount': self.split_bet_amount,
+            'insuranceBet': self.insurance_bet,
+            'canInsure': self.can_offer_insurance(),
             'canHit': not self.game_over and current_hand_score < 21,
             'canStand': not self.game_over and current_hand_score <= 21,
             'canDouble': not self.game_over and len(self.player_hands[self.current_hand]) == 2,
@@ -1258,6 +1285,7 @@ class BlackjackGame:
             'current_hand': self.current_hand,
             'bet_amount': self.bet_amount,
             'split_bet_amount': self.split_bet_amount,
+            'insurance_bet': self.insurance_bet,
             'game_over': self.game_over
         }
     
@@ -1273,8 +1301,22 @@ class BlackjackGame:
             game.current_hand = data['current_hand']
             game.bet_amount = data['bet_amount']
             game.split_bet_amount = data['split_bet_amount']
+            game.insurance_bet = data.get('insurance_bet', 0)
             game.game_over = data['game_over']
         return game
+
+    def can_offer_insurance(self) -> bool:
+        """Check if insurance can be offered (dealer's up card is Ace)"""
+        return len(self.dealer_cards) == 2 and self.dealer_cards[0].rank == 'A'
+
+    def take_insurance(self, amount: float):
+        """Process insurance bet"""
+        self.insurance_bet = amount
+        # Check if dealer has blackjack immediately
+        dealer_score = self.get_score(self.dealer_cards)
+        if dealer_score == 21:
+            return True  # Insurance bet wins
+        return False  # Insurance bet loses
 
 @app.route('/blackjack')
 @login_required
@@ -1367,7 +1409,9 @@ def play_blackjack():
             
             for i, won in enumerate(state['won']):
                 bet = game.bet_amount if i == 0 else game.split_bet_amount
-                if won is True:
+                if won == 'blackjack':
+                    total_won += bet * 2.5  # 3:2 payout for blackjack
+                elif won is True:
                     total_won += bet * 2
                 elif won is None:  # Push
                     total_won += bet
@@ -1500,6 +1544,52 @@ def crash_end():
     except Exception as e:
         print(f"Error in crash_end: {e}")
         return jsonify({'error': 'Failed to process game end'})
+
+@app.route('/take_insurance', methods=['POST'])
+@login_required
+def take_insurance():
+    try:
+        data = request.get_json()
+        insurance_amount = float(data.get('amount', 0))
+        
+        # Get current game
+        game = BlackjackGame.deserialize(session.get('blackjack_game'))
+        if not game:
+            return jsonify({'error': 'No game in progress'})
+            
+        # Validate insurance amount (should be half the original bet)
+        max_insurance = game.bet_amount / 2
+        if insurance_amount > max_insurance:
+            return jsonify({'error': f'Maximum insurance bet is ${max_insurance:.2f}'})
+            
+        # Check if player can afford insurance
+        current_balance = float(session['user']['balance'])
+        if insurance_amount > current_balance:
+            return jsonify({'error': 'Insufficient funds for insurance'})
+            
+        # Process insurance bet
+        insurance_wins = game.take_insurance(insurance_amount)
+        
+        # Update player's balance
+        if insurance_wins:
+            # Insurance pays 2:1
+            session['user']['balance'] = current_balance + insurance_amount * 2
+        else:
+            session['user']['balance'] = current_balance - insurance_amount
+            
+        # Store updated game state
+        session['blackjack_game'] = game.serialize()
+        
+        # Get full game state
+        state = game.get_game_state()
+        state['balance'] = session['user']['balance']
+        state['insuranceResult'] = insurance_wins
+        
+        return jsonify(state)
+        
+    except Exception as e:
+        print(f"Error in take_insurance: {e}")
+        return jsonify({'error': 'Failed to process insurance bet'})
 
 if __name__ == '__main__':
     app.run(debug=True)

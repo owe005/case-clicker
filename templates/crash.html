@@ -497,21 +497,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGameLoop(autoCashout) {
         let startTime = Date.now();
-        const houseEdge = 0.04;    // 4% house edge
+        const houseEdge = 0.08;    // 8% house edge (matching simulation)
         const instantCrashProb = 0.01;  // 1% chance of instant crash
-
+        
         const r = Math.random();
         
-        // Calculate crash point using the desired distribution
+        // Calculate crash point using the exact same formula as simulation
         let finalCrashMultiplier;
         if (r < instantCrashProb) {
             finalCrashMultiplier = 1.00;
         } else {
-            // Formula to match the given distribution:
-            // P(multiplier) = 0.98 / multiplier (before house edge)
-            // Adding house edge and converting probability to multiplier
+            // Using the same formula from crash_simulation.py:
+            // multiplier = (0.95 / (1 - house_edge)) / (r - instant_crash_prob + 0.02)
             finalCrashMultiplier = Math.max(1.00, 
-                (0.98 / (1 - houseEdge)) / (r - instantCrashProb + 0.01));
+                (0.95 / (1 - houseEdge)) / (r - instantCrashProb + 0.02));
         }
 
         gameInterval = setInterval(() => {
@@ -521,10 +520,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const elapsedTime = (Date.now() - startTime) / 1000;
-            currentMultiplier = Math.max(1.00, Math.pow(Math.E, 0.06 * elapsedTime));
+            // Use exponential growth to smoothly reach the crash point
+            currentMultiplier = Math.min(
+                finalCrashMultiplier,
+                Math.max(1.00, Math.pow(Math.E, 0.06 * elapsedTime))
+            );
+            
             multiplierDisplay.textContent = currentMultiplier.toFixed(2) + 'x';
             updateChart(currentMultiplier);
 
+            // Handle auto-cashout
             if (autoCashout && !hasAutoCashedOut && currentMultiplier >= autoCashout) {
                 hasAutoCashedOut = true;
                 cashoutPoint = currentMultiplier;
@@ -533,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 multiplierDisplay.style.color = '#4CAF50';
             }
 
+            // Check for crash
             if (currentMultiplier >= finalCrashMultiplier) {
                 handleCrash(finalCrashMultiplier);
             }

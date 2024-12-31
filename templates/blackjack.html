@@ -50,6 +50,17 @@
             <button class="action-btn split-btn" disabled>Split</button>
         </div>
 
+        <!-- Add this after the game-controls div -->
+        <div class="insurance-prompt hidden">
+            <h3>Insurance?</h3>
+            <p>Dealer is showing an Ace. Would you like to take insurance?</p>
+            <div class="insurance-controls">
+                <input type="number" id="insurance-amount" min="0.01" step="0.01">
+                <button class="insurance-btn accept">Yes</button>
+                <button class="insurance-btn decline">No</button>
+            </div>
+        </div>
+
         <!-- Game result -->
         <div class="result-display hidden">
             <h2 class="result-text"></h2>
@@ -311,6 +322,53 @@
 .dealer-cards {
     min-width: 300px;
     margin: 0 auto;
+}
+
+.insurance-prompt {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.insurance-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+#insurance-amount {
+    padding: 8px;
+    width: 100px;
+    border: 2px solid #3a3a3a;
+    background: #1a1a1a;
+    color: #e4e4e4;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.insurance-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.insurance-btn.accept {
+    background: #4CAF50;
+    color: white;
+}
+
+.insurance-btn.decline {
+    background: #f44336;
+    color: white;
 }
 </style>
 
@@ -610,6 +668,11 @@ document.addEventListener('DOMContentLoaded', () => {
             gameInProgress = false;
             showResult(data);
         }
+        
+        // Check for insurance opportunity
+        if (!data.gameOver) {
+            checkInsurance(data);
+        }
     }
     
     function showResult(data) {
@@ -620,20 +683,23 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Calculate total win/loss
         let totalWon = 0;
+        let totalBet = data.betAmount + (data.splitBetAmount || 0);
+        
         data.won.forEach((won, i) => {
             const bet = i === 0 ? data.betAmount : data.splitBetAmount;
-            if (won === true) {
-                totalWon += bet * 2;
+            if (won === 'blackjack') {
+                totalWon += bet * 2.5; // Blackjack pays 3:2 (2.5x bet)
+            } else if (won === true) {
+                totalWon += bet * 2; // Regular win pays 2x bet
             } else if (won === null) { // Push
                 totalWon += bet;
             }
         });
         
-        const totalBet = data.betAmount + (data.splitBetAmount || 0);
         const netResult = totalWon - totalBet;
         
         resultAmount.textContent = netResult >= 0 ? 
-            `+$${totalWon.toFixed(2)}` : 
+            `+$${netResult.toFixed(2)}` : 
             `-$${Math.abs(netResult).toFixed(2)}`;
         resultAmount.className = `result-amount ${netResult >= 0 ? 'win' : 'lose'}`;
         
@@ -652,6 +718,61 @@ document.addEventListener('DOMContentLoaded', () => {
         playerScore.textContent = '';
         gameInProgress = false;
         validateBet();
+    });
+
+    const insurancePrompt = document.querySelector('.insurance-prompt');
+    const insuranceAmount = document.getElementById('insurance-amount');
+    const insuranceAccept = document.querySelector('.insurance-btn.accept');
+    const insuranceDecline = document.querySelector('.insurance-btn.decline');
+
+    function checkInsurance(data) {
+        if (data.canInsure) {
+            insuranceAmount.value = (data.betAmount / 2).toFixed(2);
+            insurancePrompt.classList.remove('hidden');
+        }
+    }
+
+    insuranceAccept.addEventListener('click', async () => {
+        const amount = parseFloat(insuranceAmount.value);
+        
+        try {
+            const response = await fetch('/take_insurance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    amount: amount
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            insurancePrompt.classList.add('hidden');
+            
+            // Show insurance result if game is over
+            if (data.insuranceResult !== undefined) {
+                alert(data.insuranceResult ? 
+                    'Insurance bet wins!' : 
+                    'Insurance bet loses.');
+            }
+            
+            // Update game state
+            updateGameState(data);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to process insurance bet');
+        }
+    });
+
+    insuranceDecline.addEventListener('click', () => {
+        insurancePrompt.classList.add('hidden');
     });
 });
 </script>
