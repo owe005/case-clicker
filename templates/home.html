@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Case Clicker{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="home-header">
+        <img src="{{ url_for('static', filename='media/logo.png') }}" alt="Case Clicker Logo" class="home-logo">
+        <h1>Welcome to Case Clicker</h1>
+    </div>
+
+    <div class="home-content">
+        <div class="game-description">
+            <h2>About the Game</h2>
+            <p>Case Clicker is an idle game inspired by CS:GO's case opening system. Start with $1000 and build your inventory through various game modes:</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🖱️ Clicker</h3>
+                    <p>Click to earn money and upgrade your clicking power. Enable auto-clicker and other upgrades to earn passive income.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📦 Cases</h3>
+                    <p>Open CS:GO-style cases for a chance to get rare skins. From common blues to rare knives, build your dream inventory!</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🎰 Casino</h3>
+                    <p>Try your luck with various casino games including Coinflip, Crash, Roulette, Blackjack, and Jackpot.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📈 Progress</h3>
+                    <p>Level up from Silver I to Global Elite as you play. Each rank brings new achievements and bragging rights!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="get-started">
+            <h2>Ready to Play?</h2>
+            <div class="start-buttons">
+                <a href="{{ url_for('clicker') }}" class="start-btn">Start Clicking</a>
+                <a href="{{ url_for('shop') }}" class="start-btn">Open Cases</a>
+                <a href="{{ url_for('casino') }}" class="start-btn">Visit Casino</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

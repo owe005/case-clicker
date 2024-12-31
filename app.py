@@ -185,10 +185,13 @@ def index():
                 'max_multiplier': 1,   # Start at level 1
                 'auto_clicker': 0,     # Start at level 0 (not unlocked)
                 'combo_speed': 1,      # Start at level 1
-                'critical_strike': 0    # Add critical strike
+                'critical_strike': 0   # Add critical strike
             }
         }
-    return redirect(url_for('shop'))
+    return render_template('home.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
 
 @app.route('/shop')
 @login_required
