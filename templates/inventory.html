@@ -730,10 +730,20 @@ function showItemShowcase(item) {
     
     sellButton.onclick = async () => {
         try {
-            const response = await fetch('/sell/last', { method: 'POST' });
+            // Disable the button to prevent double-clicks
+            sellButton.disabled = true;
+            
+            const response = await fetch('/sell/last', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
             const data = await response.json();
             
             if (data.error) {
+                console.error('Error selling item:', data.error, data.details);
                 alert(data.error);
                 return;
             }
@@ -755,9 +765,15 @@ function showItemShowcase(item) {
             showcase.style.display = 'none';
             showcaseSound.pause();
             
+            // Refresh the inventory display to ensure it's up to date
+            await refreshSkinsSection();
+            
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to sell item');
+        } finally {
+            // Re-enable the button
+            sellButton.disabled = false;
         }
     };
     

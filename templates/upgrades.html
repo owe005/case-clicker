@@ -86,6 +86,7 @@ async function purchaseUpgrade(type) {
         
         if (data.error) {
             alert(data.error);
+            updateAffordability();
             return;
         }
 
@@ -179,6 +180,7 @@ async function purchaseUpgrade(type) {
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to purchase upgrade');
+        updateAffordability();
     }
 }
 

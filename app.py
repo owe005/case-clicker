@@ -470,7 +470,7 @@ def sell_last_item():
         if not skin_items:
             return jsonify({'error': 'No items to sell'})
         
-        # Get the most recently added skin (last item in the list)
+        # Find the most recently added skin by timestamp
         last_skin_index = max(
             range(len(inventory)),
             key=lambda i: inventory[i].get('timestamp', 0) if not inventory[i].get('is_case') else 0
@@ -481,14 +481,21 @@ def sell_last_item():
         if item.get('is_case'):
             return jsonify({'error': 'Cannot sell cases'})
             
+        # Verify the item has a price
+        if 'price' not in item:
+            return jsonify({'error': 'Item has no price'})
+            
         sale_price = float(item.get('price', 0))
         
         # Remove the item and update user's balance
         inventory.pop(last_skin_index)
         session['user']['balance'] = float(session['user']['balance']) + sale_price
         
-        # Ensure the session is updated
+        # Ensure the session is marked as modified
         session.modified = True
+        
+        # Log the successful sale
+        print(f"Successfully sold item: {item.get('weapon')} | {item.get('name')} for ${sale_price}")
         
         return jsonify({
             'success': True,
@@ -498,7 +505,11 @@ def sell_last_item():
         
     except Exception as e:
         print(f"Error in sell_last_item: {e}")
-        return jsonify({'error': 'Failed to sell item'})
+        # Return more detailed error information
+        return jsonify({
+            'error': 'Failed to sell item',
+            'details': str(e)
+        })
 
 @app.route('/clicker')
 def clicker():

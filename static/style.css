@@ -111,16 +111,16 @@ h1 {
 
 #inventory-items {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.6rem;
 }
 
 .skin {
   background: var(--secondary);
-  padding: 1rem;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  transition: transform 0.2s;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -130,6 +130,7 @@ h1 {
 
 .skin:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Rarity colors */
@@ -294,13 +295,16 @@ h1 {
 }
 
 .item-name {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
 }
 
 .item-skin {
-    font-size: 1rem;
+    font-size: 0.9rem;
     opacity: 0.8;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
 }
 
 /* Rarity backgrounds with gradients */
@@ -331,14 +335,16 @@ h1 {
 }
 
 .item-price {
-    margin: 0.5rem 0;
+    margin: 0.2rem 0;
     font-weight: bold;
     color: var(--accent);
 }
 
 .sell-btn {
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 0.6rem;
+    padding: 0.4rem 0;
+    font-size: 0.8rem;
     background: #4CAF50;  /* Green color for sell button */
 }
 
@@ -633,9 +639,9 @@ h1 {
 
 /* Add these styles for inventory skin images */
 .skin-image {
-    width: 200px;
-    height: 150px;
-    margin: 0 auto 1rem;
+    width: 140px;
+    height: 105px;
+    margin: 0 auto 0.6rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -681,10 +687,10 @@ h1 {
 /* Update skin card styles */
 .skin {
     background: var(--secondary);
-    padding: 1rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    transition: transform 0.2s;
+    padding: 0.6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -694,6 +700,7 @@ h1 {
 
 .skin:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Update the spinner-item styles to include rarity backgrounds */
@@ -1329,16 +1336,54 @@ h1 {
     padding: 1rem;
     text-align: center;
     transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    min-height: 280px;
 }
 
-.case-item:hover {
-    transform: translateY(-2px);
+.case-item .item-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Add styles for the bottom content wrapper */
+.case-item .bottom-content {
+    width: 100%;
+    margin-top: auto; /* Push to bottom */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.case-item h3 {
+    font-size: 0.9rem;
+    color: var(--accent);
+    min-height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 auto 0; /* Push subsequent content down */
+    line-height: 1.1;
+    text-align: center;
+    padding: 0 0.5rem;
 }
 
 .case-item img {
-    width: 150px;
-    height: auto;
-    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 130px;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 0.75rem;
+}
+
+.quantity-text {
+    margin: 0;
+    color: var(--text);
+    opacity: 0.8;
 }
 
 .buy-controls {
@@ -1346,17 +1391,12 @@ h1 {
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
-    margin-top: 0.5rem;
+    width: 100%;
 }
 
-.quantity-input {
-    width: 60px;
-    padding: 0.25rem;
-    border: 1px solid var(--secondary);
-    border-radius: 4px;
-    background: var(--primary);
-    color: var(--text);
-    text-align: center;
+.btn-small {
+    margin: 0; /* Remove any margin */
+    padding: 4px 12px;
 }
 
 /* Case Contents Overlay Styles */
@@ -1536,5 +1576,39 @@ h1 {
 
 .upgrade-btn.cannot-afford:hover::after {
     opacity: 1;
+}
+
+/* Add these styles for skin rarity backgrounds */
+.skin.rarity-BLUE {
+    background: linear-gradient(135deg, #4b69ff20 0%, #4b69ff40 100%);
+    border: 2px solid #4b69ff;
+}
+
+.skin.rarity-PURPLE {
+    background: linear-gradient(135deg, #8847ff20 0%, #8847ff40 100%);
+    border: 2px solid #8847ff;
+}
+
+.skin.rarity-PINK {
+    background: linear-gradient(135deg, #d32ce620 0%, #d32ce640 100%);
+    border: 2px solid #d32ce6;
+}
+
+.skin.rarity-RED {
+    background: linear-gradient(135deg, #eb4b4b20 0%, #eb4b4b40 100%);
+    border: 2px solid #eb4b4b;
+}
+
+.skin.rarity-GOLD {
+    background: linear-gradient(135deg, #caab0520 0%, #caab0540 100%);
+    border: 2px solid #caab05;
+    animation: goldGlow 2s infinite;
+}
+
+/* Add glow animation for gold items if not already defined */
+@keyframes goldGlow {
+    0% { box-shadow: 0 0 5px #caab05; }
+    50% { box-shadow: 0 0 20px #caab05; }
+    100% { box-shadow: 0 0 5px #caab05; }
 }
  
