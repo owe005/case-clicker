@@ -11,36 +11,27 @@
         <div class="total-value">Total Pot: $<span id="total-pot-value">0.00</span></div>
     </div>
     
-    <div class="bot-joining hidden" id="bot-joining">
-        <div class="joining-text">
-            <span class="bot-name">Waiting for players...</span>
-            <div class="dots-loading">
-                <span>.</span><span>.</span><span>.</span>
+    <!-- Add a wrapper div for the game setup sections -->
+    <div id="game-setup">
+        <div class="jackpot-sections">
+            <!-- User's inventory section -->
+            <div class="inventory-section">
+                <h3>Your Inventory</h3>
+                <div class="items-grid" id="user-inventory">
+                    <!-- User's eligible skins will be loaded here -->
+                </div>
             </div>
-        </div>
-        <div class="joined-players">
-            <!-- Joined players will be listed here -->
-        </div>
-    </div>
-    
-    <div class="jackpot-sections">
-        <!-- User's inventory section -->
-        <div class="inventory-section">
-            <h3>Your Inventory</h3>
-            <div class="items-grid" id="user-inventory">
-                <!-- User's eligible skins will be loaded here -->
-            </div>
-        </div>
-        
-        <!-- Selected items section -->
-        <div class="selected-section">
-            <h3>Selected Items (<span id="selected-count">0</span>/10)</h3>
-            <div class="items-grid" id="selected-items">
-                <!-- Selected items will be moved here -->
-            </div>
-            <div class="selection-info">
-                <div class="total-selected">Total Value: $<span id="selected-value">0.00</span></div>
-                <button id="start-game" class="start-btn" disabled>Start Game</button>
+            
+            <!-- Selected items section -->
+            <div class="selected-section">
+                <h3>Selected Items (<span id="selected-count">0</span>/10)</h3>
+                <div class="items-grid" id="selected-items">
+                    <!-- Selected items will be moved here -->
+                </div>
+                <div class="selection-info">
+                    <div class="total-selected">Total Value: $<span id="selected-value">0.00</span></div>
+                    <button id="start-game" class="start-btn" disabled>Start Game</button>
+                </div>
             </div>
         </div>
     </div>
@@ -49,6 +40,12 @@
     <div class="game-progress hidden" id="game-progress">
         <h3>Current Game</h3>
         <div class="players-container">
+            <div class="joining-text hidden" id="joining-text">
+                <span class="bot-name">Waiting for players...</span>
+                <div class="dots-loading">
+                    <span>.</span><span>.</span><span>.</span>
+                </div>
+            </div>
             <div class="player-list" id="player-list">
                 <!-- Players and their items will be shown here -->
             </div>
@@ -606,24 +603,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     function showGameProgress(gameData) {
+        // Hide game setup and show game progress
+        document.getElementById('game-setup').style.display = 'none';
+        
         const progressSection = document.getElementById('game-progress');
         const playerList = document.getElementById('player-list');
+        const joiningText = document.getElementById('joining-text');
         const winPercentage = document.getElementById('win-percentage');
+        
+        // Show game progress section
+        progressSection.classList.remove('hidden');
         
         // Clear previous game
         playerList.innerHTML = '';
         
-        // First show bot joining animation
-        const botJoining = document.getElementById('bot-joining');
-        botJoining.classList.remove('hidden');
+        // Show joining animation
+        joiningText.classList.remove('hidden');
         
         let currentIndex = 0;
         const players = gameData.players;
+        let currentTotalValue = 0;
+        
+        function updateChances() {
+            // Calculate current total pot value
+            currentTotalValue = 0;
+            const playerElements = document.querySelectorAll('.player-entry');
+            playerElements.forEach(el => {
+                const valueText = el.querySelector('.player-value').textContent;
+                currentTotalValue += parseFloat(valueText.replace('$', ''));
+            });
+            
+            // Update win chances for all players
+            playerElements.forEach(el => {
+                const valueText = el.querySelector('.player-value').textContent;
+                const playerValue = parseFloat(valueText.replace('$', ''));
+                const chance = (playerValue / currentTotalValue * 100).toFixed(2);
+                el.querySelector('.win-chance').textContent = chance + '%';
+                
+                // Update the main win percentage if this is the user
+                if (el.querySelector('.player-name').textContent === 'You') {
+                    document.getElementById('win-percentage').textContent = chance;
+                }
+            });
+            
+            // Update total pot value
+            document.getElementById('total-pot-value').textContent = currentTotalValue.toFixed(2);
+        }
         
         function addNextPlayer() {
             if (currentIndex < players.length) {
                 const player = players[currentIndex];
-                const joinedPlayers = document.querySelector('.joined-players');
                 
                 // Update "waiting for players" text
                 const botName = document.querySelector('.bot-name');
@@ -640,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         playerEntry.innerHTML = `
                             <div class="player-name">${player.name}</div>
                             <div class="player-value">$${player.value.toFixed(2)}</div>
-                            <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                            <div class="win-chance">0%</div>
                             <div class="player-items">
                                 ${playerItems.map(item => item.outerHTML).join('')}
                             </div>
@@ -650,59 +679,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         playerEntry.innerHTML = `
                             <div class="player-name">${player.name}</div>
                             <div class="player-value">$${player.value.toFixed(2)}</div>
-                            <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                            <div class="win-chance">0%</div>
                             <div class="player-items">
                                 <div class="hidden-items">${player.items.length} items</div>
                             </div>
                         `;
                     }
                     
-                    joinedPlayers.appendChild(playerEntry);
+                    playerList.appendChild(playerEntry);
                     currentIndex++;
+                    
+                    // Update chances after each player joins
+                    updateChances();
                     
                     if (currentIndex < players.length) {
                         addNextPlayer();
                     } else {
-                        // All players joined, show final state
+                        // All players joined, hide joining text
                         setTimeout(() => {
-                            botJoining.classList.add('hidden');
-                            progressSection.classList.remove('hidden');
-                            
-                            // Add all players to the game progress section
-                            players.forEach(player => {
-                                const progressEntry = document.createElement('div');
-                                progressEntry.className = 'player-entry';
-                                
-                                if (player.name === 'You') {
-                                    // Show full details for user
-                                    const playerItems = player.items.map(item => createItemElement(item));
-                                    progressEntry.innerHTML = `
-                                        <div class="player-name">${player.name}</div>
-                                        <div class="player-value">$${player.value.toFixed(2)}</div>
-                                        <div class="win-chance">${player.winChance.toFixed(2)}%</div>
-                                        <div class="player-items">
-                                            ${playerItems.map(item => item.outerHTML).join('')}
-                                        </div>
-                                    `;
-                                } else {
-                                    // Only show name, value and chance for bots
-                                    progressEntry.innerHTML = `
-                                        <div class="player-name">${player.name}</div>
-                                        <div class="player-value">$${player.value.toFixed(2)}</div>
-                                        <div class="win-chance">${player.winChance.toFixed(2)}%</div>
-                                        <div class="player-items">
-                                            <div class="hidden-items">${player.items.length} items</div>
-                                        </div>
-                                    `;
-                                }
-                                
-                                playerList.appendChild(progressEntry);
-                            });
-                            
-                            // Update win percentage and total pot
-                            winPercentage.textContent = gameData.winChance.toFixed(2);
-                            document.getElementById('total-pot-value').textContent = 
-                                gameData.totalPotValue.toFixed(2);
+                            joiningText.classList.add('hidden');
                             
                             // Show winner after a delay
                             setTimeout(() => showWinner(gameData.winner), 3000);
@@ -749,6 +744,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.close-winner').addEventListener('click', () => {
         document.getElementById('winner-overlay').classList.add('hidden');
         document.getElementById('game-progress').classList.add('hidden');
+        document.getElementById('game-setup').style.display = 'block'; // Show game setup again
+        
+        // Reset total pot value
+        document.getElementById('total-pot-value').textContent = '0.00';
+        
         // Clear selected items array properly
         selectedItems = [];
         totalValue = 0;
