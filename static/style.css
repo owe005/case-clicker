@@ -197,6 +197,60 @@ h1 {
     text-align: center;
     transition: transform 0.2s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-item img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto 1rem;
+    cursor: pointer;
+}
+
+.shop-item .item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.shop-item h3 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--accent);
+}
+
+.shop-item .price {
+    color: #4CAF50;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Add specific styles for the buy controls in shop */
+.shop-item .buy-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+}
+
+.shop-item .quantity-input {
+    width: 60px;
+    padding: 0.4rem;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background: var(--primary);
+    color: var(--text);
+    text-align: center;
+}
+
+.shop-item .btn-small {
+    padding: 0.4rem 1rem;
+    flex-grow: 1;
+    max-width: 100px;
 }
 
 .case-image {
