@@ -1,0 +1,770 @@
+{% extends "base.html" %}
+
+{% block title %}Jackpot - Case Clicker{% endblock %}
+
+{% block content %}
+<div class="jackpot-container">
+    <h1>Jackpot</h1>
+    
+    <div class="game-mode">
+        <h2>$0-30 Game Mode</h2>
+        <div class="total-value">Total Pot: $<span id="total-pot-value">0.00</span></div>
+    </div>
+    
+    <div class="bot-joining hidden" id="bot-joining">
+        <div class="joining-text">
+            <span class="bot-name">Waiting for players...</span>
+            <div class="dots-loading">
+                <span>.</span><span>.</span><span>.</span>
+            </div>
+        </div>
+        <div class="joined-players">
+            <!-- Joined players will be listed here -->
+        </div>
+    </div>
+    
+    <div class="jackpot-sections">
+        <!-- User's inventory section -->
+        <div class="inventory-section">
+            <h3>Your Inventory</h3>
+            <div class="items-grid" id="user-inventory">
+                <!-- User's eligible skins will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Selected items section -->
+        <div class="selected-section">
+            <h3>Selected Items (<span id="selected-count">0</span>/10)</h3>
+            <div class="items-grid" id="selected-items">
+                <!-- Selected items will be moved here -->
+            </div>
+            <div class="selection-info">
+                <div class="total-selected">Total Value: $<span id="selected-value">0.00</span></div>
+                <button id="start-game" class="start-btn" disabled>Start Game</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game progress section -->
+    <div class="game-progress hidden" id="game-progress">
+        <h3>Current Game</h3>
+        <div class="players-container">
+            <div class="player-list" id="player-list">
+                <!-- Players and their items will be shown here -->
+            </div>
+        </div>
+        <div class="progress-info">
+            <div class="win-chance">Your Chance: <span id="win-percentage">0</span>%</div>
+        </div>
+    </div>
+    
+    <!-- Winner animation overlay -->
+    <div id="winner-overlay" class="winner-overlay hidden">
+        <div class="winner-container">
+            <h2>Winner</h2>
+            <div class="winner-info">
+                <div class="winner-name"></div>
+                <div class="won-amount"></div>
+            </div>
+            <div class="winner-items">
+                <!-- Won items will be displayed here -->
+            </div>
+            <button class="close-winner">Continue</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.jackpot-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.game-mode {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.total-value {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-top: 10px;
+}
+
+.jackpot-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.inventory-section, .selected-section {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.item {
+    background: #1a1a1a;
+    border: 2px solid #3a3a3a;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.item:hover {
+    transform: translateY(-2px);
+    border-color: #4CAF50;
+}
+
+.item.selected {
+    border-color: #4CAF50;
+    background: #2a2a2a;
+}
+
+.item-image {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.item-name {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.item-name.stattrak {
+    color: #CF6A32;
+}
+
+.item-price {
+    color: #4CAF50;
+    font-size: 12px;
+}
+
+.selection-info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.total-selected {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.start-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.start-btn:hover:not(:disabled) {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.start-btn:disabled {
+    background: #2a2a2a;
+    cursor: not-allowed;
+}
+
+.game-progress {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.players-container {
+    margin: 20px 0;
+}
+
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.player-entry {
+    display: grid;
+    grid-template-columns: 150px 120px 120px 1fr;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.player-entry:hover {
+    background: #222;
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-value {
+    color: #4CAF50;
+    font-size: 16px;
+    text-align: right;
+}
+
+.win-chance {
+    color: #ffd700;
+    font-size: 16px;
+    text-align: right;
+}
+
+.player-items {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 5px;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.player-items::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
+
+.hidden-items {
+    color: #888;
+    font-style: italic;
+    padding: 8px 12px;
+    background: #2a2a2a;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+.progress-info {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 5px;
+}
+
+.progress-info .win-chance {
+    font-size: 24px;
+    color: #ffd700;
+    text-align: center;
+}
+
+.player-items .item {
+    min-width: 100px;
+    max-width: 100px;
+    font-size: 12px;
+    padding: 8px;
+    background: #2a2a2a;
+    border-radius: 5px;
+}
+
+.player-items .item-image {
+    width: 80px;
+    height: 80px;
+}
+
+.player-items .item-name {
+    font-size: 11px;
+    line-height: 1.2;
+    margin: 4px 0;
+}
+
+.player-items .item-wear {
+    font-size: 10px;
+    color: #888;
+}
+
+.player-items .item-price {
+    font-size: 11px;
+}
+
+.player-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.player-list::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.player-list::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+}
+
+.player-list::-webkit-scrollbar-thumb:hover {
+    background: #4a4a4a;
+}
+
+.winner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.winner-container {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+}
+
+.winner-info {
+    margin: 20px 0;
+}
+
+.winner-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.won-amount {
+    font-size: 20px;
+    color: #4CAF50;
+}
+
+.winner-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.close-winner {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Add rarity colors */
+.rarity-BLUE { border-color: #4b69ff; }
+.rarity-PURPLE { border-color: #8847ff; }
+.rarity-PINK { border-color: #eb4b4b; }
+.rarity-RED { border-color: #ffae39; }
+.rarity-GOLD { border-color: #ffd700; }
+
+.bot-joining {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.joining-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.dots-loading {
+    display: flex;
+}
+
+.dots-loading span {
+    animation: dots 1.5s infinite;
+    opacity: 0;
+}
+
+.dots-loading span:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.dots-loading span:nth-child(3) {
+    animation-delay: 1s;
+}
+
+@keyframes dots {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.joined-players {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let selectedItems = [];
+    let totalValue = 0;
+    
+    // Load user's eligible inventory
+    async function loadInventory() {
+        try {
+            const response = await fetch('/get_jackpot_inventory');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+            
+            const inventoryContainer = document.getElementById('user-inventory');
+            inventoryContainer.innerHTML = '';
+            
+            // Sort items by price (highest to lowest)
+            const sortedItems = data.inventory.sort((a, b) => {
+                return parseFloat(b.price) - parseFloat(a.price);
+            });
+            
+            sortedItems.forEach(item => {
+                const itemElement = createItemElement(item);
+                inventoryContainer.appendChild(itemElement);
+            });
+            
+        } catch (error) {
+            console.error('Error loading inventory:', error);
+        }
+    }
+    
+    function createItemElement(item) {
+        const div = document.createElement('div');
+        div.className = `item rarity-${item.rarity}`;
+        div.dataset.itemData = JSON.stringify(item);
+        
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        const caseMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
+        const casePath = caseMapping[item.case_type] || 'weapon_case_1';
+        
+        div.innerHTML = `
+            <img class="item-image" src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                 alt="${item.weapon} | ${item.name}">
+            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}
+            </div>
+            <div class="item-wear">${item.wear}</div>
+            <div class="item-price">$${item.price.toFixed(2)}</div>
+        `;
+        
+        div.addEventListener('click', () => toggleItemSelection(div));
+        
+        return div;
+    }
+    
+    function toggleItemSelection(itemElement) {
+        const itemData = JSON.parse(itemElement.dataset.itemData);
+        
+        // Convert price to float to ensure proper calculations
+        itemData.price = parseFloat(itemData.price);
+        
+        if (itemElement.classList.contains('selected')) {
+            // Deselect item
+            itemElement.classList.remove('selected');
+            // Find and remove this specific instance of the item
+            const index = selectedItems.findIndex(item => 
+                JSON.stringify(item) === JSON.stringify(itemData)
+            );
+            if (index !== -1) {
+                selectedItems.splice(index, 1);
+            }
+            totalValue -= itemData.price;
+        } else if (selectedItems.length < 10) {
+            // Select item
+            itemElement.classList.add('selected');
+            selectedItems.push(itemData);  // Use push instead of add
+            totalValue += itemData.price;
+        }
+        
+        updateSelectionInfo();
+    }
+    
+    function updateSelectionInfo() {
+        const selectedCount = selectedItems.length;  // Use length instead of size
+        document.getElementById('selected-count').textContent = selectedCount;
+        
+        // Calculate total value with precise decimal handling
+        let calculatedTotal = 0;
+        selectedItems.forEach(item => {  // No need to parse JSON since we're storing objects
+            calculatedTotal += parseFloat(item.price);
+        });
+        
+        // Log the calculation details
+        console.log('Selected items value calculation:');
+        selectedItems.forEach(item => {
+            console.log(`${item.weapon} | ${item.name}: $${item.price}`);
+        });
+        console.log(`Total calculated value: $${calculatedTotal.toFixed(2)}`);
+        
+        // Update UI with properly formatted value
+        totalValue = Math.round(calculatedTotal * 100) / 100; // Round to 2 decimal places
+        document.getElementById('selected-value').textContent = totalValue.toFixed(2);
+        
+        const startButton = document.getElementById('start-game');
+        startButton.disabled = selectedItems.length === 0;
+    }
+    
+    // Start game button handler
+    document.getElementById('start-game').addEventListener('click', async () => {
+        if (selectedItems.length === 0) return;
+        
+        try {
+            // Add debugging logs
+            console.log('Selected items:', selectedItems);
+            
+            const response = await fetch('/start_jackpot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: selectedItems  // No need to convert since we're already using an array
+                })
+            });
+            
+            // Log the raw response
+            console.log('Raw response:', response);
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+            if (data.error) {
+                console.error('Server error:', data.error);
+                alert(data.error);
+                return;
+            }
+            
+            // Show game progress
+            showGameProgress(data);
+            
+        } catch (error) {
+            console.error('Detailed error:', error);
+            console.error('Error stack:', error.stack);
+            alert('Failed to start game');
+        }
+    });
+    
+    function showGameProgress(gameData) {
+        const progressSection = document.getElementById('game-progress');
+        const playerList = document.getElementById('player-list');
+        const winPercentage = document.getElementById('win-percentage');
+        
+        // Clear previous game
+        playerList.innerHTML = '';
+        
+        // First show bot joining animation
+        const botJoining = document.getElementById('bot-joining');
+        botJoining.classList.remove('hidden');
+        
+        let currentIndex = 0;
+        const players = gameData.players;
+        
+        function addNextPlayer() {
+            if (currentIndex < players.length) {
+                const player = players[currentIndex];
+                const joinedPlayers = document.querySelector('.joined-players');
+                
+                // Update "waiting for players" text
+                const botName = document.querySelector('.bot-name');
+                botName.textContent = `${player.name} is joining`;
+                
+                // Add player entry after a delay
+                setTimeout(() => {
+                    const playerEntry = document.createElement('div');
+                    playerEntry.className = 'player-entry';
+                    
+                    if (player.name === 'You') {
+                        // Show full details for user
+                        const playerItems = player.items.map(item => createItemElement(item));
+                        playerEntry.innerHTML = `
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-value">$${player.value.toFixed(2)}</div>
+                            <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                            <div class="player-items">
+                                ${playerItems.map(item => item.outerHTML).join('')}
+                            </div>
+                        `;
+                    } else {
+                        // Only show name, value and chance for bots
+                        playerEntry.innerHTML = `
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-value">$${player.value.toFixed(2)}</div>
+                            <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                            <div class="player-items">
+                                <div class="hidden-items">${player.items.length} items</div>
+                            </div>
+                        `;
+                    }
+                    
+                    joinedPlayers.appendChild(playerEntry);
+                    currentIndex++;
+                    
+                    if (currentIndex < players.length) {
+                        addNextPlayer();
+                    } else {
+                        // All players joined, show final state
+                        setTimeout(() => {
+                            botJoining.classList.add('hidden');
+                            progressSection.classList.remove('hidden');
+                            
+                            // Add all players to the game progress section
+                            players.forEach(player => {
+                                const progressEntry = document.createElement('div');
+                                progressEntry.className = 'player-entry';
+                                
+                                if (player.name === 'You') {
+                                    // Show full details for user
+                                    const playerItems = player.items.map(item => createItemElement(item));
+                                    progressEntry.innerHTML = `
+                                        <div class="player-name">${player.name}</div>
+                                        <div class="player-value">$${player.value.toFixed(2)}</div>
+                                        <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                                        <div class="player-items">
+                                            ${playerItems.map(item => item.outerHTML).join('')}
+                                        </div>
+                                    `;
+                                } else {
+                                    // Only show name, value and chance for bots
+                                    progressEntry.innerHTML = `
+                                        <div class="player-name">${player.name}</div>
+                                        <div class="player-value">$${player.value.toFixed(2)}</div>
+                                        <div class="win-chance">${player.winChance.toFixed(2)}%</div>
+                                        <div class="player-items">
+                                            <div class="hidden-items">${player.items.length} items</div>
+                                        </div>
+                                    `;
+                                }
+                                
+                                playerList.appendChild(progressEntry);
+                            });
+                            
+                            // Update win percentage and total pot
+                            winPercentage.textContent = gameData.winChance.toFixed(2);
+                            document.getElementById('total-pot-value').textContent = 
+                                gameData.totalPotValue.toFixed(2);
+                            
+                            // Show winner after a delay
+                            setTimeout(() => showWinner(gameData.winner), 3000);
+                        }, 1000);
+                    }
+                }, 800); // Delay between each player joining
+            }
+        }
+        
+        // Start adding players
+        addNextPlayer();
+    }
+    
+    function showWinner(winnerData) {
+        const overlay = document.getElementById('winner-overlay');
+        const winnerName = overlay.querySelector('.winner-name');
+        const wonAmount = overlay.querySelector('.won-amount');
+        const winnerItems = overlay.querySelector('.winner-items');
+        
+        winnerName.textContent = winnerData.name;
+        wonAmount.textContent = `$${winnerData.totalValue.toFixed(2)}`;
+        
+        // Only show items if user won
+        if (winnerData.isUser) {
+            winnerItems.innerHTML = '';
+            winnerData.items.forEach(item => {
+                const itemElement = createItemElement(item);
+                winnerItems.appendChild(itemElement);
+            });
+            winnerItems.classList.remove('hidden');
+        } else {
+            winnerItems.classList.add('hidden');
+        }
+        
+        overlay.classList.remove('hidden');
+        
+        // If user won, update their inventory
+        if (winnerData.isUser) {
+            loadInventory();
+        }
+    }
+    
+    // Close winner overlay handler
+    document.querySelector('.close-winner').addEventListener('click', () => {
+        document.getElementById('winner-overlay').classList.add('hidden');
+        document.getElementById('game-progress').classList.add('hidden');
+        // Clear selected items array properly
+        selectedItems = [];
+        totalValue = 0;
+        updateSelectionInfo();
+        
+        // Clear selected visual states
+        document.querySelectorAll('.item.selected').forEach(item => {
+            item.classList.remove('selected');
+        });
+        
+        // Reload inventory to reflect any changes
+        loadInventory();
+    });
+    
+    // Initial inventory load
+    loadInventory();
+});
+</script>
+{% endblock %} 

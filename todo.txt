@@ -1,0 +1,3 @@
+If you click too fast in the shop, it doesn't add the amount of cases you clicked, and I worry you are still charged.
+When starting jackpot, the win % for all players should be changing dynamically as players join.
+

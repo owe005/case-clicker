@@ -9,7 +9,12 @@
 <div class="inventory-categories">
     <button class="category-btn active" data-category="skins">Skins</button>
     <button class="category-btn" data-category="cases">Cases</button>
-    <!-- Add the sell all button -->
+    <!-- Add sort buttons -->
+    <div class="sort-controls">
+        <button class="sort-btn" data-sort="rarity">Sort by Rarity</button>
+        <button class="sort-btn" data-sort="price">Sort by Price</button>
+    </div>
+    <!-- Keep the sell all button -->
     <button id="sell-all-btn" class="sell-all-btn">Sell All: $0.00</button>
 </div>
 
@@ -862,6 +867,7 @@ async function refreshSkinsSection() {
             const skinDiv = document.createElement('div');
             skinDiv.className = `skin rarity-${item.rarity}`;
             skinDiv.dataset.index = skinIndex;
+            skinDiv.dataset.rarity = item.rarity;
             
             const weaponName = item.weapon.toLowerCase()
                 .replace('-', '')
@@ -1321,6 +1327,76 @@ document.querySelectorAll('.category-btn').forEach(button => {
         } else {
             sellAllBtn.style.display = 'none';
         }
+    });
+});
+
+// Update the sorting functions
+function sortByRarity(a, b, ascending = false) {
+    const rarityOrder = {
+        'GOLD': 5,
+        'RED': 4,
+        'PINK': 3,
+        'PURPLE': 2,
+        'BLUE': 1
+    };
+    const comparison = rarityOrder[b.dataset.rarity] - rarityOrder[a.dataset.rarity];
+    return ascending ? -comparison : comparison;
+}
+
+function sortByPrice(a, b, ascending = false) {
+    const priceA = parseFloat(a.querySelector('.item-price').textContent.replace('$', ''));
+    const priceB = parseFloat(b.querySelector('.item-price').textContent.replace('$', ''));
+    return ascending ? priceA - priceB : priceB - priceA;
+}
+
+// Update the sort button click handlers
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing DOMContentLoaded code ...
+
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    sortButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Only sort if we're in the skins section
+            if (!document.getElementById('skins-section').classList.contains('hidden')) {
+                // Toggle active state only on clicked button
+                if (button.classList.contains('active')) {
+                    // If already active, toggle direction
+                    button.classList.toggle('asc');
+                } else {
+                    // Remove active and asc classes from all sort buttons
+                    sortButtons.forEach(btn => {
+                        btn.classList.remove('active', 'asc');
+                    });
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                }
+
+                const sortType = button.dataset.sort;
+                const ascending = button.classList.contains('asc');
+                const inventoryItems = document.getElementById('inventory-items');
+                const items = Array.from(inventoryItems.children);
+
+                // Sort items with direction
+                items.sort((a, b) => 
+                    sortType === 'rarity' ? 
+                        sortByRarity(a, b, ascending) : 
+                        sortByPrice(a, b, ascending)
+                );
+
+                // Clear and re-append items in new order
+                inventoryItems.innerHTML = '';
+                items.forEach(item => inventoryItems.appendChild(item));
+
+                // Update sell indices after sorting
+                items.forEach((item, index) => {
+                    item.dataset.index = index;
+                    const sellBtn = item.querySelector('.sell-btn');
+                    if (sellBtn) {
+                        sellBtn.dataset.sellIndex = index;
+                    }
+                });
+            }
+        });
     });
 });
 </script>

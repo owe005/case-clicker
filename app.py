@@ -1,13 +1,14 @@
 from flask import Flask, render_template, jsonify, session, redirect, url_for, request, send_from_directory
 from dataclasses import asdict
 import random
-from typing import Dict, Union
+from typing import Dict, Union, List, Any
 import time
 import json
 from functools import wraps
 from datetime import timedelta
 from dataclasses import dataclass
 from typing import List, Optional
+import traceback
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS
 from models import Case, User, Upgrades
@@ -1634,6 +1635,285 @@ def sell_all():
     except Exception as e:
         print(f"Error in sell_all: {e}")
         return jsonify({'error': 'Failed to sell all items'})
+
+@app.route('/jackpot')
+@login_required
+def jackpot():
+    return render_template('jackpot.html',
+                         balance=session['user']['balance'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+@app.route('/get_jackpot_inventory')
+@login_required
+def get_jackpot_inventory():
+    try:
+        inventory = session['user'].get('inventory', [])
+        
+        # Filter for eligible items (non-case items worth $0-30)
+        eligible_items = [
+            item for item in inventory
+            if not item.get('is_case') and 0 <= float(item.get('price', 0)) <= 30
+        ]
+        
+        return jsonify({
+            'inventory': eligible_items
+        })
+        
+    except Exception as e:
+        print(f"Error getting jackpot inventory: {e}")
+        return jsonify({'error': 'Failed to get inventory'})
+
+@app.route('/start_jackpot', methods=['POST'])
+def start_jackpot():
+    try:
+        data = request.get_json()
+        print("Received data:", data)
+        
+        user_items = data.get('items', [])
+        
+        # Validate and sum user items with detailed logging
+        user_value = 0
+        print("\nCalculating user value:")
+        for item in user_items:
+            item_price = float(item['price'])
+            user_value += item_price
+            print(f"Added item: {item['weapon']} | {item['name']} (${item_price:.2f})")
+        print(f"Total user value: ${user_value:.2f}")
+        
+        if not user_items:
+            return jsonify({'error': 'No items selected'})
+            
+        # Validate user items
+        inventory = session['user'].get('inventory', [])
+        
+        # Create a copy of inventory to remove items as we find them
+        remaining_inventory = inventory.copy()
+        found_items = []  # Keep track of found items
+        
+        # For each selected item
+        for selected_item in user_items:
+            item_found = False
+            
+            # Look through remaining inventory
+            for i, inv_item in enumerate(remaining_inventory):
+                if (inv_item.get('weapon') == selected_item['weapon'] and 
+                    inv_item.get('name') == selected_item['name'] and
+                    inv_item.get('wear') == selected_item['wear'] and
+                    inv_item.get('stattrak') == selected_item['stattrak'] and
+                    i not in found_items):  # Make sure we haven't used this item already
+                    item_found = True
+                    found_items.append(i)  # Mark this item as used
+                    break
+            
+            if not item_found:
+                return jsonify({'error': f'Item not found in inventory or already selected: {selected_item["weapon"]} | {selected_item["name"]}'})
+        
+        # Remove the selected items from inventory
+        new_inventory = [item for i, item in enumerate(inventory) if i not in found_items]
+        session['user']['inventory'] = new_inventory
+        session.modified = True
+        
+        # Generate bot players
+        print("\nGenerating bot players...")
+        num_bots = random.randint(1, 10)
+        bot_players = generate_bot_players(num_bots)
+        
+        # Calculate total bot value with detailed logging
+        bot_total = 0
+        print("\nCalculating bot values:")
+        for bot in bot_players:
+            bot_value = sum(float(item['price']) for item in bot['items'])
+            bot_total += bot_value
+            print(f"{bot['name']}: ${bot_value:.2f}")
+        print(f"Total bot value: ${bot_total:.2f}")
+        
+        # Calculate final total
+        total_value = user_value + bot_total
+        print(f"\nFinal totals:")
+        print(f"User value: ${user_value:.2f}")
+        print(f"Bot value: ${bot_total:.2f}")
+        print(f"Total pot: ${total_value:.2f}")
+        
+        # Prepare players list
+        players = [
+            {
+                'name': 'You',
+                'items': user_items,
+                'value': round(user_value, 2),
+                'winChance': round((user_value / total_value * 100), 2) if total_value > 0 else 0
+            }
+        ]
+        
+        # Add bot players
+        for bot in bot_players:
+            bot_value = sum(float(item['price']) for item in bot['items'])
+            players.append({
+                'name': bot['name'],
+                'items': bot['items'],
+                'value': round(bot_value, 2),
+                'winChance': round((bot_value / total_value * 100), 2) if total_value > 0 else 0
+            })
+        
+        # Verify total percentages add up to 100%
+        total_percentage = sum(player['winChance'] for player in players)
+        print(f"\nTotal win percentage: {total_percentage}%")
+        
+        # Determine winner
+        winner = random.choices(
+            players,
+            weights=[float(player['value']) for player in players],
+            k=1
+        )[0]
+        
+        # If user won, add all other players' items to their inventory
+        if winner['name'] == 'You':
+            # Get current inventory (which has the user's wagered items removed)
+            current_inventory = session['user'].get('inventory', [])
+            
+            # Add back the user's wagered items since they won
+            current_inventory.extend(user_items)
+            
+            # Add items from all other players
+            for player in players:
+                if player['name'] != 'You':
+                    # Add to user's inventory
+                    current_inventory.extend(player['items'])
+            
+            # Update session with new inventory
+            session['user']['inventory'] = current_inventory
+            session.modified = True
+            
+            # Add won items to winner data for display
+            winner['items'] = user_items + [item for player in players 
+                                          if player['name'] != 'You' 
+                                          for item in player['items']]
+            
+            print(f"Added back {len(user_items)} user items and {len(winner['items']) - len(user_items)} won items")
+        
+        return jsonify({
+            'players': players,
+            'totalPotValue': total_value,
+            'winChance': (user_value / total_value * 100) if total_value > 0 else 0,
+            'winner': {
+                'name': winner['name'],
+                'items': winner['items'],
+                'totalValue': total_value,
+                'isUser': winner['name'] == 'You'
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error in start_jackpot: {str(e)}")
+        print(f"Error traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Failed to start game'})
+
+def generate_bot_players(num_bots: int) -> List[Dict[str, Any]]:
+    bot_names = [
+        "skibidi toilet", "ohio rizz", "sigma grindset", "gyatt enthusiast", 
+        "backrooms entity", "no cap fr fr", "megamind rizz", "skill issue", 
+        "brainrot gaming", "based department", "gigachad", "npc moment",
+        "ratio + L", "sheeeesh", "sus imposter", "copium addict",
+        "peak fiction", "rizz master", "skull emoji", "real and true"
+    ]
+    
+    # Load all case data
+    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
+    all_skins = []
+    
+    case_file_mapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo_case',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case'
+    }
+    
+    # Load skins directly from case files instead of using Case object
+    for case_type in case_types:
+        try:
+            with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                case_data = json.load(f)
+                
+                # Process each rarity grade
+                for grade, items in case_data['skins'].items():
+                    rarity = grade.upper()  # Convert grade to rarity name
+                    for item in items:
+                        # Add skin with its case type and prices
+                        all_skins.append({
+                            'weapon': item['weapon'],
+                            'name': item['name'],
+                            'rarity': rarity,
+                            'case_type': case_type,
+                            'prices': item['prices']
+                        })
+        except Exception as e:
+            print(f"Error loading case {case_type}: {e}")
+            continue
+    
+    print(f"Loaded {len(all_skins)} potential skins for bots")  # Debug log
+    
+    bots = []
+    used_names = set()
+    
+    for _ in range(num_bots):
+        # Select random unique bot name
+        available_names = [name for name in bot_names if name not in used_names]
+        if not available_names:
+            break
+        bot_name = random.choice(available_names)
+        used_names.add(bot_name)
+        
+        # Generate 1-10 items for the bot
+        num_items = random.randint(1, 10)
+        bot_items = []
+        attempts = 0
+        max_attempts = 100  # Prevent infinite loops
+        
+        while len(bot_items) < num_items and attempts < max_attempts:
+            attempts += 1
+            if not all_skins:  # Safety check
+                break
+                
+            skin = random.choice(all_skins)
+            
+            # Randomly decide wear and StatTrak
+            wear_options = [w for w in skin['prices'].keys() 
+                          if not w.startswith('ST_') and w != 'NO']
+            if not wear_options:
+                continue
+                
+            wear = random.choice(wear_options)
+            stattrak = random.random() < 0.1  # 10% chance for StatTrak
+            
+            # Get price
+            price_key = f"ST_{wear}" if stattrak else wear
+            try:
+                price = float(skin['prices'].get(price_key, 0))
+            except (ValueError, TypeError):
+                continue
+            
+            # Only add if price is within range (0-30)
+            if 0 < price <= 30:
+                bot_items.append({
+                    'weapon': skin['weapon'],
+                    'name': skin['name'],
+                    'wear': wear,
+                    'rarity': skin['rarity'],
+                    'stattrak': stattrak,
+                    'price': price,
+                    'case_type': skin['case_type']
+                })
+        
+        if bot_items:  # Only add bot if they have items
+            bots.append({
+                'name': bot_name,
+                'items': bot_items
+            })
+            print(f"Added bot {bot_name} with {len(bot_items)} items")  # Debug log
+    
+    return bots
 
 if __name__ == '__main__':
     app.run(debug=True)
