@@ -1611,4 +1611,71 @@ h1 {
     50% { box-shadow: 0 0 20px #caab05; }
     100% { box-shadow: 0 0 5px #caab05; }
 }
+
+/* Add these styles at the end of the file */
+
+.sell-all-btn {
+    margin-left: auto;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sell-all-btn:hover {
+    background: #45a049;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--secondary);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+}
+
+.modal-content h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.modal-buttons .btn {
+    padding: 0.5rem 1.5rem;
+}
+
+#confirm-sell-all {
+    background: #4CAF50;
+}
+
+#cancel-sell-all {
+    background: #f44336;
+}
  

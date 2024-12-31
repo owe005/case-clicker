@@ -1602,5 +1602,38 @@ def take_insurance():
         print(f"Error in take_insurance: {e}")
         return jsonify({'error': 'Failed to process insurance bet'})
 
+@app.route('/sell/all', methods=['POST'])
+@login_required
+def sell_all():
+    try:
+        inventory = session['user'].get('inventory', [])
+        
+        # Calculate total value of all skins
+        total_value = 0
+        new_inventory = []
+        
+        for item in inventory:
+            if item.get('is_case'):
+                new_inventory.append(item)
+            else:
+                total_value += float(item.get('price', 0))
+        
+        # Update user's balance and inventory
+        session['user']['balance'] = float(session['user']['balance']) + total_value
+        session['user']['inventory'] = new_inventory
+        
+        # Ensure the session is marked as modified
+        session.modified = True
+        
+        return jsonify({
+            'success': True,
+            'balance': session['user']['balance'],
+            'sold_value': total_value
+        })
+        
+    except Exception as e:
+        print(f"Error in sell_all: {e}")
+        return jsonify({'error': 'Failed to sell all items'})
+
 if __name__ == '__main__':
     app.run(debug=True)

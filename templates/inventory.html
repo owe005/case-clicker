@@ -9,6 +9,8 @@
 <div class="inventory-categories">
     <button class="category-btn active" data-category="skins">Skins</button>
     <button class="category-btn" data-category="cases">Cases</button>
+    <!-- Add the sell all button -->
+    <button id="sell-all-btn" class="sell-all-btn">Sell All: $0.00</button>
 </div>
 
 <!-- Skins section -->
@@ -101,6 +103,18 @@
         <div class="showcase-buttons">
             <button class="showcase-continue">Continue</button>
             <button class="showcase-sell">Sell</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add this before the closing body tag -->
+<div id="sell-all-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Confirm Sell All</h3>
+        <p>Are you sure you want to sell all skins for <span id="modal-price">$0.00</span>?</p>
+        <div class="modal-buttons">
+            <button id="confirm-sell-all" class="btn">Confirm</button>
+            <button id="cancel-sell-all" class="btn">Cancel</button>
         </div>
     </div>
 </div>
@@ -1213,5 +1227,101 @@ function showLevelUpBanner(newRank) {
         banner.remove();
     }, 3000);
 }
+
+// Add after the existing scripts
+function updateSellAllButton() {
+    const sellAllBtn = document.getElementById('sell-all-btn');
+    const skins = document.querySelectorAll('.skin');
+    let totalValue = 0;
+    
+    skins.forEach(skin => {
+        const priceElement = skin.querySelector('.item-price');
+        if (priceElement) {
+            const price = parseFloat(priceElement.textContent.replace('$', ''));
+            if (!isNaN(price)) {
+                totalValue += price;
+            }
+        }
+    });
+    
+    sellAllBtn.textContent = `Sell All: $${totalValue.toFixed(2)}`;
+    sellAllBtn.dataset.totalValue = totalValue;
+}
+
+// Add sell all functionality
+document.getElementById('sell-all-btn').addEventListener('click', function() {
+    const totalValue = parseFloat(this.dataset.totalValue);
+    if (totalValue <= 0) return;
+    
+    const modal = document.getElementById('sell-all-modal');
+    const modalPrice = document.getElementById('modal-price');
+    modalPrice.textContent = `$${totalValue.toFixed(2)}`;
+    modal.classList.remove('hidden');
+});
+
+document.getElementById('cancel-sell-all').addEventListener('click', function() {
+    document.getElementById('sell-all-modal').classList.add('hidden');
+});
+
+document.getElementById('confirm-sell-all').addEventListener('click', async function() {
+    try {
+        const response = await fetch('/sell/all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+        
+        // Remove all skins with animation
+        const skins = document.querySelectorAll('.skin');
+        skins.forEach(skin => {
+            skin.style.animation = 'fadeOut 0.3s';
+        });
+        
+        setTimeout(() => {
+            const inventoryItems = document.getElementById('inventory-items');
+            inventoryItems.innerHTML = '';
+            updateSellAllButton();
+        }, 300);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to sell all items');
+    } finally {
+        document.getElementById('sell-all-modal').classList.add('hidden');
+    }
+});
+
+// Update sell all button when inventory changes
+document.addEventListener('DOMContentLoaded', updateSellAllButton);
+
+// Update the refreshSkinsSection function to call updateSellAllButton
+const originalRefreshSkinsSection = refreshSkinsSection;
+refreshSkinsSection = async function() {
+    await originalRefreshSkinsSection();
+    updateSellAllButton();
+};
+
+// Update category switching to show/hide sell all button
+document.querySelectorAll('.category-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const sellAllBtn = document.getElementById('sell-all-btn');
+        if (button.dataset.category === 'skins') {
+            sellAllBtn.style.display = 'block';
+        } else {
+            sellAllBtn.style.display = 'none';
+        }
+    });
+});
 </script>
 {% endblock %} 
