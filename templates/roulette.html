@@ -115,6 +115,21 @@
     </div>
 </div>
 
+<!-- Add these styles for the lightning popup -->
+<div class="lightning-popup">
+    <div class="lightning-popup-content">
+        <h2>Lightning Numbers</h2>
+        <div class="lightning-numbers-grid">
+            <!-- Lightning numbers will be added here dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- Add these styles for the lightning win notification -->
+<div class="lightning-win-notification">
+    Lightning Win Notification
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -502,6 +517,236 @@
 .quick-bet:disabled:hover {
     background: #3a3a3a;
 }
+
+/* Lightning number styles */
+.number.lightning {
+    position: relative;
+    overflow: hidden;
+    animation: lightningFlash 2s infinite;
+    border: 2px solid #4ff3ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Zigzag lightning effect */
+.number.lightning::before {
+    content: attr(data-multiplier) !important;
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4ff3ff;
+    white-space: nowrap;
+    text-shadow: 0 0 5px #4ff3ff;
+    box-shadow: 0 0 10px rgba(79, 243, 255, 0.5);
+    z-index: 2;
+    font-weight: bold;
+}
+
+/* Special handling for green zero when lightning */
+.number.zero.lightning::before {
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Electric field effect */
+.number.lightning::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background: 
+        repeating-linear-gradient(45deg, 
+            transparent 0%, 
+            transparent 48%, 
+            rgba(79, 243, 255, 0.1) 50%,
+            transparent 52%, 
+            transparent 100%
+        );
+    animation: electricField 10s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Lightning bolt overlay */
+.number.lightning > .bolt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(79, 243, 255, 0.5) 0%, transparent 30%),
+        radial-gradient(circle at 70% 80%, rgba(79, 243, 255, 0.5) 0%, transparent 30%),
+        linear-gradient(45deg, transparent 45%, rgba(79, 243, 255, 0.7) 49%, rgba(79, 243, 255, 0.7) 51%, transparent 55%),
+        linear-gradient(-45deg, transparent 45%, rgba(79, 243, 255, 0.7) 49%, rgba(79, 243, 255, 0.7) 51%, transparent 55%);
+    opacity: 0;
+    animation: boltFlash 2s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Update Lightning animations */
+@keyframes lightningFlash {
+    0% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    }
+    40% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    }
+    45% {
+        filter: brightness(2);
+        box-shadow: 0 0 30px rgba(79, 243, 255, 0.8);
+    }
+    50% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    }
+    85% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    }
+    90% {
+        filter: brightness(2);
+        box-shadow: 0 0 30px rgba(79, 243, 255, 0.8);
+    }
+    95% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    }
+}
+
+@keyframes electricField {
+    0% {
+        transform: rotate(0deg) scale(2);
+    }
+    100% {
+        transform: rotate(360deg) scale(2);
+    }
+}
+
+@keyframes boltFlash {
+    0%, 100% {
+        opacity: 0;
+    }
+    40%, 45% {
+        opacity: 0;
+    }
+    42.5% {
+        opacity: 1;
+    }
+    85%, 95% {
+        opacity: 0;
+    }
+    90% {
+        opacity: 1;
+    }
+}
+
+/* Add these styles for the lightning popup */
+.lightning-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 10px 20px;
+    border-radius: 15px;
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: 2px solid #4ff3ff;
+    box-shadow: 0 0 30px rgba(79, 243, 255, 0.3);
+    text-align: center;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 90%;
+}
+
+.lightning-popup.visible {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+}
+
+.lightning-popup h2 {
+    color: #4ff3ff;
+    margin: 0;
+    font-size: 18px;
+    text-shadow: 0 0 10px rgba(79, 243, 255, 0.5);
+}
+
+.lightning-numbers-grid {
+    display: flex;
+    gap: 15px;
+}
+
+.lightning-number-item {
+    background: rgba(79, 243, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(79, 243, 255, 0.3);
+    animation: lightningPulse 2s infinite;
+    min-width: 60px;
+}
+
+.lightning-number-value {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.lightning-multiplier-value {
+    font-size: 14px;
+    color: #4ff3ff;
+    font-weight: bold;
+}
+
+/* Add these styles for the lightning win notification */
+.lightning-win-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 10px 20px;
+    border-radius: 15px;
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: 2px solid #4ff3ff;
+    box-shadow: 0 0 30px rgba(79, 243, 255, 0.3);
+    text-align: center;
+    pointer-events: none;
+    color: #4ff3ff;
+    font-size: 18px;
+    font-weight: bold;
+    animation: lightningPulse 2s infinite;
+}
+
+.lightning-win-notification.visible {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+}
+
+@keyframes lightningPulse {
+    0% { text-shadow: 0 0 5px #4ff3ff; }
+    50% { text-shadow: 0 0 15px #4ff3ff; }
+    100% { text-shadow: 0 0 5px #4ff3ff; }
+}
 </style>
 
 <script>
@@ -580,14 +825,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const betAmount = parseFloat(betInput.value);
             const currentBalance = parseFloat(document.getElementById('balance').textContent);
-            const totalCurrentBets = calculateTotalBets();
             
             if (isNaN(betAmount) || betAmount <= 0) {
                 alert('Please enter a valid bet amount');
                 return;
             }
             
-            if (totalCurrentBets + betAmount > currentBalance) {
+            if (betAmount > currentBalance) {
                 alert('Insufficient funds');
                 return;
             }
@@ -606,6 +850,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             currentBets[betType] = amount;
         }
+        
+        // Deduct bet amount from displayed balance immediately
+        const balanceElement = document.getElementById('balance');
+        const currentBalance = parseFloat(balanceElement.textContent);
+        balanceElement.textContent = (currentBalance - amount).toFixed(2);
         
         // Store last bet pattern when a new bet is placed
         lastBetPattern = {...currentBets};
@@ -650,6 +899,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function clearBets() {
+        // Calculate total bet amount to refund
+        const totalBetAmount = Object.values(currentBets).reduce((sum, amount) => sum + parseFloat(amount), 0);
+        
+        // Refund bets to displayed balance
+        const balanceElement = document.getElementById('balance');
+        const currentBalance = parseFloat(balanceElement.textContent);
+        balanceElement.textContent = (currentBalance + totalBetAmount).toFixed(2);
+        
+        // Clear current bets
         currentBets = {};
         updateBetsList();
         
@@ -769,6 +1027,24 @@ document.addEventListener('DOMContentLoaded', () => {
             el.disabled = false;
         });
         
+        // Clear any existing lightning effects and notifications
+        document.querySelectorAll('.number.lightning').forEach(el => {
+            el.classList.remove('lightning');
+            el.removeAttribute('data-multiplier');
+            const bolt = el.querySelector('.bolt');
+            if (bolt) bolt.remove();
+        });
+        
+        const existingPopup = document.querySelector('.lightning-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+        
+        const existingNotification = document.querySelector('.lightning-win-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
         updateTimerDisplay();
 
         // Clear any existing intervals
@@ -780,10 +1056,13 @@ document.addEventListener('DOMContentLoaded', () => {
             timeRemaining--;
             
             if (timeRemaining === WARNING_TIME) {
-                // Close betting at 5 seconds remaining
+                // Close betting and generate lightning numbers at 5 seconds remaining
                 bettingOpen = false;
                 document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet')
                     .forEach(el => el.disabled = true);
+                
+                // Generate lightning numbers when betting closes
+                generateLightningNumbers();
             }
 
             updateTimerDisplay();
@@ -821,7 +1100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove the inner DOMContentLoaded event and modify the playGame function
     function playGame() {
         try {
-            // Wait for timer bar transition to complete before starting wheel
             setTimeout(() => {
                 // Clear previous winner indicator
                 document.querySelectorAll('.number.winner').forEach(el => el.classList.remove('winner'));
@@ -833,7 +1111,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemWidth = WHEEL_ITEM_TOTAL_WIDTH;
                 const paddingItems = 5;
                 
-                // If no bets placed, send empty bets object
+                // Get the current lightning numbers from the DOM
+                const lightningNumbers = new Set(
+                    Array.from(document.querySelectorAll('.number.lightning'))
+                        .map(el => parseInt(el.dataset.number))
+                );
+                
+                // Send current bets to server
                 const betsToSend = Object.keys(currentBets).length > 0 ? currentBets : {};
                 
                 fetch('/play_roulette', {
@@ -841,7 +1125,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ bets: betsToSend })
+                    body: JSON.stringify({ 
+                        bets: betsToSend,
+                        lightningNumbers: Array.from(lightningNumbers)
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -876,6 +1163,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         const winningTile = document.querySelector(`.number[data-number="${data.result}"]`);
                         if (winningTile) {
                             winningTile.classList.add('winner');
+                            
+                            // Check if winning number was a lightning number
+                            if (winningTile.classList.contains('lightning')) {
+                                const multiplier = winningTile.getAttribute('data-multiplier');
+                                const notification = document.createElement('div');
+                                notification.className = 'lightning-win-notification';
+                                notification.textContent = `⚡ Lightning Strike! ${data.result} hit with ${multiplier} multiplier! ⚡`;
+                                document.body.appendChild(notification);
+                                
+                                setTimeout(() => notification.classList.add('visible'), 100);
+                                
+                                // Remove notification after delay
+                                setTimeout(() => {
+                                    notification.classList.remove('visible');
+                                    setTimeout(() => notification.remove(), 300);
+                                }, 3000);
+                            }
                         }
 
                         // Only show result if user placed bets
@@ -888,7 +1192,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             resultNumber.textContent = data.result;
                             resultNumber.className = `result-number ${getNumberColor(data.result)}`;
 
-                            const netWin = data.winnings - calculateTotalBets();
+                            // Calculate net win/loss
+                            const netWin = data.winnings - data.total_bet;
+                            
                             if (netWin > 0) {
                                 resultText.textContent = 'You Won!';
                                 resultAmount.textContent = `+$${netWin.toFixed(2)}`;
@@ -902,18 +1208,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             resultOverlay.classList.remove('hidden');
 
-                            // Update balance
+                            // Update balance after result
                             fetch('/update_roulette_balance', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    balance: data.balance
-                                })
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(updateData => {
+                                if (updateData.success) {
+                                    document.getElementById('balance').textContent = updateData.balance.toFixed(2);
+                                }
                             });
-
-                            document.getElementById('balance').textContent = data.balance.toFixed(2);
                         }
 
                         // Clear bets for next round
@@ -977,6 +1284,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start the game cycle when the page loads
     startGameCycle();
+
+    function generateLightningNumbers() {
+        // Clear previous lightning numbers
+        document.querySelectorAll('.number.lightning').forEach(el => {
+            el.classList.remove('lightning');
+            el.removeAttribute('data-multiplier');
+            const bolt = el.querySelector('.bolt');
+            if (bolt) bolt.remove();
+        });
+        
+        // Determine number of lightning numbers (1-5)
+        const numLightning = Math.floor(Math.random() * 5) + 1;
+        
+        // Define multipliers and their weights
+        const multipliers = [
+            { value: 50, weight: 45 },
+            { value: 100, weight: 30 },
+            { value: 200, weight: 15 },
+            { value: 300, weight: 5 },
+            { value: 400, weight: 3 },
+            { value: 500, weight: 2 }
+        ];
+        
+        // Create popup
+        const popup = document.createElement('div');
+        popup.className = 'lightning-popup';
+        popup.innerHTML = `
+            <h2>Lightning Numbers:</h2>
+            <div class="lightning-numbers-grid">
+            </div>
+        `;
+        document.body.appendChild(popup);
+        
+        // Show popup with delay
+        setTimeout(() => popup.classList.add('visible'), 100);
+        
+        // Get random numbers for lightning
+        const numbers = new Set();
+        while (numbers.size < numLightning) {
+            numbers.add(Math.floor(Math.random() * 37));
+        }
+
+        // Apply lightning effect to selected numbers
+        const numbersGrid = popup.querySelector('.lightning-numbers-grid');
+        
+        numbers.forEach(number => {
+            // Select random multiplier based on weights
+            const totalWeight = multipliers.reduce((sum, m) => sum + m.weight, 0);
+            let random = Math.random() * totalWeight;
+            let selectedMultiplier;
+            
+            for (const multiplier of multipliers) {
+                random -= multiplier.weight;
+                if (random <= 0) {
+                    selectedMultiplier = multiplier.value;
+                    break;
+                }
+            }
+            
+            // Add to popup grid
+            const numberItem = document.createElement('div');
+            numberItem.className = 'lightning-number-item';
+            numberItem.innerHTML = `
+                <div class="lightning-number-value">${number}</div>
+                <div class="lightning-multiplier-value">${selectedMultiplier}x</div>
+            `;
+            numbersGrid.appendChild(numberItem);
+
+            // Apply lightning effect to number on the board
+            const numberEl = document.querySelector(`.number[data-number="${number}"]`);
+            if (numberEl) {
+                numberEl.classList.add('lightning');
+                numberEl.setAttribute('data-multiplier', `${selectedMultiplier}x`);
+                const bolt = document.createElement('div');
+                bolt.className = 'bolt';
+                numberEl.appendChild(bolt);
+            }
+        });
+
+        // Remove popup after delay
+        setTimeout(() => {
+            popup.classList.remove('visible');
+            setTimeout(() => popup.remove(), 300);
+        }, 3000);
+
+        return numbers;
+    }
 });
 </script>
 {% endblock %} 

@@ -1783,41 +1783,57 @@ h1 {
  
 /* Sort button styles */
 .sort-controls {
-    display: inline-flex;
-    gap: 8px;
-    margin-left: 16px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+    align-items: center;
 }
 
 .sort-btn {
+    background: var(--secondary);
+    color: var(--text);
+    border: 1px solid #444;
     padding: 8px 16px;
-    background-color: #2c3e50;
-    border: 1px solid #34495e;
-    border-radius: 4px;
-    color: #ecf0f1;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 
 .sort-btn:hover {
-    background-color: #34495e;
+    background: #383838;
+    border-color: #555;
 }
 
 .sort-btn.active {
-    background-color: #3498db;
-    border-color: #2980b9;
+    background: var(--accent);
+    color: var(--primary);
+    border-color: var(--accent);
 }
 
 .sort-btn::after {
     content: "↓";
     display: inline-block;
     transition: transform 0.2s ease;
+    font-size: 0.8rem;
 }
 
 .sort-btn.asc::after {
     transform: rotate(180deg);
+}
+
+/* Add controls wrapper to organize buttons */
+.inventory-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: var(--primary);
+    border-radius: 8px;
 }
 
 .home-container {

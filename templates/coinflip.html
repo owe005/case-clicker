@@ -756,16 +756,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the flip button click handler
     flipBtn.addEventListener('click', async () => {
         const betAmount = parseFloat(betInput.value);
+        const currentBalance = parseFloat(balance.textContent);
         
         // Disable controls during animation
         flipBtn.disabled = true;
         betInput.disabled = true;
         ctBtn.disabled = true;
         tBtn.disabled = true;
-        document.querySelectorAll('.quick-bet').forEach(btn => {
-            btn.disabled = true;
-        });
-        document.querySelectorAll('.bet-adjust').forEach(btn => {
+        document.querySelectorAll('.quick-bet, .bet-adjust').forEach(btn => {
             btn.disabled = true;
         });
         
@@ -785,10 +783,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.error) {
                 alert(data.error);
+                resetGame();
                 return;
             }
 
-            // Store the last bet amount only after successful bet
+            // Update balance immediately to show bet deduction
+            balance.textContent = (currentBalance - betAmount).toFixed(2);
+
+            // Store the last bet amount
             lastBetAmount = betAmount;
 
             // Start countdown before coin flip
@@ -798,30 +800,22 @@ document.addEventListener('DOMContentLoaded', () => {
             coinAnimation.classList.remove('hidden');
             flipBtn.classList.add('hidden');
             
-            // Calculate final rotation based on result
-            const rotations = 10; // Increased number of rotations
+            const rotations = 10;
             const finalRotation = `${(rotations * 360) + (data.result === 't' ? 180 : 0)}deg`;
             
-            // Remove any existing animation class
             coin.classList.remove('flipping');
-            
-            // Force a reflow to ensure the animation runs
             void coin.offsetWidth;
             
-            // Set the final rotation and start animation
             coin.style.setProperty('--final-rotation', finalRotation);
             coin.classList.add('flipping');
             
-            // Wait for animation to finish
-            setTimeout(() => {
-                // Show the result only after animation is completely finished
+            setTimeout(async () => {
                 const resultDisplay = document.querySelector('.coin-animation .result-display');
                 const gameButtons = document.querySelector('.coin-animation .game-buttons');
                 
                 resultDisplay.classList.remove('hidden');
                 gameButtons.classList.remove('hidden');
                 
-                // Update result text and amount
                 const resultText = resultDisplay.querySelector('.result-text');
                 const resultAmount = resultDisplay.querySelector('.result-amount');
                 
@@ -831,26 +825,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     `-$${betAmount.toFixed(2)}`;
                 resultAmount.className = `result-amount ${data.won ? 'win' : 'lose'}`;
                 
-                // Create confetti if won
                 if (data.won) {
                     createConfetti();
                 }
                 
-                // Update balance
-                setTimeout(async () => {
-                    await fetch('/update_coinflip_balance', {
+                // Update final balance after animation
+                try {
+                    const updateResponse = await fetch('/update_coinflip_balance', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            balance: data.balance
-                        })
+                        }
                     });
-                    
-                    balance.textContent = data.balance.toFixed(2);
-                }, 500);
-            }, 3100); // Slightly longer than animation duration
+                    const updateData = await updateResponse.json();
+                    if (updateData.success) {
+                        balance.textContent = updateData.balance.toFixed(2);
+                    }
+                } catch (error) {
+                    console.error('Error updating balance:', error);
+                }
+                
+            }, 3100);
             
         } catch (error) {
             console.error('Error:', error);

@@ -483,6 +483,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
+            // Update balance immediately after placing bet
+            if (data.balance !== undefined) {
+                document.getElementById('balance').textContent = data.balance.toFixed(2);
+            }
+            
             // Store last bet amount
             lastBetAmount = betAmount;
             
@@ -620,6 +625,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data || !data.dealer || !data.player) {
             console.error('Invalid game state data:', data);
             return;
+        }
+
+        // Update balance immediately when we get new state
+        if (data.balance !== undefined) {
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
         }
 
         // Update dealer cards

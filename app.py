@@ -9,6 +9,7 @@ from datetime import timedelta
 from dataclasses import dataclass
 from typing import List, Optional
 import traceback
+import os
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS
 from models import Case, User, Upgrades
@@ -163,67 +164,70 @@ def create_user_from_dict(data: dict) -> User:
                 user.inventory.append(skin_dict)
     return user
 
-CASE_PRICES = {
-    'csgo': 125.00,  # CS:GO Weapon Case
-    'esports': 55.00,   # eSports 2013 Case
-    'bravo': 150.00,  # Operation Bravo Case price
-    'csgo2': 13.00,   # CS:GO Weapon Case 2 price
-    'esports_winter': 11.00,  # eSports 2013 Winter Case price
-    'winter_offensive': 10.00  # Winter Offensive Case price
-}
+def load_user_data() -> dict:
+    """Load user data from JSON file."""
+    default_data = {
+        'balance': 1000.0,
+        'inventory': [],
+        'exp': 0,
+        'rank': 0,
+        'upgrades': {
+            'click_value': 1,
+            'max_multiplier': 1,
+            'auto_clicker': 0,
+            'combo_speed': 1,
+            'critical_strike': 0
+        }
+    }
+    
+    if not os.path.exists('data/user_inventory.json'):
+        return default_data
+    
+    try:
+        with open('data/user_inventory.json', 'r') as f:
+            data = json.load(f)
+            # Ensure the data has all necessary keys
+            for key, value in default_data.items():
+                if key not in data:
+                    data[key] = value
+            return data
+    except (json.JSONDecodeError, FileNotFoundError):
+        # If there's an error loading the JSON, return default data
+        return default_data
+
+def save_user_data(user_data: dict):
+    """Save user data to JSON file."""
+    with open('data/user_inventory.json', 'w') as f:
+        json.dump(user_data, f)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 1,      # Start at level 1
-                'max_multiplier': 1,   # Start at level 1
-                'auto_clicker': 0,     # Start at level 0 (not unlocked)
-                'combo_speed': 1,      # Start at level 1
-                'critical_strike': 0   # Add critical strike
-            }
-        }
+    user_data = load_user_data()
     return render_template('home.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user_data['balance'],
+                           rank=user_data['rank'],
+                           exp=user_data['exp'],
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/shop')
 @login_required
 def shop():
     cases = load_case('all')  # Get all case data for shop display
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('shop.html',
-        cases=cases,
-        balance=user.balance,
-        RANKS=RANKS,
-        RANK_EXP=RANK_EXP
-    )
+                           cases=cases,
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/inventory')
 def inventory():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 1,
-                'max_multiplier': 1,
-                'auto_clicker': 0,
-                'combo_speed': 1,
-                'critical_strike': 0
-            }
-        }
-    
-    # Get the current inventory from session
-    inventory_items = session['user'].get('inventory', [])
+    user_data = load_user_data()
+    inventory_items = user_data.get('inventory', [])
     
     # Update prices for all non-case items
     for item in inventory_items:
@@ -258,27 +262,24 @@ def inventory():
                 print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
                 continue
     
-    # Update session with new prices
-    session['user']['inventory'] = inventory_items
-    
     # Sort items so newest appears first
     inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
-                           reverse=True)
+                             key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
+                             reverse=True)
     
     return render_template('inventory.html', 
-                         balance=session['user']['balance'], 
-                         inventory=inventory_items,
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS,
-                         initial_view=request.args.get('view', 'skins'))
+                           balance=user_data['balance'], 
+                           inventory=inventory_items,
+                           rank=user_data['rank'],
+                           exp=user_data['exp'],
+                           RANK_EXP=RANK_EXP,
+                           RANKS=RANKS,
+                           initial_view=request.args.get('view', 'skins'))
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
-    inventory = session['user'].get('inventory', [])
+    user_data = load_user_data()
+    inventory = user_data.get('inventory', [])
     
     # Find the case in inventory
     case_found = False
@@ -321,8 +322,8 @@ def open_case(case_type):
             case_price = float(case_data.get('price', 0))
             
             # Add exp based on case price
-            current_exp = session['user'].get('exp', 0)
-            current_rank = session['user'].get('rank', 0)
+            current_exp = user_data.get('exp', 0)
+            current_rank = user_data.get('rank', 0)
             
             # Add exp equal to case price
             new_exp = current_exp + case_price
@@ -332,9 +333,9 @@ def open_case(case_type):
                 new_exp -= RANK_EXP[current_rank]
                 current_rank += 1
             
-            # Update session with new exp and rank
-            session['user']['exp'] = new_exp
-            session['user']['rank'] = current_rank
+            # Update user data with new exp and rank
+            user_data['exp'] = new_exp
+            user_data['rank'] = current_rank
             
     except Exception as e:
         print(f"Error getting case price: {e}")
@@ -388,13 +389,13 @@ def open_case(case_type):
     # Add the skin to inventory
     inventory.append(skin_dict)
     
-    # Update session
-    session['user']['inventory'] = inventory
-    session.modified = True
+    # Update user data
+    user_data['inventory'] = inventory
+    save_user_data(user_data)
     
     return jsonify({
         'item': skin_dict,
-        'balance': session['user']['balance'],
+        'balance': user_data['balance'],
         'exp': new_exp,
         'rank': current_rank,
         'rankName': RANKS[current_rank],
@@ -403,7 +404,7 @@ def open_case(case_type):
 
 @app.route('/reset_session')
 def reset_session():
-    session['user'] = {
+    user_data = {
         'balance': 1000.0,
         'inventory': [],
         'exp': 0,
@@ -416,15 +417,14 @@ def reset_session():
             'critical_strike': 0  # Start at level 0 (not unlocked)
         }
     }
+    save_user_data(user_data)
     return redirect(url_for('shop'))
 
 @app.route('/sell/<int:item_index>', methods=['POST'])
 def sell_item(item_index=None):
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     try:
-        inventory = session['user']['inventory']
+        inventory = user_data['inventory']
         
         # Get only non-case items
         skin_items = [item for item in inventory if not item.get('is_case')]
@@ -445,14 +445,14 @@ def sell_item(item_index=None):
         
         # Remove the item and update user's balance
         inventory.pop(actual_index)
-        session['user']['balance'] = float(session['user']['balance']) + sale_price
+        user_data['balance'] = float(user_data['balance']) + sale_price
         
-        # Ensure the session is updated
-        session.modified = True
+        # Save updated user data
+        save_user_data(user_data)
         
         return jsonify({
             'success': True,
-            'balance': session['user']['balance'],
+            'balance': user_data['balance'],
             'sold_price': sale_price
         })
         
@@ -462,11 +462,9 @@ def sell_item(item_index=None):
 
 @app.route('/sell/last', methods=['POST'])
 def sell_last_item():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     try:
-        inventory = session['user']['inventory']
+        inventory = user_data['inventory']
         
         # Get only non-case items
         skin_items = [item for item in inventory if not item.get('is_case')]
@@ -493,17 +491,17 @@ def sell_last_item():
         
         # Remove the item and update user's balance
         inventory.pop(last_skin_index)
-        session['user']['balance'] = float(session['user']['balance']) + sale_price
+        user_data['balance'] = float(user_data['balance']) + sale_price
         
-        # Ensure the session is marked as modified
-        session.modified = True
+        # Save updated user data
+        save_user_data(user_data)
         
         # Log the successful sale
         print(f"Successfully sold item: {item.get('weapon')} | {item.get('name')} for ${sale_price}")
         
         return jsonify({
             'success': True,
-            'balance': session['user']['balance'],
+            'balance': user_data['balance'],
             'sold_price': sale_price
         })
         
@@ -517,37 +515,24 @@ def sell_last_item():
 
 @app.route('/clicker')
 def clicker():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 1,      # Start at level 1
-                'max_multiplier': 1,   # Start at level 1
-                'auto_clicker': 0,     # Start at level 0 (not unlocked)
-                'combo_speed': 1,      # Start at level 1
-                'critical_strike': 0   # Start at level 0 (not unlocked)
-            }
-        }
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('clicker.html', 
-                         balance=user.balance,
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANK_EXP=RANK_EXP,
+                           RANKS=RANKS)
 
 @app.route('/click', methods=['POST'])
 def click():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     data = request.get_json()
     multiplier = data.get('amount', 0)
     critical = data.get('critical', False)
     is_auto = data.get('auto', False)  # New flag for auto clicks
     
-    user = create_user_from_dict(session['user'])
+    user = create_user_from_dict(user_data)
     
     # For auto clicks, use base value without combo multiplier
     if is_auto:
@@ -563,14 +548,13 @@ def click():
     
     user.balance += earned
     
-    # Update session
-    session['user'] = {
-        'balance': user.balance,
-        'inventory': user.inventory,
-        'exp': user.exp,
-        'rank': user.rank,
-        'upgrades': asdict(user.upgrades)
-    }
+    # Update user data
+    user_data['balance'] = user.balance
+    user_data['inventory'] = user.inventory
+    user_data['exp'] = user.exp
+    user_data['rank'] = user.rank
+    user_data['upgrades'] = asdict(user.upgrades)
+    save_user_data(user_data)
     
     return jsonify({
         'success': True,
@@ -584,53 +568,34 @@ def click():
 
 @app.route('/update_session', methods=['POST'])
 def update_session():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     data = request.get_json()
     
-    # Keep all existing user data
-    current_user = session['user']
-    
     # Update only the exp and rank
-    current_user['exp'] = data.get('exp', current_user.get('exp', 0))
-    current_user['rank'] = data.get('rank', current_user.get('rank', 0))
+    user_data['exp'] = data.get('exp', user_data.get('exp', 0))
+    user_data['rank'] = data.get('rank', user_data.get('rank', 0))
     
-    # Save back to session
-    session['user'] = current_user
+    # Save updated user data
+    save_user_data(user_data)
     
     return jsonify({'success': True})
 
-# Required for session handling
-app.secret_key = 'GHJy79fuRYt79UyfF68YGIftR6+90iUOHtdR68ohHIOpjU+9gRD68r'
-
 @app.route('/upgrades')
 def upgrades():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 0,
-                'max_multiplier': 0,
-                'auto_clicker': 0
-            }
-        }
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('upgrades.html', 
-                         balance=user.balance,
-                         upgrades=user.upgrades,
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+                           balance=user.balance,
+                           upgrades=user.upgrades,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANK_EXP=RANK_EXP,
+                           RANKS=RANKS)
 
 @app.route('/purchase_upgrade', methods=['POST'])
 def purchase_upgrade():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     data = request.get_json()
     upgrade_type = data.get('upgrade_type')
     
@@ -659,14 +624,13 @@ def purchase_upgrade():
     # Calculate next cost after level increase
     next_cost = costs[upgrade_type](current_level + 1)
     
-    # Update session
-    session['user'] = {
-        'balance': user.balance,
-        'inventory': user.inventory,  
-        'exp': user.exp,
-        'rank': user.rank,
-        'upgrades': asdict(user.upgrades)
-    }
+    # Update user data
+    user_data['balance'] = user.balance
+    user_data['inventory'] = user.inventory
+    user_data['exp'] = user.exp
+    user_data['rank'] = user.rank
+    user_data['upgrades'] = asdict(user.upgrades)
+    save_user_data(user_data)
     
     return jsonify({
         'success': True,
@@ -677,16 +641,8 @@ def purchase_upgrade():
 
 @app.route('/get_upgrades')
 def get_upgrades():
-    if 'user' not in session:
-        return jsonify({
-            'click_value': 0,
-            'max_multiplier': 0,
-            'auto_clicker': 0,
-            'combo_speed': 0,
-            'critical_strike': 0  
-        })
-    
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return jsonify({
         'click_value': user.upgrades.click_value,
         'max_multiplier': user.upgrades.max_multiplier,
@@ -697,69 +653,45 @@ def get_upgrades():
 
 @app.route('/cheat')
 def cheat():
-    if 'user' not in session:
-        session['user'] = {
-            'balance': 1000.0,
-            'inventory': [],
-            'exp': 0,
-            'rank': 0,
-            'upgrades': {
-                'click_value': 1,
-                'max_multiplier': 1,
-                'auto_clicker': 0,
-                'combo_speed': 1,
-                'critical_strike': 0 
-            }
-        }
-    
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     user.balance += 10000.0
     
-    
-    session['user'] = {
-        'balance': user.balance,
-        'inventory': user.inventory,  
-        'exp': user.exp,
-        'rank': user.rank,
-        'upgrades': asdict(user.upgrades)
-    }
+    # Update user data
+    user_data['balance'] = user.balance
+    user_data['inventory'] = user.inventory
+    user_data['exp'] = user.exp
+    user_data['rank'] = user.rank
+    user_data['upgrades'] = asdict(user.upgrades)
+    save_user_data(user_data)
     
     return redirect(url_for('shop'))
 
 @app.route('/chest_reward', methods=['POST'])
 def chest_reward():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     data = request.get_json()
     reward = data.get('amount', 0)
     
-    user = create_user_from_dict(session['user'])
+    user = create_user_from_dict(user_data)
     user.balance += reward
     
-    # Get current inventory and preserve cases
-    inventory = session['user'].get('inventory', [])
-    
-    # Update session while preserving cases
-    session['user'] = {
-        'balance': user.balance,
-        'inventory': inventory,  
-        'exp': user.exp,
-        'rank': user.rank,
-        'upgrades': asdict(user.upgrades)
-    }
+    # Update user data
+    user_data['balance'] = user.balance
+    user_data['inventory'] = user.inventory
+    user_data['exp'] = user.exp
+    user_data['rank'] = user.rank
+    user_data['upgrades'] = asdict(user.upgrades)
+    save_user_data(user_data)
     
     return jsonify({
         'success': True,
         'balance': user.balance
     })
 
-# Add this new route to handle case purchases
 @app.route('/buy_case', methods=['POST'])
 def buy_case():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
+    user_data = load_user_data()
     data = request.get_json()
     case_type = data.get('case_type')
     quantity = data.get('quantity', 1)
@@ -769,7 +701,7 @@ def buy_case():
         return jsonify({'error': 'Invalid case type'})
     
     total_cost = case_prices[case_type] * quantity
-    user = create_user_from_dict(session['user'])
+    user = create_user_from_dict(user_data)
     
     if not user.can_afford(total_cost):
         return jsonify({'error': 'Insufficient funds'})
@@ -817,7 +749,7 @@ def buy_case():
     }
     
     # Get current inventory
-    inventory = session['user'].get('inventory', [])
+    inventory = user_data.get('inventory', [])
     
     # Update or add case to inventory
     case_found = False
@@ -832,14 +764,13 @@ def buy_case():
         case_info['quantity'] = quantity
         inventory.append(case_info)
     
-    # Update session with complete user data
-    session['user'] = {
-        'balance': user.balance,
-        'inventory': inventory,
-        'exp': user.exp,
-        'rank': user.rank,
-        'upgrades': asdict(user.upgrades)
-    }
+    # Update user data
+    user_data['balance'] = user.balance
+    user_data['inventory'] = inventory
+    user_data['exp'] = user.exp
+    user_data['rank'] = user.rank
+    user_data['upgrades'] = asdict(user.upgrades)
+    save_user_data(user_data)
 
     return jsonify({
         'success': True,
@@ -848,10 +779,8 @@ def buy_case():
 
 @app.route('/get_inventory')
 def get_inventory():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
-    inventory_items = session['user'].get('inventory', [])
+    user_data = load_user_data()
+    inventory_items = user_data.get('inventory', [])
     
     # Update prices for non-case items
     for item in inventory_items:
@@ -886,9 +815,9 @@ def get_inventory():
                 print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
                 continue
     
-    # Update session with new prices
-    session['user']['inventory'] = inventory_items
-    session.modified = True
+    # Update user data
+    user_data['inventory'] = inventory_items
+    save_user_data(user_data)
     
     return jsonify({
         'inventory': inventory_items
@@ -896,10 +825,8 @@ def get_inventory():
 
 @app.route('/get_user_data')
 def get_user_data():
-    if 'user' not in session:
-        return jsonify({'error': 'User not found'})
-    
-    user = create_user_from_dict(session['user'])
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return jsonify({
         'exp': int(user.exp),
         'rank': user.rank,
@@ -915,7 +842,7 @@ def get_case_contents(case_type):
         'bravo': 'operation_bravo',
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case' 
+        'winter_offensive': 'winter_offensive_case'
     }
     
     if case_type not in case_file_mapping:
@@ -938,18 +865,26 @@ def custom_static(filename):
 @app.route('/casino')
 @login_required
 def casino():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('casino.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/coinflip')
 @login_required
 def coinflip():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('coinflip.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/play_coinflip', methods=['POST'])
 @login_required
@@ -965,24 +900,35 @@ def play_coinflip():
         if bet_amount <= 0:
             return jsonify({'error': 'Invalid bet amount'})
         
-        user = create_user_from_dict(session['user'])
+        # Load current user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
         
-        if bet_amount > user.balance:
+        if bet_amount > current_balance:
             return jsonify({'error': 'Insufficient funds'})
         
         # Determine result (50/50 chance)
         result = random.choice(['ct', 't'])
         won = result == chosen_side
         
-        # Calculate new balance but don't update session yet
-        new_balance = user.balance + bet_amount if won else user.balance - bet_amount
+        # Calculate new balance but don't save yet
+        new_balance = current_balance - bet_amount
+        if won:
+            new_balance += bet_amount * 2
+        
+        # Store the bet info in session so we can update balance after animation
+        session['coinflip_bet'] = {
+            'amount': bet_amount,
+            'won': won,
+            'new_balance': new_balance
+        }
         
         return jsonify({
             'success': True,
             'won': won,
             'result': result,
-            'balance': new_balance,
-            'currentBalance': user.balance
+            'current_balance': current_balance,  # Send current balance for initial display
+            'final_balance': new_balance  # Send final balance for after animation
         })
         
     except Exception as e:
@@ -993,22 +939,20 @@ def play_coinflip():
 @login_required
 def update_coinflip_balance():
     try:
-        data = request.get_json()
-        new_balance = float(data.get('balance', 0))
+        # Get stored bet info
+        bet_info = session.get('coinflip_bet')
+        if not bet_info:
+            return jsonify({'error': 'No active bet found'})
         
-        user = create_user_from_dict(session['user'])
-        user.balance = new_balance
+        # Load and update user data
+        user_data = load_user_data()
+        user_data['balance'] = bet_info['new_balance']
+        save_user_data(user_data)
         
-        # Update session
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': user.inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
+        # Clear the stored bet
+        session.pop('coinflip_bet', None)
         
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'balance': user_data['balance']})
     except Exception as e:
         print(f"Error updating balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
@@ -1016,33 +960,55 @@ def update_coinflip_balance():
 @app.route('/roulette')
 @login_required
 def roulette():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('roulette.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/play_roulette', methods=['POST'])
 @login_required
 def play_roulette():
     try:
         data = request.get_json()
-        bets = data.get('bets', {})  # Dictionary of bets {bet_type: amount}
-        total_bet = sum(bets.values())
+        bets = data.get('bets', {})
+        lightning_numbers = set(data.get('lightningNumbers', []))
         
-        user = create_user_from_dict(session['user'])
-        
-        if total_bet > user.balance:
-            return jsonify({'error': 'Insufficient funds'})
+        # Load current user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
         
         # Determine result
         result = random.randint(0, 36)
         
-        # Calculate winnings
+        # If no bets, just return the result for spectating
+        if not bets:
+            return jsonify({
+                'success': True,
+                'result': result,
+                'winnings': 0,
+                'balance': current_balance,
+                'total_bet': 0
+            })
+        
+        # Calculate winnings for placed bets
         winnings = 0
         for bet_type, amount in bets.items():
+            amount = float(amount)
+            multiplier = 1
+            
+            # Check if it's a straight number bet and if it hit a lightning number
+            if bet_type.isdigit() and int(bet_type) == result and result in lightning_numbers:
+                # Get the multiplier from the front end (would need to be passed in the request)
+                # For now, using minimum 50x
+                multiplier = 50
+            
             if bet_type.isdigit():  # Single number bet
                 if int(bet_type) == result:
-                    winnings += amount * 36
+                    winnings += amount * 36 * multiplier
             elif bet_type in ['red', 'black']:
                 if (bet_type == 'red' and result in RED_NUMBERS) or \
                    (bet_type == 'black' and result in BLACK_NUMBERS):
@@ -1062,15 +1028,23 @@ def play_roulette():
                    (bet_type == '3rd12' and 25 <= result <= 36):
                     winnings += amount * 3
         
-        # Calculate new balance only if there were bets
-        new_balance = user.balance - total_bet + winnings if total_bet > 0 else user.balance
+        # Calculate final balance
+        final_balance = current_balance - sum(float(amount) for amount in bets.values()) + winnings
+        
+        # Store the game result in session
+        session['roulette_result'] = {
+            'result': result,
+            'winnings': winnings,
+            'new_balance': final_balance,
+            'total_bet': sum(float(amount) for amount in bets.values())
+        }
         
         return jsonify({
             'success': True,
             'result': result,
             'winnings': winnings,
-            'balance': new_balance,
-            'currentBalance': user.balance
+            'balance': current_balance,
+            'total_bet': sum(float(amount) for amount in bets.values())
         })
         
     except Exception as e:
@@ -1081,22 +1055,20 @@ def play_roulette():
 @login_required
 def update_roulette_balance():
     try:
-        data = request.get_json()
-        new_balance = float(data.get('balance', 0))
+        # Get stored game result
+        result = session.get('roulette_result')
+        if not result:
+            return jsonify({'error': 'No active game found'})
         
-        user = create_user_from_dict(session['user'])
-        user.balance = new_balance
+        # Load and update user data
+        user_data = load_user_data()
+        user_data['balance'] = result['new_balance']
+        save_user_data(user_data)
         
-        # Update session
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': user.inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
+        # Clear the stored result
+        session.pop('roulette_result', None)
         
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'balance': user_data['balance']})
     except Exception as e:
         print(f"Error updating balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
@@ -1336,10 +1308,14 @@ class BlackjackGame:
 @app.route('/blackjack')
 @login_required
 def blackjack():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('blackjack.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/play_blackjack', methods=['POST'])
 @login_required
@@ -1348,47 +1324,46 @@ def play_blackjack():
         data = request.get_json()
         action = data.get('action')
         
+        # Load current user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+        
         # Initialize game if not exists
         if 'blackjack_game' not in session:
             session['blackjack_game'] = None
         
-        # Deserialize game from session
         game = BlackjackGame.deserialize(session.get('blackjack_game')) if session.get('blackjack_game') else None
         
         if not game and action != 'deal':
             return jsonify({'error': 'No game in progress'})
         
         if action == 'deal':
-            bet_amount = round(float(data.get('amount', 0)), 2)  # Round to 2 decimal places
-            current_balance = round(float(session['user']['balance']), 2)  # Round to 2 decimal places
-            
-            # Add debug logging
-            print(f"Bet amount: {bet_amount}, Current balance: {current_balance}")
+            bet_amount = round(float(data.get('amount', 0)), 2)
             
             if bet_amount <= 0:
                 return jsonify({'error': 'Bet amount must be greater than 0'})
             if bet_amount > current_balance:
                 return jsonify({'error': f'Insufficient funds (bet: ${bet_amount:.2f}, balance: ${current_balance:.2f})'})
             
+            # Deduct bet immediately and save
+            user_data['balance'] = round(current_balance - bet_amount, 2)
+            save_user_data(user_data)
+            
             # Create new game
             game = BlackjackGame()
             game.deal(bet_amount)
-            
-            # Store initial bet
-            session['user']['balance'] = round(current_balance - bet_amount, 2)  # Round result
-            session.modified = True
             
         elif action == 'split':
             if not game:
                 return jsonify({'error': 'No game in progress'})
             
             # Check if player can afford split
-            current_balance = float(session['user']['balance'])
             if game.bet_amount > current_balance:
                 return jsonify({'error': 'Insufficient funds to split'})
             
-            # Deduct split bet amount
-            session['user']['balance'] = current_balance - game.bet_amount
+            # Deduct split bet amount and save
+            user_data['balance'] = current_balance - game.bet_amount
+            save_user_data(user_data)
             game.split()
             
         elif action == 'hit':
@@ -1402,16 +1377,14 @@ def play_blackjack():
             game.stand()
             
         elif action == 'double':
-            # Check if player can afford double down
-            current_balance = float(session['user']['balance'])
             if game.bet_amount > current_balance:
-                # Return current game state along with error
                 state = game.get_game_state()
                 state['error'] = 'Insufficient funds to double down'
                 return jsonify(state)
             
-            # Deduct additional bet amount
-            session['user']['balance'] = current_balance - game.bet_amount
+            # Deduct double down bet and save
+            user_data['balance'] = current_balance - game.bet_amount
+            save_user_data(user_data)
             game.double_down()
         
         # Get game state
@@ -1419,19 +1392,23 @@ def play_blackjack():
         
         # Update balance if game is over
         if state['gameOver']:
-            current_balance = float(session['user']['balance'])
+            current_balance = float(user_data['balance'])
             total_won = 0
             
             for i, won in enumerate(state['won']):
                 bet = game.bet_amount if i == 0 else game.split_bet_amount
                 if won == 'blackjack':
-                    total_won += bet * 2.5  # 3:2 payout for blackjack
+                    total_won += bet * 2.5  # 3:2 payout for blackjack (includes original bet)
                 elif won is True:
-                    total_won += bet * 2
+                    total_won += bet * 2  # 2x payout (includes original bet)
                 elif won is None:  # Push
-                    total_won += bet
+                    total_won += bet  # Return original bet
+                # If loss (won is False), bet is already deducted
             
-            session['user']['balance'] = current_balance + total_won
+            if total_won > 0:
+                # Only update balance if player won something
+                user_data['balance'] = current_balance + total_won
+                save_user_data(user_data)
             
             # Clear game
             session['blackjack_game'] = None
@@ -1440,14 +1417,13 @@ def play_blackjack():
             session['blackjack_game'] = game.serialize()
         
         # Add balance to response
-        state['balance'] = session['user']['balance']
+        state['balance'] = user_data['balance']
         
         return jsonify(state)
         
     except Exception as e:
         print(f"Error in play_blackjack: {e}")
         if game:
-            # If we have a game state, return it along with the error
             state = game.get_game_state()
             state['error'] = 'Failed to process game action'
             return jsonify(state)
@@ -1456,10 +1432,14 @@ def play_blackjack():
 @app.route('/crash')
 @login_required
 def crash():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('crash.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/play_crash', methods=['POST'])
 @login_required
@@ -1474,30 +1454,23 @@ def play_crash():
         if bet_amount <= 0:
             return jsonify({'error': 'Invalid bet amount'})
         
-        user = create_user_from_dict(session['user'])
+        # Load current user data from file
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
         
-        if bet_amount > user.balance:
+        if bet_amount > current_balance:
             return jsonify({'error': 'Insufficient funds'})
         
-        # Deduct bet amount immediately
-        user.balance -= bet_amount
+        # Deduct bet amount and save
+        user_data['balance'] = current_balance - bet_amount
+        save_user_data(user_data)
         
         # Store the bet amount in session
         session['crash_bet'] = bet_amount
         
-        # Update session with new balance
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': user.inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
-        
-        # Return the new balance so we can update the UI
         return jsonify({
             'success': True,
-            'balance': user.balance
+            'balance': user_data['balance']
         })
         
     except Exception as e:
@@ -1514,29 +1487,25 @@ def crash_cashout():
         # Get the current bet amount from session
         current_game_bet = session.get('crash_bet')
         
-        if current_game_bet is None:  # Changed condition
+        if current_game_bet is None:
             return jsonify({'error': 'No active bet found'})
+        
+        # Load current user data
+        user_data = load_user_data()
         
         # Calculate winnings
         winnings = current_game_bet * multiplier
         
-        # Update user balance
-        user = create_user_from_dict(session['user'])
-        user.balance += winnings
+        # Update balance and save
+        user_data['balance'] = float(user_data['balance']) + winnings
+        save_user_data(user_data)
         
-        # Update session
-        session['user'] = {
-            'balance': user.balance,
-            'inventory': user.inventory,
-            'exp': user.exp,
-            'rank': user.rank,
-            'upgrades': asdict(user.upgrades)
-        }
-        session['crash_bet'] = None  # Changed to None instead of 0
+        # Clear the crash bet from session
+        session['crash_bet'] = None
         
         return jsonify({
             'success': True,
-            'balance': user.balance
+            'balance': user_data['balance']
         })
         
     except Exception as e:
@@ -1552,7 +1521,7 @@ def crash_end():
         
         if crashed:
             # Reset current bet
-            session['crash_bet'] = None  # Changed to None instead of 0
+            session['crash_bet'] = None
         
         return jsonify({'success': True})
         
@@ -1607,31 +1576,31 @@ def take_insurance():
         return jsonify({'error': 'Failed to process insurance bet'})
 
 @app.route('/sell/all', methods=['POST'])
-@login_required
 def sell_all():
     try:
-        inventory = session['user'].get('inventory', [])
+        user_data = load_user_data()  # Load current user data from file
+        inventory = user_data.get('inventory', [])
         
-        # Calculate total value of all skins
+        # Calculate total value of all non-case items
         total_value = 0
         new_inventory = []
         
         for item in inventory:
             if item.get('is_case'):
-                new_inventory.append(item)
+                new_inventory.append(item)  # Keep cases
             else:
                 total_value += float(item.get('price', 0))
         
         # Update user's balance and inventory
-        session['user']['balance'] = float(session['user']['balance']) + total_value
-        session['user']['inventory'] = new_inventory
+        user_data['balance'] = float(user_data['balance']) + total_value
+        user_data['inventory'] = new_inventory
         
-        # Ensure the session is marked as modified
-        session.modified = True
+        # Save the updated user data to file
+        save_user_data(user_data)
         
         return jsonify({
             'success': True,
-            'balance': session['user']['balance'],
+            'balance': user_data['balance'],
             'sold_value': total_value
         })
         
@@ -1642,21 +1611,26 @@ def sell_all():
 @app.route('/jackpot')
 @login_required
 def jackpot():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
     return render_template('jackpot.html',
-                         balance=session['user']['balance'],
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
 
 @app.route('/get_jackpot_inventory')
 @login_required
 def get_jackpot_inventory():
     try:
-        inventory = session['user'].get('inventory', [])
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
         
-        # Filter for eligible items (non-case items worth $0-30)
+        # Filter for non-case items only
         eligible_items = [
             item for item in inventory
-            if not item.get('is_case') and 0 <= float(item.get('price', 0)) <= 30
+            if not item.get('is_case')
         ]
         
         return jsonify({
@@ -1671,22 +1645,28 @@ def get_jackpot_inventory():
 def start_jackpot():
     try:
         data = request.get_json()
-        print("Received data:", data)
-        
         user_items = data.get('items', [])
+        mode = data.get('mode', 'low')  # Get the current mode
         
-        # Validate and sum user items with detailed logging
-        user_value = 0
-        print("\nCalculating user value:")
-        for item in user_items:
-            item_price = float(item['price'])
-            user_value += item_price
-            print(f"Added item: {item['weapon']} | {item['name']} (${item_price:.2f})")
-        print(f"Total user value: ${user_value:.2f}")
+        # Define mode limits
+        mode_limits = {
+            'low': {'min': 0, 'max': 10},
+            'medium': {'min': 10, 'max': 100},
+            'high': {'min': 100, 'max': 1000},
+            'extreme': {'min': 1000, 'max': float('inf')}
+        }
+        
+        current_limits = mode_limits.get(mode, mode_limits['low'])
         
         if not user_items:
             return jsonify({'error': 'No items selected'})
-            
+        
+        # Validate user items are within mode limits
+        for item in user_items:
+            price = float(item['price'])
+            if price < current_limits['min'] or price > current_limits['max']:
+                return jsonify({'error': f'Item price ${price:.2f} is outside the current mode range'})
+        
         # Validate user items
         inventory = session['user'].get('inventory', [])
         
@@ -1718,25 +1698,13 @@ def start_jackpot():
         session.modified = True
         
         # Generate bot players
-        print("\nGenerating bot players...")
         num_bots = random.randint(1, 10)
-        bot_players = generate_bot_players(num_bots)
+        bot_players = generate_bot_players(num_bots, current_limits)
         
-        # Calculate total bot value with detailed logging
-        bot_total = 0
-        print("\nCalculating bot values:")
-        for bot in bot_players:
-            bot_value = sum(float(item['price']) for item in bot['items'])
-            bot_total += bot_value
-            print(f"{bot['name']}: ${bot_value:.2f}")
-        print(f"Total bot value: ${bot_total:.2f}")
-        
-        # Calculate final total
+        # Calculate values
+        user_value = sum(float(item['price']) for item in user_items)
+        bot_total = sum(sum(float(item['price']) for item in bot['items']) for bot in bot_players)
         total_value = user_value + bot_total
-        print(f"\nFinal totals:")
-        print(f"User value: ${user_value:.2f}")
-        print(f"Bot value: ${bot_total:.2f}")
-        print(f"Total pot: ${total_value:.2f}")
         
         # Prepare players list
         players = [
@@ -1758,10 +1726,6 @@ def start_jackpot():
                 'winChance': round((bot_value / total_value * 100), 2) if total_value > 0 else 0
             })
         
-        # Verify total percentages add up to 100%
-        total_percentage = sum(player['winChance'] for player in players)
-        print(f"\nTotal win percentage: {total_percentage}%")
-        
         # Determine winner
         winner = random.choices(
             players,
@@ -1771,7 +1735,6 @@ def start_jackpot():
         
         # If user won, add all other players' items to their inventory
         if winner['name'] == 'You':
-            # Get current inventory (which has the user's wagered items removed)
             current_inventory = session['user'].get('inventory', [])
             
             # Add back the user's wagered items since they won
@@ -1780,7 +1743,6 @@ def start_jackpot():
             # Add items from all other players
             for player in players:
                 if player['name'] != 'You':
-                    # Add to user's inventory
                     current_inventory.extend(player['items'])
             
             # Update session with new inventory
@@ -1791,8 +1753,6 @@ def start_jackpot():
             winner['items'] = user_items + [item for player in players 
                                           if player['name'] != 'You' 
                                           for item in player['items']]
-            
-            print(f"Added back {len(user_items)} user items and {len(winner['items']) - len(user_items)} won items")
         
         return jsonify({
             'players': players,
@@ -1811,7 +1771,7 @@ def start_jackpot():
         print(f"Error traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Failed to start game'})
 
-def generate_bot_players(num_bots: int) -> List[Dict[str, Any]]:
+def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any]]:
     bot_names = [
         "skibidi toilet", "ohio rizz", "sigma grindset", "gyatt enthusiast", 
         "backrooms entity", "no cap fr fr", "megamind rizz", "skill issue", 
@@ -1827,23 +1787,21 @@ def generate_bot_players(num_bots: int) -> List[Dict[str, Any]]:
     case_file_mapping = {
         'csgo': 'weapon_case_1',
         'esports': 'esports_2013',
-        'bravo': 'operation_bravo_case',
+        'bravo': 'operation_bravo',
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
         'winter_offensive': 'winter_offensive_case'
     }
     
-    # Load skins directly from case files instead of using Case object
+    # Load skins directly from case files
     for case_type in case_types:
         try:
             with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
                 case_data = json.load(f)
                 
-                # Process each rarity grade
                 for grade, items in case_data['skins'].items():
-                    rarity = grade.upper()  # Convert grade to rarity name
+                    rarity = grade.upper()
                     for item in items:
-                        # Add skin with its case type and prices
                         all_skins.append({
                             'weapon': item['weapon'],
                             'name': item['name'],
@@ -1855,66 +1813,60 @@ def generate_bot_players(num_bots: int) -> List[Dict[str, Any]]:
             print(f"Error loading case {case_type}: {e}")
             continue
     
-    print(f"Loaded {len(all_skins)} potential skins for bots")  # Debug log
-    
     bots = []
     used_names = set()
     
     for _ in range(num_bots):
-        # Select random unique bot name
         available_names = [name for name in bot_names if name not in used_names]
         if not available_names:
             break
         bot_name = random.choice(available_names)
         used_names.add(bot_name)
         
-        # Generate 1-10 items for the bot
+        # Generate 1-10 items for the bot within price range
         num_items = random.randint(1, 10)
         bot_items = []
         attempts = 0
-        max_attempts = 100  # Prevent infinite loops
+        max_attempts = 100
         
         while len(bot_items) < num_items and attempts < max_attempts:
             attempts += 1
-            if not all_skins:  # Safety check
+            if not all_skins:
                 break
                 
             skin = random.choice(all_skins)
             
-            # Randomly decide wear and StatTrak
             wear_options = [w for w in skin['prices'].keys() 
                           if not w.startswith('ST_') and w != 'NO']
             if not wear_options:
                 continue
                 
             wear = random.choice(wear_options)
-            stattrak = random.random() < 0.1  # 10% chance for StatTrak
+            stattrak = random.random() < 0.1
             
-            # Get price
             price_key = f"ST_{wear}" if stattrak else wear
             try:
                 price = float(skin['prices'].get(price_key, 0))
+                
+                # Only add if price is within mode range
+                if mode_limits['min'] <= price <= mode_limits['max']:
+                    bot_items.append({
+                        'weapon': skin['weapon'],
+                        'name': skin['name'],
+                        'wear': wear,
+                        'rarity': skin['rarity'],
+                        'stattrak': stattrak,
+                        'price': price,
+                        'case_type': skin['case_type']
+                    })
             except (ValueError, TypeError):
                 continue
-            
-            # Only add if price is within range (0-30)
-            if 0 < price <= 30:
-                bot_items.append({
-                    'weapon': skin['weapon'],
-                    'name': skin['name'],
-                    'wear': wear,
-                    'rarity': skin['rarity'],
-                    'stattrak': stattrak,
-                    'price': price,
-                    'case_type': skin['case_type']
-                })
         
-        if bot_items:  # Only add bot if they have items
+        if bot_items:
             bots.append({
                 'name': bot_name,
                 'items': bot_items
             })
-            print(f"Added bot {bot_name} with {len(bot_items)} items")  # Debug log
     
     return bots
 

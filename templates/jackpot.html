@@ -7,7 +7,12 @@
     <h1>Jackpot</h1>
     
     <div class="game-mode">
-        <h2>$0-30 Game Mode</h2>
+        <div class="mode-selector">
+            <button class="mode-btn active" data-mode="low">$0-10</button>
+            <button class="mode-btn" data-mode="medium">$10-100</button>
+            <button class="mode-btn" data-mode="high">$100-1000</button>
+            <button class="mode-btn" data-mode="extreme">$1000+</button>
+        </div>
         <div class="total-value">Total Pot: $<span id="total-pot-value">0.00</span></div>
     </div>
     
@@ -86,6 +91,9 @@
     border-radius: 10px;
     margin-bottom: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .total-value {
@@ -389,9 +397,9 @@
 /* Add rarity colors */
 .rarity-BLUE { border-color: #4b69ff; }
 .rarity-PURPLE { border-color: #8847ff; }
-.rarity-PINK { border-color: #eb4b4b; }
-.rarity-RED { border-color: #ffae39; }
-.rarity-GOLD { border-color: #ffd700; }
+.rarity-PINK { border-color: #d32ce6; }
+.rarity-RED { border-color: #eb4b4b; }
+.rarity-GOLD { border-color: #caab05; }
 
 .bot-joining {
     background: #2a2a2a;
@@ -437,12 +445,60 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.mode-btn {
+    background: #1a1a1a;
+    color: #fff;
+    border: 2px solid #3a3a3a;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mode-btn:hover {
+    border-color: #4CAF50;
+}
+
+.mode-btn.active {
+    background: #4CAF50;
+    border-color: #4CAF50;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     let selectedItems = [];
     let totalValue = 0;
+    let currentMode = 'low';
+    const modeLimits = {
+        'low': { min: 0, max: 10 },
+        'medium': { min: 10, max: 100 },
+        'high': { min: 100, max: 1000 },
+        'extreme': { min: 1000, max: Infinity }
+    };
+    
+    // Mode selector handling
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active button
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update current mode
+            currentMode = btn.dataset.mode;
+            
+            // Reload inventory for new mode
+            loadInventory();
+        });
+    });
     
     // Load user's eligible inventory
     async function loadInventory() {
@@ -458,8 +514,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const inventoryContainer = document.getElementById('user-inventory');
             inventoryContainer.innerHTML = '';
             
+            // Filter items based on current mode
+            const { min, max } = modeLimits[currentMode];
+            const eligibleItems = data.inventory.filter(item => {
+                const price = parseFloat(item.price);
+                return price >= min && price <= max;
+            });
+            
             // Sort items by price (highest to lowest)
-            const sortedItems = data.inventory.sort((a, b) => {
+            const sortedItems = eligibleItems.sort((a, b) => {
                 return parseFloat(b.price) - parseFloat(a.price);
             });
             
@@ -567,24 +630,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedItems.length === 0) return;
         
         try {
-            // Add debugging logs
-            console.log('Selected items:', selectedItems);
-            
             const response = await fetch('/start_jackpot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    items: selectedItems  // No need to convert since we're already using an array
+                    items: selectedItems,
+                    mode: currentMode  // Add the current mode
                 })
             });
             
-            // Log the raw response
-            console.log('Raw response:', response);
-            
             const data = await response.json();
-            console.log('Response data:', data);
             
             if (data.error) {
                 console.error('Server error:', data.error);
@@ -592,12 +649,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // Show game progress
             showGameProgress(data);
             
         } catch (error) {
-            console.error('Detailed error:', error);
-            console.error('Error stack:', error.stack);
+            console.error('Error:', error);
             alert('Failed to start game');
         }
     });

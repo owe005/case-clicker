@@ -9,18 +9,18 @@
 <div class="inventory-categories">
     <button class="category-btn active" data-category="skins">Skins</button>
     <button class="category-btn" data-category="cases">Cases</button>
-    <!-- Add sort buttons -->
-    <div class="sort-controls">
-        <button class="sort-btn" data-sort="rarity">Sort by Rarity</button>
-        <button class="sort-btn" data-sort="price">Sort by Price</button>
-    </div>
-    <!-- Keep the sell all button -->
-    <button id="sell-all-btn" class="sell-all-btn">Sell All: $0.00</button>
+    <!-- Move sort buttons into skins-section -->
 </div>
 
 <!-- Skins section -->
 <div class="inventory-section" id="skins-section">
-    <h2>Skins</h2>
+    <div class="inventory-controls">
+        <div class="sort-controls">
+            <button class="sort-btn" data-sort="rarity">Sort by Rarity</button>
+            <button class="sort-btn" data-sort="price">Sort by Price</button>
+        </div>
+        <button id="sell-all-btn" class="sell-all-btn">Sell All: $0.00</button>
+    </div>
     <div id="inventory-items" class="items-grid">
         {% set skin_count = namespace(value=0) %}
         {% for item in inventory %}
@@ -64,7 +64,6 @@
 
 <!-- Cases section -->
 <div class="inventory-section hidden" id="cases-section">
-    <h2>Cases</h2>
     <div class="items-grid">
         {% for item in inventory %}
             {% if item.is_case %}
