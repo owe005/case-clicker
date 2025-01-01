@@ -185,26 +185,27 @@
 
     // Load case contents when page loads
     document.addEventListener('DOMContentLoaded', async () => {
-        // Remove the old case content loading
-        // Initialize the skins tab functionality
+        // Initialize the category buttons
         document.querySelectorAll('.category-btn').forEach(button => {
-            button.addEventListener('click', async () => {
-                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
                 button.classList.add('active');
                 
+                // Hide all sections
                 document.querySelectorAll('.shop-section').forEach(section => {
                     section.classList.add('hidden');
                 });
                 
+                // Show selected section
                 const category = button.dataset.category;
                 const section = document.getElementById(`${category}-section`);
                 if (section) {
                     section.classList.remove('hidden');
-                    if (category === 'skins') {
-                        // Load skins when switching to skins tab
-                        await loadFeaturedSkins();
-                        updateFeaturedSkins();
-                    }
                 }
             });
         });
@@ -338,49 +339,33 @@
         return { items, winningPosition };
     }
 
-    function createItemElement(item) {
+    function createItemElement(item, caseType) {
         const div = document.createElement('div');
-        div.className = `spinner-item rarity-${item.rarity}`;
-        div.classList.add(item.wear);
+        div.className = 'case-item';
         
-        div.dataset.item = JSON.stringify(item);
+        // Map case types to folder names
+        const folderMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case'
+        };
         
-        // Create image container
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'spinner-item-image';
+        const folder = folderMapping[caseType] || caseType;
         
-        // Create and set up image
-        const img = document.createElement('img');
-        if (item.rarity === 'GOLD') {
-            // For knives, we'll keep the existing behavior
-            div.innerHTML = `
-                <div class="item-name">★</div>
-                <div class="item-skin">Rare Special Item</div>
-            `;
-        } else {
-            // For regular skins, add the image with correct case path
-            const weaponName = item.weapon.toLowerCase()
-                .replace('-', '')
-                .replace(' ', '')
-                .replace('553', '553');
-            const skinName = item.name.toLowerCase().replace(' ', '_');
-            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
-            img.loading = 'lazy';
-            img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
-            img.alt = `${item.weapon} | ${item.name}`;
-            
-            imageContainer.appendChild(img);
-            div.appendChild(imageContainer);
-            
-            div.innerHTML += `
-                <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
-                    ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
-                </div>
-                <div class="item-skin">
-                    ${item.name} (${item.wear})
-                </div>
-            `;
-        }
+        // Use the image name directly from the JSON data
+        const imgPath = `/static/media/skins/${folder}/${item.image}`;
+        
+        div.innerHTML = `
+            <img src="${imgPath}" 
+                 alt="${item.weapon} | ${item.name}" 
+                 loading="lazy"
+                 onerror="this.src='/static/media/cases/${folder}.png'">
+            <div class="item-name">${item.weapon} | ${item.name}</div>
+        `;
+        
         return div;
     }
 
@@ -408,11 +393,28 @@
         // Create image element
         const imageElement = document.createElement('img');
         if (item.rarity === 'GOLD') {
-            // For knives, use the knife image
-            const weaponName = item.weapon.replace('★ ', '').toLowerCase().replace(' ', '');
-            const skinName = item.name.toLowerCase().replace(' ', '_');
-            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
-            imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+            // For knives, use the exact image name from the case data
+            const casePath = item.case_type === 'bravo' ? 'operation_bravo_case' : 
+                            item.case_type === 'esports' ? 'esports_2013' : 
+                            item.case_type === 'winter_offensive' ? 'winter_offensive_case' : 'weapon_case_1';
+            
+            // Load case data to get the correct image name
+            const caseData = caseContents[item.case_type];
+            if (caseData) {
+                const knifeData = caseData.skins.gold.find(
+                    knife => knife.weapon === item.weapon && knife.name === item.name
+                );
+                if (knifeData && knifeData.image) {
+                    imageElement.src = `/static/media/skins/${casePath}/${knifeData.image}`;
+                } else {
+                    // Fallback if image not found in case data
+                    const weaponName = item.weapon.replace('★ ', '')
+                        .toLowerCase()
+                        .replace(' knife', 'knife');
+                    const skinName = item.name.toLowerCase().replace(/\s+/g, '_');
+                    imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+                }
+            }
         } else {
             // For regular skins, construct the image path
             const weaponName = item.weapon.toLowerCase()
@@ -420,7 +422,9 @@
                 .replace(' ', '')
                 .replace('553', '553');
             const skinName = item.name.toLowerCase().replace(' ', '_');
-            const casePath = item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
+            // Update case path to use _case suffix for images
+            const casePath = item.case_type === 'bravo' ? 'operation_bravo_case' : 
+                            item.case_type === 'esports' ? 'esports_2013' : 'weapon_case_1';
             imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
         }
         
@@ -754,138 +758,82 @@
     }
 
     async function showCaseContents(caseType) {
-        const overlay = document.getElementById('case-contents-overlay');
-        const container = overlay.querySelector('.case-contents-container');
-        const caseName = overlay.querySelector('.case-name');
-        
-        // Make sure we have the case data
-        if (!caseContents[caseType]) {
-            try {
-                await loadCaseContents(caseType);
-            } catch (error) {
-                console.error('Failed to load case contents:', error);
+        try {
+            // Clear previous contents
+            document.querySelectorAll('.items-grid').forEach(grid => {
+                if (grid.closest('.case-contents-container')) {
+                    grid.innerHTML = '';
+                }
+            });
+            
+            // Load case contents
+            const response = await fetch(`/data/case_contents/${caseType}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Error loading case contents:', data.error);
                 return;
             }
-        }
 
-        const caseData = caseContents[caseType];
-        if (!caseData) {
-            console.error('Case data not found for type:', caseType);
-            return;
-        }
-
-        // Set case name
-        caseName.textContent = caseData.name;
-
-        // Clear existing items
-        const itemGrids = overlay.querySelectorAll('.items-grid');
-        itemGrids.forEach(grid => grid.innerHTML = '');
-
-        // Add vanilla knives to GOLD section
-        const goldGrid = overlay.querySelector('.rarity-GOLD .items-grid');
-        const vanillaKnives = [
-            { weapon: "★ Karambit", name: "Vanilla" },
-            { weapon: "★ M9 Bayonet", name: "Vanilla" },
-            { weapon: "★ Bayonet", name: "Vanilla" },
-            { weapon: "★ Flip Knife", name: "Vanilla" },
-            { weapon: "★ Gut Knife", name: "Vanilla" }
-        ];
-
-        vanillaKnives.forEach(knife => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'contents-item';
+            // Update case name in overlay
+            document.querySelector('.case-name').textContent = data.name;
             
-            const weaponName = knife.weapon.toLowerCase()
-                .replace('★ ', '')
-                .replace(' ', '');
-            
-            itemDiv.innerHTML = `
-                <img src="/static/media/skins/weapon_case_1/${weaponName}_vanilla.png" 
-                     alt="${knife.weapon}">
-                <div class="item-name">${knife.weapon}</div>
-            `;
-            
-            goldGrid.appendChild(itemDiv);
-        });
+            // Show the overlay
+            const overlay = document.getElementById('case-contents-overlay');
+            overlay.style.display = 'block';
 
-        // Map JSON rarity keys to display rarity classes
-        const rarityMapping = {
-            'red': 'RED',
-            'pink': 'PINK',
-            'purple': 'PURPLE',
-            'blue': 'BLUE'
-        };
+            // Process each rarity level
+            const rarityContainers = {
+                'gold': document.querySelector('.rarity-GOLD .items-grid'),
+                'red': document.querySelector('.rarity-RED .items-grid'),
+                'pink': document.querySelector('.rarity-PINK .items-grid'),
+                'purple': document.querySelector('.rarity-PURPLE .items-grid'),
+                'blue': document.querySelector('.rarity-BLUE .items-grid')
+            };
 
-        // Populate items for each rarity from the skins object
-        Object.entries(caseData.skins).forEach(([rarity, items]) => {
-            if (rarity === 'gold') return; // Skip gold as we handled it above
-            
-            const upperRarity = rarityMapping[rarity];
-            if (!upperRarity) return;
+            // Process each rarity level
+            for (const [rarity, items] of Object.entries(data.skins)) {
+                const container = rarityContainers[rarity];
+                if (!container) continue;
 
-            const grid = overlay.querySelector(`.rarity-${upperRarity} .items-grid`);
-            if (!grid) return;
-
-            items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'contents-item';
-                
-                // Create weapon image
-                const weaponName = item.weapon.toLowerCase()
-                    .replace('-', '')
-                    .replace(' ', '')
-                    .replace('553', '553')
-                    .replace('galil ar', 'galil')
-                    .replace('galilar', 'galil');
-                const skinName = item.name.toLowerCase()
-                    .replace(/ /g, '_');
-                
-                // Determine case path based on case type
-                let casePath;
-                switch(caseType) {
-                    case 'bravo':
-                        casePath = 'operation_bravo_case';
-                        break;
-                    case 'esports':
-                        casePath = 'esports_2013';
-                        break;
-                    case 'csgo2':
-                        casePath = 'weapon_case_2';
-                        break;
-                    case 'esports_winter':
-                        casePath = 'esports_2013_winter';
-                        break;
-                    case 'winter_offensive':
-                        casePath = 'winter_offensive_case';
-                        break;
-                    default:
-                        casePath = 'weapon_case_1';
+                // For gold rarity (knives), only show vanilla versions
+                if (rarity === 'gold') {
+                    const vanillaKnives = items.filter(item => item.name === 'Vanilla');
+                    vanillaKnives.forEach(item => {
+                        const itemElement = createItemElement(item, caseType);
+                        container.appendChild(itemElement);
+                    });
+                } else {
+                    // For other rarities, show all items
+                    items.forEach(item => {
+                        const itemElement = createItemElement(item, caseType);
+                        container.appendChild(itemElement);
+                    });
                 }
-                
-                itemDiv.innerHTML = `
-                    <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
-                         alt="${item.weapon} | ${item.name}">
-                    <div class="item-name">${item.weapon}</div>
-                    <div class="item-skin">${item.name}</div>
-                `;
-                
-                grid.appendChild(itemDiv);
-            });
-        });
-
-        overlay.style.display = 'flex';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     function closeContentsOverlay() {
-        document.getElementById('case-contents-overlay').style.display = 'none';
+        const overlay = document.getElementById('case-contents-overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
     }
 
-    // Add this to your existing showCaseContents function
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            closeContentsOverlay();
-        }
-    });
+    // Get the overlay element
+    const caseContentsOverlay = document.getElementById('case-contents-overlay');
+
+    // Add click handler to the overlay
+    if (caseContentsOverlay) {
+        caseContentsOverlay.addEventListener('click', (e) => {
+            if (e.target === caseContentsOverlay) {
+                closeContentsOverlay();
+            }
+        });
+    }
 
     async function loadFeaturedSkins() {
         try {
@@ -1014,7 +962,11 @@
             
             // Use the image path from the skin data
             const imageContainer = card.querySelector('.skin-image');
-            const imgPath = `/static/media/skins/${skin.case_file}/${skin.image}`;
+            // If it's a knife, handle the image name differently
+            const casePath = skin.case_type === 'bravo' ? 'operation_bravo_case' : skin.case_file;
+            const imgPath = skin.rarity === 'GOLD' ? 
+                `/static/media/skins/${casePath}/${skin.image}` :  // Use the exact image name from JSON
+                `/static/media/skins/${casePath}/${skin.image}`;
             console.log('Loading image:', imgPath);
             
             imageContainer.innerHTML = `
@@ -1194,6 +1146,35 @@
 .countdown {
     font-family: monospace;
     color: #4CAF50;
+}
+
+/* Add or update these styles */
+.case-contents-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: none;
+}
+
+.case-contents-container {
+    position: relative;
+    background-color: #1a1a1a;
+    max-width: 90%;
+    max-height: 90vh;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+/* Ensure the shop container remains visible */
+.shop-container {
+    position: relative;
+    z-index: 1;
 }
 </style>
 {% endblock %} 

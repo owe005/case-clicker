@@ -50,7 +50,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
     case_file_mapping = {
         'csgo': 'weapon_case_1',
         'esports': 'esports_2013',
-        'bravo': 'operation_bravo',
+        'bravo': 'operation_bravo',  # Changed back to match JSON filename
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
         'winter_offensive': 'winter_offensive_case'
@@ -124,7 +124,7 @@ def get_case_prices() -> Dict[str, float]:
     return {
         'csgo': get_case_price('weapon_case_1'),
         'esports': get_case_price('esports_2013'),
-        'bravo': get_case_price('operation_bravo'),
+        'bravo': get_case_price('operation_bravo_case'),
         'csgo2': get_case_price('weapon_case_2'),
         'esports_winter': get_case_price('esports_2013_winter'),
         'winter_offensive': get_case_price('winter_offensive_case')  # Add Winter Offensive Case
@@ -242,7 +242,7 @@ def inventory():
                 case_file_mapping = {
                     'csgo': 'weapon_case_1',
                     'esports': 'esports_2013',
-                    'bravo': 'operation_bravo',
+                    'bravo': 'operation_bravo',  # Changed back to match JSON filename
                     'csgo2': 'weapon_case_2',
                     'esports_winter': 'esports_2013_winter',
                     'winter_offensive': 'winter_offensive_case'
@@ -315,7 +315,7 @@ def open_case(case_type):
         case_file_mapping = {
             'csgo': 'weapon_case_1',
             'esports': 'esports_2013',
-            'bravo': 'operation_bravo',
+            'bravo': 'operation_bravo',  # Changed back to match JSON filename
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
             'winter_offensive': 'winter_offensive_case'
@@ -353,7 +353,7 @@ def open_case(case_type):
         case_file_mapping = {
             'csgo': 'weapon_case_1',
             'esports': 'esports_2013',
-            'bravo': 'operation_bravo',
+            'bravo': 'operation_bravo',  # Changed back to match JSON filename
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
             'winter_offensive': 'winter_offensive_case'
@@ -794,7 +794,7 @@ def get_inventory():
                 case_file_mapping = {
                     'csgo': 'weapon_case_1',
                     'esports': 'esports_2013',
-                    'bravo': 'operation_bravo',
+                    'bravo': 'operation_bravo',  # Changed back to match JSON filename
                     'csgo2': 'weapon_case_2',
                     'esports_winter': 'esports_2013_winter',
                     'winter_offensive': 'winter_offensive_case'
@@ -840,22 +840,41 @@ def get_user_data():
 
 @app.route('/data/case_contents/<case_type>')
 def get_case_contents(case_type):
+    # Update the case file mapping to match actual JSON filenames
     case_file_mapping = {
         'csgo': 'weapon_case_1',
         'esports': 'esports_2013',
-        'bravo': 'operation_bravo',
+        'bravo': 'operation_bravo',  # Changed from operation_bravo_case
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
         'winter_offensive': 'winter_offensive_case'
     }
     
     if case_type not in case_file_mapping:
+        print(f"Invalid case type requested: {case_type}")
         return jsonify({'error': 'Invalid case type'}), 404
         
     try:
-        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
-            return jsonify(json.load(f))
-    except FileNotFoundError:
+        # Add debugging prints
+        file_path = f'cases/{case_file_mapping[case_type]}.json'
+        print(f"Attempting to load case file: {file_path}")
+        
+        # Check if file exists
+        import os
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            print(f"Current working directory: {os.getcwd()}")
+            print(f"Files in cases directory: {os.listdir('cases')}")
+            return jsonify({'error': 'Case data not found'}), 404
+            
+        # Add .json extension to the file path
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            print(f"Successfully loaded case data for {case_type}")
+            return jsonify(data)
+            
+    except Exception as e:
+        print(f"Error loading case {case_type}: {str(e)}")
         return jsonify({'error': 'Case data not found'}), 404
 
 @app.route('/static/<path:filename>')
@@ -1798,7 +1817,7 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
             case_file_mapping = {
                 'csgo': 'weapon_case_1',
                 'esports': 'esports_2013',
-                'bravo': 'operation_bravo',
+                'bravo': 'operation_bravo',  # Changed back to match JSON filename
                 'csgo2': 'weapon_case_2',
                 'esports_winter': 'esports_2013_winter',
                 'winter_offensive': 'winter_offensive_case'
@@ -1943,7 +1962,7 @@ def get_featured_skins():
                     case_file_mapping = {
                         'csgo': 'weapon_case_1',
                         'esports': 'esports_2013',
-                        'bravo': 'operation_bravo',
+                        'bravo': 'operation_bravo',  # Changed back to match JSON filename
                         'csgo2': 'weapon_case_2',
                         'esports_winter': 'esports_2013_winter',
                         'winter_offensive': 'winter_offensive_case'
@@ -2012,6 +2031,237 @@ def get_featured_skins():
         'refreshTime': LAST_REFRESH_TIME,
         'nextRefresh': LAST_REFRESH_TIME + REFRESH_INTERVAL if LAST_REFRESH_TIME else None
     })
+
+@app.route('/upgrade')
+@login_required
+def upgrade_game():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
+    return render_template('upgrade.html',
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
+
+def find_best_skin_combination(available_skins, target_value, max_skins=10):
+    """
+    Find the best combination of skins closest to the target value.
+    For very high values, will split into multiple combinations.
+    """
+    # Sort skins by price descending
+    available_skins = sorted(available_skins, key=lambda x: float(x['price']), reverse=True)
+    
+    # Try to find combinations that sum up close to target_value
+    best_combination = []
+    best_diff = float('inf')
+    current_sum = 0
+    
+    # First, try to find single skins within 5% of target
+    closest_single = min(available_skins, key=lambda x: abs(float(x['price']) - target_value))
+    if abs(float(closest_single['price']) - target_value) <= target_value * 0.05:
+        return [closest_single]
+    
+    # If no single skin is close enough, try combinations
+    remaining_target = target_value
+    result_skins = []
+    used_indices = set()
+    
+    while remaining_target > 0 and len(result_skins) < max_skins:
+        # Find best skin for current remaining target
+        best_skin = None
+        best_skin_diff = float('inf')
+        best_index = -1
+        
+        for i, skin in enumerate(available_skins):
+            if i in used_indices:
+                continue
+                
+            price = float(skin['price'])
+            if price > remaining_target * 1.05:  # Don't go over by more than 5%
+                continue
+                
+            diff = abs(remaining_target - price)
+            if diff < best_skin_diff:
+                best_skin = skin
+                best_skin_diff = diff
+                best_index = i
+        
+        if best_skin is None:
+            # If we can't find a skin within the current target, look for smaller ones
+            for i, skin in enumerate(available_skins):
+                if i in used_indices:
+                    continue
+                    
+                price = float(skin['price'])
+                if price > remaining_target * 0.8:  # Try to get at least 80% of remaining
+                    continue
+                    
+                diff = abs(remaining_target - price)
+                if diff < best_skin_diff:
+                    best_skin = skin
+                    best_skin_diff = diff
+                    best_index = i
+        
+        if best_skin is None:
+            break
+        
+        result_skins.append(best_skin)
+        used_indices.add(best_index)
+        remaining_target -= float(best_skin['price'])
+    
+    # If we couldn't get close enough to target value, try a different approach
+    total_value = sum(float(skin['price']) for skin in result_skins)
+    if total_value < target_value * 0.9:  # If we're getting less than 90% of target
+        # Try to find the highest value combinations that don't exceed target
+        result_skins = []
+        current_sum = 0
+        
+        for skin in available_skins:
+            if len(result_skins) >= max_skins:
+                break
+                
+            price = float(skin['price'])
+            if current_sum + price <= target_value * 1.05:  # Allow 5% over
+                result_skins.append(skin)
+                current_sum += price
+    
+    return result_skins if result_skins else [closest_single]
+
+@app.route('/play_upgrade', methods=['POST'])
+@login_required
+def play_upgrade():
+    try:
+        data = request.get_json()
+        selected_items = data.get('items', [])
+        multiplier = float(data.get('multiplier', 2))
+        
+        if not selected_items:
+            return jsonify({'error': 'No items selected'})
+            
+        # Load user data
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
+        
+        # Calculate total value of selected items
+        total_value = sum(float(item['price']) for item in selected_items)
+        target_value = total_value * multiplier
+        
+        # Success probabilities for each multiplier
+        probabilities = {
+            2: 46,
+            3: 30.67,
+            5: 18.4,
+            10: 9.2,
+            100: 0.92
+        }
+        
+        # Determine if upgrade succeeds
+        success_probability = probabilities.get(multiplier, 0) / 100
+        success = random.random() < success_probability
+        
+        if success:
+            # Load all possible skins
+            available_skins = []
+            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
+            case_file_mapping = {
+                'csgo': 'weapon_case_1',
+                'esports': 'esports_2013',
+                'bravo': 'operation_bravo',
+                'csgo2': 'weapon_case_2',
+                'esports_winter': 'esports_2013_winter',
+                'winter_offensive': 'winter_offensive_case'
+            }
+            
+            for case_type in case_types:
+                try:
+                    with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                        case_data = json.load(f)
+                        for grade, skins in case_data['skins'].items():
+                            for skin in skins:
+                                for wear, price in skin['prices'].items():
+                                    if wear != 'NO' and not wear.startswith('ST_'):
+                                        available_skins.append({
+                                            'weapon': skin['weapon'],
+                                            'name': skin['name'],
+                                            'wear': wear,
+                                            'price': float(price),
+                                            'rarity': grade.upper(),
+                                            'case_type': case_type,
+                                            'stattrak': False,
+                                            'timestamp': time.time()
+                                        })
+                except Exception as e:
+                    print(f"Error loading case {case_type}: {e}")
+                    continue
+            
+            # Find best combination of skins
+            won_skins = find_best_skin_combination(available_skins, target_value)
+            
+            # Remove selected items from inventory
+            selected_indices = []
+            for selected_item in selected_items:
+                for i, inv_item in enumerate(inventory):
+                    if (i not in selected_indices and
+                        inv_item.get('weapon') == selected_item['weapon'] and
+                        inv_item.get('name') == selected_item['name'] and
+                        inv_item.get('wear') == selected_item['wear'] and
+                        inv_item.get('stattrak') == selected_item['stattrak']):
+                        selected_indices.append(i)
+                        break
+            
+            # Create new inventory without selected items
+            new_inventory = [item for i, item in enumerate(inventory) 
+                           if i not in selected_indices]
+            
+            # Add won skins to inventory
+            new_inventory.extend(won_skins)
+            
+            # Update user data
+            user_data['inventory'] = new_inventory
+            save_user_data(user_data)
+            
+            # Calculate total value of won skins
+            won_value = sum(float(skin['price']) for skin in won_skins)
+            
+            return jsonify({
+                'success': True,
+                'won': True,
+                'skins': won_skins,
+                'multiple_skins': len(won_skins) > 1,
+                'total_value': won_value,
+                'target_value': target_value
+            })
+            
+        else:
+            # Remove selected items from inventory on loss
+            selected_indices = []
+            for selected_item in selected_items:
+                for i, inv_item in enumerate(inventory):
+                    if (i not in selected_indices and
+                        inv_item.get('weapon') == selected_item['weapon'] and
+                        inv_item.get('name') == selected_item['name'] and
+                        inv_item.get('wear') == selected_item['wear'] and
+                        inv_item.get('stattrak') == selected_item['stattrak']):
+                        selected_indices.append(i)
+                        break
+            
+            # Create new inventory without selected items
+            new_inventory = [item for i, item in enumerate(inventory) 
+                           if i not in selected_indices]
+            
+            # Update user data
+            user_data['inventory'] = new_inventory
+            save_user_data(user_data)
+            
+            return jsonify({
+                'success': True,
+                'won': False
+            })
+            
+    except Exception as e:
+        print(f"Error in play_upgrade: {e}")
+        return jsonify({'error': 'Failed to process upgrade'})
 
 if __name__ == '__main__':
     app.run(debug=True)

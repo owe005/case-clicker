@@ -193,7 +193,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Boreal Forest",
-                "image": "gut_knife_boreal_forest.png",
+                "image": "gutknife_boreal_forest.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -212,7 +212,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Crimson Web",
-                "image": "gut_knife_crimson_web.png",
+                "image": "gutknife_crimson_web.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -231,7 +231,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Fade",
-                "image": "gut_knife_fade.png",
+                "image": "gutknife_fade.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW"],
                 "prices": {
@@ -244,7 +244,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Vanilla",
-                "image": "gut_knife_vanilla.png",
+                "image": "gutknife_vanilla.png",
                 "grade": "gold",
                 "valid_wears": ["NO"],
                 "prices": {
@@ -304,7 +304,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Night",
-                "image": "gut_knife_night.png",
+                "image": "gutknife_night.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -323,7 +323,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Blue Steel",
-                "image": "gut_knife_blue_steel.png",
+                "image": "gutknife_blue_steel.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -342,7 +342,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Stained",
-                "image": "gut_knife_stained.png",
+                "image": "gutknife_stained.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -380,7 +380,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Case Hardened",
-                "image": "gut_knife_case_hardened.png",
+                "image": "gutknife_case_hardened.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -551,7 +551,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Scorched",
-                "image": "gut_knife_scorched.png",
+                "image": "gutknife_scorched.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -570,7 +570,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Forest DDPAT",
-                "image": "gut_knife_forest_ddpat.png",
+                "image": "gutknife_forest_ddpat.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -589,7 +589,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Urban Masked",
-                "image": "gut_knife_urban_masked.png",
+                "image": "gutknife_urban_masked.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -963,7 +963,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Safari Mesh",
-                "image": "gut_knife_safari_mesh.png",
+                "image": "gutknife_safari_mesh.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {
@@ -982,7 +982,7 @@
             {
                 "weapon": "Gut Knife",
                 "name": "Slaughter",
-                "image": "gut_knife_slaughter.png",
+                "image": "gutknife_slaughter.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT"],
                 "prices": {
