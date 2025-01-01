@@ -1154,7 +1154,7 @@
             {
                 "weapon": "M4A4",
                 "name": "X-Ray",
-                "image": "m4a4_xray.png",
+                "image": "m4a4_x-ray.png",
                 "grade": "red",
                 "valid_wears": ["FN", "MW", "FT"],
                 "prices": {

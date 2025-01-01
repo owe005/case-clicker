@@ -18,6 +18,10 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days to reduce server load
 
+FEATURED_SKINS = None
+LAST_REFRESH_TIME = None
+REFRESH_INTERVAL = 3600  # 1 hour in seconds
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -1646,7 +1650,7 @@ def start_jackpot():
     try:
         data = request.get_json()
         user_items = data.get('items', [])
-        mode = data.get('mode', 'low')  # Get the current mode
+        mode = data.get('mode', 'low')
         
         # Define mode limits
         mode_limits = {
@@ -1667,8 +1671,9 @@ def start_jackpot():
             if price < current_limits['min'] or price > current_limits['max']:
                 return jsonify({'error': f'Item price ${price:.2f} is outside the current mode range'})
         
-        # Validate user items
-        inventory = session['user'].get('inventory', [])
+        # Load user data from file instead of session
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
         
         # Create a copy of inventory to remove items as we find them
         remaining_inventory = inventory.copy()
@@ -1694,9 +1699,9 @@ def start_jackpot():
         
         # Remove the selected items from inventory
         new_inventory = [item for i, item in enumerate(inventory) if i not in found_items]
-        session['user']['inventory'] = new_inventory
-        session.modified = True
-        
+        user_data['inventory'] = new_inventory
+        save_user_data(user_data)  # Save updated inventory to file
+
         # Generate bot players
         num_bots = random.randint(1, 10)
         bot_players = generate_bot_players(num_bots, current_limits)
@@ -1733,26 +1738,29 @@ def start_jackpot():
             k=1
         )[0]
         
-        # If user won, add all other players' items to their inventory
+        # If user won, add all items to their inventory
         if winner['name'] == 'You':
-            current_inventory = session['user'].get('inventory', [])
-            
-            # Add back the user's wagered items since they won
-            current_inventory.extend(user_items)
+            # Don't remove the original items from inventory
+            new_inventory = inventory.copy()
             
             # Add items from all other players
             for player in players:
                 if player['name'] != 'You':
-                    current_inventory.extend(player['items'])
+                    new_inventory.extend(player['items'])
             
-            # Update session with new inventory
-            session['user']['inventory'] = current_inventory
-            session.modified = True
+            # Update user data with new inventory
+            user_data['inventory'] = new_inventory
+            save_user_data(user_data)
             
             # Add won items to winner data for display
             winner['items'] = user_items + [item for player in players 
                                           if player['name'] != 'You' 
                                           for item in player['items']]
+        else:
+            # User lost, remove their wagered items
+            new_inventory = [item for i, item in enumerate(inventory) if i not in found_items]
+            user_data['inventory'] = new_inventory
+            save_user_data(user_data)
         
         return jsonify({
             'players': players,
@@ -1782,32 +1790,34 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
     
     # Load all case data
     case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
-    all_skins = []
+    all_skins = []  # Change to a single list
     
-    case_file_mapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'
-    }
-    
-    # Load skins directly from case files
+    # Load skins from each case
     for case_type in case_types:
         try:
+            case_file_mapping = {
+                'csgo': 'weapon_case_1',
+                'esports': 'esports_2013',
+                'bravo': 'operation_bravo',
+                'csgo2': 'weapon_case_2',
+                'esports_winter': 'esports_2013_winter',
+                'winter_offensive': 'winter_offensive_case'
+            }
+            
             with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
                 case_data = json.load(f)
                 
+                # Add all skins to the pool
                 for grade, items in case_data['skins'].items():
-                    rarity = grade.upper()
                     for item in items:
                         all_skins.append({
                             'weapon': item['weapon'],
                             'name': item['name'],
-                            'rarity': rarity,
+                            'prices': item['prices'],
                             'case_type': case_type,
-                            'prices': item['prices']
+                            'case_file': case_file_mapping[case_type],
+                            'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
+                            'rarity': grade.upper()
                         })
         except Exception as e:
             print(f"Error loading case {case_type}: {e}")
@@ -1836,13 +1846,14 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
                 
             skin = random.choice(all_skins)
             
+            # Get valid wear options
             wear_options = [w for w in skin['prices'].keys() 
                           if not w.startswith('ST_') and w != 'NO']
             if not wear_options:
                 continue
                 
             wear = random.choice(wear_options)
-            stattrak = random.random() < 0.1
+            stattrak = random.random() < 0.1  # 10% chance
             
             price_key = f"ST_{wear}" if stattrak else wear
             try:
@@ -1869,6 +1880,138 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
             })
     
     return bots
+
+@app.route('/buy_skin', methods=['POST'])
+@login_required
+def buy_skin():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid request data'})
+
+        # Load user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+        price = float(data.get('price', 0))
+
+        if price > current_balance:
+            return jsonify({'error': 'Insufficient funds'})
+
+        # Create skin item
+        skin_item = {
+            'weapon': data['weapon'],
+            'name': data['name'],
+            'rarity': data['rarity'],
+            'wear': data['wear'],
+            'stattrak': data['stattrak'],
+            'price': price,
+            'timestamp': time.time(),
+            'case_type': data['case_type'],
+            'is_case': False
+        }
+
+        # Update user data
+        user_data['balance'] = current_balance - price
+        user_data['inventory'].append(skin_item)
+        save_user_data(user_data)
+
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance']
+        })
+
+    except Exception as e:
+        print(f"Error in buy_skin: {e}")
+        return jsonify({'error': 'Failed to purchase skin'})
+
+@app.route('/get_featured_skins')
+def get_featured_skins():
+    global FEATURED_SKINS, LAST_REFRESH_TIME
+    
+    current_time = time.time()
+    
+    # Check if we need to refresh the skins
+    if not FEATURED_SKINS or not LAST_REFRESH_TIME or (current_time - LAST_REFRESH_TIME) >= REFRESH_INTERVAL:
+        try:
+            # Load all case contents
+            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
+            all_skins = []  # Change to a single list
+            
+            # Load skins from each case
+            for case_type in case_types:
+                try:
+                    case_file_mapping = {
+                        'csgo': 'weapon_case_1',
+                        'esports': 'esports_2013',
+                        'bravo': 'operation_bravo',
+                        'csgo2': 'weapon_case_2',
+                        'esports_winter': 'esports_2013_winter',
+                        'winter_offensive': 'winter_offensive_case'
+                    }
+                    
+                    with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                        case_data = json.load(f)
+                        
+                        # Add all skins to the pool
+                        for grade, items in case_data['skins'].items():
+                            for item in items:
+                                all_skins.append({
+                                    'weapon': item['weapon'],
+                                    'name': item['name'],
+                                    'prices': item['prices'],
+                                    'case_type': case_type,
+                                    'case_file': case_file_mapping[case_type],
+                                    'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
+                                    'rarity': grade.upper()
+                                })
+                except Exception as e:
+                    print(f"Error loading case {case_type}: {e}")
+                    continue
+            
+            # Select one random skin from each rarity
+            FEATURED_SKINS = {}
+            rarities = ['GOLD', 'RED', 'PINK', 'PURPLE', 'BLUE']
+            
+            for rarity in rarities:
+                # Filter skins by rarity
+                rarity_skins = [skin for skin in all_skins if skin['rarity'] == rarity]
+                if rarity_skins:
+                    selected_skin = random.choice(rarity_skins)
+                    
+                    # Generate random wear and StatTrak
+                    wear_options = [w for w in selected_skin['prices'].keys() 
+                                  if not w.startswith('ST_') and w != 'NO']
+                    if wear_options:
+                        wear = random.choice(wear_options)
+                        stattrak = random.random() < 0.1  # 10% chance
+                        
+                        price_key = f"ST_{wear}" if stattrak else wear
+                        price = float(selected_skin['prices'].get(price_key, selected_skin['prices'].get(wear, 0)))
+                        
+                        FEATURED_SKINS[rarity] = {
+                            'weapon': selected_skin['weapon'],
+                            'name': selected_skin['name'],
+                            'wear': wear,
+                            'stattrak': stattrak,
+                            'price': price,
+                            'case_type': selected_skin['case_type'],
+                            'case_file': selected_skin['case_file'],
+                            'image': selected_skin['image'],
+                            'rarity': rarity
+                        }
+            
+            LAST_REFRESH_TIME = current_time
+            
+        except Exception as e:
+            print(f"Error generating featured skins: {e}")
+            traceback.print_exc()
+            return jsonify({'error': str(e)})
+    
+    return jsonify({
+        'skins': FEATURED_SKINS,
+        'refreshTime': LAST_REFRESH_TIME,
+        'nextRefresh': LAST_REFRESH_TIME + REFRESH_INTERVAL if LAST_REFRESH_TIME else None
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)

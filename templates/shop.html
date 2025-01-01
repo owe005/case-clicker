@@ -76,6 +76,7 @@
     <!-- Category navigation -->
     <div class="shop-categories">
         <button class="category-btn active" data-category="cases">Cases</button>
+        <button class="category-btn" data-category="skins">Skins</button>
         <button class="category-btn" data-category="stickers">Sticker Capsules</button>
         <button class="category-btn" data-category="collections">Collections</button>
         <button class="category-btn" data-category="souvenir">Souvenir Packages</button>
@@ -103,33 +104,116 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Skins Section -->
+    <div class="shop-section hidden" id="skins-section">
+        <h2>Featured Skins | <span class="refresh-text">Refreshes in: <span class="countdown"></span></span></h2>
+        <div class="featured-skins">
+            <div class="skin-card rarity-GOLD">
+                <div class="skin-image"></div>
+                <div class="skin-info">
+                    <div class="skin-name"></div>
+                    <div class="skin-wear"></div>
+                    <div class="skin-price"></div>
+                    <button class="buy-skin-btn">Purchase</button>
+                </div>
+            </div>
+            <div class="skin-card rarity-RED">
+                <div class="skin-image"></div>
+                <div class="skin-info">
+                    <div class="skin-name"></div>
+                    <div class="skin-wear"></div>
+                    <div class="skin-price"></div>
+                    <button class="buy-skin-btn">Purchase</button>
+                </div>
+            </div>
+            <div class="skin-card rarity-PINK">
+                <div class="skin-image"></div>
+                <div class="skin-info">
+                    <div class="skin-name"></div>
+                    <div class="skin-wear"></div>
+                    <div class="skin-price"></div>
+                    <button class="buy-skin-btn">Purchase</button>
+                </div>
+            </div>
+            <div class="skin-card rarity-PURPLE">
+                <div class="skin-image"></div>
+                <div class="skin-info">
+                    <div class="skin-name"></div>
+                    <div class="skin-wear"></div>
+                    <div class="skin-price"></div>
+                    <button class="buy-skin-btn">Purchase</button>
+                </div>
+            </div>
+            <div class="skin-card rarity-BLUE">
+                <div class="skin-image"></div>
+                <div class="skin-info">
+                    <div class="skin-name"></div>
+                    <div class="skin-wear"></div>
+                    <div class="skin-price"></div>
+                    <button class="buy-skin-btn">Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    let caseContents = {};  // Will be populated dynamically
-    const validWears = {};
+    let caseContents = {};
+    let validWears = {};
+    let featuredSkins = JSON.parse(localStorage.getItem('featuredSkins')) || null;
+    let lastRefreshTime = parseInt(localStorage.getItem('lastRefreshTime')) || null;
+    const REFRESH_INTERVAL = 3600000; // 1 hour in milliseconds
 
     // Add this function to load case contents
     async function loadCaseContents(caseType) {
         try {
             const response = await fetch(`/data/case_contents/${caseType}`);
             const data = await response.json();
-            caseContents[caseType] = data;
+            if (data.error) {
+                console.error('Error loading case contents:', data.error);
+                return null;
+            }
+            return data;
         } catch (error) {
             console.error('Error loading case contents:', error);
+            return null;
         }
     }
 
     // Load case contents when page loads
     document.addEventListener('DOMContentLoaded', async () => {
-        await loadCaseContents('csgo');
-        await loadCaseContents('esports');
-        await loadCaseContents('bravo');
-        await loadCaseContents('csgo2');
-        await loadCaseContents('esports_winter');
-        await loadCaseContents('winter_offensive');
+        // Remove the old case content loading
+        // Initialize the skins tab functionality
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                document.querySelectorAll('.shop-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                const category = button.dataset.category;
+                const section = document.getElementById(`${category}-section`);
+                if (section) {
+                    section.classList.remove('hidden');
+                    if (category === 'skins') {
+                        // Load skins when switching to skins tab
+                        await loadFeaturedSkins();
+                        updateFeaturedSkins();
+                    }
+                }
+            });
+        });
+
+        // Initial load if we start on skins tab
+        if (document.querySelector('[data-category="skins"]').classList.contains('active')) {
+            await loadFeaturedSkins();
+            updateFeaturedSkins();
+        }
     });
 
     function generateRandomItems(actualItem) {
@@ -802,6 +886,156 @@
             closeContentsOverlay();
         }
     });
+
+    async function loadFeaturedSkins() {
+        try {
+            console.log('Loading featured skins...');
+            const response = await fetch('/get_featured_skins');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Error:', data.error);
+                return null;
+            }
+            
+            featuredSkins = data.skins;
+            lastRefreshTime = data.refreshTime * 1000; // Convert to milliseconds
+            localStorage.setItem('lastRefreshTime', lastRefreshTime.toString());
+            return featuredSkins;
+        } catch (error) {
+            console.error('Error loading featured skins:', error);
+            return null;
+        }
+    }
+
+    function updateCountdown() {
+        // Use lastRefreshTime directly instead of localStorage
+        if (!lastRefreshTime) return;
+
+        const countdown = document.querySelector('.countdown');
+        if (!countdown) return;
+
+        let updateInterval;
+
+        function update() {
+            const now = Date.now();
+            const timeLeft = REFRESH_INTERVAL - (now - lastRefreshTime);
+
+            if (timeLeft <= 0) {
+                clearInterval(updateInterval);
+                loadFeaturedSkins().then(updateFeaturedSkins);
+                return;
+            }
+
+            const minutes = Math.floor(timeLeft / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
+            countdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Clear any existing interval
+        if (updateInterval) {
+            clearInterval(updateInterval);
+        }
+
+        update(); // Initial update
+        updateInterval = setInterval(update, 1000);
+    }
+
+    async function purchaseSkin(skin) {
+        try {
+            const response = await fetch('/buy_skin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(skin)
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                showFloatingNotification(data.error);
+                return;
+            }
+
+            // Update balance
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            showFloatingNotification(`Purchased ${skin.weapon} | ${skin.name}!`);
+
+        } catch (error) {
+            console.error('Error:', error);
+            showFloatingNotification('Failed to purchase skin');
+        }
+    }
+
+    // Initialize featured skins when the page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initialize the skins tab functionality
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                document.querySelectorAll('.shop-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                const category = button.dataset.category;
+                const section = document.getElementById(`${category}-section`);
+                if (section) {
+                    section.classList.remove('hidden');
+                    if (category === 'skins') {
+                        // Load skins when switching to skins tab
+                        await loadFeaturedSkins();
+                        updateFeaturedSkins();
+                    }
+                }
+            });
+        });
+
+        // Initial load if we start on skins tab
+        if (document.querySelector('[data-category="skins"]').classList.contains('active')) {
+            await loadFeaturedSkins();
+            updateFeaturedSkins();
+        }
+    });
+
+    function updateFeaturedSkins() {
+        console.log('Updating featured skins display...', 'Last refresh time:', new Date(lastRefreshTime));
+        const skinsSection = document.getElementById('skins-section');
+        if (!skinsSection || !featuredSkins) return;
+
+        Object.entries(featuredSkins).forEach(([rarity, skin]) => {
+            if (!skin) return;
+
+            const card = skinsSection.querySelector(`.rarity-${rarity}`);
+            if (!card) return;
+
+            console.log(`Updating ${rarity} skin:`, skin);
+            
+            // Use the image path from the skin data
+            const imageContainer = card.querySelector('.skin-image');
+            const imgPath = `/static/media/skins/${skin.case_file}/${skin.image}`;
+            console.log('Loading image:', imgPath);
+            
+            imageContainer.innerHTML = `
+                <img src="${imgPath}" 
+                     alt="${skin.weapon} | ${skin.name}"
+                     onerror="this.onerror=null; this.src='/static/media/skins/weapon_case_1/ak47_case_hardened.png'">
+            `;
+
+            // Update info
+            card.querySelector('.skin-name').textContent = 
+                `${skin.stattrak ? 'StatTrak™ ' : ''}${skin.weapon} | ${skin.name}`;
+            card.querySelector('.skin-wear').textContent = skin.wear;
+            card.querySelector('.skin-price').textContent = `$${skin.price.toFixed(2)}`;
+
+            // Update button
+            const buyButton = card.querySelector('.buy-skin-btn');
+            buyButton.onclick = () => purchaseSkin(skin);
+        });
+
+        updateCountdown();
+    }
 </script>
 
 <!-- Add this CSS in the head section or before the closing body tag -->
@@ -844,6 +1078,122 @@
         opacity: 0;
         transform: translate(-50%, -70%);
     }
+}
+
+/* Featured Skins Section */
+.featured-skins {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.skin-card {
+    position: relative;
+    background: #2a2a2a;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.skin-card:hover {
+    transform: translateY(-5px);
+}
+
+.skin-card.rarity-GOLD { border: 2px solid #FFD700; }
+.skin-card.rarity-RED { border: 2px solid #EB4B4B; }
+.skin-card.rarity-PINK { border: 2px solid #EB4B9B; }
+.skin-card.rarity-PURPLE { border: 2px solid #8847FF; }
+.skin-card.rarity-BLUE { border: 2px solid #4B69FF; }
+
+.refresh-timer {
+    display: none;
+}
+
+.skin-image {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.skin-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.skin-info {
+    text-align: center;
+}
+
+.skin-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.skin-wear {
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.skin-price {
+    font-size: 1.3em;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.buy-skin-btn {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.buy-skin-btn:hover {
+    background: #45a049;
+}
+
+.buy-skin-btn:disabled {
+    background: #888;
+    cursor: not-allowed;
+}
+
+/* Add this to your existing styles */
+.hidden {
+    display: none !important;
+}
+
+/* Add styles for the new refresh text in header */
+.refresh-text {
+    font-size: 0.8em;
+    color: #888;
+    font-weight: normal;
+}
+
+#skins-section h2 {
+    padding: 20px;
+    margin: 0;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+}
+
+.countdown {
+    font-family: monospace;
+    color: #4CAF50;
 }
 </style>
 {% endblock %} 
