@@ -10,8 +10,9 @@ from dataclasses import dataclass
 from typing import List, Optional
 import traceback
 import os
+from enum import Enum
 
-from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS
+from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS, CASE_FILE_MAPPING
 from models import Case, User, Upgrades
 
 app = Flask(__name__)
@@ -47,20 +48,11 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
     Load case data from JSON file. Returns either a Case object for opening cases,
     or a dictionary with basic case info for the shop display.
     """
-    case_file_mapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo',  # Changed back to match JSON filename
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'
-    }
-    
     try:
         # If we just need basic case info for the shop
         if case_type == 'all':
             cases = {}
-            for case_key, file_name in case_file_mapping.items():
+            for case_key, file_name in CASE_FILE_MAPPING.items():
                 try:
                     with open(f'cases/{file_name}.json', 'r') as f:
                         case_data = json.load(f)
@@ -74,7 +66,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
             return cases
             
         # For opening specific cases
-        file_name = case_file_mapping.get(case_type)
+        file_name = CASE_FILE_MAPPING.get(case_type)
         if not file_name:
             print(f"Invalid case type: {case_type}")
             return None
@@ -84,6 +76,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
             
         # For opening cases, create a Case object with full skin data
         contents = {
+            Rarity.CONTRABAND: [],  # Add CONTRABAND rarity
             Rarity.GOLD: [],
             Rarity.RED: [],
             Rarity.PINK: [],
@@ -92,6 +85,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
         }
         
         grade_map = {
+            'contraband': Rarity.CONTRABAND,  # Add contraband mapping
             'gold': Rarity.GOLD,
             'red': Rarity.RED,
             'pink': Rarity.PINK,
@@ -113,7 +107,12 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
 # Update the case prices to load from JSON files
 def get_case_price(case_type: str) -> float:
     try:
-        with open(f'cases/{case_type}.json', 'r') as f:
+        file_name = CASE_FILE_MAPPING.get(case_type)
+        if not file_name:
+            print(f"Unknown case type: {case_type}")
+            return 0
+            
+        with open(f'cases/{file_name}.json', 'r') as f:
             data = json.load(f)
             return data.get('price', 0)
     except Exception:
@@ -121,14 +120,7 @@ def get_case_price(case_type: str) -> float:
 
 # Replace hardcoded CASE_PRICES with dynamic loading
 def get_case_prices() -> Dict[str, float]:
-    return {
-        'csgo': get_case_price('weapon_case_1'),
-        'esports': get_case_price('esports_2013'),
-        'bravo': get_case_price('operation_bravo_case'),
-        'csgo2': get_case_price('weapon_case_2'),
-        'esports_winter': get_case_price('esports_2013_winter'),
-        'winter_offensive': get_case_price('winter_offensive_case')  # Add Winter Offensive Case
-    }
+    return {case_type: get_case_price(case_type) for case_type in CASE_FILE_MAPPING.keys()}
 
 def create_user_from_dict(data: dict) -> User:
     upgrades_data = data.get('upgrades', {})
@@ -180,8 +172,11 @@ def load_user_data() -> dict:
             'max_multiplier': 1,
             'auto_clicker': 0,
             'combo_speed': 1,
-            'critical_strike': 0
-        }
+            'critical_strike': 0,
+            'progress_per_click': 1,  # Add default value
+            'case_quality': 1  # Add default value
+        },
+        'case_progress': 0  # Reset case progress to 0
     }
     
     if not os.path.exists('data/user_inventory.json'):
@@ -194,6 +189,11 @@ def load_user_data() -> dict:
             for key, value in default_data.items():
                 if key not in data:
                     data[key] = value
+                if key == 'upgrades':
+                    # Ensure all upgrade types exist
+                    for upgrade_key, upgrade_value in default_data['upgrades'].items():
+                        if upgrade_key not in data['upgrades']:
+                            data['upgrades'][upgrade_key] = upgrade_value
             return data
     except (json.JSONDecodeError, FileNotFoundError):
         # If there's an error loading the JSON, return default data
@@ -233,57 +233,54 @@ def inventory():
     user_data = load_user_data()
     inventory_items = user_data.get('inventory', [])
     
+    # Create a dictionary to store already loaded prices to avoid duplicate lookups
+    price_cache = {}
+    
     # Update prices for all non-case items
     for item in inventory_items:
         if not item.get('is_case'):
-            try:
-                # Get the case file path
-                case_type = item.get('case_type', 'csgo')
-                case_file_mapping = {
-                    'csgo': 'weapon_case_1',
-                    'esports': 'esports_2013',
-                    'bravo': 'operation_bravo',  # Changed back to match JSON filename
-                    'csgo2': 'weapon_case_2',
-                    'esports_winter': 'esports_2013_winter',
-                    'winter_offensive': 'winter_offensive_case'
-                }
-                case_file = case_file_mapping.get(case_type, 'weapon_case_1')
-                
-                # Load case data
-                with open(f'cases/{case_file}.json', 'r') as f:
-                    case_data = json.load(f)
-                
-                # Find the item's price in the case data
-                for grade, skins in case_data['skins'].items():
-                    for skin in skins:
-                        if skin['weapon'] == item['weapon'] and skin['name'] == item['name']:
-                            prices = skin['prices']
-                            wear_key = 'NO' if 'NO' in prices else item['wear']
-                            price = prices[f"ST_{wear_key}"] if item.get('stattrak') else prices[wear_key]
-                            item['price'] = price
-                            break
-            except Exception as e:
-                print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
-                continue
+            # Create a cache key using weapon, name, wear, and case type
+            cache_key = (
+                item['weapon'],
+                item['name'],
+                item.get('wear'),
+                item['case_type']
+            )
+            
+            # Check if we already loaded this price
+            if cache_key in price_cache:
+                item['price'] = price_cache[cache_key]
+            else:
+                # Load price and cache it
+                price = load_skin_price(
+                    f"{item['weapon']} | {item['name']}", 
+                    item['case_type'],
+                    item.get('wear')
+                )
+                price_cache[cache_key] = price
+                item['price'] = price
     
     # Sort items so newest appears first
     inventory_items = sorted(inventory_items, 
-                             key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
-                             reverse=True)
+                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
+                           reverse=True)
     
     return render_template('inventory.html', 
-                           balance=user_data['balance'], 
-                           inventory=inventory_items,
-                           rank=user_data['rank'],
-                           exp=user_data['exp'],
-                           RANK_EXP=RANK_EXP,
-                           RANKS=RANKS,
-                           initial_view=request.args.get('view', 'skins'))
+                         balance=user_data['balance'], 
+                         inventory=inventory_items,
+                         rank=user_data['rank'],
+                         exp=user_data['exp'],
+                         RANK_EXP=RANK_EXP,
+                         RANKS=RANKS,
+                         initial_view=request.args.get('view', 'skins'))
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
     user_data = load_user_data()
     inventory = user_data.get('inventory', [])
+    current_exp = user_data.get('exp', 0)
+    current_rank = user_data.get('rank', 0)
+    new_exp = current_exp  # Initialize with current exp
     
     # Find the case in inventory
     case_found = False
@@ -295,11 +292,8 @@ def open_case(case_type):
                 case_found = True
                 # Decrease case quantity
                 inventory[i]['quantity'] = quantity - 1
-
-                # If quantity is 0, remove the case
                 if inventory[i]['quantity'] <= 0:
                     inventory.pop(i)
-
                 break
     
     if not case_found:
@@ -312,24 +306,15 @@ def open_case(case_type):
 
     # Get case price and add exp
     try:
-        case_file_mapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo',  # Changed back to match JSON filename
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
-        }
-        
-        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+        file_name = CASE_FILE_MAPPING.get(case_type)
+        if not file_name:
+            return jsonify({'error': 'Invalid case type'})
+            
+        with open(f'cases/{file_name}.json', 'r') as f:
             case_data = json.load(f)
             case_price = float(case_data.get('price', 0))
             
             # Add exp based on case price
-            current_exp = user_data.get('exp', 0)
-            current_rank = user_data.get('rank', 0)
-            
-            # Add exp equal to case price
             new_exp = current_exp + case_price
             
             # Check for rank up
@@ -343,6 +328,9 @@ def open_case(case_type):
             
     except Exception as e:
         print(f"Error getting case price: {e}")
+        # If there's an error, keep the current exp and rank
+        new_exp = current_exp
+        current_rank = user_data.get('rank', 0)
     
     skin = case.open()
     if not skin:
@@ -350,16 +338,11 @@ def open_case(case_type):
     
     # Get the price from case data
     try:
-        case_file_mapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo',  # Changed back to match JSON filename
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
-        }
-        
-        with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+        file_name = CASE_FILE_MAPPING.get(case_type)
+        if not file_name:
+            return jsonify({'error': 'Invalid case type'})
+            
+        with open(f'cases/{file_name}.json', 'r') as f:
             case_data = json.load(f)
             
         # Find the item's price in the case data
@@ -520,13 +503,14 @@ def sell_last_item():
 @app.route('/clicker')
 def clicker():
     user_data = load_user_data()
-    user = create_user_from_dict(user_data)
     return render_template('clicker.html', 
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANK_EXP=RANK_EXP,
-                           RANKS=RANKS)
+                         balance=user_data['balance'],
+                         rank=user_data['rank'],
+                         exp=user_data['exp'],
+                         upgrades=user_data['upgrades'],
+                         user_data=user_data,  # Add this line
+                         RANK_EXP=RANK_EXP,
+                         RANKS=RANKS)
 
 @app.route('/click', methods=['POST'])
 def click():
@@ -587,73 +571,76 @@ def update_session():
 @app.route('/upgrades')
 def upgrades():
     user_data = load_user_data()
-    user = create_user_from_dict(user_data)
     return render_template('upgrades.html', 
-                           balance=user.balance,
-                           upgrades=user.upgrades,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANK_EXP=RANK_EXP,
-                           RANKS=RANKS)
+                         balance=user_data['balance'],
+                         upgrades=user_data['upgrades'],  # Pass the upgrades dict directly
+                         rank=user_data['rank'],
+                         exp=user_data['exp'],
+                         RANK_EXP=RANK_EXP,
+                         RANKS=RANKS)
 
 @app.route('/purchase_upgrade', methods=['POST'])
 def purchase_upgrade():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    data = request.get_json()
-    upgrade_type = data.get('upgrade_type')
-    
-    # Update the costs dictionary to include critical strike
-    costs = {
-        'click_value': lambda level: 100 * (2 ** (level - 1)),  # Starts at 100
-        'max_multiplier': lambda level: 250 * (2 ** (level - 1)),  # Starts at 250
-        'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),  # Starts at 500, then 50
-        'combo_speed': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
-        'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1))  # Starts at 1000, then 200
-    }
-    
-    if upgrade_type not in costs:
-        return jsonify({'error': 'Invalid upgrade type'})
-    
-    current_level = getattr(user.upgrades, upgrade_type)
-    cost = costs[upgrade_type](current_level)
-    
-    if user.balance < cost:
-        return jsonify({'error': 'Insufficient funds'})
-    
-    # Purchase the upgrade
-    user.balance -= cost
-    setattr(user.upgrades, upgrade_type, current_level + 1)
-    
-    # Calculate next cost after level increase
-    next_cost = costs[upgrade_type](current_level + 1)
-    
-    # Update user data
-    user_data['balance'] = user.balance
-    user_data['inventory'] = user.inventory
-    user_data['exp'] = user.exp
-    user_data['rank'] = user.rank
-    user_data['upgrades'] = asdict(user.upgrades)
-    save_user_data(user_data)
-    
-    return jsonify({
-        'success': True,
-        'balance': user.balance,
-        'upgrades': asdict(user.upgrades),
-        'nextCost': next_cost 
-    })
+    try:
+        user_data = load_user_data()
+        data = request.get_json()
+        upgrade_type = data.get('upgrade_type')
+        
+        # Get current upgrade level directly from user_data
+        current_level = user_data['upgrades'].get(upgrade_type, 1)
+        
+        # Update the costs dictionary to include new upgrades
+        costs = {
+            'click_value': lambda level: 100 * (2 ** (level - 1)),  # Starts at 100
+            'max_multiplier': lambda level: 250 * (2 ** (level - 1)),  # Starts at 250
+            'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),  # Starts at 500, then 50
+            'combo_speed': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
+            'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1)),  # Starts at 1000, then 200
+            'progress_per_click': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
+            'case_quality': lambda level: 500 * (2 ** (level - 1))  # Starts at 500
+        }
+        
+        if upgrade_type not in costs:
+            return jsonify({'error': 'Invalid upgrade type'})
+        
+        # Check max level for progress_per_click
+        if upgrade_type == 'progress_per_click' and current_level >= 10:
+            return jsonify({'error': 'Maximum level reached'})
+        
+        # Check max level for case_quality
+        if upgrade_type == 'case_quality' and current_level >= 5:
+            return jsonify({'error': 'Maximum level reached'})
+        
+        cost = costs[upgrade_type](current_level)
+        
+        if user_data['balance'] < cost:
+            return jsonify({'error': 'Insufficient funds'})
+        
+        # Update balance and upgrade level
+        user_data['balance'] -= cost
+        user_data['upgrades'][upgrade_type] = current_level + 1
+        
+        # Calculate next cost after level increase
+        next_cost = costs[upgrade_type](current_level + 1)
+        
+        # Save updated user data
+        save_user_data(user_data)
+        
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance'],
+            'upgrades': user_data['upgrades'],
+            'nextCost': next_cost 
+        })
+        
+    except Exception as e:
+        print(f"Error in purchase_upgrade: {e}")
+        return jsonify({'error': 'Failed to purchase upgrade'})
 
 @app.route('/get_upgrades')
 def get_upgrades():
     user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return jsonify({
-        'click_value': user.upgrades.click_value,
-        'max_multiplier': user.upgrades.max_multiplier,
-        'auto_clicker': user.upgrades.auto_clicker,
-        'combo_speed': user.upgrades.combo_speed,
-        'critical_strike': user.upgrades.critical_strike 
-    })
+    return jsonify(user_data['upgrades'])  # Return all upgrades directly from user_data
 
 @app.route('/cheat')
 def cheat():
@@ -661,12 +648,13 @@ def cheat():
     user = create_user_from_dict(user_data)
     user.balance += 10000.0
     
-    # Update user data
+    # Update user data while preserving all fields
     user_data['balance'] = user.balance
-    user_data['inventory'] = user.inventory
-    user_data['exp'] = user.exp
-    user_data['rank'] = user.rank
-    user_data['upgrades'] = asdict(user.upgrades)
+    # Don't overwrite other fields - remove these lines
+    # user_data['inventory'] = user.inventory
+    # user_data['exp'] = user.exp
+    # user_data['rank'] = user.rank
+    # user_data['upgrades'] = asdict(user.upgrades)
     save_user_data(user_data)
     
     return redirect(url_for('shop'))
@@ -749,6 +737,24 @@ def buy_case():
             'image': 'winter_offensive_case.png',
             'is_case': True,
             'type': 'winter_offensive'
+        },
+        'csgo3': {
+            'name': 'CS:GO Weapon Case 3',
+            'image': 'weapon_case_3.png',
+            'is_case': True,
+            'type': 'csgo3'
+        },
+        'phoenix': {
+            'name': 'Operation Phoenix Case',
+            'image': 'operation_phoenix_case.png',
+            'is_case': True,
+            'type': 'phoenix'
+        },
+        'huntsman': {
+            'name': 'Huntsman Case',
+            'image': 'huntsman_case.png',
+            'is_case': True,
+            'type': 'huntsman'
         }
     }
     
@@ -791,16 +797,13 @@ def get_inventory():
         if not item.get('is_case'):
             try:
                 case_type = item.get('case_type', 'csgo')
-                case_file_mapping = {
-                    'csgo': 'weapon_case_1',
-                    'esports': 'esports_2013',
-                    'bravo': 'operation_bravo',  # Changed back to match JSON filename
-                    'csgo2': 'weapon_case_2',
-                    'esports_winter': 'esports_2013_winter',
-                    'winter_offensive': 'winter_offensive_case'
-                }
+                file_name = CASE_FILE_MAPPING.get(case_type)
                 
-                with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                if not file_name:
+                    print(f"Unknown case type: {case_type}")
+                    continue
+                    
+                with open(f'cases/{file_name}.json', 'r') as f:
                     case_data = json.load(f)
                 
                 # Find the item's price in the case data
@@ -847,7 +850,10 @@ def get_case_contents(case_type):
         'bravo': 'operation_bravo',  # Changed from operation_bravo_case
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case'
+        'winter_offensive': 'winter_offensive_case',
+        'csgo3': 'weapon_case_3',  # Add this line
+        'phoenix': 'operation_phoenix_case',
+        'huntsman': 'huntsman_case'  # Add huntsman case
     }
     
     if case_type not in case_file_mapping:
@@ -1808,7 +1814,7 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
     ]
     
     # Load all case data
-    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
+    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman']  # Add huntsman
     all_skins = []  # Change to a single list
     
     # Load skins from each case
@@ -1820,7 +1826,10 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
                 'bravo': 'operation_bravo',  # Changed back to match JSON filename
                 'csgo2': 'weapon_case_2',
                 'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case'
+                'winter_offensive': 'winter_offensive_case',
+                'csgo3': 'weapon_case_3',  # Add this line
+                'phoenix': 'operation_phoenix_case',
+                'huntsman': 'huntsman_case'  # Add huntsman case
             }
             
             with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
@@ -1953,8 +1962,8 @@ def get_featured_skins():
     if not FEATURED_SKINS or not LAST_REFRESH_TIME or (current_time - LAST_REFRESH_TIME) >= REFRESH_INTERVAL:
         try:
             # Load all case contents
-            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
-            all_skins = []  # Change to a single list
+            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman']  # csgo3 is included
+            all_skins = []
             
             # Load skins from each case
             for case_type in case_types:
@@ -1962,10 +1971,13 @@ def get_featured_skins():
                     case_file_mapping = {
                         'csgo': 'weapon_case_1',
                         'esports': 'esports_2013',
-                        'bravo': 'operation_bravo',  # Changed back to match JSON filename
+                        'bravo': 'operation_bravo',
                         'csgo2': 'weapon_case_2',
                         'esports_winter': 'esports_2013_winter',
-                        'winter_offensive': 'winter_offensive_case'
+                        'winter_offensive': 'winter_offensive_case',
+                        'csgo3': 'weapon_case_3',  # csgo3 is included
+                        'phoenix': 'operation_phoenix_case',
+                        'huntsman': 'huntsman_case'  # Add huntsman case
                     }
                     
                     with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
@@ -2163,19 +2175,9 @@ def play_upgrade():
         if success:
             # Load all possible skins
             available_skins = []
-            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive']
-            case_file_mapping = {
-                'csgo': 'weapon_case_1',
-                'esports': 'esports_2013',
-                'bravo': 'operation_bravo',
-                'csgo2': 'weapon_case_2',
-                'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case'
-            }
-            
-            for case_type in case_types:
+            for case_type, file_name in CASE_FILE_MAPPING.items():
                 try:
-                    with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                    with open(f'cases/{file_name}.json', 'r') as f:
                         case_data = json.load(f)
                         for grade, skins in case_data['skins'].items():
                             for skin in skins:
@@ -2262,6 +2264,172 @@ def play_upgrade():
     except Exception as e:
         print(f"Error in play_upgrade: {e}")
         return jsonify({'error': 'Failed to process upgrade'})
+
+# Add this new route to handle case progress clicks
+@app.route('/case_click', methods=['POST'])
+def case_click():
+    try:
+        user_data = load_user_data()
+        data = request.get_json()
+        
+        # Get current case progress from request data instead of saved data
+        case_progress = float(data.get('current_progress', 0))
+        
+        # Get upgrades from saved data
+        upgrades = user_data.get('upgrades', {})
+        progress_per_click = upgrades.get('progress_per_click', 1)
+        case_quality = upgrades.get('case_quality', 1)
+        
+        # Add progress based on upgrade level
+        case_progress += progress_per_click
+        
+        # Save the current progress back to user data
+        user_data['case_progress'] = case_progress  # Add this line
+        
+        # Check if we've reached 100%
+        earned_case = None
+        earned_case_data = None
+        if case_progress >= 100:
+            # Reset progress
+            case_progress = 0
+            user_data['case_progress'] = 0  # Add this line
+            
+            # Get price range based on case quality level
+            price_ranges = {
+                1: (0, 2),    # Level 1: 0-2 USD
+                2: (0, 5),    # Level 2: 0-5 USD
+                3: (0, 10),   # Level 3: 0-10 USD
+                4: (0, 15),   # Level 4: 0-15 USD
+                5: (0, 20)    # Level 5: 0-20 USD
+            }
+            
+            min_price, max_price = price_ranges.get(case_quality, (0, 2))
+            
+            # Get available cases within price range
+            available_cases = []
+            for case_type, file_name in CASE_FILE_MAPPING.items():
+                try:
+                    with open(f'cases/{file_name}.json', 'r') as f:
+                        case_data = json.load(f)
+                        price = float(case_data.get('price', 0))
+                        if min_price <= price <= max_price:
+                            available_cases.append((case_type, case_data))
+                except Exception as e:
+                    print(f"Error checking case price for {case_type}: {e}")
+                    continue
+            
+            if available_cases:
+                earned_case, case_data = random.choice(available_cases)
+                earned_case_data = {
+                    'name': case_data['name'],
+                    'image': case_data['image'],
+                    'price': case_data['price'],
+                    'type': earned_case
+                }
+                
+                # Add case to inventory
+                inventory = user_data.get('inventory', [])
+                case_found = False
+                
+                for item in inventory:
+                    if item.get('is_case') and item.get('type') == earned_case:
+                        item['quantity'] = item.get('quantity', 0) + 1
+                        case_found = True
+                        break
+                
+                if not case_found:
+                    inventory.append({
+                        'name': case_data['name'],
+                        'image': case_data['image'],
+                        'is_case': True,
+                        'type': earned_case,
+                        'quantity': 1
+                    })
+                
+                # Update inventory in user_data
+                user_data['inventory'] = inventory
+        
+        # Save user data with updated progress
+        save_user_data(user_data)  # Make sure this is called
+        
+        return jsonify({
+            'success': True,
+            'progress': case_progress,
+            'earned_case': earned_case_data,
+            'progress_per_click': progress_per_click
+        })
+        
+    except Exception as e:
+        print(f"Error in case_click: {e}")
+        return jsonify({'error': str(e)})
+
+def load_skin_price(skin_name: str, case_type: str, wear: str = None) -> float:
+    try:
+        # Debug: Print input parameters
+        print(f"\nAttempting to load price for: {skin_name} from case: {case_type}")
+        print(f"Wear condition: {wear}")
+        
+        # Parse weapon and name from skin_name
+        weapon, name = skin_name.split(" | ", 1)
+        print(f"Parsed weapon: {weapon}, name: {name}")
+        
+        # Use the global CASE_FILE_MAPPING
+        file_name = CASE_FILE_MAPPING.get(case_type)
+        if not file_name:
+            print(f"Unknown case type: {case_type}")
+            print(f"Available case types: {list(CASE_FILE_MAPPING.keys())}")
+            return 0
+        
+        file_path = f'cases/{file_name}.json'
+        print(f"Loading from file: {file_path}")
+        
+        with open(file_path, 'r') as f:
+            case_data = json.load(f)
+            print(f"Successfully loaded case data")
+            
+            # Look for the skin in all grades
+            for grade, items in case_data['skins'].items():
+                for item in items:
+                    if item['weapon'] == weapon and item['name'] == name:
+                        prices = item.get('prices', {})
+                        
+                        # If StatTrak, use ST_ prices
+                        price_prefix = 'ST_' if 'StatTrak™' in skin_name else ''
+                        
+                        # If wear is specified, try that specific wear first
+                        if wear:
+                            wear_key = f"{price_prefix}{wear}"
+                            if wear_key in prices:
+                                price = float(prices[wear_key])
+                                print(f"Found exact price for {wear_key}: ${price}")
+                                return price
+                        
+                        # Try common wear values
+                        for wear_type in ['FN', 'MW', 'FT', 'WW', 'BS']:
+                            wear_key = f"{price_prefix}{wear_type}"
+                            if wear_key in prices:
+                                price = float(prices[wear_key])
+                                print(f"Using fallback price for {wear_key}: ${price}")
+                                return price
+                        
+                        # Last resort: use any available price
+                        if prices:
+                            first_price = float(next(iter(prices.values())))
+                            print(f"Using first available price: ${first_price}")
+                            return first_price
+                        
+                        print("No prices found for skin")
+                        return 0
+            
+            print(f"Skin not found: {skin_name}")
+            return 0
+            
+    except Exception as e:
+        print(f"Error loading price for {skin_name} from {case_type}:")
+        print(f"Exception type: {type(e).__name__}")
+        print(f"Exception message: {str(e)}")
+        traceback.print_exc()
+        return 0
 
 if __name__ == '__main__':
     app.run(debug=True)

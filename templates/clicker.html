@@ -3,31 +3,244 @@
 {% block title %}Clicker - Case Clicker{% endblock %}
 
 {% block content %}
-<div id="floating-chest" class="floating-chest">🎁</div>
+<div class="clicker-tabs">
+    <button class="tab-btn active" data-tab="money">Money Clicker</button>
+    <button class="tab-btn" data-tab="case">Case Clicker</button>
+</div>
 
-<div class="clicker-container">
-    <div class="clicker-stats">
-        <div class="multiplier">
-            Multiplier: <span id="current-multiplier">1</span>x
+<!-- Money clicker section -->
+<div class="clicker-section active" id="money-section">
+    <!-- Existing money clicker content -->
+    <div id="floating-chest" class="floating-chest">🎁</div>
+    <div class="clicker-container">
+        <div class="clicker-stats">
+            <div class="multiplier">
+                Multiplier: <span id="current-multiplier">1</span>x
+            </div>
+            <div class="crit-chance">
+                Crit Chance: <span id="crit-chance">0</span>%
+            </div>
+            <div class="auto-click">
+                Auto Click: <span id="auto-click-rate">0</span>/s
+            </div>
         </div>
-        <div class="crit-chance">
-            Crit Chance: <span id="crit-chance">0</span>%
-        </div>
-        <div class="auto-click">
-            Auto Click: <span id="auto-click-rate">0</span>/s
+
+        <div class="clicker-area">
+            <button class="clicker-btn" id="clicker">
+                <div class="multiplier-overlay"><span id="multiplier">1.0</span>x</div>
+                <div class="clicker-icon" style="--coin-url: url('{{ url_for('static', filename='media/coin.png') }}')"></div>
+            </button>
         </div>
     </div>
+</div>
 
-    <div class="clicker-area">
-        <button class="clicker-btn" id="clicker">
-            <div class="multiplier-overlay"><span id="multiplier">1.0</span>x</div>
-            <div class="clicker-icon" style="--coin-url: url('{{ url_for('static', filename='media/coin.png') }}')"></div>
+<!-- Case clicker section -->
+<div class="clicker-section" id="case-section">
+    <div class="case-clicker-container">
+        <div class="clicker-stats">
+            <div class="multiplier">
+                Progress per Click: <span id="progress-per-click">{{ upgrades.progress_per_click }}</span>%
+            </div>
+            <div class="crit-chance">
+                Case Quality: <span id="case-quality">{{ upgrades.case_quality }}</span>
+            </div>
+        </div>
+
+        <div class="case-progress-bar">
+            <div class="case-progress-fill" style="width: 0%"></div>
+            <span class="case-progress-text">0%</span>
+        </div>
+        
+        <button class="case-clicker-btn" id="case-clicker">
+            <div class="case-clicker-icon"></div>
         </button>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
+<!-- Add this after the case clicker section -->
+<div id="case-showcase" class="case-showcase hidden">
+    <div class="case-showcase-content">
+        <h2>Case Earned!</h2>
+        <div class="case-image"></div>
+        <div class="case-info">
+            <div class="case-name"></div>
+            <div class="case-price"></div>
+        </div>
+        <button class="showcase-continue">Continue</button>
+    </div>
+</div>
+
+<!-- Add these styles -->
+<style>
+.clicker-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: #2a2a2a;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.tab-btn.active {
+    background: #4CAF50;
+}
+
+.clicker-section {
+    display: none;
+}
+
+.clicker-section.active {
+    display: block;
+}
+
+.case-clicker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.case-progress-bar {
+    width: 80%;
+    max-width: 400px;
+    height: 20px;
+    background: #2a2a2a;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.case-progress-fill {
+    height: 100%;
+    background: #4CAF50;
+    transition: width 0.3s;
+}
+
+.case-progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.case-clicker-btn {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: none;
+    background: #2a2a2a;
+    cursor: pointer;
+    transition: transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.case-clicker-btn:active {
+    transform: scale(0.95);
+}
+
+.case-clicker-icon {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.case-showcase {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.case-showcase-content {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    animation: showcaseAppear 0.5s ease-out;
+}
+
+.case-showcase h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.case-image {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.case-info {
+    margin-bottom: 20px;
+}
+
+.case-name {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.case-price {
+    color: #4CAF50;
+    font-size: 18px;
+}
+
+.showcase-continue {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.showcase-continue:hover {
+    background: #45a049;
+}
+
+@keyframes showcaseAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+</style>
+
+<!-- Add this JavaScript to your existing scripts -->
 <script>
 let clickCount = 0;
 let currentMultiplier = 1.0;
@@ -139,7 +352,6 @@ function updateAutoClickRate(level) {
 // Update the event listener for upgradesPurchased
 window.addEventListener('upgradesPurchased', function(e) {
     const upgrades = e.detail;
-    console.log('Upgrades received:', upgrades);
     
     // Base click value starts at 0.01 at level 1
     baseClickValue = 0.01 * (1.5 ** (upgrades.click_value - 1));
@@ -168,7 +380,6 @@ window.addEventListener('upgradesPurchased', function(e) {
     window.criticalStrikeLevel = upgrades.critical_strike || 0;
     document.getElementById('crit-chance').textContent = window.criticalStrikeLevel;
     
-    console.log('New Critical Strike Level:', window.criticalStrikeLevel);
 });
 
 // Replace the existing handleClick function with this updated version
@@ -176,12 +387,10 @@ window.handleClick = async function(isAutoClick = false) {
     // Only increase combo on manual clicks
     if (!isAutoClick) {
         comboClickCount++;
-        console.log(`Combo clicks: ${comboClickCount}/${clicksToCombo}`);
         
         if (comboClickCount >= clicksToCombo) {
             comboClickCount = 0;
             currentMultiplier = Math.min(currentMultiplier + 0.1, maxMultiplier);
-            console.log(`New multiplier: ${currentMultiplier}`);
             
             const multiplierValue = currentMultiplier.toFixed(1);
             document.getElementById('current-multiplier').textContent = multiplierValue;
@@ -196,11 +405,9 @@ window.handleClick = async function(isAutoClick = false) {
     
     if (criticalChance > 0) {
         const roll = Math.random();
-        console.log(`Critical Roll: ${roll}, Chance: ${criticalChance}`);
         if (roll < criticalChance) {
             criticalMultiplier = 4;
             isCritical = true;
-            console.log('Critical Strike!');
         }
     }
     
@@ -418,6 +625,124 @@ scheduleNextChest();
 window.addEventListener('beforeunload', () => {
     if (chestTimeout) clearTimeout(chestTimeout);
     if (chestInterval) clearTimeout(chestInterval); // Changed from clearInterval to clearTimeout
+});
+
+// Tab switching functionality
+document.querySelectorAll('.tab-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active class from all buttons and sections
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.clicker-section').forEach(section => section.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding section
+        button.classList.add('active');
+        document.getElementById(`${button.dataset.tab}-section`).classList.add('active');
+    });
+});
+
+// Set random case image on load
+document.addEventListener('DOMContentLoaded', () => {
+    const cases = [
+        'weapon_case_1.png',
+        'esports_2013_case.png',
+        'operation_bravo_case.png',
+        'weapon_case_2.png',
+        'esports_2013_winter_case.png',
+        'winter_offensive_case.png',
+        'huntsman_case.png'
+    ];
+    
+    const randomCase = cases[Math.floor(Math.random() * cases.length)];
+    document.querySelector('.case-clicker-icon').style.backgroundImage = 
+        `url('/static/media/cases/${randomCase}')`;
+});
+
+// Case clicker functionality
+document.getElementById('case-clicker').addEventListener('click', async (event) => {
+    try {
+        const progressElement = document.querySelector('.case-progress-fill');
+        const currentProgress = parseFloat(progressElement.style.width) || 0;
+        
+        const response = await fetch('/case_click', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                current_progress: currentProgress
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        
+        // Update progress bar
+        const progressFill = document.querySelector('.case-progress-fill');
+        const progressText = document.querySelector('.case-progress-text');
+        const progressPerClickDisplay = document.getElementById('progress-per-click');
+        
+        // Update the progress display
+        progressFill.style.width = `${data.progress}%`;
+        progressText.textContent = `${Math.floor(data.progress)}%`;
+        
+        // Update the progress per click display
+        if (progressPerClickDisplay) {
+            progressPerClickDisplay.textContent = data.progress_per_click;
+        }
+        
+        // Create floating progress text
+        const rect = event.target.getBoundingClientRect();
+        const floatingText = document.createElement('div');
+        floatingText.className = 'floating-money';
+        floatingText.textContent = `+${data.progress_per_click}%`;
+        floatingText.style.left = `${rect.left + rect.width/2}px`;
+        floatingText.style.top = `${rect.top + rect.height/2}px`;
+        document.body.appendChild(floatingText);
+        
+        // Remove floating text after animation
+        setTimeout(() => floatingText.remove(), 1000);
+        
+        // Show case showcase if earned
+        if (data.earned_case) {
+            const showcase = document.getElementById('case-showcase');
+            const caseImage = showcase.querySelector('.case-image');
+            const caseName = showcase.querySelector('.case-name');
+            const casePrice = showcase.querySelector('.case-price');
+            
+            caseImage.style.backgroundImage = `url('/static/media/cases/${data.earned_case.image}')`;
+            caseName.textContent = data.earned_case.name;
+            casePrice.textContent = `$${data.earned_case.price.toFixed(2)}`;
+            
+            showcase.classList.remove('hidden');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+// Add showcase continue button handler
+document.querySelector('.showcase-continue').addEventListener('click', () => {
+    document.getElementById('case-showcase').classList.add('hidden');
+});
+
+// Add this to your DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing code ...
+    
+    // Load and display current case progress
+    const progressFill = document.querySelector('.case-progress-fill');
+    const progressText = document.querySelector('.case-progress-text');
+    const userData = {{ user_data|tojson|safe }};  // Add this to your template context
+    
+    if (userData && 'case_progress' in userData) {
+        progressFill.style.width = `${userData.case_progress}%`;
+        progressText.textContent = `${Math.floor(userData.case_progress)}%`;
+    }
 });
 </script>
 {% endblock %} 

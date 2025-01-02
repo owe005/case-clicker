@@ -1,11 +1,12 @@
 from enum import Enum
 
 class Rarity(Enum):
-    BLUE = "Mil-Spec"
-    PURPLE = "Restricted"
-    PINK = "Classified"
-    RED = "Covert"
-    GOLD = "Rare Special"
+    CONTRABAND = "CONTRABAND"
+    GOLD = "GOLD"
+    RED = "RED"
+    PINK = "PINK"
+    PURPLE = "PURPLE"
+    BLUE = "BLUE"
 
 class Wear(Enum):
     BS = "Battle-Scarred"
@@ -57,4 +58,16 @@ RANK_EXP = {
     14: 250000,# Legendary Eagle to Legendary Eagle Master
     15: 500000,# Legendary Eagle Master to Supreme Master First Class
     16: 1000000 # Supreme Master First Class to The Global Elite
+}
+
+CASE_FILE_MAPPING = {
+    'csgo': 'weapon_case_1',
+    'esports': 'esports_2013',
+    'bravo': 'operation_bravo',
+    'csgo2': 'weapon_case_2',
+    'esports_winter': 'esports_2013_winter',
+    'winter_offensive': 'winter_offensive_case',
+    'csgo3': 'weapon_case_3',
+    'phoenix': 'operation_phoenix_case',
+    'huntsman': 'huntsman_case'
 }

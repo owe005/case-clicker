@@ -1,0 +1,544 @@
+{
+    "name": "Huntsman Case",
+    "image": "huntsman_case.png",
+    "price": 11.00,
+    "drop_rates": {
+        "contraband": 0.026,
+        "gold": 0.26,
+        "red": 0.64,
+        "pink": 3.2,
+        "purple": 15.98,
+        "blue": 79.92
+    },
+    "skins": {
+        "contraband": [
+            {
+                "weapon": "M4A4",
+                "name": "Howl",
+                "image": "m4a4_howl.png",
+                "grade": "contraband",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 5631.75,
+                    "MW": 4223.68,
+                    "FT": 3520.00,
+                    "WW": 3210.00,
+                    "ST_FN": 12263.59,
+                    "ST_MW": 7930.44,
+                    "ST_FT": 5750.00,
+                    "ST_WW": 7717.83
+                }
+            }
+        ],
+        "gold": [
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Blue Steel",
+                "image": "huntsmanknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 259.59,
+                    "MW": 203.80,
+                    "FT": 168.54,
+                    "WW": 153.58,
+                    "BS": 141.82,
+                    "ST_FN": 616.61,
+                    "ST_MW": 244.95,
+                    "ST_FT": 191.83,
+                    "ST_WW": 227.30,
+                    "ST_BS": 177.00
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Scorched",
+                "image": "huntsmanknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 358.27,
+                    "MW": 116.72,
+                    "FT": 101.56,
+                    "WW": 105.96,
+                    "BS": 100.07,
+                    "ST_MW": 141.63,
+                    "ST_FT": 109.54,
+                    "ST_WW": 144.01,
+                    "ST_BS": 196.57
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Slaughter",
+                "image": "huntsmanknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 349.69,
+                    "MW": 268.00,
+                    "FT": 242.84,
+                    "ST_FN": 386.25,
+                    "ST_MW": 280.00,
+                    "ST_FT": 292.99
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Forest DDPAT",
+                "image": "huntsmanknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1370.25,
+                    "MW": 118.50,
+                    "FT": 100.61,
+                    "WW": 101.39,
+                    "BS": 99.09,
+                    "ST_MW": 119.99,
+                    "ST_FT": 103.97,
+                    "ST_WW": 133.04,
+                    "ST_BS": 114.70
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Vanilla",
+                "image": "huntsmanknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 193.96,
+                    "ST_NO": 208.63
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Crimson Web",
+                "image": "huntsmanknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 752.27,
+                    "MW": 264.00,
+                    "FT": 148.65,
+                    "WW": 150.25,
+                    "BS": 145.86,
+                    "ST_FN": 5500.00,
+                    "ST_MW": 308.57,
+                    "ST_FT": 197.30,
+                    "ST_WW": 215.50,
+                    "ST_BS": 203.91
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Stained",
+                "image": "huntsmanknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 224.73,
+                    "MW": 138.34,
+                    "FT": 130.00,
+                    "WW": 118.80,
+                    "BS": 118.18,
+                    "ST_FN": 253.63,
+                    "ST_MW": 228.28,
+                    "ST_FT": 145.11,
+                    "ST_WW": 187.48,
+                    "ST_BS": 149.99
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Urban Masked",
+                "image": "huntsmanknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["MW", "FT", "WW", "BS"],
+                "prices": {
+                    "MW": 116.47,
+                    "FT": 104.89,
+                    "WW": 102.38,
+                    "BS": 106.81,
+                    "ST_MW": 145.90,
+                    "ST_FT": 129.99,
+                    "ST_WW": 156.69,
+                    "ST_BS": 110.87
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Night",
+                "image": "huntsmanknife_night.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 854.88,
+                    "MW": 166.50,
+                    "FT": 109.48,
+                    "WW": 109.55,
+                    "BS": 110.99,
+                    "ST_FN": 1480.29,
+                    "ST_MW": 206.77,
+                    "ST_FT": 149.18,
+                    "ST_WW": 149.99,
+                    "ST_BS": 170.56
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Safari Mesh",
+                "image": "huntsmanknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 309.75,
+                    "MW": 103.74,
+                    "FT": 97.78,
+                    "WW": 95.48,
+                    "BS": 101.39,
+                    "ST_FN": 1938.29,
+                    "ST_MW": 124.68,
+                    "ST_FT": 101.19,
+                    "ST_WW": 155.87,
+                    "ST_BS": 130.00
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Boreal Forest",
+                "image": "huntsmanknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 190.36,
+                    "MW": 120.73,
+                    "FT": 102.58,
+                    "WW": 137.73,
+                    "BS": 97.07,
+                    "ST_FN": 2420.20,
+                    "ST_MW": 203.02,
+                    "ST_FT": 124.00,
+                    "ST_WW": 152.84,
+                    "ST_BS": 119.55
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Case Hardened",
+                "image": "huntsmanknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 425.84,
+                    "MW": 234.29,
+                    "FT": 207.80,
+                    "WW": 189.99,
+                    "BS": 178.21,
+                    "ST_FN": 3849.40,
+                    "ST_MW": 380.00,
+                    "ST_FT": 356.26,
+                    "ST_WW": 309.63,
+                    "ST_BS": 249.99
+                }
+            },
+            {
+                "weapon": "Huntsman Knife",
+                "name": "Fade",
+                "image": "huntsmanknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 370.00,
+                    "MW": 415.00,
+                    "ST_FN": 397.23,
+                    "ST_MW": 417.71
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "AK-47",
+                "name": "Vulcan",
+                "image": "ak47_vulcan.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 691.21,
+                    "MW": 419.28,
+                    "FT": 212.90,
+                    "WW": 130.00,
+                    "BS": 115.00,
+                    "ST_FN": 1188.17,
+                    "ST_MW": 770.00,
+                    "ST_FT": 327.18,
+                    "ST_WW": 202.46,
+                    "ST_BS": 147.29
+                }
+            },
+            {
+                "weapon": "M4A4",
+                "name": "Desert Strike",
+                "image": "m4a4_desert_strike.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 5.89,
+                    "MW": 3.65,
+                    "FT": 3.18,
+                    "WW": 3.87,
+                    "BS": 3.16,
+                    "ST_FN": 21.99,
+                    "ST_MW": 12.60,
+                    "ST_FT": 8.65,
+                    "ST_WW": 12.11,
+                    "ST_BS": 9.51
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Atomic Alloy",
+                "image": "m4a1s_atomic_alloy.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 78.15,
+                    "MW": 49.69,
+                    "FT": 37.41,
+                    "WW": 35.36,
+                    "BS": 32.83,
+                    "ST_FN": 118.97,
+                    "ST_MW": 80.00,
+                    "ST_FT": 50.67,
+                    "ST_WW": 44.89,
+                    "ST_BS": 46.58
+                }
+            },
+            {
+                "weapon": "USP-S",
+                "name": "Caiman",
+                "image": "usps_caiman.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 54.00,
+                    "MW": 46.33,
+                    "FT": 41.87,
+                    "WW": 39.08,
+                    "ST_FN": 94.12,
+                    "ST_MW": 73.93,
+                    "ST_FT": 55.70,
+                    "ST_WW": 58.88
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Cyrex",
+                "image": "scar20_cyrex.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 53.00,
+                    "MW": 45.01,
+                    "FT": 38.55,
+                    "WW": 38.53,
+                    "BS": 36.72,
+                    "ST_FN": 96.20,
+                    "ST_MW": 78.20,
+                    "ST_FT": 51.76,
+                    "ST_WW": 52.93,
+                    "ST_BS": 51.49
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "PP-Bizon",
+                "name": "Antique",
+                "image": "ppbizon_antique.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.25,
+                    "MW": 8.26,
+                    "FT": 7.69,
+                    "WW": 7.79,
+                    "BS": 6.11,
+                    "ST_FN": 13.90,
+                    "ST_MW": 12.21,
+                    "ST_FT": 10.22,
+                    "ST_WW": 10.19,
+                    "ST_BS": 13.56
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Torque",
+                "image": "aug_torque.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.65,
+                    "MW": 8.34,
+                    "FT": 7.16,
+                    "WW": 7.38,
+                    "BS": 6.61,
+                    "ST_FN": 13.57,
+                    "ST_MW": 12.19,
+                    "ST_FT": 10.09,
+                    "ST_WW": 9.27,
+                    "ST_BS": 10.76
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Heaven Guard",
+                "image": "xm1014_heaven_guard.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11.63,
+                    "MW": 8.60,
+                    "FT": 7.40,
+                    "WW": 6.74,
+                    "BS": 7.57,
+                    "ST_FN": 17.47,
+                    "ST_MW": 12.00,
+                    "ST_FT": 10.40,
+                    "ST_WW": 9.76,
+                    "ST_BS": 10.70
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Tatter",
+                "image": "mac10_tatter.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11.56,
+                    "MW": 8.59,
+                    "FT": 7.83,
+                    "WW": 8.08,
+                    "BS": 7.67,
+                    "ST_FN": 13.38,
+                    "ST_MW": 12.07,
+                    "ST_FT": 11.15,
+                    "ST_WW": 13.25,
+                    "ST_BS": 10.50
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Tec-9",
+                "name": "Isaac",
+                "image": "tec9_isaac.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.02,
+                    "MW": 3.36,
+                    "FT": 2.47,
+                    "WW": 1.82,
+                    "BS": 1.60,
+                    "ST_FN": 24.45,
+                    "ST_MW": 5.23,
+                    "ST_FT": 2.77,
+                    "ST_WW": 1.90,
+                    "ST_BS": 1.56
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Module",
+                "image": "p90_module.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 2.49,
+                    "MW": 1.98,
+                    "FT": 1.88,
+                    "ST_FN": 2.85,
+                    "ST_MW": 2.05,
+                    "ST_FT": 1.84
+                }
+            },
+            {
+                "weapon": "Galil AR",
+                "name": "Kami",
+                "image": "galil_kami.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.29,
+                    "MW": 2.47,
+                    "FT": 1.78,
+                    "WW": 1.63,
+                    "BS": 1.67,
+                    "ST_FN": 5.09,
+                    "ST_MW": 3.08,
+                    "ST_FT": 1.62,
+                    "ST_WW": 2.09,
+                    "ST_BS": 1.63
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Pulse",
+                "image": "p2000_pulse.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.14,
+                    "MW": 1.91,
+                    "FT": 1.76,
+                    "WW": 1.74,
+                    "BS": 1.77,
+                    "ST_FN": 2.82,
+                    "ST_MW": 2.16,
+                    "ST_FT": 1.65,
+                    "ST_WW": 1.87,
+                    "ST_BS": 1.45
+                }
+            },
+            {
+                "weapon": "SSG 08",
+                "name": "Slashed",
+                "image": "ssg08_slashed.png",
+                "grade": "blue",
+                "valid_wears": ["FT", "WW", "BS"],
+                "prices": {
+                    "FT": 1.76,
+                    "WW": 1.56,
+                    "BS": 1.68,
+                    "ST_FT": 1.76,
+                    "ST_WW": 1.63,
+                    "ST_BS": 1.52
+                }
+            },
+            {
+                "weapon": "CZ75-Auto",
+                "name": "Twist",
+                "image": "cz75auto_twist.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.54,
+                    "MW": 1.93,
+                    "FT": 1.73,
+                    "WW": 1.53,
+                    "BS": 1.53,
+                    "ST_FN": 2.82,
+                    "ST_MW": 2.06,
+                    "ST_FT": 1.77,
+                    "ST_WW": 1.42,
+                    "ST_BS": 1.43
+                }
+            }
+        ]
+    }
+}

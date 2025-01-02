@@ -63,6 +63,42 @@
             {% if upgrades.critical_strike == 0 %}Unlock Critical Strike{% else %}Upgrade{% endif %}
         </button>
     </div>
+
+    <div class="upgrade-card {% if upgrades.progress_per_click >= 10 %}max-level{% endif %}">
+        <h3>Progress Per Click</h3>
+        <p class="current-level">Level: <span id="progress_per_click-level">{{ upgrades.progress_per_click }}</span>/10</p>
+        <p class="upgrade-value">Current: <span id="progress_per_click-value">{{ upgrades.progress_per_click }}</span>% per click</p>
+        <p class="upgrade-cost">Cost: $<span id="progress_per_click-cost">{{ "%.2f"|format(150 * (2 ** (upgrades.progress_per_click - 1))) }}</span></p>
+        {% if upgrades.progress_per_click >= 10 %}
+            <div class="max-level-badge">Max Level</div>
+        {% else %}
+            <button class="btn upgrade-btn" onclick="purchaseUpgrade('progress_per_click')">Upgrade</button>
+        {% endif %}
+    </div>
+
+    <div class="upgrade-card {% if upgrades.case_quality >= 5 %}max-level{% endif %}">
+        <h3>Case Quality</h3>
+        <p class="current-level">Level: <span id="case_quality-level">{{ upgrades.case_quality }}</span>/5</p>
+        <p class="upgrade-value">Current: 
+            {% if upgrades.case_quality == 1 %}
+                0-2 USD cases
+            {% elif upgrades.case_quality == 2 %}
+                0-5 USD cases
+            {% elif upgrades.case_quality == 3 %}
+                0-10 USD cases
+            {% elif upgrades.case_quality == 4 %}
+                0-15 USD cases
+            {% else %}
+                0-20 USD cases
+            {% endif %}
+        </p>
+        <p class="upgrade-cost">Cost: $<span id="case_quality-cost">{{ "%.2f"|format(500 * (2 ** (upgrades.case_quality - 1))) }}</span></p>
+        {% if upgrades.case_quality >= 5 %}
+            <div class="max-level-badge">Max Level</div>
+        {% else %}
+            <button class="btn upgrade-btn" onclick="purchaseUpgrade('case_quality')">Upgrade</button>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
 
@@ -168,6 +204,33 @@ async function purchaseUpgrade(type) {
                         upgradeButton.textContent = 'Upgrade';
                     }
                     break;
+                    
+                case 'progress_per_click':
+                    if (valueElement) {
+                        valueElement.textContent = data.upgrades[type];
+                    }
+                    if (data.upgrades[type] >= 10) {
+                        upgradeButton.textContent = 'Max Level';
+                        upgradeButton.disabled = true;
+                    }
+                    break;
+                    
+                case 'case_quality':
+                    if (valueElement) {
+                        const qualityRanges = {
+                            1: '0-2 USD cases',
+                            2: '0-5 USD cases',
+                            3: '0-10 USD cases',
+                            4: '0-15 USD cases',
+                            5: '0-20 USD cases'
+                        };
+                        valueElement.textContent = qualityRanges[data.upgrades[type]];
+                    }
+                    if (data.upgrades[type] >= 5) {
+                        upgradeButton.textContent = 'Max Level';
+                        upgradeButton.disabled = true;
+                    }
+                    break;
             }
         }
 
@@ -176,6 +239,40 @@ async function purchaseUpgrade(type) {
             detail: data.upgrades
         });
         window.dispatchEvent(upgradeEvent);
+        
+        if (type === 'progress_per_click' && data.upgrades[type] >= 10) {
+            const card = document.querySelector(`#${type}-level`).closest('.upgrade-card');
+            card.classList.add('max-level');
+            const costElement = card.querySelector('.upgrade-cost');
+            const buttonElement = card.querySelector('.upgrade-btn');
+            if (costElement) costElement.style.display = 'none';
+            if (buttonElement) {
+                buttonElement.parentNode.replaceChild(
+                    Object.assign(document.createElement('div'), {
+                        className: 'max-level-badge',
+                        textContent: 'Max Level'
+                    }),
+                    buttonElement
+                );
+            }
+        }
+
+        if (type === 'case_quality' && data.upgrades[type] >= 5) {
+            const card = document.querySelector(`#${type}-level`).closest('.upgrade-card');
+            card.classList.add('max-level');
+            const costElement = card.querySelector('.upgrade-cost');
+            const buttonElement = card.querySelector('.upgrade-btn');
+            if (costElement) costElement.style.display = 'none';
+            if (buttonElement) {
+                buttonElement.parentNode.replaceChild(
+                    Object.assign(document.createElement('div'), {
+                        className: 'max-level-badge',
+                        textContent: 'Max Level'
+                    }),
+                    buttonElement
+                );
+            }
+        }
         
     } catch (error) {
         console.error('Error:', error);

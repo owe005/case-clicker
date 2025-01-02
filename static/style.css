@@ -1667,6 +1667,15 @@ h1 {
     animation: goldGlow 2s infinite;
 }
 
+.skin.rarity-CONTRABAND {
+    background: linear-gradient(135deg, #00000020 0%, #00000040 100%);
+    border: 2px solid #000000;
+}
+
+.content-row.rarity-CONTRABAND .rarity-name { 
+    color: #964B00; 
+}
+
 /* Add glow animation for gold items if not already defined */
 @keyframes goldGlow {
     0% { box-shadow: 0 0 5px #caab05; }

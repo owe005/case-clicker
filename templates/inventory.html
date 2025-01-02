@@ -40,7 +40,10 @@
                         'bravo': 'operation_bravo_case',
                         'csgo2': 'weapon_case_2', 
                         'esports_winter': 'esports_2013_winter',
-                        'winter_offensive': 'winter_offensive_case'
+                        'winter_offensive': 'winter_offensive_case',
+                        'csgo3': 'weapon_case_3',
+                        'phoenix': 'operation_phoenix_case',
+                        'huntsman': 'huntsman_case'
                     } %}
                     {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
                     <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
@@ -122,6 +125,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -547,7 +551,10 @@ function createItemElement(item) {
             'bravo': 'operation_bravo_case',
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -615,7 +622,10 @@ function showItemShowcase(item) {
             'bravo': 'operation_bravo_case',
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -648,7 +658,10 @@ function showItemShowcase(item) {
             'bravo': 'operation_bravo_case',
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -882,7 +895,10 @@ async function refreshSkinsSection() {
                 'bravo': 'operation_bravo_case',
                 'csgo2': 'weapon_case_2',
                 'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case'
+                'winter_offensive': 'winter_offensive_case',
+                'csgo3': 'weapon_case_3',
+                'phoenix': 'operation_phoenix_case',
+                'huntsman': 'huntsman_case'
             };
             const casePath = caseMapping[item.case_type] || 'weapon_case_1';
             
@@ -1140,7 +1156,10 @@ async function updateInventoryDisplay() {
             'bravo': 'operation_bravo_case',
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case'
         };
         
         // Add each item

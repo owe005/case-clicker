@@ -47,6 +47,8 @@ class Upgrades:
     auto_clicker: int = 0  # Start at level 0 (not unlocked)
     combo_speed: int = 1  # Start at level 1
     critical_strike: int = 0  # Start at level 0 (not unlocked)
+    progress_per_click: int = 1  # Start at level 1 (1% per click)
+    case_quality: int = 1  # Start at level 1 (0-2 USD cases)
 
 @dataclass
 class User:

@@ -32,6 +32,13 @@
             <button class="showcase-close" onclick="closeContentsOverlay()">×</button>
         </div>
         <div class="case-contents-list">
+            <div class="content-row rarity-CONTRABAND">
+                <div class="rarity-header">
+                    <span class="rarity-name">Contraband Weapons</span>
+                    <span class="drop-chance">(0.026%)</span>
+                </div>
+                <div class="items-grid"></div>
+            </div>
             <div class="content-row rarity-GOLD">
                 <div class="rarity-header">
                     <span class="rarity-name">★ Rare Special Item (Patterns available)</span>
@@ -350,7 +357,10 @@
             'bravo': 'operation_bravo_case',
             'csgo2': 'weapon_case_2',
             'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case'
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case'
         };
         
         const folder = folderMapping[caseType] || caseType;
@@ -725,22 +735,37 @@
                         .replace('553', '553');
                     const skinName = item.name.toLowerCase().replace(' ', '_');
                     
-                    skinDiv.innerHTML = `
-                        <div class="skin-image">
-                            ${!item.weapon.startsWith('★') ? `
-                                <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                    if (item.rarity === 'CONTRABAND') {
+                        div.innerHTML = `
+                            <div class="spinner-item-image">
+                                <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
                                      alt="${item.weapon} | ${item.name}">
-                            ` : ''}
-                        </div>
-                        <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
-                            ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
-                        </div>
-                        <div class="item-skin">
-                            ${item.name} (${item.wear})
-                        </div>
-                        <div class="item-price">$${item.price.toFixed(2)}</div>
-                        <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
-                    `;
+                            </div>
+                            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                            </div>
+                            <div class="item-skin">
+                                ${item.name} (Contraband)
+                            </div>
+                        `;
+                    } else {
+                        div.innerHTML = `
+                            <div class="skin-image">
+                                ${!item.weapon.startsWith('★') ? `
+                                    <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                                         alt="${item.weapon} | ${item.name}">
+                                ` : ''}
+                            </div>
+                            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                            </div>
+                            <div class="item-skin">
+                                ${item.name} (${item.wear})
+                            </div>
+                            <div class="item-price">$${item.price.toFixed(2)}</div>
+                            <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
+                        `;
+                    }
                     
                     // Add sell button handler
                     const sellBtn = skinDiv.querySelector('.sell-btn');
@@ -759,60 +784,91 @@
 
     async function showCaseContents(caseType) {
         try {
-            // Clear previous contents
-            document.querySelectorAll('.items-grid').forEach(grid => {
-                if (grid.closest('.case-contents-container')) {
-                    grid.innerHTML = '';
-                }
-            });
-            
-            // Load case contents
             const response = await fetch(`/data/case_contents/${caseType}`);
             const data = await response.json();
             
-            if (data.error) {
-                console.error('Error loading case contents:', data.error);
-                return;
-            }
-
-            // Update case name in overlay
-            document.querySelector('.case-name').textContent = data.name;
-            
-            // Show the overlay
             const overlay = document.getElementById('case-contents-overlay');
-            overlay.style.display = 'block';
-
-            // Process each rarity level
-            const rarityContainers = {
-                'gold': document.querySelector('.rarity-GOLD .items-grid'),
-                'red': document.querySelector('.rarity-RED .items-grid'),
-                'pink': document.querySelector('.rarity-PINK .items-grid'),
-                'purple': document.querySelector('.rarity-PURPLE .items-grid'),
-                'blue': document.querySelector('.rarity-BLUE .items-grid')
-            };
-
-            // Process each rarity level
-            for (const [rarity, items] of Object.entries(data.skins)) {
-                const container = rarityContainers[rarity];
-                if (!container) continue;
-
-                // For gold rarity (knives), only show vanilla versions
-                if (rarity === 'gold') {
-                    const vanillaKnives = items.filter(item => item.name === 'Vanilla');
-                    vanillaKnives.forEach(item => {
-                        const itemElement = createItemElement(item, caseType);
-                        container.appendChild(itemElement);
+            const caseName = overlay.querySelector('.case-name');
+            caseName.textContent = data.name;
+            
+            // Clear existing items
+            overlay.querySelectorAll('.items-grid').forEach(grid => grid.innerHTML = '');
+            
+            // Show/hide contraband section based on case type
+            const contrabandRow = overlay.querySelector('.content-row.rarity-CONTRABAND');
+            if (contrabandRow) {
+                contrabandRow.style.display = caseType === 'huntsman' ? '' : 'none';
+            }
+            
+            // Helper function to create item element
+            function createContentsItem(item) {
+                const div = document.createElement('div');
+                div.className = 'contents-item';
+                
+                const weaponName = item.weapon.toLowerCase()
+                    .replace('-', '')
+                    .replace(' ', '')
+                    .replace('galil ar', 'galil')
+                    .replace('galilar', 'galil');
+                const skinName = item.name.toLowerCase().replace(/ /g, '_');
+                
+                // Add case mapping
+                const caseMapping = {
+                    'csgo': 'weapon_case_1',
+                    'esports': 'esports_2013',
+                    'bravo': 'operation_bravo_case',
+                    'csgo2': 'weapon_case_2',
+                    'esports_winter': 'esports_2013_winter',
+                    'winter_offensive': 'winter_offensive_case',
+                    'csgo3': 'weapon_case_3',
+                    'phoenix': 'operation_phoenix_case',
+                    'huntsman': 'huntsman_case'  // This maps 'huntsman' to 'huntsman_case'
+                };
+                
+                const casePath = caseMapping[caseType] || caseType;
+                
+                div.innerHTML = `
+                    <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                         alt="${item.weapon} | ${item.name}"
+                         onerror="this.onerror=null; this.src='/static/media/cases/${casePath}.png'">
+                    <div class="item-name">${item.weapon}</div>
+                    <div class="item-skin">${item.name}</div>
+                `;
+                return div;
+            }
+            
+            // Populate items by rarity
+            for (const [grade, items] of Object.entries(data.skins)) {
+                const rarity = grade.toUpperCase();
+                const rarityRow = overlay.querySelector(`.content-row.rarity-${rarity}`);
+                if (rarityRow) {
+                    const grid = rarityRow.querySelector('.items-grid');
+                    let itemsToShow = [];
+                    
+                    // For gold rarity (knives), only show vanilla versions
+                    if (grade === 'gold') {
+                        itemsToShow = items.filter(item => item.name === 'Vanilla');
+                    } else {
+                        // For other rarities, show all items
+                        itemsToShow = items;
+                    }
+                    
+                    // Add items to grid
+                    itemsToShow.forEach(item => {
+                        grid.appendChild(createContentsItem(item));
                     });
-                } else {
-                    // For other rarities, show all items
-                    items.forEach(item => {
-                        const itemElement = createItemElement(item, caseType);
-                        container.appendChild(itemElement);
-                    });
+                    
+                    // Show/hide the rarity row based on whether it has items
+                    // Don't override contraband display for non-huntsman cases
+                    if (grade !== 'contraband' || caseType === 'huntsman') {
+                        rarityRow.style.display = itemsToShow.length > 0 ? '' : 'none';
+                    }
                 }
             }
+            
+            overlay.style.display = 'block';
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error loading case contents:', error);
         }
     }
 
