@@ -13,9 +13,13 @@ import os
 from enum import Enum
 import threading
 from openai import OpenAI
+from dotenv import load_dotenv
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS, CASE_FILE_MAPPING
 from models import Case, User, Upgrades
+
+# Load environment variables
+load_dotenv('config.env')
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
@@ -28,9 +32,8 @@ REFRESH_INTERVAL = 3600  # 1 hour in seconds
 # Add this at the top with other globals
 file_lock = threading.Lock()
 
-# Add these near the top with other global variables
-OPENAI_API_KEY = "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"
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize OpenAI client with API key from environment
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 BOT_PERSONALITIES = {
     "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
