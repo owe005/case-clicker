@@ -69,5 +69,6 @@ CASE_FILE_MAPPING = {
     'winter_offensive': 'winter_offensive_case',
     'csgo3': 'weapon_case_3',
     'phoenix': 'operation_phoenix_case',
-    'huntsman': 'huntsman_case'
+    'huntsman': 'huntsman_case',
+    'breakout': 'operation_breakout_case'
 }

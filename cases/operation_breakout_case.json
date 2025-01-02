@@ -1,0 +1,507 @@
+{
+    "name": "Operation Breakout Case",
+    "image": "operation_breakout_case.png",
+    "price": 8.00,
+    "drop_rates": {
+        "gold": 0.26,
+        "red": 0.64,
+        "pink": 3.2,
+        "purple": 15.98,
+        "blue": 79.92
+    },
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Blue Steel",
+                "image": "butterflyknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1341.20,
+                    "MW": 1102.25,
+                    "FT": 1059.02,
+                    "WW": 990.20,
+                    "BS": 979.73,
+                    "ST_FN": 1644.30,
+                    "ST_MW": 1096.06,
+                    "ST_FT": 1016.66,
+                    "ST_WW": 955.06,
+                    "ST_BS": 953.69
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Night",
+                "image": "butterflyknife_night.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1575.00,
+                    "MW": 959.18,
+                    "FT": 807.73,
+                    "WW": 756.66,
+                    "BS": 736.00,
+                    "ST_FN": 7500.00,
+                    "ST_MW": 938.62,
+                    "ST_FT": 793.75,
+                    "ST_WW": 756.32,
+                    "ST_BS": 700.00
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Forest DDPAT",
+                "image": "butterflyknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 890.66,
+                    "MW": 701.43,
+                    "FT": 672.74,
+                    "WW": 641.76,
+                    "BS": 628.99,
+                    "ST_FN": 1890.00,
+                    "ST_MW": 698.83,
+                    "ST_FT": 650.80,
+                    "ST_WW": 822.01,
+                    "ST_BS": 626.75
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Safari Mesh",
+                "image": "butterflyknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 822.15,
+                    "MW": 669.78,
+                    "FT": 640.00,
+                    "WW": 650.18,
+                    "BS": 656.07,
+                    "ST_FN": 1750.00,
+                    "ST_MW": 664.57,
+                    "ST_FT": 625.97,
+                    "ST_WW": 637.16,
+                    "ST_BS": 623.34
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Vanilla",
+                "image": "butterflyknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 1889.00,
+                    "ST_NO": 1730.00
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Urban Masked",
+                "image": "butterflyknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1063.18,
+                    "MW": 739.87,
+                    "FT": 682.38,
+                    "WW": 650.87,
+                    "BS": 653.17,
+                    "ST_FN": 2100.00,
+                    "ST_MW": 761.79,
+                    "ST_FT": 673.68,
+                    "ST_WW": 678.27,
+                    "ST_BS": 671.42
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Scorched",
+                "image": "butterflyknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1096.06,
+                    "MW": 746.79,
+                    "FT": 676.99,
+                    "WW": 640.00,
+                    "BS": 655.94,
+                    "ST_FN": 2200.00,
+                    "ST_MW": 763.57,
+                    "ST_FT": 665.04,
+                    "ST_WW": 688.91,
+                    "ST_BS": 659.24
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Crimson Web",
+                "image": "butterflyknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 5633.26,
+                    "MW": 1548.15,
+                    "FT": 965.19,
+                    "WW": 916.42,
+                    "BS": 803.60,
+                    "ST_FN": 12000.00,
+                    "ST_MW": 1538.79,
+                    "ST_FT": 984.94,
+                    "ST_WW": 876.96,
+                    "ST_BS": 778.30
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Boreal Forest",
+                "image": "butterflyknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 945.47,
+                    "MW": 733.01,
+                    "FT": 658.99,
+                    "WW": 630.00,
+                    "BS": 650.87,
+                    "ST_FN": 2200.00,
+                    "ST_MW": 712.53,
+                    "ST_FT": 653.61,
+                    "ST_WW": 675.00,
+                    "ST_BS": 669.71
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Case Hardened",
+                "image": "butterflyknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1397.66,
+                    "MW": 1077.89,
+                    "FT": 955.41,
+                    "WW": 870.51,
+                    "BS": 837.97,
+                    "ST_FN": 1644.30,
+                    "ST_MW": 1111.27,
+                    "ST_FT": 981.40,
+                    "ST_WW": 875.12,
+                    "ST_BS": 850.00
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Stained",
+                "image": "butterflyknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1027.55,
+                    "MW": 887.59,
+                    "FT": 825.68,
+                    "WW": 781.04,
+                    "BS": 763.17,
+                    "ST_FN": 1217.88,
+                    "ST_MW": 931.70,
+                    "ST_FT": 829.99,
+                    "ST_WW": 762.50,
+                    "ST_BS": 765.69
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Slaughter",
+                "image": "butterflyknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 1896.30,
+                    "MW": 1619.95,
+                    "FT": 1483.09,
+                    "ST_FN": 1822.30,
+                    "ST_MW": 1600.00,
+                    "ST_FT": 1424.86
+                }
+            },
+            {
+                "weapon": "Butterfly Knife",
+                "name": "Fade",
+                "image": "butterflyknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 3241.74,
+                    "MW": 3000.00,
+                    "ST_FN": 2997.70,
+                    "ST_MW": 3273.27
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Cyrex",
+                "image": "m4a1s_cyrex.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 35.32,
+                    "MW": 26.00,
+                    "FT": 17.00,
+                    "WW": 16.75,
+                    "BS": 17.39,
+                    "ST_FN": 114.26,
+                    "ST_MW": 76.00,
+                    "ST_FT": 45.33,
+                    "ST_WW": 41.80,
+                    "ST_BS": 45.21
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Asiimov",
+                "image": "p90_asiimov.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 29.44,
+                    "MW": 12.07,
+                    "FT": 5.99,
+                    "WW": 5.16,
+                    "BS": 5.05,
+                    "ST_FN": 138.47,
+                    "ST_MW": 45.73,
+                    "ST_FT": 22.89,
+                    "ST_WW": 21.37,
+                    "ST_BS": 21.85
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "Glock-18",
+                "name": "Water Elemental",
+                "image": "glock18_water_elemental.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.16,
+                    "MW": 5.61,
+                    "FT": 3.57,
+                    "WW": 3.76,
+                    "BS": 3.00,
+                    "ST_FN": 39.26,
+                    "ST_MW": 21.62,
+                    "ST_FT": 14.46,
+                    "ST_WW": 15.73,
+                    "ST_BS": 14.06
+                }
+            },
+            {
+                "weapon": "Desert Eagle",
+                "name": "Conspiracy",
+                "image": "deserteagle_conspiracy.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 8.19,
+                    "MW": 6.11,
+                    "FT": 5.25,
+                    "ST_FN": 23.10,
+                    "ST_MW": 15.47,
+                    "ST_FT": 14.14
+                }
+            },
+            {
+                "weapon": "Five-SeveN",
+                "name": "Fowl Play",
+                "image": "fiveseven_fowl_play.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.52,
+                    "MW": 3.56,
+                    "FT": 1.95,
+                    "WW": 1.75,
+                    "BS": 2.58,
+                    "ST_FN": 15.94,
+                    "ST_MW": 8.44,
+                    "ST_FT": 4.75,
+                    "ST_WW": 5.23,
+                    "ST_BS": 4.90
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "P250",
+                "name": "Supernova",
+                "image": "p250_supernova.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 1.26,
+                    "MW": 0.71,
+                    "FT": 0.53,
+                    "WW": 0.90,
+                    "ST_FN": 3.56,
+                    "ST_MW": 2.23,
+                    "ST_FT": 1.60,
+                    "ST_WW": 2.17
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Osiris",
+                "image": "ppbizon_osiris.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.22,
+                    "MW": 0.77,
+                    "FT": 0.54,
+                    "WW": 0.42,
+                    "BS": 0.47,
+                    "ST_FN": 3.77,
+                    "ST_MW": 2.30,
+                    "ST_FT": 1.57,
+                    "ST_WW": 1.40,
+                    "ST_BS": 1.56
+                }
+            },
+            {
+                "weapon": "CZ75-Auto",
+                "name": "Tigris",
+                "image": "cz75auto_tigris.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.59,
+                    "MW": 0.78,
+                    "FT": 0.51,
+                    "WW": 0.45,
+                    "BS": 0.42,
+                    "ST_FN": 5.32,
+                    "ST_MW": 2.28,
+                    "ST_FT": 1.41,
+                    "ST_WW": 1.12,
+                    "ST_BS": 1.08
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Koi",
+                "image": "nova_koi.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 1.26,
+                    "MW": 0.75,
+                    "FT": 0.72,
+                    "ST_FN": 3.76,
+                    "ST_MW": 2.33,
+                    "ST_FT": 1.52
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "SSG 08",
+                "name": "Abyss",
+                "image": "ssg08_abyss.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.21,
+                    "MW": 0.41,
+                    "FT": 0.15,
+                    "WW": 0.09,
+                    "BS": 0.09,
+                    "ST_FN": 8.67,
+                    "ST_MW": 1.66,
+                    "ST_FT": 0.62,
+                    "ST_WW": 0.39,
+                    "ST_BS": 0.37
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Urban Hazard",
+                "image": "mp7_urban_hazard.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.19,
+                    "MW": 0.11,
+                    "FT": 0.08,
+                    "WW": 0.11,
+                    "BS": 0.09,
+                    "ST_FN": 0.63,
+                    "ST_MW": 0.40,
+                    "ST_FT": 0.23,
+                    "ST_WW": 0.24,
+                    "ST_BS": 0.19
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Ivory",
+                "image": "p2000_ivory.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.46,
+                    "MW": 0.17,
+                    "FT": 0.09,
+                    "WW": 0.08,
+                    "BS": 0.07,
+                    "ST_FN": 1.78,
+                    "ST_MW": 0.40,
+                    "ST_FT": 0.22,
+                    "ST_WW": 0.15,
+                    "ST_BS": 0.13
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Labyrinth",
+                "image": "ump45_labyrinth.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 0.23,
+                    "MW": 0.12,
+                    "FT": 0.07,
+                    "WW": 0.11,
+                    "ST_FN": 0.67,
+                    "ST_MW": 0.37,
+                    "ST_FT": 0.22,
+                    "ST_WW": 0.26
+                }
+            },
+            {
+                "weapon": "Negev",
+                "name": "Desert Strike",
+                "image": "negev_desert_strike.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.24,
+                    "MW": 0.12,
+                    "FT": 0.08,
+                    "WW": 0.07,
+                    "BS": 0.08,
+                    "ST_FN": 0.66,
+                    "ST_MW": 0.37,
+                    "ST_FT": 0.20,
+                    "ST_WW": 0.16,
+                    "ST_BS": 0.18
+                }
+            }
+        ]
+    }
+}

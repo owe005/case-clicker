@@ -43,7 +43,8 @@
                         'winter_offensive': 'winter_offensive_case',
                         'csgo3': 'weapon_case_3',
                         'phoenix': 'operation_phoenix_case',
-                        'huntsman': 'huntsman_case'
+                        'huntsman': 'huntsman_case',
+                        'breakout': 'operation_breakout_case'
                     } %}
                     {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
                     <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
@@ -280,6 +281,12 @@ async function loadCaseContents(caseType) {
             caseContents[caseType] = {
                 name: data.name,
                 contents: {
+                    CONTRABAND: (data.skins.contraband || []).map(item => ({
+                        weapon: item.weapon,
+                        name: item.name,
+                        rarity: "CONTRABAND",
+                        validWears: Object.keys(item.prices || {}).filter(k => !k.startsWith('ST_'))
+                    })),
                     GOLD: data.skins.gold.map(item => ({
                         weapon: item.weapon,
                         name: item.name,
@@ -441,15 +448,20 @@ async function openCase(caseType) {
 
 function generateRandomItems(actualItem) {
     const itemPools = {
-        BLUE: caseContents[actualItem.case_type].contents.BLUE,
-        PURPLE: caseContents[actualItem.case_type].contents.PURPLE,
-        PINK: caseContents[actualItem.case_type].contents.PINK,
+        CONTRABAND: caseContents[actualItem.case_type].contents.CONTRABAND || [],  // Add CONTRABAND pool
+        GOLD: caseContents[actualItem.case_type].contents.GOLD,
         RED: caseContents[actualItem.case_type].contents.RED,
-        GOLD: caseContents[actualItem.case_type].contents.GOLD
+        PINK: caseContents[actualItem.case_type].contents.PINK,
+        PURPLE: caseContents[actualItem.case_type].contents.PURPLE,
+        BLUE: caseContents[actualItem.case_type].contents.BLUE
     };
 
     function randomFromPool(rarity) {
         const pool = itemPools[rarity];
+        if (!pool || pool.length === 0) {
+            // Fallback to GOLD pool if the requested rarity pool is empty
+            return randomFromPool('GOLD');
+        }
         const randomItem = {...pool[Math.floor(Math.random() * pool.length)]};
         const hasStattrak = Math.random() < 0.1;
         
@@ -468,17 +480,22 @@ function generateRandomItems(actualItem) {
     }
 
     function generateRandomItem() {
-        // Roll for rarity
+        // Roll for rarity with normal percentages
         const roll = Math.random() * 100;
         let chosenRarity;
         
-        if (roll < 0.26) {  // 0.26% chance for Gold
+        // Check if contraband items exist for this case
+        const hasContraband = itemPools.CONTRABAND && itemPools.CONTRABAND.length > 0;
+        
+        if (hasContraband && roll < 0.026) {  // 0.026% chance for Contraband (normal rate)
+            chosenRarity = "CONTRABAND";
+        } else if (roll < (hasContraband ? 0.286 : 0.26)) {  // 0.26% chance for Gold
             chosenRarity = "GOLD";
-        } else if (roll < 0.26 + 0.90) {  // 0.90% chance for Red
+        } else if (roll < (hasContraband ? 1.186 : 1.16)) {  // 0.90% chance for Red
             chosenRarity = "RED";
-        } else if (roll < 0.26 + 0.90 + 4.10) {  // 4.10% chance for Pink
+        } else if (roll < (hasContraband ? 5.286 : 5.26)) {  // 4.10% chance for Pink
             chosenRarity = "PINK";
-        } else if (roll < 0.26 + 0.90 + 4.10 + 20.08) {  // 20.08% chance for Purple
+        } else if (roll < (hasContraband ? 25.366 : 25.34)) {  // 20.08% chance for Purple
             chosenRarity = "PURPLE";
         } else {  // Remaining ~74.66% chance for Blue
             chosenRarity = "BLUE";
@@ -533,6 +550,45 @@ function createItemElement(item) {
             <div class="item-name">★</div>
             <div class="item-skin">Rare Special Item</div>
         `;
+    } else if (item.rarity === 'CONTRABAND') {
+        // For contraband items, show the actual item
+        const casePathMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
+        };
+        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+        
+        const weaponName = item.weapon.toLowerCase()
+            .replace('-', '')
+            .replace(' ', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+            
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        const img = document.createElement('img');
+        img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
+        img.alt = `${item.weapon} | ${item.name}`;
+        imageContainer.appendChild(img);
+        div.appendChild(imageContainer);
+        
+        div.innerHTML += `
+            <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+            </div>
+            <div class="item-skin">
+                ${item.name}
+            </div>
+        `;
     } else {
         // For regular skins, add the image
         const weaponName = item.weapon.toLowerCase()
@@ -554,7 +610,8 @@ function createItemElement(item) {
             'winter_offensive': 'winter_offensive_case',
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case'
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -625,7 +682,8 @@ function showItemShowcase(item) {
             'winter_offensive': 'winter_offensive_case',
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case'
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -661,7 +719,8 @@ function showItemShowcase(item) {
             'winter_offensive': 'winter_offensive_case',
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case'
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -898,7 +957,8 @@ async function refreshSkinsSection() {
                 'winter_offensive': 'winter_offensive_case',
                 'csgo3': 'weapon_case_3',
                 'phoenix': 'operation_phoenix_case',
-                'huntsman': 'huntsman_case'
+                'huntsman': 'huntsman_case',
+                'breakout': 'operation_breakout_case'
             };
             const casePath = caseMapping[item.case_type] || 'weapon_case_1';
             
@@ -1159,7 +1219,8 @@ async function updateInventoryDisplay() {
             'winter_offensive': 'winter_offensive_case',
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case'
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
         };
         
         // Add each item

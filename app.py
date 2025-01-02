@@ -755,6 +755,12 @@ def buy_case():
             'image': 'huntsman_case.png',
             'is_case': True,
             'type': 'huntsman'
+        },
+        'breakout': {  # Add this block
+            'name': 'Operation Breakout Case',
+            'image': 'operation_breakout_case.png',
+            'is_case': True,
+            'type': 'breakout'
         }
     }
     
@@ -847,13 +853,14 @@ def get_case_contents(case_type):
     case_file_mapping = {
         'csgo': 'weapon_case_1',
         'esports': 'esports_2013',
-        'bravo': 'operation_bravo',  # Changed from operation_bravo_case
+        'bravo': 'operation_bravo',
         'csgo2': 'weapon_case_2',
         'esports_winter': 'esports_2013_winter',
         'winter_offensive': 'winter_offensive_case',
-        'csgo3': 'weapon_case_3',  # Add this line
+        'csgo3': 'weapon_case_3',
         'phoenix': 'operation_phoenix_case',
-        'huntsman': 'huntsman_case'  # Add huntsman case
+        'huntsman': 'huntsman_case',
+        'breakout': 'operation_breakout_case'  # Add this line
     }
     
     if case_type not in case_file_mapping:
@@ -1814,7 +1821,7 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
     ]
     
     # Load all case data
-    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman']  # Add huntsman
+    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']  # Add 'breakout'
     all_skins = []  # Change to a single list
     
     # Load skins from each case
@@ -1829,7 +1836,8 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
                 'winter_offensive': 'winter_offensive_case',
                 'csgo3': 'weapon_case_3',  # Add this line
                 'phoenix': 'operation_phoenix_case',
-                'huntsman': 'huntsman_case'  # Add huntsman case
+                'huntsman': 'huntsman_case',  # Add huntsman case
+                'breakout': 'operation_breakout_case'  # Add this line
             }
             
             with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
@@ -1962,7 +1970,7 @@ def get_featured_skins():
     if not FEATURED_SKINS or not LAST_REFRESH_TIME or (current_time - LAST_REFRESH_TIME) >= REFRESH_INTERVAL:
         try:
             # Load all case contents
-            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman']  # csgo3 is included
+            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']  # Add 'breakout'
             all_skins = []
             
             # Load skins from each case
@@ -1977,7 +1985,8 @@ def get_featured_skins():
                         'winter_offensive': 'winter_offensive_case',
                         'csgo3': 'weapon_case_3',  # csgo3 is included
                         'phoenix': 'operation_phoenix_case',
-                        'huntsman': 'huntsman_case'  # Add huntsman case
+                        'huntsman': 'huntsman_case',  # Add huntsman case
+                        'breakout': 'operation_breakout_case'  # Add this line
                     }
                     
                     with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:

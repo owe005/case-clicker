@@ -1675,7 +1675,6 @@ h1 {
 .content-row.rarity-CONTRABAND .rarity-name { 
     color: #FF8C00; 
 }
-
 /* Add glow animation for gold items if not already defined */
 @keyframes goldGlow {
     0% { box-shadow: 0 0 5px #caab05; }
@@ -1942,4 +1941,36 @@ h1 {
         max-width: 300px;
         text-align: center;
     }
+}
+
+/* Add this animation for contraband items */
+@keyframes contrabandGlow {
+    0% { box-shadow: 0 0 5px #FF8C00; }
+    50% { box-shadow: 0 0 20px #FF8C00; }
+    100% { box-shadow: 0 0 5px #FF8C00; }
+}
+
+/* Add this with the other showcase container rarity styles */
+.showcase-container.rarity-CONTRABAND {
+    background: linear-gradient(135deg, #FF8C0010 0%, var(--primary) 40%);
+    border-color: #FF8C00;
+    box-shadow: 0 0 50px rgba(255, 140, 0, 0.3);
+    animation: contrabandShowcase 2s infinite;
+}
+
+@keyframes contrabandShowcase {
+    0% { box-shadow: 0 0 50px rgba(255, 140, 0, 0.3); }
+    50% { box-shadow: 0 0 70px rgba(255, 140, 0, 0.5); }
+    100% { box-shadow: 0 0 50px rgba(255, 140, 0, 0.3); }
+}
+
+.spinner-item.rarity-CONTRABAND .item-name {
+    color: #FF8C00;
+}
+
+/* Add these with the other spinner-item rarity styles */
+.spinner-item.rarity-CONTRABAND {
+    background: linear-gradient(135deg, #FF8C0020 0%, #FF8C0040 100%);
+    border: 2px solid #FF8C00;
+    animation: contrabandGlow 2s infinite;
 }
