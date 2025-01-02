@@ -5,13 +5,14 @@ from typing import Dict, Union, List, Any
 import time
 import json
 from functools import wraps
-from datetime import timedelta
+from datetime import timedelta, date
 from dataclasses import dataclass
 from typing import List, Optional
 import traceback
 import os
 from enum import Enum
 import threading
+from openai import OpenAI
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS, CASE_FILE_MAPPING
 from models import Case, User, Upgrades
@@ -26,6 +27,23 @@ REFRESH_INTERVAL = 3600  # 1 hour in seconds
 
 # Add this at the top with other globals
 file_lock = threading.Lock()
+
+# Add these near the top with other global variables
+OPENAI_API_KEY = "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"
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+BOT_PERSONALITIES = {
+    "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
+    "Kai.Jayden_02": "A forsen viewer who spams KEKW and PepeLaugh, uses lots of Twitch emotes and speaks in Twitch chat style",
+    "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
+    "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
+    "Theo.91": "Another forsen viewer who spams OMEGALUL and Pepega, speaks in broken English and uses lots of BATCHEST",
+    "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
+    "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
+    "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
+    "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
+    "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
+}
 
 def login_required(f):
     @wraps(f)
@@ -1938,11 +1956,7 @@ def start_jackpot():
 
 def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any]]:
     bot_names = [
-        "skibidi toilet", "ohio rizz", "sigma grindset", "gyatt enthusiast", 
-        "backrooms entity", "no cap fr fr", "megamind rizz", "skill issue", 
-        "brainrot gaming", "based department", "gigachad", "npc moment",
-        "ratio + L", "sheeeesh", "sus imposter", "copium addict",
-        "peak fiction", "rizz master", "skull emoji", "real and true"
+        "_Astrid47", "Kai.Jayden_02", "Orion_Phoenix98", "ElaraB_23", "Theo.91", "Nova-Lyn", "FelixHaven19", "Aria.Stella85", "Lucien_Kai", "Mira-Eclipse"
     ]
     
     # Load all case data
@@ -2568,6 +2582,652 @@ def load_skin_price(skin_name: str, case_type: str, wear: str = None) -> float:
         print(f"Exception message: {str(e)}")
         traceback.print_exc()
         return 0
+
+@app.route('/trading')
+@login_required
+def trading():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
+    return render_template('trading.html',
+                         balance=user.balance,
+                         rank=user.rank,
+                         exp=user.exp,
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+# Add this new function to generate and cache daily trades
+def generate_daily_trades():
+    """Generate 10 random trades for the day"""
+    try:
+        # Load all case data for available skins
+        case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 
+                     'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']
+        all_skins = []
+        
+        # Load skins from each case
+        for case_type in case_types:
+            try:
+                file_name = CASE_FILE_MAPPING.get(case_type)
+                if not file_name:
+                    continue
+                    
+                with open(f'cases/{file_name}.json', 'r') as f:
+                    case_data = json.load(f)
+                    
+                    for grade, items in case_data['skins'].items():
+                        for item in items:
+                            skin_info = {
+                                'weapon': item['weapon'],
+                                'name': item['name'],
+                                'prices': item['prices'],
+                                'case_type': case_type,
+                                'case_file': file_name,
+                                'rarity': grade.upper()
+                            }
+                            all_skins.append(skin_info)
+            except Exception as e:
+                print(f"Error loading case {case_type}: {e}")
+                continue
+
+        bot_names = [
+            {"name": "_Astrid47", "avatar": "bot1.png"},
+            {"name": "Kai.Jayden_02", "avatar": "bot2.png"},
+            {"name": "Orion_Phoenix98", "avatar": "bot3.png"},
+            {"name": "ElaraB_23", "avatar": "bot4.png"},
+            {"name": "Theo.91", "avatar": "bot5.png"},
+            {"name": "Nova-Lyn", "avatar": "bot6.png"},
+            {"name": "FelixHaven19", "avatar": "bot7.png"},
+            {"name": "Aria.Stella85", "avatar": "bot8.png"},
+            {"name": "Lucien_Kai", "avatar": "bot9.png"},
+            {"name": "Mira-Eclipse", "avatar": "bot10.png"}
+        ]
+
+        trades = []
+        
+        # Generate exactly 10 trades
+        while len(trades) < 10:
+            trade_type = random.choice(['buy', 'sell', 'swap'])
+            bot = random.choice(bot_names)
+            
+            # Generate trade items
+            if trade_type == 'buy':
+                # Bot offers money for skins
+                num_requested = random.randint(1, 3)
+                requested_skins = []
+                
+                for _ in range(num_requested):
+                    skin = random.choice(all_skins)
+                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
+                    stattrak = random.random() < 0.1
+                    
+                    price_key = f"ST_{wear}" if stattrak else wear
+                    if price_key in skin['prices']:
+                        price = float(skin['prices'][price_key])
+                        requested_skins.append({
+                            'type': 'skin',
+                            'weapon': skin['weapon'],
+                            'name': skin['name'],
+                            'wear': wear,
+                            'stattrak': stattrak,
+                            'price': price,
+                            'case_type': skin['case_type'],
+                            'case_file': skin['case_file'],
+                            'rarity': skin['rarity']
+                        })
+                
+                if not requested_skins:  # Skip if no valid skins were found
+                    continue
+                    
+                # Bot offers slightly more than market value to buy specific skins
+                total_value = sum(skin['price'] for skin in requested_skins)
+                variance = random.uniform(1.05, 1.15)  # Bot pays 5-15% more than market
+                money_amount = total_value * variance
+                
+                trade = {
+                    'type': 'buy',
+                    'botName': bot['name'],
+                    'botAvatar': bot['avatar'],
+                    'offering': [{'type': 'money', 'amount': money_amount}],
+                    'requesting': requested_skins
+                }
+                
+            elif trade_type == 'sell':
+                # Bot offers skins for money
+                num_offered = random.randint(1, 3)
+                offered_skins = []
+                total_value = 0
+                
+                for _ in range(num_offered):
+                    skin = random.choice(all_skins)
+                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
+                    stattrak = random.random() < 0.1
+                    
+                    price_key = f"ST_{wear}" if stattrak else wear
+                    if price_key in skin['prices']:
+                        price = float(skin['prices'][price_key])
+                        total_value += price
+                        offered_skins.append({
+                            'type': 'skin',
+                            'weapon': skin['weapon'],
+                            'name': skin['name'],
+                            'wear': wear,
+                            'stattrak': stattrak,
+                            'price': price,
+                            'case_type': skin['case_type'],
+                            'case_file': skin['case_file'],
+                            'rarity': skin['rarity']
+                        })
+                
+                if not offered_skins:  # Skip if no valid skins were found
+                    continue
+                
+                # Bot sells at a premium - users pay more for specific skins
+                markup = random.uniform(1.15, 1.35)  # 15-35% markup for desired skins
+                money_requested = total_value * markup
+                
+                trade = {
+                    'type': 'sell',
+                    'botName': bot['name'],
+                    'botAvatar': bot['avatar'],
+                    'offering': offered_skins,
+                    'requesting': [{'type': 'money', 'amount': money_requested}]
+                }
+                
+            else:  # swap
+                # Bot offers skins for other skins
+                num_each = random.randint(1, 2)
+                offered_skins = []
+                requested_skins = []
+                offered_value = 0
+                
+                for _ in range(num_each):
+                    # Offered skins
+                    skin = random.choice(all_skins)
+                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
+                    stattrak = random.random() < 0.1
+                    
+                    price_key = f"ST_{wear}" if stattrak else wear
+                    if price_key in skin['prices']:
+                        price = float(skin['prices'][price_key])
+                        offered_value += price
+                        offered_skins.append({
+                            'type': 'skin',
+                            'weapon': skin['weapon'],
+                            'name': skin['name'],
+                            'wear': wear,
+                            'stattrak': stattrak,
+                            'price': price,
+                            'case_type': skin['case_type'],
+                            'case_file': skin['case_file'],
+                            'rarity': skin['rarity']
+                        })
+                
+                if not offered_skins:  # Skip if no valid skins were found
+                    continue
+                    
+                # Bot offers fair-ish trades but still wants a small premium
+                target_value = offered_value * random.uniform(1.05, 1.15)  # 5-15% premium
+                current_value = 0
+                
+                while current_value < target_value and len(requested_skins) < 3:
+                    skin = random.choice(all_skins)
+                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
+                    stattrak = random.random() < 0.1
+                    
+                    price_key = f"ST_{wear}" if stattrak else wear
+                    if price_key in skin['prices']:
+                        price = float(skin['prices'][price_key])
+                        if current_value + price <= target_value * 1.1:  # Keep it close to target
+                            current_value += price
+                            requested_skins.append({
+                                'type': 'skin',
+                                'weapon': skin['weapon'],
+                                'name': skin['name'],
+                                'wear': wear,
+                                'stattrak': stattrak,
+                                'price': price,
+                                'case_type': skin['case_type'],
+                                'case_file': skin['case_file'],
+                                'rarity': skin['rarity']
+                            })
+                
+                if not requested_skins:  # Skip if no valid skins were found
+                    continue
+                
+                trade = {
+                    'type': 'swap',
+                    'botName': bot['name'],
+                    'botAvatar': bot['avatar'],
+                    'offering': offered_skins,
+                    'requesting': requested_skins
+                }
+            
+            # Only add valid trades until we have 10
+            if ((trade['offering'] and trade['requesting']) and
+                (len(trade['offering']) > 0 and len(trade['requesting']) > 0)):
+                trades.append(trade)
+        
+        # Save trades with current date
+        daily_trades = {
+            'date': date.today().isoformat(),
+            'trades': trades
+        }
+        
+        with open('data/daily_trades.json', 'w') as f:
+            json.dump(daily_trades, f, indent=2)
+            
+        return trades
+        
+    except Exception as e:
+        print(f"Error generating daily trades: {e}")
+        traceback.print_exc()  # Add this to get more detailed error info
+        return []
+
+# Modify the get_trades route
+@app.route('/get_trades')
+@login_required
+def get_trades():
+    try:
+        # Check if daily trades file exists
+        try:
+            with open('data/daily_trades.json', 'r') as f:
+                daily_trades = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            daily_trades = {'date': '', 'trades': []}
+        
+        # Check if trades need to be regenerated
+        current_date = date.today().isoformat()
+        if daily_trades.get('date') != current_date:
+            trades = generate_daily_trades()
+        else:
+            trades = daily_trades.get('trades', [])
+        
+        return jsonify({'trades': trades})
+        
+    except Exception as e:
+        print(f"Error getting trades: {e}")
+        return jsonify({'error': 'Failed to get trades'})
+
+@app.route('/complete_trade', methods=['POST'])
+@login_required
+def complete_trade():
+    try:
+        data = request.get_json()
+        trade = data.get('trade')
+        
+        if not trade:
+            return jsonify({'error': 'Invalid trade data'})
+            
+        # Load user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+        inventory = user_data.get('inventory', [])
+        current_exp = float(user_data.get('exp', 0))
+        current_rank = int(user_data.get('rank', 0))
+        
+        # Check if user has required items/money
+        if any(item['type'] == 'money' for item in trade['requesting']):
+            # User needs to pay money
+            required_money = sum(item['amount'] for item in trade['requesting'] if item['type'] == 'money')
+            if required_money > current_balance:
+                return jsonify({'error': 'Insufficient funds'})
+        
+        if any(item['type'] == 'skin' for item in trade['requesting']):
+            # User needs to provide skins
+            required_skins = [item for item in trade['requesting'] if item['type'] == 'skin']
+            
+            # Check each required skin
+            for required_skin in required_skins:
+                skin_found = False
+                for inv_item in inventory:
+                    if (not inv_item.get('is_case') and
+                        inv_item['weapon'] == required_skin['weapon'] and
+                        inv_item['name'] == required_skin['name'] and
+                        inv_item['wear'] == required_skin['wear'] and
+                        inv_item['stattrak'] == required_skin['stattrak']):
+                        skin_found = True
+                        break
+                
+                if not skin_found:
+                    return jsonify({'error': f"Missing skin: {required_skin['weapon']} | {required_skin['name']}"})
+        
+        # Calculate trade value for EXP calculation
+        trade_value = 0
+        if trade['type'] == 'sell':
+            # When selling, calculate value of skins being sold
+            trade_value = sum(float(item.get('price', 0)) for item in trade['offering'] if item.get('type') == 'skin')
+        elif trade['type'] == 'buy':
+            # When buying, calculate value of skins being bought
+            trade_value = sum(float(item.get('price', 0)) for item in trade['requesting'] if item.get('type') == 'skin')
+        else:  # swap
+            # For swaps, use the average value of both sides
+            offering_value = sum(float(item.get('price', 0)) for item in trade['offering'] if item.get('type') == 'skin')
+            requesting_value = sum(float(item.get('price', 0)) for item in trade['requesting'] if item.get('type') == 'skin')
+            trade_value = (offering_value + requesting_value) / 2
+            
+        print(f"Trade type: {trade['type']}")
+        print(f"Trade value: ${trade_value}")
+            
+        # Calculate EXP reward based on trade type and value
+        # Get max EXP for current rank (10% cap)
+        max_exp_reward = RANK_EXP[current_rank] * 0.1 if current_rank < len(RANK_EXP) else 1000
+        print(f"Max EXP reward: {max_exp_reward}")
+        
+        # Base EXP is 10% of trade value but capped
+        base_exp = min(trade_value * 0.1, max_exp_reward)
+        print(f"Base EXP (before multiplier): {base_exp}")
+        
+        # Apply multiplier based on trade type
+        exp_multipliers = {
+            'sell': 1.0,    # 100% of base for selling
+            'buy': 2.0,     # 200% of base for buying
+            'swap': 3.0     # 300% of base for swapping
+        }
+        exp_reward = base_exp * exp_multipliers.get(trade['type'], 1.0)
+        print(f"Final EXP reward (after {exp_multipliers.get(trade['type'])}x multiplier): {exp_reward}")
+        
+        # Update EXP and check for rank up
+        new_exp = current_exp + exp_reward
+        new_rank = current_rank
+        
+        # Check for rank up
+        while new_rank < len(RANK_EXP) and new_exp >= RANK_EXP[new_rank]:
+            new_exp -= RANK_EXP[new_rank]
+            new_rank += 1
+        
+        # Process the trade
+        new_inventory = []
+        used_indices = set()
+        
+        # Remove requested skins from inventory
+        for required_skin in (item for item in trade['requesting'] if item['type'] == 'skin'):
+            for i, inv_item in enumerate(inventory):
+                if (i not in used_indices and
+                    not inv_item.get('is_case') and
+                    inv_item['weapon'] == required_skin['weapon'] and
+                    inv_item['name'] == required_skin['name'] and
+                    inv_item['wear'] == required_skin['wear'] and
+                    inv_item['stattrak'] == required_skin['stattrak']):
+                    used_indices.add(i)
+                    break
+        
+        # Keep items that weren't traded
+        new_inventory = [item for i, item in enumerate(inventory) if i not in used_indices]
+        
+        # Add offered skins to inventory
+        for offered_item in trade['offering']:
+            if offered_item['type'] == 'skin':
+                skin_item = {
+                    'weapon': offered_item['weapon'],
+                    'name': offered_item['name'],
+                    'rarity': offered_item['rarity'],
+                    'wear': offered_item['wear'],
+                    'stattrak': offered_item['stattrak'],
+                    'price': offered_item['price'],
+                    'timestamp': time.time(),
+                    'case_type': offered_item['case_type'],
+                    'is_case': False
+                }
+                new_inventory.append(skin_item)
+        
+        # Update balance
+        money_received = sum(item['amount'] for item in trade['offering'] if item['type'] == 'money')
+        money_paid = sum(item['amount'] for item in trade['requesting'] if item['type'] == 'money')
+        new_balance = current_balance + money_received - money_paid
+        
+        # Save changes
+        user_data['balance'] = new_balance
+        user_data['inventory'] = new_inventory
+        user_data['exp'] = new_exp
+        user_data['rank'] = new_rank
+        save_user_data(user_data)
+        
+        return jsonify({
+            'success': True,
+            'balance': new_balance,
+            'exp': new_exp,
+            'rank': new_rank,
+            'rankName': RANKS[new_rank],
+            'nextRankExp': RANK_EXP[new_rank] if new_rank < len(RANK_EXP) else None,
+            'expGained': exp_reward
+        })
+        
+    except Exception as e:
+        print(f"Error completing trade: {e}")
+        return jsonify({'error': 'Failed to complete trade'})
+
+@app.route('/chat_with_bot', methods=['POST'])
+def chat_with_bot():
+    try:
+        data = request.get_json()
+        bot_name = data.get('botName')
+        message = data.get('message')
+        chat_history = data.get('chatHistory', [])
+        
+        print(f"Received chat request - Bot: {bot_name}, Message: {message}")
+        
+        if not bot_name or not message:
+            return jsonify({'error': 'Missing bot name or message'})
+            
+        # Get bot's personality
+        personality = BOT_PERSONALITIES.get(bot_name, "A friendly CS:GO skin trader")
+        
+        # Load current trades from daily_trades.json
+        try:
+            with open('data/daily_trades.json', 'r') as f:
+                daily_trades = json.load(f)
+                trades_info = []
+                for trade in daily_trades.get('trades', []):
+                    # Format each trade into a readable string
+                    offering = []
+                    for item in trade['offering']:
+                        if item['type'] == 'money':
+                            offering.append(f"${item['amount']}")
+                        else:
+                            offering.append(f"{item['weapon']} | {item['name']} ({item['wear']})")
+                    
+                    requesting = []
+                    for item in trade['requesting']:
+                        if item['type'] == 'money':
+                            requesting.append(f"${item['amount']}")
+                        else:
+                            requesting.append(f"{item['weapon']} | {item['name']} ({item['wear']})")
+                    
+                    trades_info.append(f"{trade['botName']} is trading: {', '.join(offering)} for {', '.join(requesting)}")
+                
+                trades_context = "\n".join(trades_info)
+        except Exception as e:
+            print(f"Error loading trades: {e}")
+            trades_context = "No active trades available."
+        
+        # Create the system message with trades context
+        system_message = f"""You are {bot_name}, {personality} in a CS:GO trading chatroom.
+Keep these guidelines in mind:
+- Keep all messages EXTREMELY short (max 10 words)
+- Use lots of slang and abbreviations
+- Be toxic and aggressive
+- Use emotes like xD kekw etc
+- Never write paragraphs or long responses
+- React to others naturally but briefly
+- If someone's rude, be toxic back
+- Each bot should stay in character:
+  * _Astrid47: elitist trader
+  * Kai.Jayden_02: forsen viewer, spams KEKW and PepeLaugh
+  * Orion_Phoenix98: easily triggered
+  * ElaraB_23: chill until provoked
+  * Theo.91: forsen viewer, spams OMEGALUL and Pepega
+  * Nova-Lyn: toxic pro-wannabe
+  * FelixHaven19: know-it-all
+  * Aria.Stella85: stattrak fanatic
+  * Lucien_Kai: pattern snob
+  * Mira-Eclipse: sticker elitist
+
+Current active trades in the room:
+{trades_context}
+
+For Twitch chat style bots (Kai.Jayden_02 and Theo.91):
+- Use lots of Twitch emotes (KEKW, PepeLaugh, OMEGALUL, Pepega, BATCHEST)
+- Type in broken English
+- Use forsen-style responses
+- Example messages:
+  * "KEKW HE DOESNT KNOW PepeLaugh"
+  * "Pepega Clap WR TRADE"
+  * "BATCHEST I HECKIN LOVE TRADING"
+  * "forsenE nice trade bajs"
+  * "OMEGALUL SO BAD"
+
+You can reference and comment on any active trades when relevant.
+Never break character or write long messages."""
+
+        # Example responses to guide the AI
+        EXAMPLE_RESPONSES = [
+            "kys noob",
+            "trash inv fr fr",
+            "ratio + didn't ask",
+            "nice pattern KEKW",
+            "ur poor lmao",
+            "actual silver trader xD",
+            "cope harder kid",
+            "nice lowball kekw",
+            "imagine being this broke",
+            "skill issue + L"
+        ]
+
+        # Add these examples to the system message
+        system_message += f"\n\nExample responses: {', '.join(EXAMPLE_RESPONSES)}"
+
+        # Format chat history for context
+        conversation_history = []
+        for msg in chat_history[-5:]:  # Only use last 5 messages for context
+            role = "assistant" if msg['isBot'] else "user"
+            # Don't include the sender name in the content since it's already shown in the chat
+            content = msg['message']
+            conversation_history.append({"role": role, "content": content})
+
+        # Add the current message without sender name
+        conversation_history.append({"role": "user", "content": message})
+
+        try:
+            print("Sending request to OpenAI API...")
+            
+            completion = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": system_message},
+                    *conversation_history
+                ],
+                max_tokens=150,
+                temperature=0.7
+            )
+            
+            print("Received response from OpenAI API")
+            bot_response = completion.choices[0].message.content
+            print(f"Bot response: {bot_response}")
+            
+            return jsonify({
+                'success': True,
+                'message': bot_response,
+                'timestamp': time.time()
+            })
+            
+        except Exception as e:
+            print(f"OpenAI API error: {str(e)}")
+            print(f"Error type: {type(e)}")
+            traceback.print_exc()
+            return jsonify({
+                'error': 'Failed to generate response',
+                'details': str(e)
+            })
+            
+    except Exception as e:
+        print(f"Chat error: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'error': 'Failed to process chat',
+            'details': str(e)
+        })
+
+@app.route('/select_responding_bot', methods=['POST'])
+def select_responding_bot():
+    try:
+        data = request.get_json()
+        message = data.get('message')
+        chat_history = data.get('chatHistory', [])
+        
+        system_message = """You are a bot selector for a CS:GO trading chat.
+        Based on the recent messages and context, select ONE bot that would be most appropriate to respond.
+        
+        STRICT TRADING RULES:
+        * Bots will defend their own trades if criticized
+        * Bots cannot criticize their own trades
+        * Bots can criticize other bots' trades
+        * If someone asks about a bot's trade, that bot should respond
+        * Bots should be proud of their own trades
+        * If someone asks about trades, prefer the bot who owns the trade being discussed
+
+        STRICT PERSONALITY RULES:
+        * Only Kai.Jayden_02 and Theo.91 can use Twitch emotes (KEKW, PepeLaugh, OMEGALUL, etc)
+        * If someone mentions a bot by name, that bot MUST respond
+        * If someone criticizes/challenges a bot, that bot MUST respond
+        * If the last message was directed at a specific bot, that bot should respond
+        * Each bot must stay strictly in character:
+            - _Astrid47: elitist trader, never uses emotes
+            - Kai.Jayden_02: pure Twitch chatter, always uses emotes
+            - Orion_Phoenix98: serious collector, gets angry if disrespected
+            - ElaraB_23: casual and chill, uses xD but no Twitch emotes
+            - Theo.91: pure Twitch chatter, always uses emotes
+            - Nova-Lyn: toxic pro-wannabe, uses basic emotes only
+            - FelixHaven19: know-it-all, corrects others
+            - Aria.Stella85: StatTrak obsessed, judges non-ST users
+            - Lucien_Kai: pattern snob, criticizes patterns
+            - Mira-Eclipse: sticker elitist, judges sticker combos
+
+        Recent chat history:
+        {chat_history}
+
+        Current message:
+        {message}
+
+        Respond ONLY with the username of the single most appropriate bot to respond, nothing else."""
+
+        # Format chat history for context
+        conversation_history = []
+        for msg in chat_history[-5:]:
+            role = "assistant" if msg['isBot'] else "user"
+            content = f"{msg['sender']}: {msg['message']}"
+            conversation_history.append({"role": role, "content": content})
+
+        # Add the current message
+        conversation_history.append({"role": "user", "content": f"User: {message}"})
+
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_message},
+                *conversation_history
+            ],
+            max_tokens=20,
+            temperature=0.3  # Lower temperature for more consistent selections
+        )
+        
+        selected_bot = completion.choices[0].message.content.strip()
+        
+        # Validate the selected bot
+        if selected_bot not in BOT_PERSONALITIES:
+            selected_bot = random.choice(list(BOT_PERSONALITIES.keys()))
+            
+        return jsonify({
+            'success': True,
+            'selectedBot': selected_bot
+        })
+        
+    except Exception as e:
+        print(f"Error selecting bot: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'error': 'Failed to select bot',
+            'details': str(e)
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)

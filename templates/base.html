@@ -98,6 +98,7 @@
                 <a href="{{ url_for('clicker') }}" class="nav-link">Clicker</a>
                 <a href="{{ url_for('upgrades') }}" class="nav-link">Upgrades</a>
                 <a href="{{ url_for('casino') }}" class="nav-link">Casino</a>
+                <a href="{{ url_for('trading') }}" class="nav-link">Trading</a>
             </div>
             <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</span></div>
         </div>
@@ -108,24 +109,10 @@
     </div>
 
     <div class="watermark">
-        <a href="https://github.com/owe005" target="_blank">
-            Made by Ole Kristian Westby
-        </a>
+        <span>Made by Ole Kristian Westby</span>
     </div>
 
-    <div class="clock" id="clock"></div>
-
     <script src="{{ url_for('static', filename='js/auto_clicker.js') }}"></script>
-    <script>
-        function updateClock() {
-            const now = new Date();
-            const time = now.toTimeString().split(' ')[0];
-            document.getElementById('clock').textContent = time;
-        }
-        
-        updateClock();
-        setInterval(updateClock, 1000);
-    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html> 

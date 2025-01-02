@@ -1,0 +1,1127 @@
+{% extends "base.html" %}
+
+{% block title %}Trading - Case Clicker{% endblock %}
+
+{% block content %}
+<style>
+/* Trading-specific styles */
+.trading-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.trade-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.trade-filter-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #2c3e50;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.trade-filter-btn.active {
+    background: #3498db;
+}
+
+.trade-filter-btn:hover {
+    background: #34495e;
+}
+
+.trades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.trade-card {
+    background: #2c3e50;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #34495e;
+}
+
+.trader-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.trader-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3498db;
+}
+
+.trader-name {
+    color: #3498db;
+    font-weight: bold;
+    margin: 0;
+}
+
+.trade-type {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+.type-buy { background: #27ae60; }
+.type-sell { background: #c0392b; }
+.type-swap { background: #8e44ad; }
+
+.trade-items {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.trade-section {
+    flex: 1;
+}
+
+.trade-section-title {
+    font-size: 0.9em;
+    color: #95a5a6;
+    margin-bottom: 8px;
+}
+
+.trade-item {
+    background: #34495e;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.trade-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background: #2c3e50;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 0.9em;
+    color: white;
+}
+
+.item-wear {
+    font-size: 0.8em;
+    color: #95a5a6;
+}
+
+.item-price {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+.trade-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.trade-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.trade-btn:hover {
+    background: #2980b9;
+}
+
+.trade-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* Trade confirmation modal */
+.trade-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+}
+
+.trade-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c3e50;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: white;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.confirm-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.cancel-btn {
+    background: #c0392b;
+    color: white;
+}
+
+/* Refresh button */
+.refresh-trades {
+    padding: 8px 16px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.refresh-trades:hover {
+    background: #2980b9;
+}
+
+/* Loading animation */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading::after {
+    content: "Loading trades...";
+    color: #95a5a6;
+}
+
+.trade-item.money-item {
+    justify-content: center;
+    font-size: 1.2em;
+}
+
+.money-item .item-price {
+    font-size: 1.2em;
+    color: #2ecc71;
+}
+
+.trading-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.trades-reset-timer {
+    color: #95a5a6;
+    font-size: 0.9em;
+}
+
+/* Chat Area Styles */
+.chat-area {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    background: #2c3e50;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.chat-header {
+    padding: 10px 15px;
+    background: #34495e;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-title {
+    color: white;
+    font-weight: bold;
+}
+
+.chat-minimize {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.chat-minimize:hover {
+    color: white;
+}
+
+.chat-messages {
+    height: 300px;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.chat-message.bot {
+    background: #34495e;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.chat-message.user {
+    background: #3498db;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.message-sender {
+    font-size: 0.8em;
+    color: #95a5a6;
+    margin-bottom: 3px;
+}
+
+.message-time {
+    font-size: 0.7em;
+    color: #7f8c8d;
+    text-align: right;
+    margin-top: 2px;
+}
+
+.chat-input-area {
+    padding: 10px;
+    background: #34495e;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    background: #2c3e50;
+    color: white;
+    outline: none;
+}
+
+.chat-input::placeholder {
+    color: #95a5a6;
+}
+
+.chat-send {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chat-send:hover {
+    background: #2980b9;
+}
+
+/* Custom scrollbar for chat messages */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #2c3e50;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #34495e;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #3498db;
+}
+
+/* Chat minimize animation */
+.chat-area.minimized .chat-messages,
+.chat-area.minimized .chat-input-area {
+    display: none;
+}
+
+.chat-area.minimized {
+    height: auto;
+}
+</style>
+
+<div class="trading-container">
+    <!-- Add chat area -->
+    <div class="chat-area">
+        <div class="chat-header">
+            <span class="chat-title">Trade Chat</span>
+            <button class="chat-minimize">−</button>
+        </div>
+        <div class="chat-messages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" placeholder="Type a message...">
+            <button class="chat-send">Send</button>
+        </div>
+    </div>
+
+    <div class="trading-header">
+        <button class="refresh-trades">↻ Refresh Trades</button>
+        <div class="trades-reset-timer">Next reset in: <span id="resetTimer">--:--:--</span></div>
+    </div>
+    
+    <div class="trade-filters">
+        <button class="trade-filter-btn active" data-filter="all">All Trades</button>
+        <button class="trade-filter-btn" data-filter="buy">Buy Skins</button>
+        <button class="trade-filter-btn" data-filter="sell">Sell Skins</button>
+        <button class="trade-filter-btn" data-filter="swap">Swap Skins</button>
+    </div>
+
+    <div class="loading"></div>
+    
+    <div class="trades-grid">
+        <!-- Trade cards will be inserted here dynamically -->
+    </div>
+</div>
+
+<!-- Trade confirmation modal -->
+<div class="trade-modal">
+    <div class="trade-modal-content">
+        <div class="modal-header">
+            <h3>Confirm Trade</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Trade details will be inserted here -->
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm-btn">Confirm</button>
+            <button class="modal-btn cancel-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentTrades = [];
+const tradeTypes = ['buy', 'sell', 'swap'];
+const botNames = [
+    "skibidi toilet", "ohio rizz", "sigma grindset", "gyatt enthusiast", 
+    "backrooms entity", "no cap fr fr", "megamind rizz", "skill issue", 
+    "brainrot gaming", "based department", "gigachad", "npc moment",
+    "ratio + L", "sheeeesh", "sus imposter", "copium addict",
+    "peak fiction", "rizz master", "skull emoji", "real and true"
+];
+
+const BOT_PERSONALITIES = {
+    "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
+    "Kai.Jayden_02": "A young enthusiastic trader who loves discussing market trends and making predictions about future skin prices.",
+    "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
+    "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
+    "Theo.91": "A veteran trader who's been in the CS:GO trading scene since the beginning. Likes to share stories about old trades.",
+    "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
+    "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
+    "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
+    "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
+    "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
+};
+
+let currentBotName = "_Astrid47"; // Default bot, will be randomized for each message
+let chatMessages = [];
+let chatActive = false;
+let lastMessageTime = Date.now();
+let conversationTimer = null;
+
+function formatPrice(price) {
+    return `$${parseFloat(price).toFixed(2)}`;
+}
+
+function createTradeCard(trade, index) {
+    const card = document.createElement('div');
+    card.className = 'trade-card';
+    card.dataset.type = trade.type;
+
+    const typeClass = {
+        'buy': 'type-buy',
+        'sell': 'type-sell',
+        'swap': 'type-swap'
+    }[trade.type];
+
+    const typeText = {
+        'buy': 'Buying Skins',
+        'sell': 'Selling Skins',
+        'swap': 'Trading Skins'
+    }[trade.type];
+
+    function getImageHtml(item) {
+        if (item.type === 'money') return '';
+        
+        const weaponName = item.weapon.toLowerCase()
+            .replace(/ /g, '')
+            .replace('★', '')
+            .replace('-', '')
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+            
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        const caseMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case'
+        };
+        
+        const casePath = caseMapping[item.case_type] || 'weapon_case_1';
+        
+        return `
+            <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                 alt="${item.weapon} | ${item.name}"
+                 onerror="this.src='/static/media/cases/rare_item.png'">
+        `;
+    }
+
+    card.innerHTML = `
+        <div class="trade-header">
+            <div class="trader-info">
+                <img src="/static/media/casino/${trade.botAvatar}" alt="${trade.botName}" class="trader-avatar">
+                <span class="trader-name">${trade.botName}</span>
+            </div>
+            <span class="trade-type ${typeClass}">${typeText}</span>
+        </div>
+        <div class="trade-items">
+            <div class="trade-section">
+                <div class="trade-section-title">Offering:</div>
+                ${trade.offering.map(item => `
+                    <div class="trade-item ${item.type === 'money' ? 'money-item' : ''}">
+                        ${item.type === 'money' ? 
+                            `<div class="item-price">${formatPrice(item.amount)}</div>` :
+                            `
+                            ${getImageHtml(item)}
+                            <div class="item-details">
+                                <div class="item-name">${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}</div>
+                                <div class="item-wear">${item.wear}</div>
+                                <div class="item-price">${formatPrice(item.price)}</div>
+                            </div>
+                            `
+                        }
+                    </div>
+                `).join('')}
+            </div>
+            <div class="trade-section">
+                <div class="trade-section-title">Requesting:</div>
+                ${trade.requesting.map(item => `
+                    <div class="trade-item ${item.type === 'money' ? 'money-item' : ''}">
+                        ${item.type === 'money' ? 
+                            `<div class="item-price">${formatPrice(item.amount)}</div>` :
+                            `
+                            ${getImageHtml(item)}
+                            <div class="item-details">
+                                <div class="item-name">${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}</div>
+                                <div class="item-wear">${item.wear}</div>
+                                <div class="item-price">${formatPrice(item.price)}</div>
+                            </div>
+                            `
+                        }
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="trade-actions">
+            <button class="trade-btn" onclick="showTradeConfirmation(${index})">Trade</button>
+        </div>
+    `;
+    
+    return card;
+}
+
+function showTradeConfirmation(tradeIndex) {
+    const trade = currentTrades[tradeIndex];
+    const modal = document.querySelector('.trade-modal');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    modalBody.innerHTML = `
+        <p>Are you sure you want to trade with ${trade.botName}?</p>
+        <div class="trade-items">
+            <div class="trade-section">
+                <div class="trade-section-title">You will receive:</div>
+                ${trade.offering.map(item => `
+                    <div class="trade-item">
+                        ${item.type === 'money' ? 
+                            `<div class="item-price">${formatPrice(item.amount)}</div>` :
+                            `<div class="item-name">${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name} (${item.wear})</div>`
+                        }
+                    </div>
+                `).join('')}
+            </div>
+            <div class="trade-section">
+                <div class="trade-section-title">You will give:</div>
+                ${trade.requesting.map(item => `
+                    <div class="trade-item">
+                        ${item.type === 'money' ? 
+                            `<div class="item-price">${formatPrice(item.amount)}</div>` :
+                            `<div class="item-name">${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name} (${item.wear})</div>`
+                        }
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    modal.style.display = 'block';
+
+    // Store the trade index for the confirm button
+    modal.querySelector('.confirm-btn').onclick = () => completeTrade(tradeIndex);
+    modal.querySelector('.cancel-btn').onclick = () => modal.style.display = 'none';
+    modal.querySelector('.modal-close').onclick = () => modal.style.display = 'none';
+}
+
+async function completeTrade(tradeIndex) {
+    try {
+        const trade = currentTrades[tradeIndex];
+        const response = await fetch('/complete_trade', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trade })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // Update balance
+        document.getElementById('balance').textContent = data.balance.toFixed(2);
+
+        // Update rank and exp
+        const rankInfo = document.querySelector('.current-rank');
+        const expInfo = document.querySelector('.exp-info');
+        const progressFill = document.querySelector('.progress-fill');
+        
+        if (rankInfo && expInfo && progressFill) {
+            rankInfo.textContent = data.rankName;
+            rankInfo.dataset.rank = data.rank;
+            
+            if (data.nextRankExp) {
+                expInfo.textContent = `${Math.floor(data.exp)}/${data.nextRankExp} EXP`;
+                const percentage = (data.exp / data.nextRankExp * 100).toFixed(2);
+                progressFill.style.width = `${percentage}%`;
+            } else {
+                expInfo.textContent = 'MAX RANK';
+                progressFill.style.width = '100%';
+            }
+        }
+
+        // Close modal
+        document.querySelector('.trade-modal').style.display = 'none';
+
+        // Remove the completed trade
+        currentTrades.splice(tradeIndex, 1);
+        refreshTradesDisplay();
+
+        // Show success message with EXP gained
+        alert(`Trade completed successfully! +${Math.floor(data.expGained)} EXP`);
+
+    } catch (error) {
+        console.error('Error completing trade:', error);
+        alert('Failed to complete trade');
+    }
+}
+
+function refreshTradesDisplay() {
+    const tradesGrid = document.querySelector('.trades-grid');
+    tradesGrid.innerHTML = '';
+    
+    const activeFilter = document.querySelector('.trade-filter-btn.active').dataset.filter;
+    
+    currentTrades.forEach((trade, index) => {
+        if (activeFilter === 'all' || trade.type === activeFilter) {
+            tradesGrid.appendChild(createTradeCard(trade, index));
+        }
+    });
+}
+
+async function fetchTrades() {
+    try {
+        const loading = document.querySelector('.loading');
+        loading.style.display = 'block';
+
+        const response = await fetch('/get_trades');
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        currentTrades = data.trades;
+        refreshTradesDisplay();
+
+    } catch (error) {
+        console.error('Error fetching trades:', error);
+        alert('Failed to load trades');
+    } finally {
+        document.querySelector('.loading').style.display = 'none';
+    }
+}
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Filter buttons
+    document.querySelectorAll('.trade-filter-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.trade-filter-btn').forEach(btn => 
+                btn.classList.remove('active'));
+            button.classList.add('active');
+            refreshTradesDisplay();
+        });
+    });
+
+    // Refresh button
+    document.querySelector('.refresh-trades').addEventListener('click', fetchTrades);
+
+    // Initial load
+    fetchTrades();
+
+    // Add chat minimize functionality
+    const chatArea = document.querySelector('.chat-area');
+    const chatMinimizeBtn = document.querySelector('.chat-minimize');
+    
+    chatMinimizeBtn.addEventListener('click', () => {
+        chatArea.classList.toggle('minimized');
+        // Update button text based on state
+        chatMinimizeBtn.textContent = chatArea.classList.contains('minimized') ? '+' : '−';
+    });
+
+    const chatInput = document.querySelector('.chat-input');
+    const chatSend = document.querySelector('.chat-send');
+    
+    // Add this function to help select the most relevant bot
+    function selectRespondingBots(message, chatHistory) {
+        // Determine how many bots should respond (1-3)
+        const numResponders = Math.floor(Math.random() * 3) + 1;
+        let responders = [];
+        
+        // Get the last few messages and their senders
+        const lastMessages = chatHistory.slice(-5);
+        const activeParticipants = new Set(lastMessages
+            .filter(msg => msg.isBot)
+            .map(msg => msg.sender));
+        
+        // Check if this is a direct response to someone
+        const messageLower = message.toLowerCase();
+        const directMention = Object.keys(BOT_PERSONALITIES).find(bot => 
+            messageLower.includes(bot.toLowerCase()));
+        
+        if (directMention) {
+            responders.push(directMention);
+            numResponders = Math.min(numResponders, 2); // Limit additional responders if someone was directly mentioned
+        }
+
+        // Check message content for relevant experts
+        const keywordMap = {
+            '_Astrid47': ['pattern', 'float', 'high-tier', 'expensive', 'quality'],
+            'Kai.Jayden_02': ['market', 'price', 'trend', 'prediction', 'future'],
+            'Orion_Phoenix98': ['rare', 'collector', 'special', 'pattern'],
+            'ElaraB_23': ['trade', 'strategy', 'tip', 'advice'],
+            'Theo.91': ['old', 'history', 'experience', 'veteran'],
+            'Nova-Lyn': ['match', 'game', 'pro', 'team', 'tournament'],
+            'FelixHaven19': ['probability', 'chance', 'odds', 'statistics', 'math'],
+            'Aria.Stella85': ['stattrak', 'kill', 'count', 'track'],
+            'Lucien_Kai': ['knife', 'doppler', 'case hardened', 'fade', 'pattern'],
+            'Mira-Eclipse': ['sticker', 'craft', 'combination', 'holo', 'foil']
+        };
+
+        // Find relevant experts based on keywords
+        let relevantExperts = [];
+        for (const [bot, keywords] of Object.entries(keywordMap)) {
+            if (keywords.some(keyword => messageLower.includes(keyword.toLowerCase()))) {
+                relevantExperts.push(bot);
+            }
+        }
+
+        // Prioritize active participants and relevant experts
+        const potentialResponders = [...new Set([
+            ...relevantExperts,
+            ...Array.from(activeParticipants)
+        ])].filter(bot => !responders.includes(bot));
+
+        // Fill remaining spots with relevant experts or active participants
+        while (responders.length < numResponders && potentialResponders.length > 0) {
+            const randomIndex = Math.floor(Math.random() * potentialResponders.length);
+            responders.push(potentialResponders.splice(randomIndex, 1)[0]);
+        }
+
+        // If we still need more responders, add random bots
+        const availableBots = Object.keys(BOT_PERSONALITIES)
+            .filter(bot => !responders.includes(bot));
+        while (responders.length < numResponders && availableBots.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableBots.length);
+            responders.push(availableBots.splice(randomIndex, 1)[0]);
+        }
+
+        return responders;
+    }
+
+    // Modify the sendMessage function to add more realistic delays
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) {
+            console.log("No message entered");
+            return;
+        }
+
+        // Add user message
+        addChatMessage(message, 'You');
+        chatInput.value = '';
+        lastMessageTime = Date.now();
+
+        // Start conversation if not already active
+        if (!chatActive) {
+            chatActive = true;
+            startConversationLoop();
+        }
+
+        // First, get the most appropriate bot to respond
+        fetch('/select_responding_bot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                chatHistory: chatMessages
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error("Error selecting bot:", data.error);
+                return;
+            }
+
+            const botName = data.selectedBot;
+            const replyDelay = Math.random() * 1500 + 500;
+
+            // Then get the bot's response
+            setTimeout(() => {
+                fetch('/chat_with_bot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        botName: botName,
+                        message: message,
+                        chatHistory: chatMessages,
+                        isAmbient: false
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Error from server:", data.error, data.details);
+                        return;
+                    }
+                    addChatMessage(data.message, botName, true);
+                })
+                .catch(error => {
+                    console.error('Chat error:', error);
+                });
+            }, replyDelay);
+        })
+        .catch(error => {
+            console.error('Error selecting bot:', error);
+        });
+    }
+    
+    chatSend.addEventListener('click', sendMessage);
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+});
+
+function updateResetTimer() {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const timeLeft = tomorrow - now;
+    
+    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    
+    document.getElementById('resetTimer').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Update the timer every second
+setInterval(updateResetTimer, 1000);
+updateResetTimer(); // Initial update
+
+// Modify the refresh button click handler
+document.querySelector('.refresh-trades').addEventListener('click', () => {
+    const loading = document.querySelector('.loading');
+    loading.style.display = 'block';
+    
+    fetch('/get_trades')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            currentTrades = data.trades;
+            refreshTradesDisplay();
+        })
+        .catch(error => {
+            console.error('Error fetching trades:', error);
+            alert('Failed to load trades');
+        })
+        .finally(() => {
+            loading.style.display = 'none';
+        });
+});
+
+// Add chat functionality
+function addChatMessage(message, sender, isBot = false) {
+    const chatMessagesDiv = document.querySelector('.chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${isBot ? 'bot' : 'user'}`;
+    
+    // Remove any instances where the bot prefixed their name to the message
+    const cleanMessage = message.replace(`${sender}: `, '').replace(`${sender} `, '');
+    
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    messageDiv.innerHTML = `
+        <div class="message-sender">${sender}</div>
+        <div class="message-content">${cleanMessage}</div>
+        <div class="message-time">${time}</div>
+    `;
+    
+    chatMessagesDiv.appendChild(messageDiv);
+    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    
+    // Store message in chat history
+    chatMessages.push({
+        message: cleanMessage,  // Store clean message without sender prefix
+        sender,
+        isBot,
+        timestamp: Date.now()
+    });
+}
+
+// Modify the startConversationLoop function
+function startConversationLoop() {
+    if (conversationTimer) {
+        clearInterval(conversationTimer);
+    }
+
+    conversationTimer = setInterval(() => {
+        // Check if chat has been inactive for too long (2 minutes)
+        if (Date.now() - lastMessageTime > 120000) {
+            chatActive = false;
+            clearInterval(conversationTimer);
+            return;
+        }
+
+        // Random delay between 20-40 seconds (longer delay)
+        const ambientDelay = Math.random() * 20000 + 20000;
+        
+        setTimeout(() => {
+            // Only 20% chance to actually send a message
+            if (Math.random() > 0.2) return;
+
+            // Select a random bot that hasn't spoken recently
+            const recentSpeakers = new Set(
+                chatMessages.slice(-5)
+                    .filter(msg => msg.isBot)
+                    .map(msg => msg.sender)
+            );
+            
+            const availableBots = Object.keys(BOT_PERSONALITIES)
+                .filter(bot => !recentSpeakers.has(bot));
+            
+            if (availableBots.length === 0) return;
+            
+            const randomBot = availableBots[Math.floor(Math.random() * availableBots.length)];
+            
+            // Get the last few messages for context
+            const recentMessages = chatMessages.slice(-3); // Only use last 3 messages
+            
+            fetch('/chat_with_bot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    botName: randomBot,
+                    message: "Keep it very short (max 10 words)",
+                    chatHistory: recentMessages,
+                    isAmbient: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) return;
+                addChatMessage(data.message, randomBot, true);
+                lastMessageTime = Date.now();
+            })
+            .catch(error => {
+                console.error('Ambient chat error:', error);
+            });
+        }, ambientDelay);
+    }, 10000);  // Check every 10 seconds
+}
+
+// Update the selectRespondingBot function to pick a single contextual bot
+function selectRespondingBot(message, chatHistory) {
+    const messageLower = message.toLowerCase();
+    
+    // Check if this is a direct response to someone
+    const lastMessages = chatHistory.slice(-3);
+    const lastBotMessage = lastMessages.find(msg => msg.isBot);
+    
+    if (lastBotMessage && messageLower.includes(lastBotMessage.sender.toLowerCase())) {
+        return lastBotMessage.sender;
+    }
+
+    // Check message content for relevant experts
+    const keywordMap = {
+        '_Astrid47': ['pattern', 'float', 'high-tier', 'expensive', 'quality'],
+        'Kai.Jayden_02': ['market', 'price', 'trend', 'prediction', 'future'],
+        'Orion_Phoenix98': ['rare', 'collector', 'special', 'pattern'],
+        'ElaraB_23': ['trade', 'strategy', 'tip', 'advice'],
+        'Theo.91': ['old', 'history', 'experience', 'veteran'],
+        'Nova-Lyn': ['match', 'game', 'pro', 'team', 'tournament'],
+        'FelixHaven19': ['probability', 'chance', 'odds', 'statistics', 'math'],
+        'Aria.Stella85': ['stattrak', 'kill', 'count', 'track'],
+        'Lucien_Kai': ['knife', 'doppler', 'case hardened', 'fade', 'pattern'],
+        'Mira-Eclipse': ['sticker', 'craft', 'combination', 'holo', 'foil']
+    };
+
+    // Find relevant experts
+    const relevantBots = [];
+    for (const [bot, keywords] of Object.entries(keywordMap)) {
+        if (keywords.some(keyword => messageLower.includes(keyword.toLowerCase()))) {
+            relevantBots.push(bot);
+        }
+    }
+
+    if (relevantBots.length > 0) {
+        return relevantBots[Math.floor(Math.random() * relevantBots.length)];
+    }
+
+    // Otherwise, pick a random bot that hasn't spoken recently
+    const recentSpeakers = new Set(
+        lastMessages
+            .filter(msg => msg.isBot)
+            .map(msg => msg.sender)
+    );
+    
+    const availableBots = Object.keys(BOT_PERSONALITIES)
+        .filter(bot => !recentSpeakers.has(bot));
+    
+    return availableBots.length > 0 ? 
+        availableBots[Math.floor(Math.random() * availableBots.length)] :
+        Object.keys(BOT_PERSONALITIES)[Math.floor(Math.random() * Object.keys(BOT_PERSONALITIES).length)];
+}
+</script>
+{% endblock %} 
