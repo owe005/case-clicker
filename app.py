@@ -11,6 +11,7 @@ from typing import List, Optional
 import traceback
 import os
 from enum import Enum
+import threading
 
 from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS, CASE_FILE_MAPPING
 from models import Case, User, Upgrades
@@ -23,23 +24,36 @@ FEATURED_SKINS = None
 LAST_REFRESH_TIME = None
 REFRESH_INTERVAL = 3600  # 1 hour in seconds
 
+# Add this at the top with other globals
+file_lock = threading.Lock()
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user' not in session:
-            session['user'] = {
-                'balance': 1000.0,
-                'inventory': [],
-                'exp': 0,
-                'rank': 0,
-                'upgrades': {
-                    'click_value': 1,      # Start at level 1
-                    'max_multiplier': 1,   # Start at level 1
-                    'auto_clicker': 0,     # Start at level 0 (not unlocked)
-                    'combo_speed': 1,      # Start at level 1
-                    'critical_strike': 0   # Start at level 0 (not unlocked)
+            # Load existing user data first
+            user_data = load_user_data()
+            
+            # Only set defaults if no user data exists
+            if not user_data:
+                user_data = {
+                    'balance': 1000.0,
+                    'inventory': [],
+                    'exp': 0,
+                    'rank': 0,
+                    'upgrades': {
+                        'click_value': 1,
+                        'max_multiplier': 1,
+                        'auto_clicker': 0,
+                        'combo_speed': 1,
+                        'critical_strike': 0,
+                        'progress_per_click': 1,
+                        'case_quality': 1
+                    }
                 }
-            }
+                save_user_data(user_data)
+            
+            session['user'] = user_data
         return f(*args, **kwargs)
     return decorated_function
 
@@ -129,7 +143,9 @@ def create_user_from_dict(data: dict) -> User:
         max_multiplier=upgrades_data.get('max_multiplier', 1),
         auto_clicker=upgrades_data.get('auto_clicker', 0),
         combo_speed=upgrades_data.get('combo_speed', 1),
-        critical_strike=upgrades_data.get('critical_strike', 0)
+        critical_strike=upgrades_data.get('critical_strike', 0),
+        progress_per_click=upgrades_data.get('progress_per_click', 1),  # Add this
+        case_quality=upgrades_data.get('case_quality', 1)  # Add this
     )
     
     user = User(
@@ -161,7 +177,7 @@ def create_user_from_dict(data: dict) -> User:
     return user
 
 def load_user_data() -> dict:
-    """Load user data from JSON file."""
+    """Load user data from JSON file with file locking."""
     default_data = {
         'balance': 1000.0,
         'inventory': [],
@@ -173,36 +189,147 @@ def load_user_data() -> dict:
             'auto_clicker': 0,
             'combo_speed': 1,
             'critical_strike': 0,
-            'progress_per_click': 1,  # Add default value
-            'case_quality': 1  # Add default value
+            'progress_per_click': 1,
+            'case_quality': 1
         },
-        'case_progress': 0  # Reset case progress to 0
+        'case_progress': 0
     }
     
-    if not os.path.exists('data/user_inventory.json'):
-        return default_data
+    file_path = 'data/user_inventory.json'
+    backup_path = file_path + '.bak'
     
+    # Use a timeout to prevent deadlocks
+    lock_acquired = file_lock.acquire(timeout=5)
+    if not lock_acquired:
+        print("Warning: Could not acquire file lock, returning default data")
+        return default_data.copy()
+        
     try:
-        with open('data/user_inventory.json', 'r') as f:
+        if not os.path.exists(file_path):
+            return default_data.copy()
+            
+        # Create backup of current file
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                current_data = f.read()
+            with open(backup_path, 'w') as f:
+                f.write(current_data)
+        
+        # Try to load the file
+        with open(file_path, 'r') as f:
             data = json.load(f)
-            # Ensure the data has all necessary keys
-            for key, value in default_data.items():
-                if key not in data:
-                    data[key] = value
-                if key == 'upgrades':
-                    # Ensure all upgrade types exist
-                    for upgrade_key, upgrade_value in default_data['upgrades'].items():
-                        if upgrade_key not in data['upgrades']:
-                            data['upgrades'][upgrade_key] = upgrade_value
-            return data
-    except (json.JSONDecodeError, FileNotFoundError):
-        # If there's an error loading the JSON, return default data
-        return default_data
+            
+        if not isinstance(data, dict):
+            raise ValueError("Invalid data structure")
+            
+        # Deep copy the default data to ensure we don't modify it
+        result = default_data.copy()
+        result.update(data)
+        
+        # Ensure upgrades dict exists and has all required keys
+        if 'upgrades' not in result:
+            result['upgrades'] = default_data['upgrades'].copy()
+        else:
+            for key, value in default_data['upgrades'].items():
+                if key not in result['upgrades']:
+                    result['upgrades'][key] = value
+                elif not isinstance(result['upgrades'][key], (int, float)):
+                    result['upgrades'][key] = value
+        
+        return result
+            
+    except Exception as e:
+        print(f"Error loading user data: {e}")
+        try:
+            if os.path.exists(backup_path):
+                with open(backup_path, 'r') as f:
+                    data = json.load(f)
+                with open(file_path, 'w') as f:
+                    json.dump(data, f, indent=2)
+                return data
+        except:
+            pass
+        
+        return default_data.copy()
+    finally:
+        file_lock.release()
 
 def save_user_data(user_data: dict):
-    """Save user data to JSON file."""
-    with open('data/user_inventory.json', 'w') as f:
-        json.dump(user_data, f)
+    """Save user data to JSON file with file locking."""
+    temp_file = 'data/user_inventory.tmp'
+    final_file = 'data/user_inventory.json'
+    backup_file = final_file + '.bak'
+    
+    # Use a timeout to prevent deadlocks
+    lock_acquired = file_lock.acquire(timeout=5)  # 5 second timeout
+    if not lock_acquired:
+        print("Warning: Could not acquire file lock, skipping save")
+        return
+        
+    try:
+        # Create data directory if it doesn't exist
+        os.makedirs('data', exist_ok=True)
+        
+        # Create backup of current file if it exists
+        try:
+            if os.path.exists(final_file):
+                with open(final_file, 'r') as src, open(backup_file, 'w') as dst:
+                    dst.write(src.read())
+        except Exception as e:
+            print(f"Warning: Failed to create backup: {e}")
+        
+        # Write to temporary file
+        with open(temp_file, 'w') as f:
+            json.dump(user_data, f, indent=2)
+            f.flush()
+            try:
+                os.fsync(f.fileno())
+            except Exception as e:
+                print(f"Warning: Failed to fsync: {e}")
+        
+        # Close any open handles to the files
+        try:
+            import gc
+            gc.collect()  # Force garbage collection
+        except Exception as e:
+            print(f"Warning: Failed to force garbage collection: {e}")
+        
+        # Small delay to ensure file handles are released
+        time.sleep(0.1)
+        
+        try:
+            if os.path.exists(final_file):
+                os.remove(final_file)
+            os.rename(temp_file, final_file)
+                
+        except Exception as e:
+            print(f"Error during file replacement: {e}")
+            if os.path.exists(backup_file):
+                try:
+                    if os.path.exists(final_file):
+                        os.remove(final_file)
+                    os.rename(backup_file, final_file)
+                except Exception as restore_error:
+                    print(f"Failed to restore from backup: {restore_error}")
+            raise
+            
+    except Exception as e:
+        print(f"Error saving user data: {e}")
+        if not os.path.exists(final_file) and os.path.exists(backup_file):
+            try:
+                os.rename(backup_file, final_file)
+            except Exception as restore_error:
+                print(f"Failed to restore from backup: {restore_error}")
+    finally:
+        # Clean up temporary files
+        try:
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+        except Exception as e:
+            print(f"Warning: Failed to remove temporary file: {e}")
+        
+        # Always release the lock
+        file_lock.release()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -586,30 +713,28 @@ def purchase_upgrade():
         data = request.get_json()
         upgrade_type = data.get('upgrade_type')
         
-        # Get current upgrade level directly from user_data
+        # Get current upgrade level
         current_level = user_data['upgrades'].get(upgrade_type, 1)
         
-        # Update the costs dictionary to include new upgrades
+        # Check max levels
+        if upgrade_type == 'progress_per_click' and current_level >= 10:
+            return jsonify({'error': 'Maximum level reached'})
+        if upgrade_type == 'case_quality' and current_level >= 5:
+            return jsonify({'error': 'Maximum level reached'})
+        
+        # Calculate cost
         costs = {
-            'click_value': lambda level: 100 * (2 ** (level - 1)),  # Starts at 100
-            'max_multiplier': lambda level: 250 * (2 ** (level - 1)),  # Starts at 250
-            'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),  # Starts at 500, then 50
-            'combo_speed': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
-            'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1)),  # Starts at 1000, then 200
-            'progress_per_click': lambda level: 150 * (2 ** (level - 1)),  # Starts at 150
-            'case_quality': lambda level: 500 * (2 ** (level - 1))  # Starts at 500
+            'click_value': lambda level: 100 * (2 ** (level - 1)),
+            'max_multiplier': lambda level: 250 * (2 ** (level - 1)),
+            'auto_clicker': lambda level: 500 if level == 0 else 50 * (1.8 ** (level - 1)),
+            'combo_speed': lambda level: 150 * (2 ** (level - 1)),
+            'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1)),
+            'progress_per_click': lambda level: 150 * (2 ** (level - 1)),
+            'case_quality': lambda level: 500 * (2 ** (level - 1))
         }
         
         if upgrade_type not in costs:
             return jsonify({'error': 'Invalid upgrade type'})
-        
-        # Check max level for progress_per_click
-        if upgrade_type == 'progress_per_click' and current_level >= 10:
-            return jsonify({'error': 'Maximum level reached'})
-        
-        # Check max level for case_quality
-        if upgrade_type == 'case_quality' and current_level >= 5:
-            return jsonify({'error': 'Maximum level reached'})
         
         cost = costs[upgrade_type](current_level)
         
@@ -620,7 +745,7 @@ def purchase_upgrade():
         user_data['balance'] -= cost
         user_data['upgrades'][upgrade_type] = current_level + 1
         
-        # Calculate next cost after level increase
+        # Calculate next cost
         next_cost = costs[upgrade_type](current_level + 1)
         
         # Save updated user data
@@ -630,7 +755,7 @@ def purchase_upgrade():
             'success': True,
             'balance': user_data['balance'],
             'upgrades': user_data['upgrades'],
-            'nextCost': next_cost 
+            'nextCost': next_cost
         })
         
     except Exception as e:

@@ -42,13 +42,13 @@ class Skin:
 
 @dataclass
 class Upgrades:
-    click_value: int = 1  # Start at level 1
-    max_multiplier: int = 1  # Start at level 1
-    auto_clicker: int = 0  # Start at level 0 (not unlocked)
-    combo_speed: int = 1  # Start at level 1
-    critical_strike: int = 0  # Start at level 0 (not unlocked)
-    progress_per_click: int = 1  # Start at level 1 (1% per click)
-    case_quality: int = 1  # Start at level 1 (0-2 USD cases)
+    click_value: int = 1
+    max_multiplier: int = 1
+    auto_clicker: int = 0
+    combo_speed: int = 1
+    critical_strike: int = 0
+    progress_per_click: int = 1
+    case_quality: int = 1
 
 @dataclass
 class User:
