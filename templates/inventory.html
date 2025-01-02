@@ -1351,6 +1351,7 @@ document.querySelectorAll('.category-btn').forEach(button => {
 // Update the sorting functions
 function sortByRarity(a, b, ascending = false) {
     const rarityOrder = {
+        'CONTRABAND': 6,  // Add CONTRABAND as highest rarity
         'GOLD': 5,
         'RED': 4,
         'PINK': 3,

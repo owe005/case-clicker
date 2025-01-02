@@ -1668,12 +1668,12 @@ h1 {
 }
 
 .skin.rarity-CONTRABAND {
-    background: linear-gradient(135deg, #00000020 0%, #00000040 100%);
-    border: 2px solid #000000;
+    background: linear-gradient(135deg, #FF8C0020 0%, #FF8C0040 100%);
+    border: 2px solid #FF8C00;
 }
 
 .content-row.rarity-CONTRABAND .rarity-name { 
-    color: #964B00; 
+    color: #FF8C00; 
 }
 
 /* Add glow animation for gold items if not already defined */
