@@ -398,5 +398,88 @@
         }
       ]
     }
+  ],
+  "completed_trades": [
+    {
+      "botAvatar": "bot3.png",
+      "botName": "Orion_Phoenix98",
+      "offering": [
+        {
+          "case_file": "esports_2013",
+          "case_type": "esports",
+          "name": "Forest DDPAT",
+          "price": 128.02,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "wear": "BS"
+        },
+        {
+          "case_file": "weapon_case_3",
+          "case_type": "csgo3",
+          "name": "Urban Masked",
+          "price": 123.3,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Gut Knife",
+          "wear": "FN"
+        },
+        {
+          "case_file": "operation_phoenix_case",
+          "case_type": "phoenix",
+          "name": "Night",
+          "price": 175,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "wear": "FT"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 559.4192324464778,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
+    },
+    {
+      "botAvatar": "bot10.png",
+      "botName": "Mira-Eclipse",
+      "offering": [
+        {
+          "case_file": "operation_breakout_case",
+          "case_type": "breakout",
+          "name": "Koi",
+          "price": 0.72,
+          "rarity": "PURPLE",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Nova",
+          "wear": "FT"
+        },
+        {
+          "case_file": "esports_2013_winter",
+          "case_type": "esports_winter",
+          "name": "Ghost Camo",
+          "price": 1.8,
+          "rarity": "BLUE",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Nova",
+          "wear": "FN"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 3.332062316597008,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
+    }
   ]
 }

@@ -1,8 +1,49 @@
 {
-  "balance": 919.1549999999999,
-  "inventory": [],
-  "exp": 0,
-  "rank": 0,
+  "balance": 466.15055870984634,
+  "inventory": [
+    {
+      "name": "CS:GO Weapon Case",
+      "image": "weapon_case_1.png",
+      "is_case": true,
+      "type": "csgo",
+      "quantity": 1
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Golden Koi",
+      "rarity": "RED",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 91.0,
+      "timestamp": 1735911103.7969348,
+      "case_type": "bravo",
+      "is_case": false
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Golden Koi",
+      "rarity": "RED",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 91.0,
+      "timestamp": 1735911103.9655235,
+      "case_type": "bravo",
+      "is_case": false
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Golden Koi",
+      "rarity": "RED",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 91.0,
+      "timestamp": 1735911104.1243687,
+      "case_type": "bravo",
+      "is_case": false
+    }
+  ],
+  "exp": 141.252,
+  "rank": 5,
   "upgrades": {
     "click_value": 2,
     "max_multiplier": 1,
@@ -14,20 +55,10 @@
     "multi_open": 1
   },
   "achievements": {
-    "completed": [],
+    "completed": [
+      "earnings_1"
+    ],
     "in_progress": {
-      "earnings_1": {
-        "id": "earnings_1",
-        "title": "Starting Out",
-        "description": "Earn your first $1,000",
-        "target_value": 1000,
-        "reward": 100,
-        "exp_reward": 1000,
-        "icon": "\ud83d\udcb5",
-        "current_value": 0,
-        "category": "special",
-        "progress": 0.0
-      },
       "cases_1": {
         "id": "cases_1",
         "title": "Case Opener",
@@ -51,11 +82,23 @@
         "current_value": 31,
         "category": "clicks",
         "progress": 3.1
+      },
+      "earnings_2": {
+        "id": "earnings_2",
+        "title": "Making Moves",
+        "description": "Earn your first $10,000",
+        "target_value": 10000,
+        "reward": 1000,
+        "exp_reward": 5000,
+        "icon": "\ud83d\udcb0",
+        "current_value": 2042.07,
+        "category": "special",
+        "progress": 20.4207
       }
     }
   },
   "stats": {
-    "total_earnings": 0,
+    "total_earnings": 2042.07,
     "total_cases_opened": 0,
     "total_trades_completed": 0,
     "highest_win_streak": 0,

@@ -5,7 +5,7 @@ from typing import Dict, Union, List, Any
 import time
 import json
 from functools import wraps
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 from dataclasses import dataclass
 from typing import List, Optional
 import traceback
@@ -3068,25 +3068,16 @@ def generate_daily_trades():
 @login_required
 def get_trades():
     try:
-        # Check if daily trades file exists
-        try:
-            with open('data/daily_trades.json', 'r') as f:
-                daily_trades = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            daily_trades = {'date': '', 'trades': []}
+        trades_data = load_daily_trades()
         
-        # Check if trades need to be regenerated
-        current_date = date.today().isoformat()
-        if daily_trades.get('date') != current_date:
-            trades = generate_daily_trades()
-        else:
-            trades = daily_trades.get('trades', [])
+        # Filter out completed trades
+        active_trades = [trade for trade in trades_data['trades'] 
+                        if trade not in trades_data.get('completed_trades', [])]
         
-        return jsonify({'trades': trades})
-        
+        return jsonify({'trades': active_trades})
     except Exception as e:
         print(f"Error getting trades: {e}")
-        return jsonify({'error': 'Failed to get trades'})
+        return jsonify({'error': 'Failed to load trades'})
 
 @app.route('/complete_trade', methods=['POST'])
 @login_required
@@ -3098,25 +3089,29 @@ def complete_trade():
         if not trade:
             return jsonify({'error': 'Invalid trade data'})
             
-        # Load user data
+        # Load trades data and user data
+        trades_data = load_daily_trades()
         user_data = load_user_data()
+        
+        # Get current user state
         current_balance = float(user_data['balance'])
         inventory = user_data.get('inventory', [])
         current_exp = float(user_data.get('exp', 0))
         current_rank = int(user_data.get('rank', 0))
         
+        # Verify trade still exists and hasn't been completed
+        if trade not in trades_data['trades'] or trade in trades_data.get('completed_trades', []):
+            return jsonify({'error': 'Trade no longer available'})
+            
         # Check if user has required items/money
         if any(item['type'] == 'money' for item in trade['requesting']):
-            # User needs to pay money
             required_money = sum(item['amount'] for item in trade['requesting'] if item['type'] == 'money')
             if required_money > current_balance:
                 return jsonify({'error': 'Insufficient funds'})
         
+        # Check for required skins
         if any(item['type'] == 'skin' for item in trade['requesting']):
-            # User needs to provide skins
             required_skins = [item for item in trade['requesting'] if item['type'] == 'skin']
-            
-            # Check each required skin
             for required_skin in required_skins:
                 skin_found = False
                 for inv_item in inventory:
@@ -3127,59 +3122,38 @@ def complete_trade():
                         inv_item['stattrak'] == required_skin['stattrak']):
                         skin_found = True
                         break
-                
                 if not skin_found:
                     return jsonify({'error': f"Missing skin: {required_skin['weapon']} | {required_skin['name']}"})
         
-        # Calculate trade value for EXP calculation
+        # Calculate trade value for EXP
         trade_value = 0
         if trade['type'] == 'sell':
-            # When selling, calculate value of skins being sold
             trade_value = sum(float(item.get('price', 0)) for item in trade['offering'] if item.get('type') == 'skin')
         elif trade['type'] == 'buy':
-            # When buying, calculate value of skins being bought
             trade_value = sum(float(item.get('price', 0)) for item in trade['requesting'] if item.get('type') == 'skin')
         else:  # swap
-            # For swaps, use the average value of both sides
             offering_value = sum(float(item.get('price', 0)) for item in trade['offering'] if item.get('type') == 'skin')
             requesting_value = sum(float(item.get('price', 0)) for item in trade['requesting'] if item.get('type') == 'skin')
             trade_value = (offering_value + requesting_value) / 2
-            
-        print(f"Trade type: {trade['type']}")
-        print(f"Trade value: ${trade_value}")
-            
-        # Calculate EXP reward based on trade type and value
-        # Get max EXP for current rank (10% cap)
+        
+        # Calculate EXP reward
         max_exp_reward = RANK_EXP[current_rank] * 0.1 if current_rank < len(RANK_EXP) else 1000
-        print(f"Max EXP reward: {max_exp_reward}")
-        
-        # Base EXP is 10% of trade value but capped
         base_exp = min(trade_value * 0.1, max_exp_reward)
-        print(f"Base EXP (before multiplier): {base_exp}")
-        
-        # Apply multiplier based on trade type
-        exp_multipliers = {
-            'sell': 1.0,    # 100% of base for selling
-            'buy': 2.0,     # 200% of base for buying
-            'swap': 3.0     # 300% of base for swapping
-        }
+        exp_multipliers = {'sell': 1.0, 'buy': 2.0, 'swap': 3.0}
         exp_reward = base_exp * exp_multipliers.get(trade['type'], 1.0)
-        print(f"Final EXP reward (after {exp_multipliers.get(trade['type'])}x multiplier): {exp_reward}")
         
         # Update EXP and check for rank up
         new_exp = current_exp + exp_reward
         new_rank = current_rank
-        
-        # Check for rank up
         while new_rank < len(RANK_EXP) and new_exp >= RANK_EXP[new_rank]:
             new_exp -= RANK_EXP[new_rank]
             new_rank += 1
         
-        # Process the trade
+        # Process inventory changes
         new_inventory = []
         used_indices = set()
         
-        # Remove requested skins from inventory
+        # Remove requested skins
         for required_skin in (item for item in trade['requesting'] if item['type'] == 'skin'):
             for i, inv_item in enumerate(inventory):
                 if (i not in used_indices and
@@ -3194,7 +3168,7 @@ def complete_trade():
         # Keep items that weren't traded
         new_inventory = [item for i, item in enumerate(inventory) if i not in used_indices]
         
-        # Add offered skins to inventory
+        # Add offered skins
         for offered_item in trade['offering']:
             if offered_item['type'] == 'skin':
                 skin_item = {
@@ -3215,12 +3189,18 @@ def complete_trade():
         money_paid = sum(item['amount'] for item in trade['requesting'] if item['type'] == 'money')
         new_balance = current_balance + money_received - money_paid
         
-        # Save changes
+        # Save user changes
         user_data['balance'] = new_balance
         user_data['inventory'] = new_inventory
         user_data['exp'] = new_exp
         user_data['rank'] = new_rank
         save_user_data(user_data)
+        
+        # Mark trade as completed
+        if 'completed_trades' not in trades_data:
+            trades_data['completed_trades'] = []
+        trades_data['completed_trades'].append(trade)
+        save_daily_trades(trades_data)
         
         return jsonify({
             'success': True,
@@ -3234,6 +3214,7 @@ def complete_trade():
         
     except Exception as e:
         print(f"Error completing trade: {e}")
+        traceback.print_exc()  # Add this to get more detailed error info
         return jsonify({'error': 'Failed to complete trade'})
 
 @app.route('/chat_with_bot', methods=['POST'])
@@ -4041,6 +4022,24 @@ def complete_achievement():
     except Exception as e:
         print(f"Error completing achievement: {e}")
         return jsonify({'error': str(e)})
+
+# Add these helper functions
+def load_daily_trades():
+    """Load daily trades from JSON file"""
+    try:
+        with open('data/daily_trades.json', 'r') as f:
+            data = json.load(f)
+            # Initialize completed_trades if it doesn't exist
+            if 'completed_trades' not in data:
+                data['completed_trades'] = []
+            return data
+    except FileNotFoundError:
+        return {'date': datetime.now().strftime('%Y-%m-%d'), 'trades': [], 'completed_trades': []}
+
+def save_daily_trades(trades_data):
+    """Save daily trades to JSON file"""
+    with open('data/daily_trades.json', 'w') as f:
+        json.dump(trades_data, f, indent=2)
 
 if __name__ == '__main__':
     app.run(debug=True)

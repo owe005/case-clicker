@@ -1509,16 +1509,24 @@ function updateSellAllButton() {
     
     skins.forEach(skin => {
         const priceElement = skin.querySelector('.item-price');
+        const countElement = skin.querySelector('.skin-count');
         if (priceElement) {
             const price = parseFloat(priceElement.textContent.replace('$', ''));
+            const count = countElement ? parseInt(countElement.textContent.replace('x', '')) : 1;
             if (!isNaN(price)) {
-                totalValue += price;
+                totalValue += price * count;
             }
         }
     });
     
-    sellAllBtn.textContent = `Sell All: $${totalValue.toFixed(2)}`;
-    sellAllBtn.dataset.totalValue = totalValue;
+    // Only show amount if there are items to sell
+    if (totalValue > 0) {
+        sellAllBtn.textContent = `Sell All: $${totalValue.toFixed(2)}`;
+        sellAllBtn.dataset.totalValue = totalValue;
+    } else {
+        sellAllBtn.textContent = 'Sell All: $0.00';
+        sellAllBtn.dataset.totalValue = '0';
+    }
 }
 
 // Add sell all functionality
@@ -1552,6 +1560,12 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
             return;
         }
         
+        // Update balance display immediately
+        const balanceElement = document.querySelector('.balance');
+        if (balanceElement) {
+            balanceElement.textContent = `Balance: $${data.balance.toFixed(2)}`;
+        }
+        
         // Remove all skins with animation
         const skins = document.querySelectorAll('.skin');
         skins.forEach(skin => {
@@ -1561,7 +1575,11 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
         setTimeout(() => {
             const inventoryItems = document.getElementById('inventory-items');
             inventoryItems.innerHTML = '';
-            updateSellAllButton();
+            
+            // Reset sell all button
+            const sellAllBtn = document.getElementById('sell-all-btn');
+            sellAllBtn.textContent = 'Sell All: $0.00';
+            sellAllBtn.dataset.totalValue = '0';
         }, 300);
         
     } catch (error) {

@@ -770,7 +770,14 @@ async function completeTrade(tradeIndex) {
         const data = await response.json();
 
         if (data.error) {
-            showToast(data.error, 'error');
+            if (data.error === 'Trade no longer available') {
+                // Remove the trade from display and refresh
+                currentTrades.splice(tradeIndex, 1);
+                refreshTradesDisplay();
+                showToast('This trade is no longer available', 'error');
+            } else {
+                showToast(data.error, 'error');
+            }
             return;
         }
 
