@@ -425,6 +425,66 @@
 .chat-area.minimized {
     height: auto;
 }
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+}
+
+.toast {
+    background: #2ecc71;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: slideIn 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
+}
+
+.toast.error {
+    background: #e74c3c;
+}
+
+.toast-icon {
+    font-size: 1.2em;
+}
+
+.toast-message {
+    font-weight: 500;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
 </style>
 
 <div class="trading-container">
@@ -477,6 +537,10 @@
             <button class="modal-btn cancel-btn">Cancel</button>
         </div>
     </div>
+</div>
+
+<div class="toast-container">
+    <!-- Toasts will be added here dynamically -->
 </div>
 
 {% endblock %}
@@ -677,7 +741,7 @@ async function completeTrade(tradeIndex) {
         const data = await response.json();
 
         if (data.error) {
-            alert(data.error);
+            showToast(data.error, 'error');
             return;
         }
 
@@ -710,13 +774,34 @@ async function completeTrade(tradeIndex) {
         currentTrades.splice(tradeIndex, 1);
         refreshTradesDisplay();
 
-        // Show success message with EXP gained
-        alert(`Trade completed successfully! +${Math.floor(data.expGained)} EXP`);
+        // Show success toast
+        showToast(`Trade completed! +${Math.floor(data.expGained)} EXP`);
 
     } catch (error) {
         console.error('Error completing trade:', error);
-        alert('Failed to complete trade');
+        showToast('Failed to complete trade', 'error');
     }
+}
+
+// Add this new function to handle toast notifications
+function showToast(message, type = 'success') {
+    const toastContainer = document.querySelector('.toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✓' : '✕';
+    
+    toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <span class="toast-message">${message}</span>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Remove the toast after animation completes
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
 function refreshTradesDisplay() {
