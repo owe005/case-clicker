@@ -1,22 +1,10 @@
 {
-  "balance": 749.0,
-  "inventory": [
-    {
-      "weapon": "Bayonet",
-      "name": "Blue Steel",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 251.0,
-      "timestamp": 1735908740.0171108,
-      "case_type": "bravo",
-      "is_case": false
-    }
-  ],
+  "balance": 919.1549999999999,
+  "inventory": [],
   "exp": 0,
   "rank": 0,
   "upgrades": {
-    "click_value": 1,
+    "click_value": 2,
     "max_multiplier": 1,
     "auto_clicker": 0,
     "combo_speed": 1,
@@ -36,18 +24,42 @@
         "reward": 100,
         "exp_reward": 1000,
         "icon": "\ud83d\udcb5",
-        "current_value": 753.0,
+        "current_value": 0,
         "category": "special",
-        "progress": 75.3
+        "progress": 0.0
+      },
+      "cases_1": {
+        "id": "cases_1",
+        "title": "Case Opener",
+        "description": "Open 10 cases",
+        "target_value": 10,
+        "reward": 100,
+        "exp_reward": 0,
+        "icon": "\ud83d\udce6",
+        "current_value": 0,
+        "category": "cases",
+        "progress": 0.0
+      },
+      "clicks_1": {
+        "id": "clicks_1",
+        "title": "Dedicated Clicker",
+        "description": "Click 1,000 times",
+        "target_value": 1000,
+        "reward": 100,
+        "exp_reward": 50,
+        "icon": "\ud83d\uddb1\ufe0f",
+        "current_value": 31,
+        "category": "clicks",
+        "progress": 3.1
       }
     }
   },
   "stats": {
-    "total_earnings": 753.0,
+    "total_earnings": 0,
     "total_cases_opened": 0,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 0,
+    "total_clicks": 31,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

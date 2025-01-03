@@ -194,6 +194,9 @@
     {% block scripts %}{% endblock %}
 
     <script>
+    // Make RANKS available globally
+    const RANKS = {{ RANKS|tojson|safe }};
+
     // Function to update rank progress UI
     function updateRankProgress(exp, rank, rankName, nextRankExp) {
         // Update rank name
@@ -288,13 +291,18 @@
         const popup = document.createElement('div');
         popup.className = 'achievement-popup';
         
+        // Format rewards text based on whether there's EXP reward
+        const rewardsText = achievement.exp_reward > 0 
+            ? `+$${achievement.reward.toLocaleString()} • ${achievement.exp_reward.toLocaleString()} EXP`
+            : `+$${achievement.reward.toLocaleString()}`;
+        
         popup.innerHTML = `
             <div class="icon">${achievement.icon}</div>
             <div class="content">
                 <div class="title">Achievement Unlocked!</div>
                 <div class="description">${achievement.title}</div>
                 <div class="rewards">
-                    +$${achievement.reward.toLocaleString()} • ${achievement.exp_reward.toLocaleString()} EXP
+                    ${rewardsText}
                 </div>
             </div>
         `;

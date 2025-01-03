@@ -418,8 +418,8 @@ window.handleClick = async function(isAutoClick = false) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 
-                amount: currentMultiplier,
-                critical: isCritical 
+                multiplier: currentMultiplier,
+                is_crit: isCritical 
             })
         });
         
@@ -446,7 +446,7 @@ window.handleClick = async function(isAutoClick = false) {
         // Create floating money with critical class if it was a critical hit
         const moneyText = document.createElement('div');
         moneyText.className = `floating-money ${isCritical ? 'critical-amount' : ''}`;
-        moneyText.textContent = `+$${data.earned.toFixed(3)}`;
+        moneyText.textContent = `+$${data.click_value.toFixed(3)}`;
         moneyText.style.left = `${x}px`;
         moneyText.style.top = `${y}px`;
         document.body.appendChild(moneyText);
@@ -456,19 +456,12 @@ window.handleClick = async function(isAutoClick = false) {
         
         // Update rank progress if provided
         if (data.rank !== undefined) {
-            const rankInfo = document.querySelector('.current-rank');
-            const expInfo = document.querySelector('.exp-info');
-            const progressFill = document.querySelector('.progress-fill');
-            
-            rankInfo.textContent = data.rankName;
-            
-            if (data.nextRankExp) {
-                expInfo.textContent = `${data.exp}/${data.nextRankExp} EXP`;
-                progressFill.style.width = `${(data.exp / data.nextRankExp) * 100}%`;
-            } else {
-                expInfo.textContent = 'MAX RANK';
-                progressFill.style.width = '100%';
-            }
+            updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
+        }
+        
+        // Handle achievement if completed
+        if (data.achievement) {
+            handleAchievementComplete(data);
         }
         
     } catch (error) {

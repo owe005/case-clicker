@@ -613,6 +613,11 @@ async function openCase(caseType, count = 1) {
             updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
         }
         
+        // Store achievement data if one was completed
+        if (data.achievement) {
+            window.pendingAchievement = data.achievement;
+        }
+        
         // Update case buttons visibility based on returned upgrades
         document.querySelectorAll('.case-item').forEach(caseItem => {
             const quantity = parseInt(caseItem.querySelector('p').textContent.split(': ')[1]);
@@ -1038,6 +1043,12 @@ function showItemShowcase(items) {
         showcase.style.display = 'none';
         showcaseSound.pause();
         await refreshSkinsSection();
+        
+        // Show achievement popup if one was completed during case opening
+        if (window.pendingAchievement) {
+            showAchievementPopup(window.pendingAchievement);
+            window.pendingAchievement = null;  // Clear the pending achievement
+        }
         
         // Show level up celebration if we stored level up data
         if (items[0].levelUp) {

@@ -57,6 +57,10 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.context_processor
+def inject_ranks():
+    return {'RANKS': RANKS}
+
 def load_case(case_type: str) -> Union[Case, Dict, None]:
     """
     Load case data from JSON file. Returns either a Case object for opening cases,
@@ -230,6 +234,8 @@ def load_user_data() -> dict:
             # Initialize the first achievement
             temp_data = default_data.copy()
             update_earnings_achievements(temp_data, 0)
+            update_case_achievements(temp_data)
+            update_click_achievements(temp_data)  # Add this line
             
             # Save the initialized data
             with open(file_path, 'w') as f:
@@ -260,6 +266,8 @@ def load_user_data() -> dict:
         if 'achievements' not in result:
             result['achievements'] = default_data['achievements'].copy()
             update_earnings_achievements(result, 0)
+            update_case_achievements(result)
+            update_click_achievements(result)  # Add this line
             
         if 'stats' not in result:
             result['stats'] = default_data['stats'].copy()
@@ -553,6 +561,44 @@ def open_case(case_type):
     user_data['inventory'] = inventory
     save_user_data(user_data)
     
+    # Store initial achievements state
+    initial_achievements = set(user_data['achievements']['completed'])
+    
+    # Update total cases opened stat
+    user_data['stats']['total_cases_opened'] += count
+    
+    # Update case achievements
+    update_case_achievements(user_data)
+    
+    # Check if any new achievements were completed
+    new_achievements = set(user_data['achievements']['completed']) - initial_achievements
+    completed_achievement = None
+    if new_achievements:
+        achievement_id = list(new_achievements)[0]  # Get the first new achievement
+        level = int(achievement_id.split('_')[1])
+        completed_achievement = {
+            'title': {
+                1: 'Case Opener',
+                2: 'Case Enthusiast',
+                3: 'Case Veteran',
+                4: 'Case Master',
+                5: 'Case God'
+            }[level],
+            'icon': '📦',
+            'reward': {
+                1: 100,
+                2: 500,
+                3: 1000,
+                4: 2000,
+                5: 5000
+            }[level],
+            'exp_reward': 0,
+            'description': f'Open {"{:,.0f}".format({1: 10, 2: 100, 3: 1000, 4: 10000, 5: 100000}[level])} cases'
+        }
+    
+    # Save updated user data
+    save_user_data(user_data)
+    
     return jsonify({
         'items': items,
         'balance': user_data['balance'],
@@ -560,7 +606,8 @@ def open_case(case_type):
         'rank': current_rank,
         'rankName': RANKS[current_rank],
         'nextRankExp': RANK_EXP[current_rank] if current_rank < len(RANK_EXP) else None,
-        'upgrades': user_data.get('upgrades', {})  # Add this line
+        'achievement': completed_achievement,
+        'upgrades': user_data.get('upgrades', {})
     })
 
 @app.route('/reset_session')
@@ -571,13 +618,37 @@ def reset_session():
         'exp': 0,
         'rank': 0,
         'upgrades': {
-            'click_value': 1,  # Start at level 1
-            'max_multiplier': 1,  # Start at level 1
-            'auto_clicker': 0,  # Start at level 0
-            'combo_speed': 1,  # Start at level 1
-            'critical_strike': 0  # Start at level 0 (not unlocked)
-        }
+            'click_value': 1,
+            'max_multiplier': 1,
+            'auto_clicker': 0,
+            'combo_speed': 1,
+            'critical_strike': 0,
+            'progress_per_click': 1,
+            'case_quality': 1,
+            'multi_open': 1
+        },
+        'achievements': {
+            'completed': [],
+            'in_progress': {}
+        },
+        'stats': {
+            'total_earnings': 0,
+            'total_cases_opened': 0,
+            'total_trades_completed': 0,
+            'highest_win_streak': 0,
+            'total_clicks': 0,
+            'highest_value_item': 0,
+            'total_upgrades': 0,
+            'total_jackpots_won': 0
+        },
+        'case_progress': 0
     }
+    
+    # Initialize all achievement types
+    update_earnings_achievements(user_data, 0)
+    update_case_achievements(user_data)
+    update_click_achievements(user_data)  # Add this line
+    
     save_user_data(user_data)
     return redirect(url_for('shop'))
 
@@ -764,72 +835,79 @@ def sell_last_item():
 def click():
     try:
         data = request.get_json()
-        multiplier = float(data.get('amount', 1.0))
-        is_critical = data.get('critical', False)
-        is_auto = data.get('auto', False)
+        current_multiplier = data.get('multiplier', 1)
+        is_crit = data.get('is_crit', False)
         
         user_data = load_user_data()
         
-        # Ensure upgrades structure is complete
-        if 'upgrades' not in user_data:
-            user_data['upgrades'] = {
-                'click_value': 1,
-                'max_multiplier': 1,
-                'auto_clicker': 0,
-                'combo_speed': 1,
-                'critical_strike': 0,
-                'progress_per_click': 1,
-                'case_quality': 1,
-                'multi_open': 1  # Add this line
-            }
-        elif 'multi_open' not in user_data['upgrades']:
-            user_data['upgrades']['multi_open'] = 1  # Ensure multi_open exists
+        # Store initial achievements state
+        initial_achievements = set(user_data['achievements']['completed'])
+        initial_rank = user_data.get('rank', 0)
+        
+        # Update total clicks stat (only for manual clicks)
+        user_data['stats']['total_clicks'] += 1
+        
+        # Update click achievements
+        update_click_achievements(user_data)
         
         # Calculate click value
+        # Base value starts at 0.01 at level 1 and increases by 50% per level
         base_value = 0.01 * (1.5 ** (user_data['upgrades']['click_value'] - 1))
-        earned = base_value * multiplier
+        click_value = base_value * current_multiplier
         
-        if is_critical:
-            earned *= 4  # 4x multiplier for critical hits
+        if is_crit:
+            click_value *= 4  # Critical hits do 4x damage
         
-        # Update balance
-        user_data['balance'] = float(user_data['balance']) + earned
+        user_data['balance'] += click_value
         
-        # Add exp based on earnings
-        current_exp = float(user_data.get('exp', 0))
-        current_rank = int(user_data.get('rank', 0))
+        # Check if any new achievements were completed
+        new_achievements = set(user_data['achievements']['completed']) - initial_achievements
+        completed_achievement = None
+        if new_achievements:
+            achievement_id = list(new_achievements)[0]
+            level = int(achievement_id.split('_')[1])
+            completed_achievement = {
+                'title': {
+                    1: 'Dedicated Clicker',
+                    2: 'Click Enthusiast',
+                    3: 'Click Master',
+                    4: 'Click Expert',
+                    5: 'Click God'
+                }[level],
+                'icon': '🖱️',
+                'reward': {
+                    1: 100,
+                    2: 200,
+                    3: 400,
+                    4: 800,
+                    5: 2000
+                }[level],
+                'exp_reward': {
+                    1: 50,
+                    2: 100,
+                    3: 200,
+                    4: 400,
+                    5: 1000
+                }[level]
+            }
         
-        # Add exp (1 exp per dollar earned)
-        new_exp = current_exp + earned
-        
-        # Check for rank up
-        while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
-            new_exp -= RANK_EXP[current_rank]
-            current_rank += 1
-        
-        user_data['exp'] = new_exp
-        user_data['rank'] = current_rank
-        
-        # Save updated user data
         save_user_data(user_data)
         
-        response_data = {
+        return jsonify({
             'success': True,
-            'earned': earned,
             'balance': user_data['balance'],
-            'exp': new_exp,
-            'rank': current_rank,
-            'rankName': RANKS[current_rank]
-        }
-        
-        if current_rank < len(RANK_EXP):
-            response_data['nextRankExp'] = RANK_EXP[current_rank]
-        
-        return jsonify(response_data)
+            'click_value': click_value,
+            'achievement': completed_achievement,
+            'exp': user_data['exp'],
+            'rank': user_data['rank'],
+            'rankName': RANKS[user_data['rank']],
+            'nextRankExp': RANK_EXP[user_data['rank']] if user_data['rank'] < len(RANK_EXP) else None,
+            'levelUp': user_data['rank'] > initial_rank
+        })
         
     except Exception as e:
         print(f"Error in click: {e}")
-        return jsonify({'error': 'Failed to process click'})
+        return jsonify({'error': str(e)})
 
 @app.route('/update_session', methods=['POST'])
 def update_session():
@@ -3273,7 +3351,7 @@ Never break character or write long messages."""
             print("Sending request to OpenAI API...")
             
             completion = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": system_message},
                     *conversation_history
@@ -3441,11 +3519,13 @@ def achievements():
             'in_progress': {}
         }
         update_earnings_achievements(user_data, 0)
+        update_case_achievements(user_data)
         save_user_data(user_data)
     
     # Get completed achievements data
     completed_achievements = []
     for achievement_id in user_data['achievements']['completed']:
+        # Handle earnings achievements
         if achievement_id.startswith('earnings_'):
             level = int(achievement_id.split('_')[1])
             achievement_data = {
@@ -3498,13 +3578,52 @@ def achievements():
                 }[level]
             }
             completed_achievements.append(achievement_data)
+        # Handle case achievements
+        elif achievement_id.startswith('cases_'):
+            level = int(achievement_id.split('_')[1])
+            achievement_data = {
+                'id': achievement_id,
+                'completed': True,
+                'progress': 100,
+                'current_value': {
+                    1: 10,
+                    2: 100,
+                    3: 1000,
+                    4: 10000,
+                    5: 100000
+                }[level],
+                'target_value': {
+                    1: 10,
+                    2: 100,
+                    3: 1000,
+                    4: 10000,
+                    5: 100000
+                }[level],
+                'category': 'cases',
+                'title': {
+                    1: 'Case Opener',
+                    2: 'Case Enthusiast',
+                    3: 'Case Veteran',
+                    4: 'Case Master',
+                    5: 'Case God'
+                }[level],
+                'description': f'Open {"{:,.0f}".format({1: 10, 2: 100, 3: 1000, 4: 10000, 5: 100000}[level])} cases',
+                'icon': '📦',
+                'reward': {
+                    1: 100,
+                    2: 500,
+                    3: 1000,
+                    4: 2000,
+                    5: 5000
+                }[level],
+                'exp_reward': 0
+            }
+            completed_achievements.append(achievement_data)
     
-    # Get only the current in-progress earnings achievement
+    # Get all in-progress achievements
     in_progress_achievements = []
     for achievement in user_data['achievements']['in_progress'].values():
-        if achievement['id'].startswith('earnings_'):
-            in_progress_achievements.append(achievement)
-            break  # Only get the first one since we only want to show the current tier
+        in_progress_achievements.append(achievement)
     
     # Combine achievements - completed ones first, then the current in-progress one
     all_achievements = completed_achievements + in_progress_achievements
@@ -3513,17 +3632,16 @@ def achievements():
     all_achievements.sort(key=lambda x: x['id'])
     
     # Calculate summary statistics
-    total_count = len(all_achievements)  # This now represents total tiers completed + current
-    completed_count = len(completed_achievements)
-    completion_rate = round((completed_count / 5 * 100))  # Always out of 5 total tiers
-    
+    total_tiers = 15  # 5 earnings + 5 case + 5 click achievements
+    completion_rate = round((len(completed_achievements) / total_tiers * 100))
+
     # Calculate total rewards earned from completed achievements
     total_rewards = sum(achievement['reward'] for achievement in completed_achievements)
     
     return render_template('achievements.html',
                          achievements=all_achievements,
-                         completed_count=completed_count,
-                         total_count=5,  # Always show out of 5 total tiers
+                         completed_count=len(completed_achievements),
+                         total_count=total_tiers,  # Show out of 15 total tiers
                          completion_rate=completion_rate,
                          total_rewards=total_rewards,
                          balance=user_data['balance'],
@@ -3533,7 +3651,7 @@ def achievements():
                          RANK_EXP=RANK_EXP)
 
 # Add this function near the top with other helper functions
-def update_earnings_achievements(user_data, amount_earned):
+def update_earnings_achievements(user_data: dict, amount_earned):
     """Update earnings-related achievements when user earns money"""
     
     # Initialize achievements if needed
@@ -3561,7 +3679,7 @@ def update_earnings_achievements(user_data, amount_earned):
             'description': 'Earn your first $1,000',
             'target_value': 1000,
             'reward': 100,
-            'exp_reward': 1000,  # Add EXP reward
+            'exp_reward': 1000,
             'icon': '💵'
         },
         {
@@ -3615,9 +3733,9 @@ def update_earnings_achievements(user_data, amount_earned):
             current_tier['current_value'] = total_earnings
             current_tier['category'] = 'special'
             current_tier['progress'] = min(100, (total_earnings / current_tier['target_value']) * 100)
-            user_data['achievements']['in_progress'] = {
+            user_data['achievements']['in_progress'].update({
                 current_tier['id']: current_tier
-            }
+            })
         else:
             # Update progress
             if total_earnings >= current_tier['target_value']:
@@ -3638,8 +3756,8 @@ def update_earnings_achievements(user_data, amount_earned):
                 user_data['exp'] = new_exp
                 user_data['rank'] = current_rank
                 
-                # Clear in_progress
-                user_data['achievements']['in_progress'] = {}
+                # Remove only this achievement from in_progress
+                del user_data['achievements']['in_progress'][current_tier['id']]
                 # Recursively call to set up next tier
                 update_earnings_achievements(user_data, 0)
             else:
@@ -3647,6 +3765,209 @@ def update_earnings_achievements(user_data, amount_earned):
                 user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_earnings
                 user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
                     (total_earnings / current_tier['target_value']) * 100
+
+def update_case_achievements(user_data: dict):
+    """Update case opening related achievements"""
+    
+    # Initialize achievements if needed
+    if 'achievements' not in user_data:
+        user_data['achievements'] = {
+            'completed': [],
+            'in_progress': {}
+        }
+    
+    # Get current total cases opened
+    total_cases = user_data['stats']['total_cases_opened']
+    
+    # Define case achievement tiers
+    tiers = [
+        {
+            'id': 'cases_1',
+            'title': 'Case Opener',
+            'description': 'Open 10 cases',
+            'target_value': 10,
+            'reward': 100,
+            'exp_reward': 0,
+            'icon': '📦'
+        },
+        {
+            'id': 'cases_2',
+            'title': 'Case Enthusiast',
+            'description': 'Open 100 cases',
+            'target_value': 100,
+            'reward': 500,
+            'exp_reward': 0,
+            'icon': '📦'
+        },
+        {
+            'id': 'cases_3',
+            'title': 'Case Veteran',
+            'description': 'Open 1,000 cases',
+            'target_value': 1000,
+            'reward': 1000,
+            'exp_reward': 0,
+            'icon': '📦'
+        },
+        {
+            'id': 'cases_4',
+            'title': 'Case Master',
+            'description': 'Open 10,000 cases',
+            'target_value': 10000,
+            'reward': 2000,
+            'exp_reward': 0,
+            'icon': '📦'
+        },
+        {
+            'id': 'cases_5',
+            'title': 'Case God',
+            'description': 'Open 100,000 cases',
+            'target_value': 100000,
+            'reward': 5000,
+            'exp_reward': 0,
+            'icon': '📦'
+        }
+    ]
+    
+    # Find current tier
+    current_tier = None
+    for tier in tiers:
+        if tier['id'] not in user_data['achievements']['completed']:
+            current_tier = tier
+            break
+    
+    if current_tier:
+        # Update or add current tier achievement
+        if current_tier['id'] not in user_data['achievements']['in_progress']:
+            current_tier['current_value'] = total_cases
+            current_tier['category'] = 'cases'
+            current_tier['progress'] = min(100, (total_cases / current_tier['target_value']) * 100)
+            user_data['achievements']['in_progress'].update({
+                current_tier['id']: current_tier
+            })
+        else:
+            # Update progress
+            if total_cases >= current_tier['target_value']:
+                # Complete current tier
+                user_data['achievements']['completed'].append(current_tier['id'])
+                user_data['balance'] += current_tier['reward']
+                
+                # Remove only this achievement from in_progress
+                del user_data['achievements']['in_progress'][current_tier['id']]
+                # Recursively call to set up next tier
+                update_case_achievements(user_data)
+            else:
+                # Update progress
+                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_cases
+                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
+                    (total_cases / current_tier['target_value']) * 100
+
+def update_click_achievements(user_data: dict):
+    """Update click-related achievements"""
+    
+    # Initialize achievements if needed
+    if 'achievements' not in user_data:
+        user_data['achievements'] = {
+            'completed': [],
+            'in_progress': {}
+        }
+    
+    # Get current total clicks
+    total_clicks = user_data['stats']['total_clicks']
+    
+    # Define click achievement tiers
+    tiers = [
+        {
+            'id': 'clicks_1',
+            'title': 'Dedicated Clicker',
+            'description': 'Click 1,000 times',
+            'target_value': 1000,
+            'reward': 100,
+            'exp_reward': 50,
+            'icon': '🖱️'
+        },
+        {
+            'id': 'clicks_2',
+            'title': 'Click Enthusiast',
+            'description': 'Click 5,000 times',
+            'target_value': 5000,
+            'reward': 200,
+            'exp_reward': 100,
+            'icon': '🖱️'
+        },
+        {
+            'id': 'clicks_3',
+            'title': 'Click Master',
+            'description': 'Click 10,000 times',
+            'target_value': 10000,
+            'reward': 400,
+            'exp_reward': 200,
+            'icon': '🖱️'
+        },
+        {
+            'id': 'clicks_4',
+            'title': 'Click Expert',
+            'description': 'Click 20,000 times',
+            'target_value': 20000,
+            'reward': 800,
+            'exp_reward': 400,
+            'icon': '🖱️'
+        },
+        {
+            'id': 'clicks_5',
+            'title': 'Click God',
+            'description': 'Click 50,000 times',
+            'target_value': 50000,
+            'reward': 2000,
+            'exp_reward': 1000,
+            'icon': '🖱️'
+        }
+    ]
+    
+    # Find current tier
+    current_tier = None
+    for tier in tiers:
+        if tier['id'] not in user_data['achievements']['completed']:
+            current_tier = tier
+            break
+    
+    if current_tier:
+        # Update or add current tier achievement
+        if current_tier['id'] not in user_data['achievements']['in_progress']:
+            current_tier['current_value'] = total_clicks
+            current_tier['category'] = 'clicks'
+            current_tier['progress'] = min(100, (total_clicks / current_tier['target_value']) * 100)
+            user_data['achievements']['in_progress'].update({
+                current_tier['id']: current_tier
+            })
+        else:
+            # Update progress
+            if total_clicks >= current_tier['target_value']:
+                # Complete current tier
+                user_data['achievements']['completed'].append(current_tier['id'])
+                user_data['balance'] += current_tier['reward']
+                
+                # Add EXP reward
+                current_exp = float(user_data.get('exp', 0))
+                current_rank = int(user_data.get('rank', 0))
+                new_exp = current_exp + current_tier['exp_reward']
+                
+                # Check for rank up
+                while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+                    new_exp -= RANK_EXP[current_rank]
+                    current_rank += 1
+                
+                user_data['exp'] = new_exp
+                user_data['rank'] = current_rank
+                
+                # Remove only this achievement from in_progress
+                del user_data['achievements']['in_progress'][current_tier['id']]
+                # Recursively call to set up next tier
+                update_click_achievements(user_data)
+            else:
+                # Update progress
+                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_clicks
+                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
+                    (total_clicks / current_tier['target_value']) * 100
 
 @app.route('/clicker')
 @login_required
