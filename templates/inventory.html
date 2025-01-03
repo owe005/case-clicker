@@ -62,6 +62,7 @@
             <div class="item-skin">
                 {{ item.name }} ({{ item.wear }})
             </div>
+            <div class="item-float">Float: {{ "%.8f"|format(item.float_value|float) }}</div>
             <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
             <button class="btn sell-btn" data-sell-index="{{ skin_count.value }}" data-count="{{ item.count }}">Sell</button>
         </div>
@@ -286,6 +287,176 @@
     font-weight: bold;
     z-index: 1;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Ensure case items are consistently styled */
+.case-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 12px;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.case-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.case-item img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.item-details h3 {
+    font-size: 1.4em;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.item-details p {
+    font-size: 1.1em;
+    margin: 0;
+    color: #ccc;
+}
+
+.case-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    margin-top: auto;
+}
+
+.btn-small {
+    background: linear-gradient(to bottom, #4a4a4a, #3a3a3a);
+    color: white;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-small:hover {
+    background: linear-gradient(to bottom, #5a5a5a, #4a4a4a);
+    transform: translateY(-1px);
+}
+
+.btn-small:active {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
+    transform: translateY(1px);
+}
+
+.btn-small::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.btn-small:hover::before {
+    left: 100%;
+}
+
+/* Update the items grid for cases */
+#cases-section .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .case-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .case-item img {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto;
+    }
+    
+    #cases-section .items-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .case-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+}
+
+.item-float {
+    font-size: 12px;
+    color: #888;
+    margin: 2px 0;
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+/* Update float color based on value ranges */
+.skin[data-float-value^="0.00"] .item-float {
+    color: #eb4b4b; /* Red for very low float */
+}
+
+.skin[data-float-value^="0.01"] .item-float,
+.skin[data-float-value^="0.02"] .item-float {
+    color: #d32ce6; /* Pink for low float */
+}
+
+.skin[data-float-value^="0.03"],
+.skin[data-float-value^="0.04"] .item-float {
+    color: #8847ff; /* Purple for good float */
+}
+
+.skin[data-float-value^="0.95"],
+.skin[data-float-value^="0.96"],
+.skin[data-float-value^="0.97"],
+.skin[data-float-value^="0.98"],
+.skin[data-float-value^="0.99"] .item-float {
+    color: #4b69ff; /* Blue for high float */
+}
+
+/* Adjust skin card layout to accommodate float value */
+.skin {
+    padding-bottom: 8px; /* Add a bit more padding at bottom */
+}
+
+.item-price {
+    margin-top: 4px; /* Add some space between float and price */
 }
 </style>
 
@@ -554,207 +725,274 @@ async function loadCaseContents(caseType) {
     return caseContents[caseType];
 }
 
-// Update the openCase function
+// Keep the complete openCase function with all the case opening logic
 async function openCase(caseType, count = 1) {
-    if (count < 1 || count > 5) {
-        console.error('Invalid case count:', count);
-        return;
-    }
-
+    console.log('=== Starting openCase ===');
+    console.log('Parameters:', { caseType, count });
+    
+    // Create a promise to track animation completion
+    let animationComplete = false;
+    let overlayRemoved = false;
+    
     try {
-        // Load case contents if not already loaded
-        await loadCaseContents(caseType);
+        // Check for existing overlay
+        const existingOverlay = document.getElementById('case-opening-overlay');
+        console.log('Initial overlay check:', { exists: !!existingOverlay });
         
-        // Store initial rank before opening case
-        const initialRank = parseInt(document.querySelector('.current-rank').dataset.rank || '0');
+        if (existingOverlay) {
+            console.log('Removing existing overlay');
+            existingOverlay.remove();
+        }
         
-        // Send request to open case(s)
-        const response = await fetch(`/open/${caseType}?count=${count}`);
-        const data = await response.json();
+        console.log('Creating new overlay');
+        let overlay = document.createElement('div');
+        overlay.id = 'case-opening-overlay';
+        overlay.className = 'hidden';
+        overlay.innerHTML = `
+            <audio id="spinning-sound" preload="auto">
+                <source src="/static/media/case_spinning.mp3" type="audio/mpeg">
+            </audio>
+            <div class="spinner-containers">
+                ${Array(5).fill(0).map((_, i) => `
+                    <div class="spinner-container ${i > 0 ? 'hidden' : ''}">
+                        <div class="spinner"></div>
+                        <div class="spinner-selector"></div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
         
-        console.log('Case opening response:', data);
+        console.log('Appending overlay to document.body');
+        document.body.appendChild(overlay);
         
-        if (data.error) {
-            alert(data.error);
-            // Even on error, update the buttons visibility using current upgrades
-            const currentUpgrades = {{ upgrades|tojson }};  // Get upgrades from template
-            document.querySelectorAll('.case-item').forEach(caseItem => {
-                const quantity = parseInt(caseItem.querySelector('p').textContent.split(': ')[1]);
-                const buttons = caseItem.querySelectorAll('.case-buttons button');
-                
-                buttons.forEach((button, index) => {
-                    const count = index + 1;
-                    if (count > 1) {
-                        button.style.display = (currentUpgrades.multi_open >= count && quantity >= count) ? 'block' : 'none';
+        // Create a mutation observer to track if overlay is removed
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                for (const node of mutation.removedNodes) {
+                    if (node.id === 'case-opening-overlay' && !animationComplete) {
+                        overlayRemoved = true;
+                        observer.disconnect();
+                        // Recreate overlay if it was removed before animation completed
+                        if (!animationComplete) {
+                            document.body.appendChild(overlay.cloneNode(true));
+                        }
                     }
-                });
-            });
-            return;
-        }
-        
-        // Update balance
-        document.getElementById('balance').textContent = data.balance.toFixed(2);
-        
-        // Update rank progress if exp data is available
-        if (data.exp !== undefined && data.rank !== undefined) {
-            if (data.rank > initialRank) {
-                console.log('Level up detected!', {
-                    initialRank,
-                    newRank: data.rank,
-                    rankName: data.rankName
-                });
-                data.items.forEach(item => {
-                    item.levelUp = {
-                        fromRank: initialRank,
-                        toRank: data.rank
-                    };
-                });
-            }
-            updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
-        }
-        
-        // Store achievement data if one was completed
-        if (data.achievement) {
-            window.pendingAchievement = data.achievement;
-        }
-        
-        // Update case buttons visibility based on returned upgrades
-        document.querySelectorAll('.case-item').forEach(caseItem => {
-            const quantity = parseInt(caseItem.querySelector('p').textContent.split(': ')[1]);
-            const buttons = caseItem.querySelectorAll('.case-buttons button');
-            
-            buttons.forEach((button, index) => {
-                const count = index + 1;
-                if (count > 1) {
-                    button.style.display = (data.upgrades.multi_open >= count && quantity >= count) ? 'block' : 'none';
                 }
-            });
+            }
         });
         
-        // Update case quantity in UI
-        const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)
-            ?.closest('.case-item');
-        if (!caseElement) {
-            console.error('Case element not found');
+        // Start observing
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        console.log('Waiting for DOM update');
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        if (count < 1 || count > 5) {
+            console.error('Invalid case count:', count);
             return;
         }
+
+        try {
+            console.log('Loading case contents');
+            await loadCaseContents(caseType);
+            
+            console.log('Fetching case open response');
+            const response = await fetch(`/open/${caseType}?count=${count}`);
+            const data = await response.json();
+            console.log('Server response:', data);
+            
+            if (data.error) {
+                console.error('Server returned error:', data.error);
+                alert(data.error);
+                return;
+            }
+
+            // Get fresh reference to overlay and elements
+            console.log('Getting fresh overlay reference');
+            overlay = document.getElementById('case-opening-overlay');
+            console.log('Fresh overlay check:', { exists: !!overlay });
+            
+            if (!overlay) {
+                console.error('Overlay missing after server response');
+                console.log('Current DOM state:', {
+                    body: document.body.innerHTML,
+                    overlayElements: document.querySelectorAll('#case-opening-overlay'),
+                    activeElement: document.activeElement
+                });
+                throw new Error('Overlay element not found after server response');
+            }
+            
+            const spinningSound = document.getElementById('spinning-sound');
+            const spinnerContainers = overlay.querySelectorAll('.spinner-container');
+            console.log('Elements check:', {
+                hasSound: !!spinningSound,
+                containerCount: spinnerContainers.length
+            });
+            
+            // Generate random items for each spinner
+            const spinnerResults = [];
+            for (let i = 0; i < count; i++) {
+                const { items, winningPosition } = generateRandomItems(data.items[i]);
+                spinnerResults.push({ items, winningPosition });
+            }
+            
+            // Show overlay and play sound
+            overlay.classList.remove('hidden');
+            if (spinningSound) {
+                spinningSound.currentTime = 0;
+                spinningSound.play().catch(e => console.warn('Audio playback failed:', e));
+            }
+            
+            // Clear and show/hide spinner containers based on count
+            spinnerContainers.forEach((container, index) => {
+                if (index < count) {
+                    // Show and clear containers we'll use
+                    container.classList.remove('hidden');
+                    const spinner = container.querySelector('.spinner');
+                    if (spinner) {
+                        spinner.innerHTML = '';
+                        
+                        // Create spinner items only for active containers
+                        const result = spinnerResults[index];
+                        const elements = result.items.map((item, itemIndex) => {
+                            const element = createItemElement(item);
+                            if (itemIndex === result.winningPosition) {
+                                element.dataset.winning = 'true';
+                            }
+                            return element;
+                        });
+
+                        elements.forEach(element => spinner.appendChild(element));
+                        
+                        // Set initial position
+                        spinner.style.transition = 'none';
+                        spinner.style.transform = 'translateX(0)';
+                    }
+                } else {
+                    // Completely hide unused containers
+                    container.classList.add('hidden');
+                    const spinner = container.querySelector('.spinner');
+                    if (spinner) {
+                        spinner.innerHTML = '';
+                    }
+                }
+            });
+            
+            // Force reflow for active spinners
+            spinnerContainers.forEach((container, index) => {
+                if (index < count) {
+                    const spinner = container.querySelector('.spinner');
+                    if (spinner) {
+                        spinner.offsetHeight; // Force reflow
+                    }
+                }
+            });
+            
+            // Start synchronized spin animation only for active spinners
+            spinnerContainers.forEach((container, index) => {
+                if (index < count) {
+                    const spinner = container.querySelector('.spinner');
+                    if (spinner) {
+                        const result = spinnerResults[index];
+                        
+                        const itemWidth = 200;
+                        const containerWidth = container.offsetWidth;
+                        const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+                        const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2);
+                        const finalPosition = (result.winningPosition * itemWidth) - centerOffset + randomOffset;
+                        
+                        // Use the same transition for all spinners
+                        spinner.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)';
+                        // Start all animations in the next frame
+                        requestAnimationFrame(() => {
+                            spinner.style.transform = `translateX(-${finalPosition}px)`;
+                        });
+                    }
+                }
+            });
+            
+            // Update UI elements
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            
+            if (data.exp !== undefined && data.rank !== undefined) {
+                updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
+            }
+            
+            // Handle achievement if present
+            if (data.achievement) {
+                window.pendingAchievement = data.achievement;
+            }
+            
+            // Update case buttons visibility
+            updateCaseButtonsVisibility(data.upgrades);
+            
+            // Update case quantity
+            updateCaseQuantity(caseType, count);
+            
+            // Update the animation completion handler
+            setTimeout(() => {
+                animationComplete = true;
+                observer.disconnect();
+                
+                const currentOverlay = document.getElementById('case-opening-overlay');
+                if (currentOverlay) {
+                    currentOverlay.classList.add('hidden');
+                    const sound = document.getElementById('spinning-sound');
+                    if (sound) {
+                        sound.pause();
+                    }
+                }
+                showItemShowcase(data.items);
+                sessionStorage.removeItem('newItem');
+            }, 6300);
+            
+        } catch (error) {
+            console.error('Error in openCase:', error);
+            alert('Failed to open case');
+        } finally {
+            // Clean up observer if it's still active
+            if (!animationComplete) {
+                observer.disconnect();
+            }
+        }
+    } catch (error) {
+        console.error('Error in openCase:', error);
+        alert('Failed to open case');
+    }
+}
+
+// Add helper function to update case buttons visibility
+function updateCaseButtonsVisibility(upgrades) {
+    document.querySelectorAll('.case-item').forEach(caseItem => {
+        const quantityElement = caseItem.querySelector('p');
+        const quantity = parseInt(quantityElement.textContent.split(': ')[1]);
+        const buttons = caseItem.querySelectorAll('.case-buttons button');
         
+        buttons.forEach((button, index) => {
+            const count = index + 1;
+            if (count > 1) {
+                button.style.display = (upgrades.multi_open >= count && quantity >= count) ? 'block' : 'none';
+            }
+        });
+    });
+}
+
+// Add helper function to update case quantity
+function updateCaseQuantity(caseType, count) {
+    const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)?.closest('.case-item');
+    if (caseElement) {
         const quantityElement = caseElement.querySelector('p');
         const currentQuantity = parseInt(quantityElement.textContent.match(/\d+/)[0]);
-        
         const newQuantity = currentQuantity - count;
+        
         quantityElement.textContent = `Quantity: ${newQuantity}`;
         
-        // If quantity is 0, remove the case item
         if (newQuantity <= 0) {
             caseElement.remove();
         } else {
-            // Update button visibility based on new quantity and upgrade level
-            const buttonsContainer = caseElement.querySelector('.case-buttons');
-            const currentUpgrades = {{ upgrades|tojson }};  // Get upgrades from template
-            
-            buttonsContainer.innerHTML = `
-                <button class="btn-small" onclick="openCase('${caseType}', 1)">Open 1x</button>
-                ${newQuantity >= 2 && currentUpgrades.multi_open >= 2 ? 
-                    `<button class="btn-small" onclick="openCase('${caseType}', 2)" style="display: ${currentUpgrades.multi_open >= 2 ? 'block' : 'none'}">Open 2x</button>` : ''}
-                ${newQuantity >= 3 && currentUpgrades.multi_open >= 3 ? 
-                    `<button class="btn-small" onclick="openCase('${caseType}', 3)" style="display: ${currentUpgrades.multi_open >= 3 ? 'block' : 'none'}">Open 3x</button>` : ''}
-                ${newQuantity >= 4 && currentUpgrades.multi_open >= 4 ? 
-                    `<button class="btn-small" onclick="openCase('${caseType}', 4)" style="display: ${currentUpgrades.multi_open >= 4 ? 'block' : 'none'}">Open 4x</button>` : ''}
-                ${newQuantity >= 5 && currentUpgrades.multi_open >= 5 ? 
-                    `<button class="btn-small" onclick="openCase('${caseType}', 5)" style="display: ${currentUpgrades.multi_open >= 5 ? 'block' : 'none'}">Open 5x</button>` : ''}
-            `;
+            // Update button visibility after changing quantity
+            updateCaseButtonsVisibility({ multi_open: 5 }); // Assuming max multi_open level is 5
         }
-        
-        // Show case opening animation
-        const overlay = document.getElementById('case-opening-overlay');
-        const spinnerContainers = overlay.querySelectorAll('.spinner-container');
-        const spinningSound = document.getElementById('spinning-sound');
-        
-        // Generate random items for each spinner
-        const spinnerResults = [];
-        for (let i = 0; i < count; i++) {
-            const { items, winningPosition } = generateRandomItems(data.items[i]);
-            spinnerResults.push({ items, winningPosition });
-        }
-        
-        // Show overlay and play sound
-        overlay.classList.remove('hidden');
-        spinningSound.currentTime = 0;
-        spinningSound.play();
-        
-        // Clear and show/hide spinner containers based on count
-        spinnerContainers.forEach((container, index) => {
-            if (index < count) {
-                // Show and clear containers we'll use
-                container.classList.remove('hidden');
-                container.querySelector('.spinner').innerHTML = '';
-                
-                // Create spinner items only for active containers
-                const spinner = container.querySelector('.spinner');
-                const result = spinnerResults[index];
-                
-                const elements = result.items.map((item, itemIndex) => {
-                    const element = createItemElement(item);
-                    if (itemIndex === result.winningPosition) {
-                        element.dataset.winning = 'true';
-                    }
-                    return element;
-                });
-
-                elements.forEach(element => spinner.appendChild(element));
-                
-                // Set initial position
-                spinner.style.transition = 'none';
-                spinner.style.transform = 'translateX(0)';
-            } else {
-                // Completely hide unused containers
-                container.classList.add('hidden');
-                container.querySelector('.spinner').innerHTML = '';
-            }
-        });
-        
-        // Force reflow for active spinners
-        spinnerContainers.forEach((container, index) => {
-            if (index < count) {
-                container.querySelector('.spinner').offsetHeight;
-            }
-        });
-        
-        // Start synchronized spin animation only for active spinners
-        spinnerContainers.forEach((container, index) => {
-            if (index < count) {
-                const spinner = container.querySelector('.spinner');
-                const result = spinnerResults[index];
-                
-                const itemWidth = 200;
-                const containerWidth = container.offsetWidth;
-                const centerOffset = (containerWidth / 2) - (itemWidth / 2);
-                const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2);
-                const finalPosition = (result.winningPosition * itemWidth) - centerOffset + randomOffset;
-                
-                // Use the same transition for all spinners
-                spinner.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)';
-                // Start all animations in the next frame
-                requestAnimationFrame(() => {
-                    spinner.style.transform = `translateX(-${finalPosition}px)`;
-                });
-            }
-        });
-        
-        // Hide overlay and show result
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-            spinningSound.pause();
-            showItemShowcase(data.items);
-            
-            // Clear any stored items to prevent duplicates
-            sessionStorage.removeItem('newItem');
-        }, 6300);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to open case');
     }
 }
 
@@ -1179,6 +1417,7 @@ async function refreshSkinsSection() {
             skinDiv.className = `skin rarity-${item.rarity}`;
             skinDiv.dataset.index = skinIndex;
             skinDiv.dataset.rarity = item.rarity;
+            skinDiv.dataset.floatValue = item.float_value.toString();
             
             const weaponName = item.weapon.toLowerCase()
                 .replace('-', '')
@@ -1220,6 +1459,7 @@ async function refreshSkinsSection() {
                 <div class="item-skin">
                     ${item.name} (${item.wear})
                 </div>
+                <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
                 <div class="item-price">$${item.price.toFixed(2)}</div>
                 <button class="btn sell-btn" data-sell-index="${skinIndex}" data-count="${item.count || 1}">Sell</button>
             `;
@@ -1255,6 +1495,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const skinDiv = document.createElement('div');
         skinDiv.className = `skin rarity-${item.rarity}`;
         skinDiv.dataset.index = newIndex;
+        skinDiv.dataset.floatValue = item.float_value.toString();
         
         // Create weapon image
         const weaponName = item.weapon.toLowerCase()
@@ -1281,6 +1522,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="item-skin">
                 ${item.name} (${item.wear})
             </div>
+            <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
             <div class="item-price">$${item.price.toFixed(2)}</div>
             <button class="btn sell-btn" data-sell-index="${newIndex}">Sell</button>
         `;
@@ -1414,6 +1656,7 @@ async function updateInventoryDisplay() {
                 const skinDiv = document.createElement('div');
                 skinDiv.className = `skin rarity-${item.rarity}`;
                 skinDiv.dataset.index = skinIndex;  // Set the correct index
+                skinDiv.dataset.floatValue = item.float_value.toString();
                 
                 const weaponName = item.weapon.toLowerCase()
                     .replace('-', '')
@@ -1442,6 +1685,7 @@ async function updateInventoryDisplay() {
                     <div class="item-skin">
                         ${item.name} (${item.wear})
                     </div>
+                    <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
                     <div class="item-price">$${item.price.toFixed(2)}</div>
                     <button class="btn sell-btn" data-sell-index="${skinIndex}">Sell</button>
                 `;
@@ -1546,6 +1790,16 @@ document.getElementById('cancel-sell-all').addEventListener('click', function() 
 
 document.getElementById('confirm-sell-all').addEventListener('click', async function() {
     try {
+        console.log('=== Starting Sell All ===');
+        
+        // Check if case opening animation is in progress
+        const overlay = document.getElementById('case-opening-overlay');
+        if (overlay && !overlay.classList.contains('hidden')) {
+            alert('Please wait for case opening animation to complete');
+            return;
+        }
+        
+        console.log('Sending sell all request');
         const response = await fetch('/sell/all', {
             method: 'POST',
             headers: {
@@ -1554,12 +1808,27 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
         });
         
         const data = await response.json();
+        console.log('Sell all response:', data);
         
         if (data.error) {
+            console.error('Server error:', data.error);
             alert(data.error);
             return;
         }
+
+        console.log('Checking for existing overlay');
+        const existingOverlay = document.getElementById('case-opening-overlay');
+        console.log('Existing overlay:', { exists: !!existingOverlay });
         
+        if (existingOverlay) {
+            console.log('Removing existing overlay');
+            existingOverlay.remove();
+            
+            // Verify removal
+            const verifyRemoval = document.getElementById('case-opening-overlay');
+            console.log('Verify overlay removed:', { stillExists: !!verifyRemoval });
+        }
+
         // Update balance display immediately
         const balanceElement = document.querySelector('.balance');
         if (balanceElement) {
@@ -1572,33 +1841,83 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
             skin.style.animation = 'fadeOut 0.3s';
         });
         
-        setTimeout(() => {
-            const inventoryItems = document.getElementById('inventory-items');
-            inventoryItems.innerHTML = '';
-            
-            // Reset sell all button
-            const sellAllBtn = document.getElementById('sell-all-btn');
-            sellAllBtn.textContent = 'Sell All: $0.00';
-            sellAllBtn.dataset.totalValue = '0';
-        }, 300);
+        await new Promise(resolve => setTimeout(resolve, 300));
         
+        const inventoryItems = document.getElementById('inventory-items');
+        inventoryItems.innerHTML = '';
+        
+        // Reset sell all button
+        const sellAllBtn = document.getElementById('sell-all-btn');
+        sellAllBtn.textContent = 'Sell All: $0.00';
+        sellAllBtn.dataset.totalValue = '0';
+        
+        // Update case display with remaining cases
+        if (data.remaining_cases) {
+            const casesSection = document.getElementById('cases-section');
+            if (casesSection) {
+                const casesGrid = casesSection.querySelector('.items-grid');
+                if (casesGrid) {
+                    casesGrid.innerHTML = '';
+                    data.remaining_cases.forEach(item => {
+                        if (item.is_case) {
+                            const caseDiv = document.createElement('div');
+                            caseDiv.className = 'case-item';
+                            caseDiv.innerHTML = `
+                                <img src="/static/media/cases/${item.image}" alt="${item.name}">
+                                <div class="item-details">
+                                    <h3>${item.name}</h3>
+                                    <p>Quantity: ${item.quantity}</p>
+                                    <div class="case-buttons">
+                                        <button class="btn-small" onclick="openCase('${item.type}', 1)">Open 1x</button>
+                                        ${item.quantity >= 2 ? `<button class="btn-small" onclick="openCase('${item.type}', 2)">Open 2x</button>` : ''}
+                                        ${item.quantity >= 3 ? `<button class="btn-small" onclick="openCase('${item.type}', 3)">Open 3x</button>` : ''}
+                                        ${item.quantity >= 4 ? `<button class="btn-small" onclick="openCase('${item.type}', 4)">Open 4x</button>` : ''}
+                                        ${item.quantity >= 5 ? `<button class="btn-small" onclick="openCase('${item.type}', 5)">Open 5x</button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                            casesGrid.appendChild(caseDiv);
+                        }
+                    });
+                }
+            }
+        }
+
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to sell all items');
     } finally {
         document.getElementById('sell-all-modal').classList.add('hidden');
+        // Forcefully refresh the page
+        location.reload();
     }
 });
 
-// Update sell all button when inventory changes
-document.addEventListener('DOMContentLoaded', updateSellAllButton);
-
-// Update the refreshSkinsSection function to call updateSellAllButton
-const originalRefreshSkinsSection = refreshSkinsSection;
-refreshSkinsSection = async function() {
-    await originalRefreshSkinsSection();
-    updateSellAllButton();
-};
+// Add this function to ensure case opening overlay is properly reset
+function resetCaseOpeningOverlay() {
+    console.log('Starting resetCaseOpeningOverlay');
+    const overlay = document.getElementById('case-opening-overlay');
+    console.log('Found overlay:', overlay);
+    
+    if (overlay) {
+        overlay.classList.add('hidden');
+        const spinnerContainers = overlay.querySelectorAll('.spinner-container');
+        console.log('Found spinner containers:', spinnerContainers.length);
+        
+        spinnerContainers.forEach((container, index) => {
+            console.log(`Resetting container ${index}`);
+            container.classList.add('hidden');
+            const spinner = container.querySelector('.spinner');
+            if (spinner) {
+                spinner.innerHTML = '';
+                spinner.style.transform = 'translateX(0)';
+                console.log(`Reset spinner ${index}`);
+            }
+        });
+    } else {
+        console.warn('No case opening overlay found during reset');
+    }
+}
 
 // Update category switching to show/hide sell all button
 document.querySelectorAll('.category-btn').forEach(button => {
@@ -1682,5 +2001,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Update sell all button when inventory changes
+document.addEventListener('DOMContentLoaded', updateSellAllButton);
+
+// Update the refreshSkinsSection function to call updateSellAllButton
+const originalRefreshSkinsSection = refreshSkinsSection;
+refreshSkinsSection = async function() {
+    await originalRefreshSkinsSection();
+    updateSellAllButton();
+};
 </script>
 {% endblock %} 

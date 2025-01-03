@@ -1,76 +1,51 @@
 {
-  "balance": 466.15055870984634,
+  "balance": 4697.575,
   "inventory": [
+    {
+      "weapon": "SG 553",
+      "name": "Ultraviolet",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 33.17,
+      "timestamp": 1735919064.3241014,
+      "case_type": "csgo",
+      "float_value": 0.39147595,
+      "is_case": false
+    },
+    {
+      "name": "Operation Phoenix Case",
+      "image": "operation_phoenix_case.png",
+      "is_case": true,
+      "type": "phoenix",
+      "quantity": 6
+    },
     {
       "name": "CS:GO Weapon Case",
       "image": "weapon_case_1.png",
       "is_case": true,
       "type": "csgo",
-      "quantity": 1
-    },
-    {
-      "weapon": "Desert Eagle",
-      "name": "Golden Koi",
-      "rarity": "RED",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 91.0,
-      "timestamp": 1735911103.7969348,
-      "case_type": "bravo",
-      "is_case": false
-    },
-    {
-      "weapon": "Desert Eagle",
-      "name": "Golden Koi",
-      "rarity": "RED",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 91.0,
-      "timestamp": 1735911103.9655235,
-      "case_type": "bravo",
-      "is_case": false
-    },
-    {
-      "weapon": "Desert Eagle",
-      "name": "Golden Koi",
-      "rarity": "RED",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 91.0,
-      "timestamp": 1735911104.1243687,
-      "case_type": "bravo",
-      "is_case": false
+      "quantity": 10
     }
   ],
-  "exp": 141.252,
-  "rank": 5,
+  "exp": 1645.0,
+  "rank": 6,
   "upgrades": {
-    "click_value": 2,
+    "click_value": 1,
     "max_multiplier": 1,
     "auto_clicker": 0,
     "combo_speed": 1,
     "critical_strike": 0,
     "progress_per_click": 1,
     "case_quality": 1,
-    "multi_open": 1
+    "multi_open": 5
   },
   "achievements": {
     "completed": [
+      "cases_1",
       "earnings_1"
     ],
     "in_progress": {
-      "cases_1": {
-        "id": "cases_1",
-        "title": "Case Opener",
-        "description": "Open 10 cases",
-        "target_value": 10,
-        "reward": 100,
-        "exp_reward": 0,
-        "icon": "\ud83d\udce6",
-        "current_value": 0,
-        "category": "cases",
-        "progress": 0.0
-      },
       "clicks_1": {
         "id": "clicks_1",
         "title": "Dedicated Clicker",
@@ -79,9 +54,21 @@
         "reward": 100,
         "exp_reward": 50,
         "icon": "\ud83d\uddb1\ufe0f",
-        "current_value": 31,
+        "current_value": 0,
         "category": "clicks",
-        "progress": 3.1
+        "progress": 0.0
+      },
+      "cases_2": {
+        "id": "cases_2",
+        "title": "Case Enthusiast",
+        "description": "Open 100 cases",
+        "target_value": 100,
+        "reward": 500,
+        "exp_reward": 0,
+        "icon": "\ud83d\udce6",
+        "current_value": 21,
+        "category": "cases",
+        "progress": 21.0
       },
       "earnings_2": {
         "id": "earnings_2",
@@ -91,18 +78,18 @@
         "reward": 1000,
         "exp_reward": 5000,
         "icon": "\ud83d\udcb0",
-        "current_value": 2042.07,
+        "current_value": 1782.575,
         "category": "special",
-        "progress": 20.4207
+        "progress": 17.825750000000003
       }
     }
   },
   "stats": {
-    "total_earnings": 2042.07,
-    "total_cases_opened": 0,
+    "total_earnings": 1782.575,
+    "total_cases_opened": 21,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 31,
+    "total_clicks": 0,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

@@ -480,6 +480,41 @@
         }
       ],
       "type": "sell"
+    },
+    {
+      "botAvatar": "bot6.png",
+      "botName": "Nova-Lyn",
+      "offering": [
+        {
+          "case_file": "weapon_case_2",
+          "case_type": "csgo2",
+          "name": "Hive",
+          "price": 3.96,
+          "rarity": "BLUE",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "P250",
+          "wear": "FT"
+        },
+        {
+          "case_file": "weapon_case_1",
+          "case_type": "csgo",
+          "name": "Scorched",
+          "price": 137,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "wear": "WW"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 165.91959797755806,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
     }
   ]
 }

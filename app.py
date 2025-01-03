@@ -413,12 +413,20 @@ def inventory():
     # Update prices for all non-case items
     for item in inventory_items:
         if not item.get('is_case'):
+            # Handle both float and float_value, standardizing to float_value
+            if 'float_value' not in item:
+                item['float_value'] = item.get('float') or generate_float_for_wear(item.get('wear', 'FT'))
+                # Remove old float key if it exists
+                if 'float' in item:
+                    del item['float']
+            
             # Create a cache key using weapon, name, wear, and case type
             cache_key = (
                 item['weapon'],
                 item['name'],
                 item.get('wear'),
-                item['case_type']
+                item['case_type'],
+                item['float_value']  # Add float_value to cache key
             )
             
             # Check if we already loaded this price
@@ -429,7 +437,8 @@ def inventory():
                 price = load_skin_price(
                     f"{item['weapon']} | {item['name']}", 
                     item['case_type'],
-                    item.get('wear')
+                    item.get('wear'),
+                    item['float_value']  # Pass float_value to price loader
                 )
                 price_cache[cache_key] = price
                 item['price'] = price
@@ -439,6 +448,10 @@ def inventory():
                            key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
                            reverse=True)
     
+    # Save the updated inventory with standardized float values and prices
+    user_data['inventory'] = inventory_items
+    save_user_data(user_data)
+    
     return render_template('inventory.html', 
                          balance=user_data['balance'], 
                          inventory=inventory_items,
@@ -446,7 +459,7 @@ def inventory():
                          exp=user_data['exp'],
                          RANK_EXP=RANK_EXP,
                          RANKS=RANKS,
-                         upgrades=user_data.get('upgrades', {}),  # Add this line
+                         upgrades=user_data.get('upgrades', {}),
                          initial_view=request.args.get('view', 'skins'))
 
 @app.route('/open/<case_type>')
@@ -540,16 +553,20 @@ def open_case(case_type):
             print(f"Error getting price: {e}")
             price = 0
         
-        # Convert skin to dictionary format
+        # Generate float value for the new skin
+        float_value = generate_float_for_wear(skin.wear.name)
+        adjusted_price = adjust_price_by_float(float(price), skin.wear.name, float_value)
+        
         skin_dict = {
             'weapon': skin.weapon,
             'name': skin.name,
             'rarity': skin.rarity.name,
             'wear': skin.wear.name,
             'stattrak': skin.stattrak,
-            'price': float(price),
+            'price': adjusted_price,
             'timestamp': time.time(),
             'case_type': case_type,
+            'float_value': float_value,  # Add float_value here
             'is_case': False
         }
         items.append(skin_dict)
@@ -661,14 +678,13 @@ def sell_item(item_index=None):
         user_data = load_user_data()
         inventory = user_data['inventory']
         
-        # Get only non-case items
+        # Get only non-case items and maintain their original order
         skin_items = [item for item in inventory if not item.get('is_case')]
-        grouped_skins = group_identical_skins(skin_items)
         
-        if item_index is None or item_index >= len(grouped_skins):
+        if item_index is None or item_index >= len(skin_items):
             return jsonify({'error': 'Item not found'})
         
-        item_to_sell = grouped_skins[item_index]
+        item_to_sell = skin_items[item_index]
         if quantity > item_to_sell.get('count', 1):
             return jsonify({'error': 'Invalid quantity'})
         
@@ -678,9 +694,10 @@ def sell_item(item_index=None):
         # Store initial rank for level up check
         initial_rank = user_data.get('rank', 0)
         
-        # Remove the items from inventory
+        # Find and remove the items from the original inventory
         remaining_inventory = []
         items_to_remove = quantity
+        found_count = 0
         
         for item in inventory:
             if not item.get('is_case'):
@@ -688,9 +705,12 @@ def sell_item(item_index=None):
                     item['weapon'] == item_to_sell['weapon'] and
                     item['name'] == item_to_sell['name'] and
                     item['wear'] == item_to_sell['wear'] and
-                    item['stattrak'] == item_to_sell['stattrak']):
+                    item['stattrak'] == item_to_sell['stattrak'] and
+                    found_count == item_index):  # Add this condition
                     items_to_remove -= 1
+                    found_count += 1
                     continue
+                found_count += 1
             remaining_inventory.append(item)
         
         # Update user's balance and inventory
@@ -707,7 +727,7 @@ def sell_item(item_index=None):
         new_achievements = set(user_data['achievements']['completed']) - initial_achievements
         completed_achievement = None
         if new_achievements:
-            achievement_id = list(new_achievements)[0]  # Get the first new achievement
+            achievement_id = list(new_achievements)[0]
             level = int(achievement_id.split('_')[1])
             completed_achievement = {
                 'title': {
@@ -743,7 +763,6 @@ def sell_item(item_index=None):
         # Save updated user data
         save_user_data(user_data)
         
-        # Return data in the same format as achievement completion
         return jsonify({
             'success': True,
             'balance': user_data['balance'],
@@ -1151,48 +1170,60 @@ def buy_case():
 
 @app.route('/get_inventory')
 def get_inventory():
-    try:
-        user_data = load_user_data()
-        inventory = user_data.get('inventory', [])
-        
-        # Separate cases and skins
-        cases = [item for item in inventory if item.get('is_case')]
-        skins = [item for item in inventory if not item.get('is_case')]
-        
-        # Group identical skins
-        grouped_skins = group_identical_skins(skins)
-        
-        # Update prices for grouped skins
-        price_cache = {}
-        for item in grouped_skins:
+    user_data = load_user_data()
+    inventory_items = user_data.get('inventory', [])
+    
+    # Create a dictionary to store already loaded prices to avoid duplicate lookups
+    price_cache = {}
+    
+    # Update prices and ensure float values for all non-case items
+    for item in inventory_items:
+        if not item.get('is_case'):
+            # Handle both float and float_value, standardizing to float_value
+            if 'float_value' not in item:
+                item['float_value'] = item.get('float') or generate_float_for_wear(item.get('wear', 'FT'))
+                # Remove old float key if it exists
+                if 'float' in item:
+                    del item['float']
+            
+            # Create a cache key using weapon, name, wear, and case type
             cache_key = (
                 item['weapon'],
                 item['name'],
                 item.get('wear'),
-                item['case_type']
+                item['case_type'],
+                item['float_value']  # Add float_value to cache key
             )
             
+            # Check if we already loaded this price
             if cache_key in price_cache:
                 item['price'] = price_cache[cache_key]
             else:
+                # Load price and cache it
                 price = load_skin_price(
                     f"{item['weapon']} | {item['name']}", 
                     item['case_type'],
-                    item.get('wear')
+                    item.get('wear'),
+                    item['float_value']  # Pass float_value to price loader
                 )
                 price_cache[cache_key] = price
                 item['price'] = price
-        
-        # Combine cases and grouped skins
-        final_inventory = cases + grouped_skins
-        
-        return jsonify({
-            'inventory': final_inventory
-        })
-        
-    except Exception as e:
-        print(f"Error getting inventory: {e}")
-        return jsonify({'error': 'Failed to get inventory'})
+    
+    # Sort items so newest appears first
+    inventory_items = sorted(inventory_items, 
+                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
+                           reverse=True)
+    
+    # Save the updated inventory with standardized float values and prices
+    user_data['inventory'] = inventory_items
+    save_user_data(user_data)
+    
+    return jsonify({
+        'inventory': inventory_items,
+        'balance': user_data['balance'],
+        'rank': user_data['rank'],
+        'exp': user_data['exp']
+    })
 
 @app.route('/get_user_data')
 def get_user_data():
@@ -1996,36 +2027,35 @@ def sell_all():
         user_data = load_user_data()
         inventory = user_data.get('inventory', [])
         
-        # Calculate total value of all non-case items
-        total_value = 0
-        new_inventory = []
+        # Get only non-case items
+        skins = [item for item in inventory if not item.get('is_case')]
+        cases = [item for item in inventory if item.get('is_case')]
         
-        for item in inventory:
-            if item.get('is_case'):
-                new_inventory.append(item)  # Keep cases
-            else:
-                total_value += float(item.get('price', 0))
+        if not skins:
+            return jsonify({'error': 'No items to sell'})
+            
+        # Calculate total value
+        total_value = sum(float(item.get('price', 0)) for item in skins)
         
-        if total_value > 0:
-            # Update user's balance and inventory
-            user_data['balance'] = float(user_data['balance']) + total_value
-            user_data['inventory'] = new_inventory
-            
-            # Update achievements with the total earned amount
-            update_earnings_achievements(user_data, total_value)
-            
-            # Save the updated user data
-            save_user_data(user_data)
+        # Update user's balance
+        user_data['balance'] = float(user_data['balance']) + total_value
+        
+        # Keep only cases in inventory
+        user_data['inventory'] = cases
+        
+        # Save updated user data
+        save_user_data(user_data)
         
         return jsonify({
             'success': True,
             'balance': user_data['balance'],
-            'sold_value': total_value
+            'sold_price': total_value,
+            'remaining_cases': cases  # Add this to help client update case display
         })
         
     except Exception as e:
         print(f"Error in sell_all: {e}")
-        return jsonify({'error': 'Failed to sell all items'})
+        return jsonify({'error': 'Failed to sell items'})
 
 @app.route('/jackpot')
 @login_required
@@ -2755,72 +2785,36 @@ def case_click():
         print(f"Error in case_click: {e}")
         return jsonify({'error': str(e)})
 
-def load_skin_price(skin_name: str, case_type: str, wear: str = None) -> float:
+def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float = None) -> float:
+    """Load skin price from case file with float-based price adjustment"""
     try:
-        # Debug: Print input parameters
-        print(f"\nAttempting to load price for: {skin_name} from case: {case_type}")
-        print(f"Wear condition: {wear}")
-        
-        # Parse weapon and name from skin_name
-        weapon, name = skin_name.split(" | ", 1)
-        print(f"Parsed weapon: {weapon}, name: {name}")
-        
-        # Use the global CASE_FILE_MAPPING
         file_name = CASE_FILE_MAPPING.get(case_type)
         if not file_name:
-            print(f"Unknown case type: {case_type}")
-            print(f"Available case types: {list(CASE_FILE_MAPPING.keys())}")
             return 0
-        
-        file_path = f'cases/{file_name}.json'
-        print(f"Loading from file: {file_path}")
-        
-        with open(file_path, 'r') as f:
+            
+        with open(f'cases/{file_name}.json', 'r') as f:
             case_data = json.load(f)
-            print(f"Successfully loaded case data")
             
-            # Look for the skin in all grades
-            for grade, items in case_data['skins'].items():
-                for item in items:
-                    if item['weapon'] == weapon and item['name'] == name:
-                        prices = item.get('prices', {})
-                        
-                        # If StatTrak, use ST_ prices
-                        price_prefix = 'ST_' if 'StatTrak™' in skin_name else ''
-                        
-                        # If wear is specified, try that specific wear first
-                        if wear:
-                            wear_key = f"{price_prefix}{wear}"
-                            if wear_key in prices:
-                                price = float(prices[wear_key])
-                                print(f"Found exact price for {wear_key}: ${price}")
-                                return price
-                        
-                        # Try common wear values
-                        for wear_type in ['FN', 'MW', 'FT', 'WW', 'BS']:
-                            wear_key = f"{price_prefix}{wear_type}"
-                            if wear_key in prices:
-                                price = float(prices[wear_key])
-                                print(f"Using fallback price for {wear_key}: ${price}")
-                                return price
-                        
-                        # Last resort: use any available price
-                        if prices:
-                            first_price = float(next(iter(prices.values())))
-                            print(f"Using first available price: ${first_price}")
-                            return first_price
-                        
-                        print("No prices found for skin")
-                        return 0
-            
-            print(f"Skin not found: {skin_name}")
-            return 0
-            
+        # Split skin name into weapon and skin
+        weapon, name = skin_name.split(' | ')
+        
+        # Find the skin in the case data
+        for grade, skins in case_data['skins'].items():
+            for skin in skins:
+                if skin['weapon'] == weapon and skin['name'] == name:
+                    prices = skin['prices']
+                    wear_key = 'NO' if 'NO' in prices else wear
+                    base_price = float(prices.get(wear_key, 0))
+                    
+                    # If we have a float value, adjust the price
+                    if float_value is not None:
+                        return adjust_price_by_float(base_price, wear, float_value)
+                    return base_price
+                    
+        return 0
+        
     except Exception as e:
-        print(f"Error loading price for {skin_name} from {case_type}:")
-        print(f"Exception type: {type(e).__name__}")
-        print(f"Exception message: {str(e)}")
-        traceback.print_exc()
+        print(f"Error loading price for {skin_name}: {e}")
         return 0
 
 @app.route('/trading')
@@ -4040,6 +4034,60 @@ def save_daily_trades(trades_data):
     """Save daily trades to JSON file"""
     with open('data/daily_trades.json', 'w') as f:
         json.dump(trades_data, f, indent=2)
+
+# Add this helper function near the top with other helpers
+def generate_float_for_wear(wear: str) -> float:
+    """Generate a random float value based on wear condition"""
+    wear_ranges = {
+        'FN': (0.00, 0.07),
+        'MW': (0.07, 0.15),
+        'FT': (0.15, 0.38),
+        'WW': (0.38, 0.45),
+        'BS': (0.45, 1.00)
+    }
+    
+    if wear not in wear_ranges:
+        return 0.0
+        
+    min_float, max_float = wear_ranges[wear]
+    return round(random.uniform(min_float, max_float), 8)
+
+# Add this helper function near the top with other helpers
+def adjust_price_by_float(price: float, wear: str, float_value: float) -> float:
+    """Adjust item price based on float value"""
+    if wear == 'FN' and float_value < 0.07:
+        # For Factory New, increase price for very low floats
+        if float_value < 0.001:
+            # Ultra rare float (0.000x)
+            multiplier = 6.0  # Up to 500% increase
+        elif float_value < 0.01:
+            # Very low float (0.00x)
+            multiplier = 2.5  # 150% increase
+        elif float_value < 0.03:
+            # Low float (0.0x)
+            multiplier = 1.5  # 50% increase
+        else:
+            multiplier = 1.0
+            
+        return price * multiplier
+        
+    elif wear == 'BS' and float_value > 0.45:
+        # For Battle-Scarred, decrease price for very high floats
+        if float_value > 0.95:
+            # Ultra high float (0.99x)
+            multiplier = 0.85  # 15% decrease
+        elif float_value > 0.90:
+            # Very high float (0.9x)
+            multiplier = 0.90  # 10% decrease
+        elif float_value > 0.85:
+            # High float (0.8x)
+            multiplier = 0.95  # 5% decrease
+        else:
+            multiplier = 1.0
+            
+        return price * multiplier
+        
+    return price
 
 if __name__ == '__main__':
     app.run(debug=True)
