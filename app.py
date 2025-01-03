@@ -1136,6 +1136,36 @@ def buy_case():
             'image': 'operation_breakout_case.png',
             'is_case': True,
             'type': 'breakout'
+        },
+        'esports_summer': {  # Add this block
+            'name': 'eSports 2014 Summer Case',
+            'image': 'esports_2014_summer_case.png',
+            'is_case': True,
+            'type': 'esports_summer'
+        },
+        'vanguard': {  # Add this block
+            'name': 'Operation Vanguard Case',
+            'image': 'operation_vanguard_case.png',
+            'is_case': True,
+            'type': 'vanguard'
+        },
+        'chroma': {  # Add this block
+            'name': 'Chroma Case',
+            'image': 'chroma_case.png',
+            'is_case': True,
+            'type': 'chroma'
+        },
+        'chroma_2': {  # Add this block
+            'name': 'Chroma 2 Case',
+            'image': 'chroma_2_case.png',
+            'is_case': True,
+            'type': 'chroma_2'
+        },
+        'falchion': {  # Add this block
+            'name': 'Falchion Case',
+            'image': 'falchion_case.png',
+            'is_case': True,
+            'type': 'falchion'
         }
     }
     
@@ -1249,7 +1279,12 @@ def get_case_contents(case_type):
         'csgo3': 'weapon_case_3',
         'phoenix': 'operation_phoenix_case',
         'huntsman': 'huntsman_case',
-        'breakout': 'operation_breakout_case'  # Add this line
+        'breakout': 'operation_breakout_case',
+        'esports_summer': 'esports_2014_summer',
+        'vanguard': 'operation_vanguard_case',
+        'chroma': 'chroma_case',
+        'chroma_2': 'chroma_2_case',
+        'falchion': 'falchion_case'
     }
     
     if case_type not in case_file_mapping:
@@ -2230,7 +2265,7 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
     ]
     
     # Load all case data
-    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']  # Add 'breakout'
+    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']  # Add 'breakout'
     all_skins = []  # Change to a single list
     
     # Load skins from each case
@@ -2246,7 +2281,12 @@ def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any
                 'csgo3': 'weapon_case_3',  # Add this line
                 'phoenix': 'operation_phoenix_case',
                 'huntsman': 'huntsman_case',  # Add huntsman case
-                'breakout': 'operation_breakout_case'  # Add this line
+                'breakout': 'operation_breakout_case',
+                'esports_summer': 'esports_2014_summer',
+                'vanguard': 'operation_vanguard_case',
+                'chroma': 'chroma_case',
+                'chroma_2': 'chroma_2_case',
+                'falchion': 'falchion_case'
             }
             
             with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
@@ -2379,7 +2419,7 @@ def get_featured_skins():
     if not FEATURED_SKINS or not LAST_REFRESH_TIME or (current_time - LAST_REFRESH_TIME) >= REFRESH_INTERVAL:
         try:
             # Load all case contents
-            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']  # Add 'breakout'
+            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']  # Add 'breakout'
             all_skins = []
             
             # Load skins from each case
@@ -2395,7 +2435,12 @@ def get_featured_skins():
                         'csgo3': 'weapon_case_3',  # csgo3 is included
                         'phoenix': 'operation_phoenix_case',
                         'huntsman': 'huntsman_case',  # Add huntsman case
-                        'breakout': 'operation_breakout_case'  # Add this line
+                        'breakout': 'operation_breakout_case',  # Add this line
+                        'esports_summer': 'esports_2014_summer',
+                        'vanguard': 'operation_vanguard_case',
+                        'chroma': 'chroma_case',
+                        'chroma_2': 'chroma_2_case',
+                        'falchion': 'falchion_case'
                     }
                     
                     with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
@@ -2835,7 +2880,7 @@ def generate_daily_trades():
     try:
         # Load all case data for available skins
         case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 
-                     'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout']
+                     'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']
         all_skins = []
         
         # Load skins from each case

@@ -1,0 +1,723 @@
+{
+    "name": "Chroma Case",
+    "image": "chroma_case.png",
+    "price": 4.00,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Marble Fade",
+                "image": "m9bayonet_marble_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1243.91,
+                    "MW": 1247.44,
+                    "ST_FN": 1217.60,
+                    "ST_MW": 1232.80
+                }
+            },
+            {
+                "weapon": "M9 Bayonet", 
+                "name": "Doppler",
+                "image": "m9bayonet_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1231.60,
+                    "MW": 1210.00,
+                    "ST_FN": 1211.24,
+                    "ST_MW": 1272.39
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Doppler",
+                "image": "gutknife_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 173.45,
+                    "MW": 171.24,
+                    "ST_FN": 181.04,
+                    "ST_MW": 200.00
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Doppler",
+                "image": "bayonet_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 571.38,
+                    "MW": 566.94,
+                    "ST_FN": 583.52,
+                    "ST_MW": 607.00
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Marble Fade",
+                "image": "bayonet_marble_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 558.60,
+                    "MW": 577.03,
+                    "ST_FN": 602.77,
+                    "ST_MW": 574.82
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Damascus Steel",
+                "image": "flipknife_damascus_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 224.29,
+                    "MW": 204.50,
+                    "FT": 194.80,
+                    "WW": 183.99,
+                    "BS": 182.38,
+                    "ST_FN": 234.75,
+                    "ST_MW": 210.97,
+                    "ST_FT": 186.24,
+                    "ST_WW": 207.28,
+                    "ST_BS": 228.32
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Doppler",
+                "image": "flipknife_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 461.98,
+                    "MW": 486.47,
+                    "ST_FN": 422.26,
+                    "ST_MW": 466.09
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Tiger Tooth",
+                "image": "gutknife_tiger_tooth.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 143.99,
+                    "MW": 160.00,
+                    "ST_FN": 170.28,
+                    "ST_MW": 166.99
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Marble Fade",
+                "image": "gutknife_marble_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 169.18,
+                    "MW": 228.95,
+                    "ST_FN": 199.55,
+                    "ST_MW": 214.25
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Ultraviolet",
+                "image": "m9bayonet_ultraviolet.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1125.00,
+                    "MW": 719.42,
+                    "FT": 564.99,
+                    "WW": 509.41,
+                    "BS": 502.49,
+                    "ST_FN": 5625.00,
+                    "ST_MW": 701.27,
+                    "ST_FT": 520.00,
+                    "ST_WW": 486.32,
+                    "ST_BS": 504.13
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Damascus Steel",
+                "image": "gutknife_damascus_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 109.59,
+                    "MW": 103.90,
+                    "FT": 98.63,
+                    "WW": 104.93,
+                    "BS": 111.98,
+                    "ST_FN": 128.08,
+                    "ST_MW": 130.41,
+                    "ST_FT": 106.92,
+                    "ST_WW": 105.34,
+                    "ST_BS": 143.00
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Ultraviolet",
+                "image": "bayonet_ultraviolet.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 547.97,
+                    "MW": 303.85,
+                    "FT": 216.03,
+                    "WW": 203.43,
+                    "BS": 190.00,
+                    "ST_FN": 2739.85,
+                    "ST_MW": 313.79,
+                    "ST_FT": 213.71,
+                    "ST_WW": 204.12,
+                    "ST_BS": 199.80
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Ultraviolet",
+                "image": "gutknife_ultraviolet.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 191.79,
+                    "MW": 112.33,
+                    "FT": 99.42,
+                    "WW": 96.54,
+                    "BS": 95.31,
+                    "ST_FN": 958.95,
+                    "ST_MW": 119.37,
+                    "ST_FT": 102.11,
+                    "ST_WW": 109.59,
+                    "ST_BS": 1003.43
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Ultraviolet",
+                "image": "flipknife_ultraviolet.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 438.24,
+                    "MW": 232.73,
+                    "FT": 190.26,
+                    "WW": 173.50,
+                    "BS": 162.89,
+                    "ST_FN": 2191.20,
+                    "ST_MW": 242.95,
+                    "ST_FT": 191.06,
+                    "ST_WW": 191.96,
+                    "ST_BS": 170.42
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Tiger Tooth",
+                "image": "flipknife_tiger_tooth.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 344.35,
+                    "MW": 353.44,
+                    "ST_FN": 347.98,
+                    "ST_MW": 371.49
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Rust Coat",
+                "image": "bayonet_rust_coat.png",
+                "grade": "gold",
+                "valid_wears": ["WW", "BS"],
+                "prices": {
+                    "WW": 225.97,
+                    "BS": 205.75,
+                    "ST_WW": 230.14,
+                    "ST_BS": 215.00
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Rust Coat",
+                "image": "gutknife_rust_coat.png",
+                "grade": "gold",
+                "valid_wears": ["WW", "BS"],
+                "prices": {
+                    "WW": 103.88,
+                    "BS": 96.34,
+                    "ST_WW": 150.00,
+                    "ST_BS": 101.92
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Rust Coat",
+                "image": "m9bayonet_rust_coat.png",
+                "grade": "gold",
+                "valid_wears": ["WW", "BS"],
+                "prices": {
+                    "WW": 554.55,
+                    "BS": 534.14,
+                    "ST_WW": 534.20,
+                    "ST_BS": 525.44
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Damascus Steel",
+                "image": "m9bayonet_damascus_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 734.49,
+                    "MW": 696.61,
+                    "FT": 650.17,
+                    "WW": 632.55,
+                    "BS": 630.17,
+                    "ST_FN": 699.00,
+                    "ST_MW": 676.06,
+                    "ST_FT": 619.21,
+                    "ST_WW": 602.63,
+                    "ST_BS": 616.33
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Tiger Tooth",
+                "image": "m9bayonet_tiger_tooth.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1018.00,
+                    "MW": 1012.00,
+                    "ST_FN": 998.77,
+                    "ST_MW": 1130.19
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Ultraviolet",
+                "image": "karambit_ultraviolet.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1232.94,
+                    "MW": 845.00,
+                    "FT": 706.00,
+                    "WW": 640.00,
+                    "BS": 603.99,
+                    "ST_FN": 6164.70,
+                    "ST_MW": 822.00,
+                    "ST_FT": 666.47,
+                    "ST_WW": 648.24,
+                    "ST_BS": 630.17
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Rust Coat",
+                "image": "karambit_rust_coat.png",
+                "grade": "gold",
+                "valid_wears": ["WW", "BS"],
+                "prices": {
+                    "WW": 664.27,
+                    "BS": 655.35,
+                    "ST_WW": 657.57,
+                    "ST_BS": 636.90
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Damascus Steel",
+                "image": "karambit_damascus_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 868.46,
+                    "MW": 830.00,
+                    "FT": 777.00,
+                    "WW": 747.49,
+                    "BS": 733.99,
+                    "ST_FN": 847.99,
+                    "ST_MW": 808.41,
+                    "ST_FT": 766.48,
+                    "ST_WW": 760.31,
+                    "ST_BS": 689.80
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Tiger Tooth",
+                "image": "karambit_tiger_tooth.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1150.00,
+                    "MW": 1103.48,
+                    "ST_FN": 1130.19,
+                    "ST_MW": 1123.21
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Marble Fade",
+                "image": "karambit_marble_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1390.08,
+                    "MW": 1384.60,
+                    "ST_FN": 1419.49,
+                    "ST_MW": 1410.00
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Doppler",
+                "image": "karambit_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1493.24,
+                    "MW": 1499.00,
+                    "ST_FN": 1445.21,
+                    "ST_MW": 1660.50
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Rust Coat",
+                "image": "flipknife_rust_coat.png",
+                "grade": "gold",
+                "valid_wears": ["WW", "BS"],
+                "prices": {
+                    "WW": 173.80,
+                    "BS": 168.50,
+                    "ST_WW": 175.22,
+                    "ST_BS": 171.00
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Marble Fade",
+                "image": "flipknife_marble_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 417.88,
+                    "MW": 434.88,
+                    "ST_FN": 410.43,
+                    "ST_MW": 513.60
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Damascus Steel",
+                "image": "bayonet_damascus_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 301.26,
+                    "MW": 284.28,
+                    "FT": 259.00,
+                    "WW": 251.86,
+                    "BS": 250.41,
+                    "ST_FN": 342.41,
+                    "ST_MW": 287.00,
+                    "ST_FT": 266.00,
+                    "ST_WW": 267.13,
+                    "ST_BS": 273.85
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Tiger Tooth",
+                "image": "bayonet_tiger_tooth.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 457.97,
+                    "MW": 465.77,
+                    "ST_FN": 476.17,
+                    "ST_MW": 491.80
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "AWP",
+                "name": "Man-o-war",
+                "image": "awp_man_o_war.png",
+                "grade": "red",
+                "valid_wears": ["MW", "FT"],
+                "prices": {
+                    "MW": 33.90,
+                    "FT": 33.96,
+                    "ST_MW": 74.01,
+                    "ST_FT": 66.93
+                }
+            },
+            {
+                "weapon": "Galil AR",
+                "name": "Chatterbox",
+                "image": "galil_chatterbox.png",
+                "grade": "red",
+                "valid_wears": ["FT", "WW", "BS"],
+                "prices": {
+                    "FT": 59.13,
+                    "WW": 12.29,
+                    "BS": 6.42,
+                    "ST_FT": 205.97,
+                    "ST_WW": 47.94,
+                    "ST_BS": 26.31
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "AK-47",
+                "name": "Cartel",
+                "image": "ak47_cartel.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 22.59,
+                    "MW": 12.70,
+                    "FT": 9.62,
+                    "WW": 12.30,
+                    "BS": 10.33,
+                    "ST_FN": 73.75,
+                    "ST_MW": 41.79,
+                    "ST_FT": 31.50,
+                    "ST_WW": 34.41,
+                    "ST_BS": 32.16
+                }
+            },
+            {
+                "weapon": "M4A4",
+                "name": "Dragon King",
+                "image": "m4a4_dragon_king.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 20.19,
+                    "MW": 10.02,
+                    "FT": 6.15,
+                    "WW": 7.44,
+                    "BS": 6.09,
+                    "ST_FN": 56.74,
+                    "ST_MW": 27.83,
+                    "ST_FT": 13.27,
+                    "ST_WW": 21.04,
+                    "ST_BS": 12.98
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Muertos",
+                "image": "p250_muertos.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.76,
+                    "MW": 5.29,
+                    "FT": 5.13,
+                    "WW": 4.96,
+                    "BS": 5.04,
+                    "ST_FN": 22.05,
+                    "ST_MW": 12.02,
+                    "ST_FT": 9.41,
+                    "ST_WW": 9.84,
+                    "ST_BS": 10.19
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "Desert Eagle",
+                "name": "Naga",
+                "image": "deserteagle_naga.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4.58,
+                    "MW": 1.81,
+                    "FT": 0.96,
+                    "WW": 0.93,
+                    "BS": 0.90,
+                    "ST_FN": 15.50,
+                    "ST_MW": 5.12,
+                    "ST_FT": 3.16,
+                    "ST_WW": 2.90,
+                    "ST_BS": 2.84
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Malachite",
+                "image": "mac10_malachite.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.63,
+                    "MW": 1.50,
+                    "FT": 1.08,
+                    "WW": 1.05,
+                    "BS": 1.07,
+                    "ST_FN": 7.08,
+                    "ST_MW": 4.76,
+                    "ST_FT": 4.26,
+                    "ST_WW": 4.99,
+                    "ST_BS": 5.91
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Urban Shock",
+                "image": "dualberettas_urban_shock.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.51,
+                    "MW": 1.55,
+                    "FT": 1.07,
+                    "WW": 1.46,
+                    "BS": 1.24,
+                    "ST_FN": 6.51,
+                    "ST_MW": 3.94,
+                    "ST_FT": 2.87,
+                    "ST_WW": 3.05,
+                    "ST_BS": 2.44
+                }
+            },
+            {
+                "weapon": "Sawed-Off",
+                "name": "Serenity",
+                "image": "sawedoff_serenity.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.29,
+                    "MW": 1.48,
+                    "FT": 1.00,
+                    "WW": 1.21,
+                    "BS": 1.20,
+                    "ST_FN": 6.75,
+                    "ST_MW": 4.11,
+                    "ST_FT": 3.08,
+                    "ST_WW": 3.46,
+                    "ST_BS": 2.73
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Glock-18",
+                "name": "Catacombs",
+                "image": "glock18_catacombs.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.46,
+                    "MW": 0.35,
+                    "FT": 0.21,
+                    "WW": 0.30,
+                    "BS": 0.39,
+                    "ST_FN": 1.63,
+                    "ST_MW": 1.07,
+                    "ST_FT": 0.71,
+                    "ST_WW": 0.93,
+                    "ST_BS": 1.39
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Deadly Poison",
+                "image": "mp9_deadly_poison.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.92,
+                    "MW": 0.62,
+                    "FT": 0.33,
+                    "WW": 0.24,
+                    "BS": 0.21,
+                    "ST_FN": 5.49,
+                    "ST_MW": 1.49,
+                    "ST_FT": 0.81,
+                    "ST_WW": 0.48,
+                    "ST_BS": 0.51
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Quicksilver",
+                "image": "xm1014_quicksilver.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.34,
+                    "MW": 0.22,
+                    "FT": 0.16,
+                    "WW": 0.18,
+                    "BS": 0.16,
+                    "ST_FN": 1.11,
+                    "ST_MW": 0.63,
+                    "ST_FT": 0.40,
+                    "ST_WW": 0.61,
+                    "ST_BS": 0.92
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Grotto",
+                "image": "scar20_grotto.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.34,
+                    "MW": 0.21,
+                    "FT": 0.15,
+                    "WW": 0.20,
+                    "BS": 0.28,
+                    "ST_FN": 1.14,
+                    "ST_MW": 0.64,
+                    "ST_FT": 0.43,
+                    "ST_WW": 0.40,
+                    "ST_BS": 0.46
+                }
+            },
+            {
+                "weapon": "M249",
+                "name": "System Lock",
+                "image": "m249_system_lock.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.39,
+                    "MW": 0.21,
+                    "FT": 0.15,
+                    "WW": 0.11,
+                    "BS": 0.13,
+                    "ST_FN": 1.23,
+                    "ST_MW": 0.63,
+                    "ST_FT": 0.35,
+                    "ST_WW": 0.91,
+                    "ST_BS": 0.30
+                }
+            }
+        ]
+    }
+}

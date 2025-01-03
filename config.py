@@ -70,5 +70,10 @@ CASE_FILE_MAPPING = {
     'csgo3': 'weapon_case_3',
     'phoenix': 'operation_phoenix_case',
     'huntsman': 'huntsman_case',
-    'breakout': 'operation_breakout_case'
+    'breakout': 'operation_breakout_case',
+    'esports_summer': 'esports_2014_summer',
+    'vanguard': 'operation_vanguard_case',
+    'chroma': 'chroma_case',
+    'chroma_2': 'chroma_2_case',
+    'falchion': 'falchion_case'
 }

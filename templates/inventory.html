@@ -31,6 +31,7 @@
                     {% set weapon_name = item.weapon.lower()
                         .replace('-', '')
                         .replace(' ', '')
+                        .replace('553', '553')
                         .replace('galil ar', 'galil')
                         .replace('galilar', 'galil') %}
                     {% set skin_name = item.name.lower().replace(' ', '_') %}
@@ -44,7 +45,12 @@
                         'csgo3': 'weapon_case_3',
                         'phoenix': 'operation_phoenix_case',
                         'huntsman': 'huntsman_case',
-                        'breakout': 'operation_breakout_case'
+                        'breakout': 'operation_breakout_case',
+                        'esports_summer': 'esports_2014_summer',
+                        'vanguard': 'operation_vanguard_case',
+                        'chroma': 'chroma_case',
+                        'chroma_2': 'chroma_2_case',
+                        'falchion': 'falchion_case'
                     } %}
                     {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
                     <div class="skin-image-wrapper">
@@ -75,32 +81,42 @@
 <!-- Cases section -->
 <div class="inventory-section hidden" id="cases-section">
     <div class="items-grid">
+        {% set has_cases = namespace(value=false) %}
         {% for item in inventory %}
             {% if item.is_case %}
-            <div class="case-item">
-                <img src="{{ url_for('static', filename='media/cases/' + item.image) }}" alt="{{ item.name }}">
-                <div class="item-details">
-                    <h3>{{ item.name }}</h3>
-                    <p>Quantity: {{ item.quantity }}</p>
-                    <div class="case-buttons">
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 1)">Open 1x</button>
-                        {% if upgrades.multi_open >= 2 and item.quantity >= 2 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 2)" style="display: {{ 'block' if upgrades.multi_open >= 2 else 'none' }}">Open 2x</button>
-                        {% endif %}
-                        {% if upgrades.multi_open >= 3 and item.quantity >= 3 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 3)" style="display: {{ 'block' if upgrades.multi_open >= 3 else 'none' }}">Open 3x</button>
-                        {% endif %}
-                        {% if upgrades.multi_open >= 4 and item.quantity >= 4 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 4)" style="display: {{ 'block' if upgrades.multi_open >= 4 else 'none' }}">Open 4x</button>
-                        {% endif %}
-                        {% if upgrades.multi_open >= 5 and item.quantity >= 5 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 5)" style="display: {{ 'block' if upgrades.multi_open >= 5 else 'none' }}">Open 5x</button>
-                        {% endif %}
+                {% set has_cases.value = true %}
+                <div class="case-item">
+                    <img src="{{ url_for('static', filename='media/cases/' + item.image) }}" alt="{{ item.name }}">
+                    <div class="item-details">
+                        <h3>{{ item.name }}</h3>
+                        <p>Quantity: {{ item.quantity }}</p>
+                        <div class="case-buttons">
+                            <button class="btn-small" onclick="openCase('{{ item.type }}', 1)">Open 1x</button>
+                            {% if upgrades.multi_open >= 2 and item.quantity >= 2 %}
+                            <button class="btn-small" onclick="openCase('{{ item.type }}', 2)" style="display: {{ 'block' if upgrades.multi_open >= 2 else 'none' }}">Open 2x</button>
+                            {% endif %}
+                            {% if upgrades.multi_open >= 3 and item.quantity >= 3 %}
+                            <button class="btn-small" onclick="openCase('{{ item.type }}', 3)" style="display: {{ 'block' if upgrades.multi_open >= 3 else 'none' }}">Open 3x</button>
+                            {% endif %}
+                            {% if upgrades.multi_open >= 4 and item.quantity >= 4 %}
+                            <button class="btn-small" onclick="openCase('{{ item.type }}', 4)" style="display: {{ 'block' if upgrades.multi_open >= 4 else 'none' }}">Open 4x</button>
+                            {% endif %}
+                            {% if upgrades.multi_open >= 5 and item.quantity >= 5 %}
+                            <button class="btn-small" onclick="openCase('{{ item.type }}', 5)" style="display: {{ 'block' if upgrades.multi_open >= 5 else 'none' }}">Open 5x</button>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
         {% endfor %}
+        
+        {% if not has_cases.value %}
+        <div class="no-cases-message">
+            <h2>No Cases Found</h2>
+            <p>You don't have any cases in your inventory.</p>
+            <a href="{{ url_for('shop') }}" class="btn-buy-cases">Buy Cases</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -457,6 +473,75 @@
 
 .item-price {
     margin-top: 4px; /* Add some space between float and price */
+}
+
+/* Update the case opening overlay styles */
+#case-opening-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a; /* Dark solid background */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+#case-opening-overlay.hidden {
+    display: none;
+}
+
+/* Add these styles for the no cases message */
+.no-cases-message {
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.no-cases-message h2 {
+    color: #fff;
+    margin-bottom: 16px;
+    font-size: 24px;
+}
+
+.no-cases-message p {
+    color: #ccc;
+    margin-bottom: 24px;
+    font-size: 16px;
+}
+
+.btn-buy-cases {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(to bottom, #4CAF50, #45a049);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-buy-cases:hover {
+    background: linear-gradient(to bottom, #45a049, #409444);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-buy-cases:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 </style>
 
@@ -977,7 +1062,7 @@ function updateCaseButtonsVisibility(upgrades) {
     });
 }
 
-// Add helper function to update case quantity
+// Update the updateCaseQuantity function
 function updateCaseQuantity(caseType, count) {
     const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)?.closest('.case-item');
     if (caseElement) {
@@ -989,6 +1074,21 @@ function updateCaseQuantity(caseType, count) {
         
         if (newQuantity <= 0) {
             caseElement.remove();
+            
+            // Check if there are any remaining cases
+            const remainingCases = document.querySelectorAll('.case-item');
+            if (remainingCases.length === 0) {
+                // No cases left, show the "No Cases" message
+                const itemsGrid = document.querySelector('#cases-section .items-grid');
+                const noCasesMessage = `
+                    <div class="no-cases-message">
+                        <h2>No Cases Found</h2>
+                        <p>You don't have any cases in your inventory.</p>
+                        <a href="/shop" class="btn-buy-cases">Buy Cases</a>
+                    </div>
+                `;
+                itemsGrid.innerHTML = noCasesMessage;
+            }
         } else {
             // Update button visibility after changing quantity
             updateCaseButtonsVisibility({ multi_open: 5 }); // Assuming max multi_open level is 5
@@ -1112,7 +1212,12 @@ function createItemElement(item) {
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
             'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case'
+            'breakout': 'operation_breakout_case',
+            'esports_summer': 'esports_2014_summer',
+            'vanguard': 'operation_vanguard_case',
+            'chroma': 'chroma_case',
+            'chroma_2': 'chroma_2_case',
+            'falchion': 'falchion_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -1161,7 +1266,12 @@ function createItemElement(item) {
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
             'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case'
+            'breakout': 'operation_breakout_case',
+            'esports_summer': 'esports_2014_summer',
+            'vanguard': 'operation_vanguard_case',
+            'chroma': 'chroma_case',
+            'chroma_2': 'chroma_2_case',
+            'falchion': 'falchion_case'
         };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
@@ -1225,7 +1335,12 @@ function showItemShowcase(items) {
                 'csgo3': 'weapon_case_3',
                 'phoenix': 'operation_phoenix_case',
                 'huntsman': 'huntsman_case',
-                'breakout': 'operation_breakout_case'
+                'breakout': 'operation_breakout_case',
+                'esports_summer': 'esports_2014_summer',
+                'vanguard': 'operation_vanguard_case',
+                'chroma': 'chroma_case',
+                'chroma_2': 'chroma_2_case',
+                'falchion': 'falchion_case'
             };
             const casePath = casePathMapping[items[index].case_type] || 'weapon_case_1';
             
@@ -1437,7 +1552,12 @@ async function refreshSkinsSection() {
                 'csgo3': 'weapon_case_3',
                 'phoenix': 'operation_phoenix_case',
                 'huntsman': 'huntsman_case',
-                'breakout': 'operation_breakout_case'
+                'breakout': 'operation_breakout_case',
+                'esports_summer': 'esports_2014_summer',
+                'vanguard': 'operation_vanguard_case',
+                'chroma': 'chroma_case',
+                'chroma_2': 'chroma_2_case',
+                'falchion': 'falchion_case'
             };
             const casePath = caseMapping[item.case_type] || 'weapon_case_1';
             
@@ -1645,7 +1765,12 @@ async function updateInventoryDisplay() {
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
             'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case'
+            'breakout': 'operation_breakout_case',
+            'esports_summer': 'esports_2014_summer',
+            'vanguard': 'operation_vanguard_case',
+            'chroma': 'chroma_case',
+            'chroma_2': 'chroma_2_case',
+            'falchion': 'falchion_case'
         };
         
         // Add each item

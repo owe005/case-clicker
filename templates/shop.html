@@ -360,7 +360,13 @@
             'winter_offensive': 'winter_offensive_case',
             'csgo3': 'weapon_case_3',
             'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case'
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case',
+            'esports_summer': 'esports_2014_summer',
+            'vanguard': 'operation_vanguard_case',
+            'chroma': 'chroma_case',
+            'chroma_2': 'chroma_2_case',
+            'falchion': 'falchion_case'
         };
         
         const folder = folderMapping[caseType] || caseType;
@@ -783,11 +789,20 @@
     }
 
     async function showCaseContents(caseType) {
-        try {
-            const response = await fetch(`/data/case_contents/${caseType}`);
-            const data = await response.json();
-            
-            const overlay = document.getElementById('case-contents-overlay');
+        // Load case contents if not already loaded
+        if (!caseContents[caseType]) {
+            caseContents[caseType] = await loadCaseContents(caseType);
+            if (!caseContents[caseType]) {
+                alert('Failed to load case contents');
+                return;
+            }
+        }
+
+        const data = caseContents[caseType];
+        const overlay = document.getElementById('case-contents-overlay');
+        
+        if (overlay) {
+            // Update case name
             const caseName = overlay.querySelector('.case-name');
             caseName.textContent = data.name;
             
@@ -800,79 +815,76 @@
                 contrabandRow.style.display = caseType === 'huntsman' ? '' : 'none';
             }
             
-            // Helper function to create item element
-            function createContentsItem(item) {
-                const div = document.createElement('div');
-                div.className = 'contents-item';
-                
-                const weaponName = item.weapon.toLowerCase()
-                    .replace('-', '')
-                    .replace(' ', '')
-                    .replace('galil ar', 'galil')
-                    .replace('galilar', 'galil');
-                const skinName = item.name.toLowerCase().replace(/ /g, '_');
-                
-                // Add case mapping
-                const caseMapping = {
-                    'csgo': 'weapon_case_1',
-                    'esports': 'esports_2013',
-                    'bravo': 'operation_bravo_case',
-                    'csgo2': 'weapon_case_2',
-                    'esports_winter': 'esports_2013_winter',
-                    'winter_offensive': 'winter_offensive_case',
-                    'csgo3': 'weapon_case_3',
-                    'phoenix': 'operation_phoenix_case',
-                    'huntsman': 'huntsman_case',
-                    'breakout': 'operation_breakout_case'
-                };
-                
-                const casePath = caseMapping[caseType] || caseType;
-                
-                div.innerHTML = `
-                    <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
-                         alt="${item.weapon} | ${item.name}"
-                         onerror="this.onerror=null; this.src='/static/media/cases/${casePath}.png'">
-                    <div class="item-name">${item.weapon}</div>
-                    <div class="item-skin">${item.name}</div>
-                `;
-                return div;
-            }
-            
             // Populate items by rarity
             for (const [grade, items] of Object.entries(data.skins)) {
                 const rarity = grade.toUpperCase();
                 const rarityRow = overlay.querySelector(`.content-row.rarity-${rarity}`);
                 if (rarityRow) {
                     const grid = rarityRow.querySelector('.items-grid');
-                    let itemsToShow = [];
+                    let itemsToShow = items;
                     
-                    // For gold rarity (knives), only show vanilla versions
+                    // For gold rarity (knives), filter based on case type
                     if (grade === 'gold') {
-                        itemsToShow = items.filter(item => item.name === 'Vanilla');
-                    } else {
-                        // For other rarities, show all items
-                        itemsToShow = items;
+                        if (caseType === 'chroma' || caseType === 'chroma_2') {
+                            // Only show Doppler knives for Chroma cases
+                            itemsToShow = items.filter(item => item.name === 'Doppler');
+                        } else {
+                            // For all other cases, show only vanilla knives
+                            itemsToShow = items.filter(item => item.name === 'Vanilla');
+                        }
                     }
                     
                     // Add items to grid
                     itemsToShow.forEach(item => {
-                        grid.appendChild(createContentsItem(item));
+                        const div = createContentsItem(item, caseType);
+                        grid.appendChild(div);
                     });
-                    
-                    // Show/hide the rarity row based on whether it has items
-                    // Don't override contraband display for non-huntsman cases
-                    if (grade !== 'contraband' || caseType === 'huntsman') {
-                        rarityRow.style.display = itemsToShow.length > 0 ? '' : 'none';
-                    }
                 }
             }
             
-            overlay.style.display = 'block';
-        } catch (error) {
-            console.error('Error loading case contents:', error);
+            // Show the overlay
+            overlay.style.display = 'flex';
         }
     }
 
+    // Add this helper function to create item elements
+    function createContentsItem(item, caseType) {
+        const div = document.createElement('div');
+        div.className = 'contents-item';
+        
+        // Map case types to folder names
+        const caseMapping = {
+            'csgo': 'weapon_case_1',
+            'esports': 'esports_2013',
+            'bravo': 'operation_bravo_case',
+            'csgo2': 'weapon_case_2',
+            'esports_winter': 'esports_2013_winter',
+            'winter_offensive': 'winter_offensive_case',
+            'csgo3': 'weapon_case_3',
+            'phoenix': 'operation_phoenix_case',
+            'huntsman': 'huntsman_case',
+            'breakout': 'operation_breakout_case',
+            'esports_summer': 'esports_2014_summer',
+            'vanguard': 'operation_vanguard_case',
+            'chroma': 'chroma_case',
+            'chroma_2': 'chroma_2_case',
+            'falchion': 'falchion_case'
+        };
+        
+        const casePath = caseMapping[caseType] || caseType;
+        
+        // Use the image name from the item data
+        div.innerHTML = `
+            <img src="/static/media/skins/${casePath}/${item.image}" 
+                 alt="${item.weapon} | ${item.name}"
+                 onerror="this.onerror=null; this.src='/static/media/cases/${casePath}.png'">
+            <div class="item-name">${item.weapon}</div>
+            <div class="item-skin">${item.name}</div>
+        `;
+        return div;
+    }
+
+    // Add this function to close the contents overlay
     function closeContentsOverlay() {
         const overlay = document.getElementById('case-contents-overlay');
         if (overlay) {

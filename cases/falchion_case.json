@@ -1,0 +1,544 @@
+{
+    "name": "Falchion Case",
+    "image": "falchion_case.png",
+    "price": 1.50,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Falchion Knife",
+                "name": "Blue Steel",
+                "image": "falchionknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 208.23,
+                    "MW": 170.80,
+                    "FT": 153.43,
+                    "WW": 146.48,
+                    "BS": 135.48,
+                    "ST_FN": 409.85,
+                    "ST_MW": 198.64,
+                    "ST_FT": 171.24,
+                    "ST_WW": 158.22,
+                    "ST_BS": 246.35
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Crimson Web",
+                "image": "falchionknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 752.09,
+                    "MW": 207.36,
+                    "FT": 149.90,
+                    "WW": 138.36,
+                    "BS": 125.31,
+                    "ST_FN": 3760.45,
+                    "ST_MW": 255.34,
+                    "ST_FT": 177.15,
+                    "ST_WW": 213.21,
+                    "ST_BS": 154.85
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Slaughter",
+                "image": "falchionknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 267.13,
+                    "MW": 238.36,
+                    "FT": 222.00,
+                    "ST_FN": 279.00,
+                    "ST_MW": 256.12,
+                    "ST_FT": 232.88
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Forest DDPAT",
+                "image": "falchionknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 149.00,
+                    "MW": 108.00,
+                    "FT": 99.20,
+                    "WW": 96.40,
+                    "BS": 99.03,
+                    "ST_FN": 745.00,
+                    "ST_MW": 109.32,
+                    "ST_FT": 104.77,
+                    "ST_WW": 115.31,
+                    "ST_BS": 100.62
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Stained",
+                "image": "falchionknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 164.25,
+                    "MW": 121.00,
+                    "FT": 116.44,
+                    "WW": 105.53,
+                    "BS": 102.19,
+                    "ST_FN": 276.97,
+                    "ST_MW": 147.80,
+                    "ST_FT": 132.33,
+                    "ST_WW": 129.29,
+                    "ST_BS": 130.00
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Boreal Forest",
+                "image": "falchionknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 168.00,
+                    "MW": 104.94,
+                    "FT": 100.49,
+                    "WW": 101.86,
+                    "BS": 98.71,
+                    "ST_FN": 840.00,
+                    "ST_MW": 121.21,
+                    "ST_FT": 106.85,
+                    "ST_WW": 115.00,
+                    "ST_BS": 134.47
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Night",
+                "image": "falchionknife_night.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 301.38,
+                    "MW": 123.15,
+                    "FT": 105.78,
+                    "WW": 104.33,
+                    "BS": 99.15,
+                    "ST_FN": 1506.90,
+                    "ST_MW": 129.73,
+                    "ST_FT": 109.26,
+                    "ST_WW": 112.33,
+                    "ST_BS": 110.00
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Scorched",
+                "image": "falchionknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 447.96,
+                    "MW": 107.40,
+                    "FT": 101.81,
+                    "WW": 95.91,
+                    "BS": 98.37,
+                    "ST_FN": 2239.80,
+                    "ST_MW": 142.78,
+                    "ST_FT": 109.59,
+                    "ST_WW": 102.74,
+                    "ST_BS": 100.00
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Fade",
+                "image": "falchionknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 314.74,
+                    "MW": 324.12,
+                    "ST_FN": 345.22,
+                    "ST_MW": 333.71
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Urban Masked",
+                "image": "falchionknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 203.84,
+                    "MW": 114.74,
+                    "FT": 105.34,
+                    "WW": 100.89,
+                    "BS": 103.93,
+                    "ST_FN": 1019.20,
+                    "ST_MW": 119.18,
+                    "ST_FT": 108.24,
+                    "ST_WW": 115.00,
+                    "ST_BS": 127.50
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Case Hardened",
+                "image": "falchionknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 328.70,
+                    "MW": 220.52,
+                    "FT": 186.90,
+                    "WW": 162.33,
+                    "BS": 161.48,
+                    "ST_FN": 319.60,
+                    "ST_MW": 243.84,
+                    "ST_FT": 260.00,
+                    "ST_WW": 215.43,
+                    "ST_BS": 236.31
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Safari Mesh",
+                "image": "falchionknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 118.91,
+                    "MW": 103.20,
+                    "FT": 98.45,
+                    "WW": 95.59,
+                    "BS": 100.66,
+                    "ST_FN": 594.55,
+                    "ST_MW": 113.70,
+                    "ST_FT": 100.02,
+                    "ST_WW": 112.33,
+                    "ST_BS": 108.22
+                }
+            },
+            {
+                "weapon": "Falchion Knife",
+                "name": "Vanilla",
+                "image": "falchionknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 161.38,
+                    "ST_NO": 172.61
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "AK-47",
+                "name": "Aquamarine Revenge",
+                "image": "ak47_aquamarine_revenge.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 102.83,
+                    "MW": 65.87,
+                    "FT": 31.08,
+                    "WW": 19.88,
+                    "BS": 17.77,
+                    "ST_FN": 213.57,
+                    "ST_MW": 116.35,
+                    "ST_FT": 69.79,
+                    "ST_WW": 45.15,
+                    "ST_BS": 43.82
+                }
+            },
+            {
+                "weapon": "AWP",
+                "name": "Hyper Beast",
+                "image": "awp_hyper_beast.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 79.01,
+                    "MW": 42.52,
+                    "FT": 22.53,
+                    "WW": 18.34,
+                    "BS": 17.98,
+                    "ST_FN": 205.02,
+                    "ST_MW": 96.82,
+                    "ST_FT": 53.15,
+                    "ST_WW": 48.49,
+                    "ST_BS": 49.00
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "SG553",
+                "name": "Cyrex",
+                "image": "sg553_cyrex.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11.81,
+                    "MW": 6.58,
+                    "FT": 4.11,
+                    "WW": 3.16,
+                    "BS": 3.13,
+                    "ST_FN": 43.34,
+                    "ST_MW": 13.00,
+                    "ST_FT": 7.40,
+                    "ST_WW": 6.89,
+                    "ST_BS": 6.08
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Nemesis",
+                "image": "mp7_nemesis.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 10.33,
+                    "MW": 6.16,
+                    "FT": 4.89,
+                    "ST_FN": 26.11,
+                    "ST_MW": 11.83,
+                    "ST_FT": 9.26
+                }
+            },
+            {
+                "weapon": "CZ75-Auto",
+                "name": "Yellow Jacket",
+                "image": "cz75auto_yellow_jacket.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11.28,
+                    "MW": 6.21,
+                    "FT": 4.35,
+                    "WW": 3.76,
+                    "BS": 3.83,
+                    "ST_FN": 27.26,
+                    "ST_MW": 12.17,
+                    "ST_FT": 7.87,
+                    "ST_WW": 5.86,
+                    "ST_BS": 8.69
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "M4A4",
+                "name": "Evil Daimyo",
+                "image": "m4a4_evil_daimyo.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.60,
+                    "MW": 2.02,
+                    "FT": 1.40,
+                    "WW": 1.52,
+                    "BS": 1.47,
+                    "ST_FN": 12.34,
+                    "ST_MW": 6.66,
+                    "ST_FT": 3.69,
+                    "ST_WW": 4.10,
+                    "ST_BS": 4.07
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Ruby Poison Dart",
+                "image": "mp9_ruby_poison_dart.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.16,
+                    "MW": 1.16,
+                    "FT": 0.84,
+                    "WW": 0.86,
+                    "BS": 0.81,
+                    "ST_FN": 5.68,
+                    "ST_MW": 3.25,
+                    "ST_FT": 1.90,
+                    "ST_WW": 1.91,
+                    "ST_BS": 2.00
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Handgun",
+                "image": "p2000_handgun.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.01,
+                    "MW": 1.02,
+                    "FT": 0.57,
+                    "WW": 0.46,
+                    "BS": 0.38,
+                    "ST_FN": 9.83,
+                    "ST_MW": 2.57,
+                    "ST_FT": 1.30,
+                    "ST_WW": 0.94,
+                    "ST_BS": 0.83
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Neural Net",
+                "image": "famas_neural_net.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.54,
+                    "MW": 1.02,
+                    "FT": 0.61,
+                    "WW": 0.67,
+                    "BS": 0.64,
+                    "ST_FN": 3.92,
+                    "ST_MW": 2.21,
+                    "ST_FT": 1.10,
+                    "ST_WW": 1.33,
+                    "ST_BS": 1.03
+                }
+            },
+            {
+                "weapon": "Negev",
+                "name": "Loudmouth",
+                "image": "negev_loudmouth.png",
+                "grade": "purple",
+                "valid_wears": ["MW", "FT", "WW", "BS"],
+                "prices": {
+                    "MW": 5.24,
+                    "FT": 0.50,
+                    "WW": 0.46,
+                    "BS": 0.39,
+                    "ST_MW": 34.20,
+                    "ST_FT": 1.23,
+                    "ST_WW": 1.99,
+                    "ST_BS": 0.84
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "USP-S",
+                "name": "Torque",
+                "image": "usps_torque.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.35,
+                    "MW": 1.01,
+                    "FT": 0.54,
+                    "WW": 0.63,
+                    "BS": 1.37,
+                    "ST_FN": 3.65,
+                    "ST_MW": 2.70,
+                    "ST_FT": 1.53,
+                    "ST_WW": 1.77,
+                    "ST_BS": 2.64
+                }
+            },
+            {
+                "weapon": "Galil AR",
+                "name": "Rocket Pop",
+                "image": "galil_rocket_pop.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 6.22,
+                    "MW": 2.19,
+                    "FT": 0.90,
+                    "WW": 0.43,
+                    "BS": 0.33,
+                    "ST_FN": 14.93,
+                    "ST_MW": 3.90,
+                    "ST_FT": 1.54,
+                    "ST_WW": 0.85,
+                    "ST_BS": 0.72
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Bunsen Burner",
+                "image": "glock18_bunsen_burner.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.13,
+                    "MW": 0.39,
+                    "FT": 0.30,
+                    "WW": 0.35,
+                    "BS": 0.25,
+                    "ST_FN": 5.20,
+                    "ST_MW": 1.63,
+                    "ST_FT": 0.65,
+                    "ST_WW": 1.48,
+                    "ST_BS": 0.71
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Elite Build",
+                "image": "p90_elite_build.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.65,
+                    "MW": 0.27,
+                    "FT": 0.20,
+                    "WW": 0.21,
+                    "BS": 0.21,
+                    "ST_FN": 3.79,
+                    "ST_MW": 0.54,
+                    "ST_FT": 0.24,
+                    "ST_WW": 0.17,
+                    "ST_BS": 0.17
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Riot",
+                "image": "ump45_riot.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.30,
+                    "MW": 0.28,
+                    "FT": 0.28,
+                    "WW": 0.24,
+                    "BS": 0.16,
+                    "ST_FN": 0.89,
+                    "ST_MW": 0.46,
+                    "ST_FT": 0.24,
+                    "ST_WW": 0.22,
+                    "ST_BS": 0.16
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Ranger",
+                "image": "nova_ranger.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.71,
+                    "MW": 0.31,
+                    "FT": 0.30,
+                    "WW": 0.23,
+                    "BS": 0.19,
+                    "ST_FN": 2.04,
+                    "ST_MW": 0.58,
+                    "ST_FT": 0.28,
+                    "ST_WW": 0.20,
+                    "ST_BS": 0.22
+                }
+            }
+        ]
+    }
+}
