@@ -69,7 +69,8 @@ def login_required(f):
                         'combo_speed': 1,
                         'critical_strike': 0,
                         'progress_per_click': 1,
-                        'case_quality': 1
+                        'case_quality': 1,
+                        'multi_open': 1  # Add this line to initialize multi_open
                     }
                 }
                 save_user_data(user_data)
@@ -211,7 +212,8 @@ def load_user_data() -> dict:
             'combo_speed': 1,
             'critical_strike': 0,
             'progress_per_click': 1,
-            'case_quality': 1
+            'case_quality': 1,
+            'multi_open': 1  # Add this line to initialize multi_open
         },
         'case_progress': 0
     }
@@ -420,15 +422,22 @@ def inventory():
                          exp=user_data['exp'],
                          RANK_EXP=RANK_EXP,
                          RANKS=RANKS,
+                         upgrades=user_data.get('upgrades', {}),  # Add this line
                          initial_view=request.args.get('view', 'skins'))
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
     count = int(request.args.get('count', 1))
-    if count not in [1, 2, 3, 4, 5]:  # Update to allow up to 5 cases
+    user_data = load_user_data()
+    
+    # Check multi_open upgrade level
+    multi_open_level = user_data.get('upgrades', {}).get('multi_open', 1)
+    if count > multi_open_level:
+        return jsonify({'error': f'You can only open up to {multi_open_level} cases at once. Upgrade Multi Open to open more!'})
+    
+    if count not in [1, 2, 3, 4, 5]:
         return jsonify({'error': 'Invalid case count'})
         
-    user_data = load_user_data()
     inventory = user_data.get('inventory', [])
     current_exp = user_data.get('exp', 0)
     current_rank = user_data.get('rank', 0)
@@ -534,7 +543,8 @@ def open_case(case_type):
         'exp': new_exp,
         'rank': current_rank,
         'rankName': RANKS[current_rank],
-        'nextRankExp': RANK_EXP[current_rank] if current_rank < len(RANK_EXP) else None
+        'nextRankExp': RANK_EXP[current_rank] if current_rank < len(RANK_EXP) else None,
+        'upgrades': user_data.get('upgrades', {})  # Add this line
     })
 
 @app.route('/reset_session')
@@ -758,6 +768,8 @@ def purchase_upgrade():
             return jsonify({'error': 'Maximum level reached'})
         if upgrade_type == 'case_quality' and current_level >= 5:
             return jsonify({'error': 'Maximum level reached'})
+        if upgrade_type == 'multi_open' and current_level >= 5:  # Add this check
+            return jsonify({'error': 'Maximum level reached'})
         
         # Calculate cost
         costs = {
@@ -767,7 +779,8 @@ def purchase_upgrade():
             'combo_speed': lambda level: 150 * (2 ** (level - 1)),
             'critical_strike': lambda level: 1000 if level == 0 else 200 * (2 ** (level - 1)),
             'progress_per_click': lambda level: 150 * (2 ** (level - 1)),
-            'case_quality': lambda level: 500 * (2 ** (level - 1))
+            'case_quality': lambda level: 500 * (2 ** (level - 1)),
+            'multi_open': lambda level: 300 * (2 ** (level - 1))  # Add this line
         }
         
         if upgrade_type not in costs:

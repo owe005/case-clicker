@@ -99,6 +99,25 @@
             <button class="btn upgrade-btn" onclick="purchaseUpgrade('case_quality')">Upgrade</button>
         {% endif %}
     </div>
+
+    <div class="upgrade-card {% if upgrades.multi_open >= 5 %}max-level{% endif %}">
+        <h3>Multi Open</h3>
+        <p class="current-level">Level: <span id="multi_open-level">{{ upgrades.multi_open }}</span>/5</p>
+        <p class="upgrade-value">Current: Can open 
+            {% if upgrades.multi_open == 1 %}
+                1 case
+            {% else %}
+                up to {{ upgrades.multi_open }} cases
+            {% endif %}
+            at once
+        </p>
+        <p class="upgrade-cost">Cost: $<span id="multi_open-cost">{{ "%.2f"|format(300 * (2 ** (upgrades.multi_open - 1))) }}</span></p>
+        {% if upgrades.multi_open >= 5 %}
+            <div class="max-level-badge">Max Level</div>
+        {% else %}
+            <button class="btn upgrade-btn" onclick="purchaseUpgrade('multi_open')">Upgrade</button>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
 

@@ -83,17 +83,17 @@
                     <p>Quantity: {{ item.quantity }}</p>
                     <div class="case-buttons">
                         <button class="btn-small" onclick="openCase('{{ item.type }}', 1)">Open 1x</button>
-                        {% if item.quantity >= 2 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 2)">Open 2x</button>
+                        {% if upgrades.multi_open >= 2 and item.quantity >= 2 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 2)" style="display: {{ 'block' if upgrades.multi_open >= 2 else 'none' }}">Open 2x</button>
                         {% endif %}
-                        {% if item.quantity >= 3 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 3)">Open 3x</button>
+                        {% if upgrades.multi_open >= 3 and item.quantity >= 3 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 3)" style="display: {{ 'block' if upgrades.multi_open >= 3 else 'none' }}">Open 3x</button>
                         {% endif %}
-                        {% if item.quantity >= 4 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 4)">Open 4x</button>
+                        {% if upgrades.multi_open >= 4 and item.quantity >= 4 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 4)" style="display: {{ 'block' if upgrades.multi_open >= 4 else 'none' }}">Open 4x</button>
                         {% endif %}
-                        {% if item.quantity >= 5 %}
-                        <button class="btn-small" onclick="openCase('{{ item.type }}', 5)">Open 5x</button>
+                        {% if upgrades.multi_open >= 5 and item.quantity >= 5 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 5)" style="display: {{ 'block' if upgrades.multi_open >= 5 else 'none' }}">Open 5x</button>
                         {% endif %}
                     </div>
                 </div>
@@ -597,6 +597,19 @@ async function openCase(caseType, count = 1) {
         
         if (data.error) {
             alert(data.error);
+            // Even on error, update the buttons visibility using current upgrades
+            const currentUpgrades = {{ upgrades|tojson }};  // Get upgrades from template
+            document.querySelectorAll('.case-item').forEach(caseItem => {
+                const quantity = parseInt(caseItem.querySelector('p').textContent.split(': ')[1]);
+                const buttons = caseItem.querySelectorAll('.case-buttons button');
+                
+                buttons.forEach((button, index) => {
+                    const count = index + 1;
+                    if (count > 1) {
+                        button.style.display = (currentUpgrades.multi_open >= count && quantity >= count) ? 'block' : 'none';
+                    }
+                });
+            });
             return;
         }
         
@@ -621,6 +634,19 @@ async function openCase(caseType, count = 1) {
             updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
         }
         
+        // Update case buttons visibility based on returned upgrades
+        document.querySelectorAll('.case-item').forEach(caseItem => {
+            const quantity = parseInt(caseItem.querySelector('p').textContent.split(': ')[1]);
+            const buttons = caseItem.querySelectorAll('.case-buttons button');
+            
+            buttons.forEach((button, index) => {
+                const count = index + 1;
+                if (count > 1) {
+                    button.style.display = (data.upgrades.multi_open >= count && quantity >= count) ? 'block' : 'none';
+                }
+            });
+        });
+        
         // Update case quantity in UI
         const caseElement = document.querySelector(`.case-item button[onclick*="${caseType}"]`)
             ?.closest('.case-item');
@@ -639,14 +665,20 @@ async function openCase(caseType, count = 1) {
         if (newQuantity <= 0) {
             caseElement.remove();
         } else {
-            // Update button visibility based on new quantity
+            // Update button visibility based on new quantity and upgrade level
             const buttonsContainer = caseElement.querySelector('.case-buttons');
+            const currentUpgrades = {{ upgrades|tojson }};  // Get upgrades from template
+            
             buttonsContainer.innerHTML = `
                 <button class="btn-small" onclick="openCase('${caseType}', 1)">Open 1x</button>
-                ${newQuantity >= 2 ? `<button class="btn-small" onclick="openCase('${caseType}', 2)">Open 2x</button>` : ''}
-                ${newQuantity >= 3 ? `<button class="btn-small" onclick="openCase('${caseType}', 3)">Open 3x</button>` : ''}
-                ${newQuantity >= 4 ? `<button class="btn-small" onclick="openCase('${caseType}', 4)">Open 4x</button>` : ''}
-                ${newQuantity >= 5 ? `<button class="btn-small" onclick="openCase('${caseType}', 5)">Open 5x</button>` : ''}
+                ${newQuantity >= 2 && currentUpgrades.multi_open >= 2 ? 
+                    `<button class="btn-small" onclick="openCase('${caseType}', 2)" style="display: ${currentUpgrades.multi_open >= 2 ? 'block' : 'none'}">Open 2x</button>` : ''}
+                ${newQuantity >= 3 && currentUpgrades.multi_open >= 3 ? 
+                    `<button class="btn-small" onclick="openCase('${caseType}', 3)" style="display: ${currentUpgrades.multi_open >= 3 ? 'block' : 'none'}">Open 3x</button>` : ''}
+                ${newQuantity >= 4 && currentUpgrades.multi_open >= 4 ? 
+                    `<button class="btn-small" onclick="openCase('${caseType}', 4)" style="display: ${currentUpgrades.multi_open >= 4 ? 'block' : 'none'}">Open 4x</button>` : ''}
+                ${newQuantity >= 5 && currentUpgrades.multi_open >= 5 ? 
+                    `<button class="btn-small" onclick="openCase('${caseType}', 5)" style="display: ${currentUpgrades.multi_open >= 5 ? 'block' : 'none'}">Open 5x</button>` : ''}
             `;
         }
         
