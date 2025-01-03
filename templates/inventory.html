@@ -76,7 +76,15 @@
                 <div class="item-details">
                     <h3>{{ item.name }}</h3>
                     <p>Quantity: {{ item.quantity }}</p>
-                    <button class="btn-small" onclick="openCase('{{ item.type }}')">Open Case</button>
+                    <div class="case-buttons">
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 1)">Open 1x</button>
+                        {% if item.quantity >= 2 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 2)">Open 2x</button>
+                        {% endif %}
+                        {% if item.quantity >= 3 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 3)">Open 3x</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -84,33 +92,59 @@
     </div>
 </div>
 
-<!-- Add the case opening overlay -->
+<!-- Update the case opening overlay -->
 <div id="case-opening-overlay" class="hidden">
     <audio id="spinning-sound" preload="auto">
         <source src="{{ url_for('static', filename='media/case_spinning.mp3') }}" type="audio/mpeg">
     </audio>
-    <div class="spinner-container">
-        <div class="spinner">
-            <!-- Items will be inserted here dynamically -->
+    <div class="spinner-containers">
+        <div class="spinner-container">
+            <div class="spinner">
+                <!-- Items will be inserted here dynamically -->
+            </div>
+            <div class="spinner-selector"></div>
         </div>
-        <div class="spinner-selector"></div>
+        <div class="spinner-container hidden">
+            <div class="spinner">
+                <!-- Items will be inserted here dynamically -->
+            </div>
+            <div class="spinner-selector"></div>
+        </div>
+        <div class="spinner-container hidden">
+            <div class="spinner">
+                <!-- Items will be inserted here dynamically -->
+            </div>
+            <div class="spinner-selector"></div>
+        </div>
     </div>
 </div>
 
-<!-- Add the showcase overlay -->
+<!-- Update the showcase overlay -->
 <div id="showcase-overlay" class="showcase-overlay" style="display: none;">
     <audio id="showcase-sound" preload="auto">
         <source src="{{ url_for('static', filename='media/case_showcase.mp3') }}" type="audio/mpeg">
     </audio>
     <div class="showcase-container">
-        <div class="showcase-item">
-            <div class="showcase-name"></div>
-            <div class="showcase-details"></div>
-            <div class="showcase-price"></div>
+        <div class="showcase-items">
+            <div class="showcase-item">
+                <div class="showcase-name"></div>
+                <div class="showcase-details"></div>
+                <div class="showcase-price"></div>
+            </div>
+            <div class="showcase-item hidden">
+                <div class="showcase-name"></div>
+                <div class="showcase-details"></div>
+                <div class="showcase-price"></div>
+            </div>
+            <div class="showcase-item hidden">
+                <div class="showcase-name"></div>
+                <div class="showcase-details"></div>
+                <div class="showcase-price"></div>
+            </div>
         </div>
         <div class="showcase-buttons">
             <button class="showcase-continue">Continue</button>
-            <button class="showcase-sell">Sell</button>
+            <button class="showcase-sell">Sell All</button>
         </div>
     </div>
 </div>
@@ -126,6 +160,80 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Add these styles to improve the case buttons layout */
+.case-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    background: #4a4a4a;
+    color: white;
+    border: 1px solid #666;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 80px;
+}
+
+.btn-small:hover {
+    background: #5a5a5a;
+}
+
+.btn-small:active {
+    background: #3a3a3a;
+}
+
+/* Update spinner containers for 3 spinners */
+.spinner-containers {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.spinner-container {
+    flex: 1;
+    min-height: 200px;
+    background: transparent;  /* Remove any background */
+}
+
+.spinner-container.hidden {
+    display: none;  /* Completely hide instead of just visibility */
+    min-height: 0;  /* Remove min-height when hidden */
+    margin: 0;  /* Remove any margin when hidden */
+}
+
+/* Update showcase items layout */
+.showcase-items {
+    display: flex;  /* Change to flex instead of grid */
+    flex-wrap: wrap;  /* Allow wrapping */
+    justify-content: center;  /* Center items */
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.showcase-item {
+    flex: 0 1 250px;  /* Allow items to shrink but maintain preferred width */
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.showcase-item.hidden {
+    display: none;  /* Completely hide instead of just visibility */
+    margin: 0;  /* Remove any margin when hidden */
+}
+</style>
 
 {% endblock %}
 
@@ -328,7 +436,12 @@ async function loadCaseContents(caseType) {
 }
 
 // Update the openCase function
-async function openCase(caseType) {
+async function openCase(caseType, count = 1) {
+    if (count < 1 || count > 3) {
+        console.error('Invalid case count:', count);
+        return;
+    }
+
     try {
         // Load case contents if not already loaded
         await loadCaseContents(caseType);
@@ -336,8 +449,8 @@ async function openCase(caseType) {
         // Store initial rank before opening case
         const initialRank = parseInt(document.querySelector('.current-rank').dataset.rank || '0');
         
-        // Send request to open case
-        const response = await fetch(`/open/${caseType}`);
+        // Send request to open case(s)
+        const response = await fetch(`/open/${caseType}?count=${count}`);
         const data = await response.json();
         
         console.log('Case opening response:', data);
@@ -352,18 +465,18 @@ async function openCase(caseType) {
         
         // Update rank progress if exp data is available
         if (data.exp !== undefined && data.rank !== undefined) {
-            // Check for level up using initial rank
             if (data.rank > initialRank) {
-                console.log('Level up detected in openCase!', {
+                console.log('Level up detected!', {
                     initialRank,
                     newRank: data.rank,
                     rankName: data.rankName
                 });
-                // Store level up data to show after showcase
-                data.item.levelUp = {
-                    fromRank: initialRank,
-                    toRank: data.rank
-                };
+                data.items.forEach(item => {
+                    item.levelUp = {
+                        fromRank: initialRank,
+                        toRank: data.rank
+                    };
+                });
             }
             updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
         }
@@ -379,62 +492,103 @@ async function openCase(caseType) {
         const quantityElement = caseElement.querySelector('p');
         const currentQuantity = parseInt(quantityElement.textContent.match(/\d+/)[0]);
         
-        const newQuantity = currentQuantity - 1;
+        const newQuantity = currentQuantity - count;
         quantityElement.textContent = `Quantity: ${newQuantity}`;
         
         // If quantity is 0, remove the case item
         if (newQuantity <= 0) {
             caseElement.remove();
+        } else {
+            // Update button visibility based on new quantity
+            const buttonsContainer = caseElement.querySelector('.case-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="btn-small" onclick="openCase('${caseType}', 1)">Open 1x</button>
+                ${newQuantity >= 2 ? `<button class="btn-small" onclick="openCase('${caseType}', 2)">Open 2x</button>` : ''}
+                ${newQuantity >= 3 ? `<button class="btn-small" onclick="openCase('${caseType}', 3)">Open 3x</button>` : ''}
+            `;
         }
         
         // Show case opening animation
         const overlay = document.getElementById('case-opening-overlay');
-        const spinner = document.querySelector('.spinner');
+        const spinnerContainers = overlay.querySelectorAll('.spinner-container');
         const spinningSound = document.getElementById('spinning-sound');
         
-        spinner.innerHTML = '';
+        // Generate random items for each spinner
+        const spinnerResults = [];
+        for (let i = 0; i < count; i++) {
+            const { items, winningPosition } = generateRandomItems(data.items[i]);
+            spinnerResults.push({ items, winningPosition });
+        }
+        
+        // Show overlay and play sound
         overlay.classList.remove('hidden');
-
-        // Play the spinning sound
         spinningSound.currentTime = 0;
         spinningSound.play();
-
-        // Generate random items with the actual item
-        const { items, winningPosition } = generateRandomItems(data.item);
         
-        // Create spinner items
-        const elements = items.map((item, index) => {
-            const element = createItemElement(item);
-            if (index === winningPosition) {
-                element.dataset.winning = 'true';
+        // Clear and show/hide spinner containers based on count
+        spinnerContainers.forEach((container, index) => {
+            if (index < count) {
+                // Show and clear containers we'll use
+                container.classList.remove('hidden');
+                container.querySelector('.spinner').innerHTML = '';
+                
+                // Create spinner items only for active containers
+                const spinner = container.querySelector('.spinner');
+                const result = spinnerResults[index];
+                
+                const elements = result.items.map((item, itemIndex) => {
+                    const element = createItemElement(item);
+                    if (itemIndex === result.winningPosition) {
+                        element.dataset.winning = 'true';
+                    }
+                    return element;
+                });
+
+                elements.forEach(element => spinner.appendChild(element));
+                
+                // Set initial position
+                spinner.style.transition = 'none';
+                spinner.style.transform = 'translateX(0)';
+            } else {
+                // Completely hide unused containers
+                container.classList.add('hidden');
+                container.querySelector('.spinner').innerHTML = '';
             }
-            return element;
         });
-
-        elements.forEach(element => spinner.appendChild(element));
-
-        // Initial position
-        spinner.style.transition = 'none';
-        spinner.style.transform = 'translateX(0)';
-        spinner.offsetHeight; // Force reflow
         
-        const itemWidth = 200;
-        const spinnerContainer = document.querySelector('.spinner-container');
-        const containerWidth = spinnerContainer.offsetWidth;
-        const centerOffset = (containerWidth / 2) - (itemWidth / 2);
-        const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2);
-        const finalPosition = (winningPosition * itemWidth) - centerOffset + randomOffset;
+        // Force reflow for active spinners
+        spinnerContainers.forEach((container, index) => {
+            if (index < count) {
+                container.querySelector('.spinner').offsetHeight;
+            }
+        });
         
-        // Spin animation
-        spinner.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)';
-        spinner.style.transform = `translateX(-${finalPosition}px)`;
+        // Start synchronized spin animation only for active spinners
+        spinnerContainers.forEach((container, index) => {
+            if (index < count) {
+                const spinner = container.querySelector('.spinner');
+                const result = spinnerResults[index];
+                
+                const itemWidth = 200;
+                const containerWidth = container.offsetWidth;
+                const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+                const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2);
+                const finalPosition = (result.winningPosition * itemWidth) - centerOffset + randomOffset;
+                
+                // Use the same transition for all spinners
+                spinner.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)';
+                // Start all animations in the next frame
+                requestAnimationFrame(() => {
+                    spinner.style.transform = `translateX(-${finalPosition}px)`;
+                });
+            }
+        });
         
         // Hide overlay and show result
         setTimeout(() => {
             overlay.classList.add('hidden');
             spinningSound.pause();
-            console.log('Showing showcase with item:', data.item);
-            showItemShowcase(data.item);
+            showItemShowcase(data.items);
             
             // Clear any stored items to prevent duplicates
             sessionStorage.removeItem('newItem');
@@ -634,22 +788,11 @@ function createItemElement(item) {
     return div;
 }
 
-function showItemShowcase(item) {
-    // Add the rank data to the item if it wasn't included
-    if (item && !item.exp && !item.rank) {
-        item = {
-            ...item,
-            exp: parseFloat(document.querySelector('.exp-info').textContent),
-            rank: parseInt(document.querySelector('.current-rank').dataset.rank),
-            rankName: document.querySelector('.current-rank').textContent,
-            nextRankExp: document.querySelector('.exp-info').textContent.includes('/') ? 
-                parseInt(document.querySelector('.exp-info').textContent.split('/')[1]) : null
-        };
-    }
-
+function showItemShowcase(items) {
     const showcase = document.getElementById('showcase-overlay');
     const showcaseSound = document.getElementById('showcase-sound');
     const showcaseContainer = showcase.querySelector('.showcase-container');
+    const showcaseItems = showcase.querySelectorAll('.showcase-item');
     
     // Clear any existing buttons container
     const existingButtons = showcaseContainer.querySelector('.showcase-buttons');
@@ -657,133 +800,71 @@ function showItemShowcase(item) {
         existingButtons.remove();
     }
     
-    // Create and set up all elements first
-    const nameElement = document.createElement('div');
-    nameElement.className = `showcase-name ${item.stattrak ? 'stattrak' : ''}`;
-    
-    const detailsElement = document.createElement('div');
-    detailsElement.className = 'showcase-details';
-    
-    const priceElement = document.createElement('div');
-    priceElement.className = 'showcase-price';
-    
-    // Create image element
-    const imageElement = document.createElement('img');
-    
-    // For knives/gold items, use the actual knife image instead of rare_item.png
-    if (item.rarity === 'GOLD') {
-        // Get case path mapping
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case',
-            'csgo3': 'weapon_case_3',
-            'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case'
-        };
-        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
-        
-        // Get the weapon and skin name from the item
-        const weaponName = item.weapon.toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .replace('★', '')
-            .replace('553', '553')
-            .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
+    // Show/hide showcase items based on number of items
+    showcaseItems.forEach((itemContainer, index) => {
+        if (index < items.length) {
+            // Show and populate container for actual items
+            itemContainer.classList.remove('hidden');
+            itemContainer.innerHTML = ''; // Clear existing content
             
-        const skinName = item.name.toLowerCase().replace(/ /g, '_');
-        
-        // Set the image source to the actual knife image
-        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
-    } else {
-        // For non-knife skins, use the same image logic as before
-        const weaponName = item.weapon.toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .replace('553', '553')
-            .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
-        const skinName = item.name.toLowerCase().replace(/ /g, '_');
-        
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case',
-            'csgo3': 'weapon_case_3',
-            'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case'
-        };
-        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
-        
-        imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
-    }
-    
-    imageElement.alt = `${item.weapon} | ${item.name}`;
-    
-    // Fetch the price from case data
-    fetch(`/data/case_contents/${item.case_type}`)
-        .then(response => response.json())
-        .then(caseData => {
-            // Find the item's price in the case data
-            let price = 0;
-            for (const [grade, skins] of Object.entries(caseData.skins)) {
-                for (const skin of skins) {
-                    if (skin.weapon === item.weapon && skin.name === item.name) {
-                        const prices = skin.prices;
-                        const wearKey = 'NO' in prices ? 'NO' : item.wear;
-                        price = item.stattrak ? 
-                            (prices[`ST_${wearKey}`] || 0) : 
-                            (prices[wearKey] || 0);
-                        break;
-                    }
-                }
-                if (price > 0) break;
+            // Create image element
+            const imageElement = document.createElement('img');
+            if (items[index].rarity === 'GOLD') {
+                imageElement.src = "/static/media/cases/rare_item.png";
+            } else {
+                const weaponName = items[index].weapon.toLowerCase()
+                    .replace('-', '')
+                    .replace(' ', '')
+                    .replace('553', '553')
+                    .replace('galil ar', 'galil')
+                    .replace('galilar', 'galil');
+                const skinName = items[index].name.toLowerCase().replace(/ /g, '_');
+                
+                const casePathMapping = {
+                    'csgo': 'weapon_case_1',
+                    'esports': 'esports_2013',
+                    'bravo': 'operation_bravo_case',
+                    'csgo2': 'weapon_case_2',
+                    'esports_winter': 'esports_2013_winter',
+                    'winter_offensive': 'winter_offensive_case',
+                    'csgo3': 'weapon_case_3',
+                    'phoenix': 'operation_phoenix_case',
+                    'huntsman': 'huntsman_case',
+                    'breakout': 'operation_breakout_case'
+                };
+                const casePath = casePathMapping[items[index].case_type] || 'weapon_case_1';
+                
+                imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
             }
+            imageElement.alt = `${items[index].weapon} | ${items[index].name}`;
+            itemContainer.appendChild(imageElement);
             
-            // Update the item's price
-            item.price = price;
-            priceElement.textContent = `$${price.toFixed(2)}`;
+            // Add name, details, and price elements
+            const nameElement = document.createElement('div');
+            nameElement.className = `showcase-name ${items[index].stattrak ? 'stattrak' : ''}`;
+            nameElement.textContent = `${items[index].stattrak ? 'StatTrak™ ' : ''}${items[index].weapon} | ${items[index].name}`;
             
-            // Update the price in the inventory display if it exists
-            const inventoryItem = document.querySelector(`[data-index="${document.querySelectorAll('.skin').length}"]`);
-            if (inventoryItem) {
-                const priceDisplay = inventoryItem.querySelector('.item-price');
-                if (priceDisplay) {
-                    priceDisplay.textContent = `$${price.toFixed(2)}`;
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching case data:', error);
-            priceElement.textContent = '$0.00';
-        });
-
-    // Update showcase content
-    const itemContainer = showcase.querySelector('.showcase-item');
-    itemContainer.innerHTML = ''; // Clear existing content
-    
-    // Add all elements to the container
-    itemContainer.appendChild(imageElement);
-    itemContainer.appendChild(nameElement);
-    itemContainer.appendChild(detailsElement);
-    itemContainer.appendChild(priceElement);
+            const detailsElement = document.createElement('div');
+            detailsElement.className = 'showcase-details';
+            detailsElement.textContent = `${items[index].wear} • ${items[index].rarity === 'GOLD' ? 'Rare Special Item' : items[index].rarity}`;
+            
+            const priceElement = document.createElement('div');
+            priceElement.className = 'showcase-price';
+            priceElement.textContent = `$${items[index].price.toFixed(2)}`;
+            
+            itemContainer.appendChild(nameElement);
+            itemContainer.appendChild(detailsElement);
+            itemContainer.appendChild(priceElement);
+        } else {
+            // Hide unused containers completely
+            itemContainer.classList.add('hidden');
+            itemContainer.innerHTML = '';
+        }
+    });
     
     // Remove any existing rarity classes from container
     showcaseContainer.className = 'showcase-container';
-    showcaseContainer.classList.add(`rarity-${item.rarity}`);
-    
-    // Set text content
-    nameElement.textContent = `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`;
-    detailsElement.textContent = `${item.wear} • ${item.rarity === 'GOLD' ? 'Rare Special Item' : item.rarity}`;
+    showcaseContainer.classList.add(`rarity-${items[0].rarity}`);
     
     // Create buttons container and buttons
     const buttonsContainer = document.createElement('div');
@@ -795,7 +876,7 @@ function showItemShowcase(item) {
     
     const sellButton = document.createElement('button');
     sellButton.className = 'showcase-sell';
-    sellButton.textContent = 'Sell';
+    sellButton.textContent = items.length > 1 ? 'Sell All' : 'Sell';
     
     buttonsContainer.appendChild(continueButton);
     buttonsContainer.appendChild(sellButton);
@@ -808,32 +889,29 @@ function showItemShowcase(item) {
         await refreshSkinsSection();
         
         // Show level up celebration if we stored level up data
-        if (item.levelUp) {
-            console.log('Showing level up celebration:', item.levelUp);
+        if (items[0].levelUp) {
+            console.log('Showing level up celebration:', items[0].levelUp);
             createConfetti();
-            showLevelUpBanner(RANKS[item.levelUp.toRank]);
-        }
-        if (item.exp !== undefined && item.rank !== undefined) {
-            updateRankProgress(item.exp, item.rank, item.rankName, item.nextRankExp);
+            showLevelUpBanner(RANKS[items[0].levelUp.toRank]);
         }
     };
     
     sellButton.onclick = async () => {
         try {
-            // Disable the button to prevent double-clicks
             sellButton.disabled = true;
             
             const response = await fetch('/sell/last', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ count: items.length })
             });
             
             const data = await response.json();
             
             if (data.error) {
-                console.error('Error selling item:', data.error, data.details);
+                console.error('Error selling items:', data.error);
                 alert(data.error);
                 return;
             }
@@ -841,33 +919,29 @@ function showItemShowcase(item) {
             // Update balance
             document.getElementById('balance').textContent = data.balance.toFixed(2);
             
-            // Show level up celebration if we stored level up data
-            if (item.levelUp) {
-                console.log('Showing level up celebration:', item.levelUp);
+            // Show level up celebration if needed
+            if (items[0].levelUp) {
+                console.log('Showing level up celebration:', items[0].levelUp);
                 createConfetti();
-                showLevelUpBanner(RANKS[item.levelUp.toRank]);
-            }
-            if (item.exp !== undefined && item.rank !== undefined) {
-                updateRankProgress(item.exp, item.rank, item.rankName, item.nextRankExp);
+                showLevelUpBanner(RANKS[items[0].levelUp.toRank]);
             }
             
             // Close showcase
             showcase.style.display = 'none';
             showcaseSound.pause();
             
-            // Refresh the inventory display to ensure it's up to date
+            // Refresh the inventory display
             await refreshSkinsSection();
             
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to sell item');
+            alert('Failed to sell items');
         } finally {
-            // Re-enable the button
             sellButton.disabled = false;
         }
     };
     
-    // Show overlay and play sound
+    // Show the showcase overlay
     showcase.style.display = 'flex';
     showcaseSound.currentTime = 0;
     showcaseSound.play();

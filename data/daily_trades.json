@@ -1,49 +1,49 @@
 {
-  "date": "2025-01-02",
+  "date": "2025-01-03",
   "trades": [
     {
-      "type": "sell",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
+      "type": "buy",
+      "botName": "Mira-Eclipse",
+      "botAvatar": "bot10.png",
       "offering": [
         {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Boreal Forest",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 90.56,
-          "case_type": "esports_winter",
-          "case_file": "esports_2013_winter",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "M4A1-S",
-          "name": "Guardian",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 17.72,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
-          "rarity": "PINK"
-        },
-        {
-          "type": "skin",
-          "weapon": "Bayonet",
-          "name": "Case Hardened",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 324.16,
-          "case_type": "csgo3",
-          "case_file": "weapon_case_3",
-          "rarity": "GOLD"
+          "type": "money",
+          "amount": 459.15091678522913
         }
       ],
       "requesting": [
         {
-          "type": "money",
-          "amount": 580.0112555355339
+          "type": "skin",
+          "weapon": "Bayonet",
+          "name": "Case Hardened",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 289.8,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "GOLD"
+        },
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Boreal Forest",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 132.89,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "GOLD"
+        },
+        {
+          "type": "skin",
+          "weapon": "P2000",
+          "name": "Ivory",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 0.07,
+          "case_type": "breakout",
+          "case_file": "operation_breakout_case",
+          "rarity": "BLUE"
         }
       ]
     },
@@ -54,7 +54,7 @@
       "offering": [
         {
           "type": "money",
-          "amount": 215.4551478377014
+          "amount": 148.46778322013017
         }
       ],
       "requesting": [
@@ -62,253 +62,66 @@
           "type": "skin",
           "weapon": "Flip Knife",
           "name": "Boreal Forest",
-          "wear": "FN",
+          "wear": "WW",
           "stattrak": false,
-          "price": 197.29,
-          "case_type": "csgo3",
-          "case_file": "weapon_case_3",
+          "price": 132.89,
+          "case_type": "winter_offensive",
+          "case_file": "winter_offensive_case",
           "rarity": "GOLD"
         }
       ]
     },
     {
-      "type": "swap",
-      "botName": "Theo.91",
-      "botAvatar": "bot5.png",
-      "offering": [
-        {
-          "type": "skin",
-          "weapon": "Butterfly Knife",
-          "name": "Fade",
-          "wear": "FN",
-          "stattrak": false,
-          "price": 3241.74,
-          "case_type": "breakout",
-          "case_file": "operation_breakout_case",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Karambit",
-          "name": "Crimson Web",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 828.9,
-          "case_type": "csgo2",
-          "case_file": "weapon_case_2",
-          "rarity": "GOLD"
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "weapon": "M4A4",
-          "name": "Desert Strike",
-          "wear": "FN",
-          "stattrak": false,
-          "price": 5.89,
-          "case_type": "huntsman",
-          "case_file": "huntsman_case",
-          "rarity": "RED"
-        },
-        {
-          "type": "skin",
-          "weapon": "P90",
-          "name": "Death by Kitty",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 38.08,
-          "case_type": "esports",
-          "case_file": "esports_2013",
-          "rarity": "RED"
-        },
-        {
-          "type": "skin",
-          "weapon": "Bayonet",
-          "name": "Urban Masked",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 178.81,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "GOLD"
-        }
-      ]
-    },
-    {
-      "type": "buy",
+      "type": "sell",
       "botName": "Nova-Lyn",
       "botAvatar": "bot6.png",
       "offering": [
         {
-          "type": "money",
-          "amount": 1944.381151986015
-        }
-      ],
-      "requesting": [
-        {
           "type": "skin",
-          "weapon": "M9 Bayonet",
-          "name": "Case Hardened",
-          "wear": "FN",
-          "stattrak": false,
-          "price": 1006.31,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Flip Knife",
-          "name": "Urban Masked",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 140.36,
-          "case_type": "csgo2",
-          "case_file": "weapon_case_2",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "M9 Bayonet",
-          "name": "Case Hardened",
+          "weapon": "Bayonet",
+          "name": "Crimson Web",
           "wear": "FT",
           "stattrak": false,
-          "price": 702.85,
-          "case_type": "esports",
-          "case_file": "esports_2013",
-          "rarity": "GOLD"
-        }
-      ]
-    },
-    {
-      "type": "sell",
-      "botName": "Lucien_Kai",
-      "botAvatar": "bot9.png",
-      "offering": [
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Scorched",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 94.38,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
+          "price": 270.28,
+          "case_type": "esports_winter",
+          "case_file": "esports_2013_winter",
           "rarity": "GOLD"
         },
         {
           "type": "skin",
-          "weapon": "M9 Bayonet",
+          "weapon": "Bayonet",
           "name": "Slaughter",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 829.64,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "M9 Bayonet",
-          "name": "Blue Steel",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 719.49,
-          "case_type": "csgo2",
-          "case_file": "weapon_case_2",
-          "rarity": "GOLD"
-        }
-      ],
-      "requesting": [
-        {
-          "type": "money",
-          "amount": 1978.034038342284
-        }
-      ]
-    },
-    {
-      "type": "swap",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
-      "offering": [
-        {
-          "type": "skin",
-          "weapon": "Huntsman Knife",
-          "name": "Safari Mesh",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 97.78,
-          "case_type": "huntsman",
-          "case_file": "huntsman_case",
-          "rarity": "GOLD"
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Urban Masked",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 108.87,
-          "case_type": "csgo2",
-          "case_file": "weapon_case_2",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Glock-18",
-          "name": "Blue Fissure",
-          "wear": "FT",
-          "stattrak": true,
-          "price": 2.86,
-          "case_type": "csgo3",
-          "case_file": "weapon_case_3",
-          "rarity": "BLUE"
-        }
-      ]
-    },
-    {
-      "type": "sell",
-      "botName": "Theo.91",
-      "botAvatar": "bot5.png",
-      "offering": [
-        {
-          "type": "skin",
-          "weapon": "Karambit",
-          "name": "Urban Masked",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 530.0,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Safari Mesh",
           "wear": "MW",
           "stattrak": false,
-          "price": 95.9,
-          "case_type": "esports",
-          "case_file": "esports_2013",
+          "price": 444.0,
+          "case_type": "csgo",
+          "case_file": "weapon_case_1",
           "rarity": "GOLD"
         }
       ],
       "requesting": [
         {
           "type": "money",
-          "amount": 748.5443580072886
+          "amount": 868.4723789735566
         }
       ]
     },
     {
       "type": "sell",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
+      "botName": "_Astrid47",
+      "botAvatar": "bot1.png",
       "offering": [
+        {
+          "type": "skin",
+          "weapon": "M9 Bayonet",
+          "name": "Urban Masked",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 471.99,
+          "case_type": "csgo2",
+          "case_file": "weapon_case_2",
+          "rarity": "GOLD"
+        },
         {
           "type": "skin",
           "weapon": "M9 Bayonet",
@@ -316,28 +129,63 @@
           "wear": "FN",
           "stattrak": false,
           "price": 893.79,
-          "case_type": "phoenix",
-          "case_file": "operation_phoenix_case",
+          "case_type": "winter_offensive",
+          "case_file": "winter_offensive_case",
           "rarity": "GOLD"
         },
         {
           "type": "skin",
-          "weapon": "Galil AR",
-          "name": "Orange DDPAT",
-          "wear": "FN",
+          "weapon": "Bayonet",
+          "name": "Stained",
+          "wear": "MW",
           "stattrak": false,
-          "price": 30.5,
+          "price": 250.3,
+          "case_type": "esports_winter",
+          "case_file": "esports_2013_winter",
+          "rarity": "GOLD"
+        }
+      ],
+      "requesting": [
+        {
+          "type": "money",
+          "amount": 1950.9072249608062
+        }
+      ]
+    },
+    {
+      "type": "sell",
+      "botName": "Orion_Phoenix98",
+      "botAvatar": "bot3.png",
+      "offering": [
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Forest DDPAT",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 128.02,
           "case_type": "esports",
           "case_file": "esports_2013",
-          "rarity": "PURPLE"
+          "rarity": "GOLD"
         },
         {
           "type": "skin",
-          "weapon": "Karambit",
-          "name": "Boreal Forest",
-          "wear": "MW",
+          "weapon": "Gut Knife",
+          "name": "Urban Masked",
+          "wear": "FN",
           "stattrak": false,
-          "price": 585.5,
+          "price": 123.3,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "GOLD"
+        },
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Night",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 175.0,
           "case_type": "phoenix",
           "case_file": "operation_phoenix_case",
           "rarity": "GOLD"
@@ -346,7 +194,42 @@
       "requesting": [
         {
           "type": "money",
-          "amount": 1944.2258639468464
+          "amount": 559.4192324464778
+        }
+      ]
+    },
+    {
+      "type": "sell",
+      "botName": "Mira-Eclipse",
+      "botAvatar": "bot10.png",
+      "offering": [
+        {
+          "type": "skin",
+          "weapon": "Nova",
+          "name": "Koi",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 0.72,
+          "case_type": "breakout",
+          "case_file": "operation_breakout_case",
+          "rarity": "PURPLE"
+        },
+        {
+          "type": "skin",
+          "weapon": "Nova",
+          "name": "Ghost Camo",
+          "wear": "FN",
+          "stattrak": false,
+          "price": 1.8,
+          "case_type": "esports_winter",
+          "case_file": "esports_2013_winter",
+          "rarity": "BLUE"
+        }
+      ],
+      "requesting": [
+        {
+          "type": "money",
+          "amount": 3.332062316597008
         }
       ]
     },
@@ -357,13 +240,13 @@
       "offering": [
         {
           "type": "skin",
-          "weapon": "M9 Bayonet",
+          "weapon": "Karambit",
           "name": "Blue Steel",
-          "wear": "FT",
+          "wear": "WW",
           "stattrak": false,
-          "price": 719.49,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
+          "price": 840.0,
+          "case_type": "phoenix",
+          "case_file": "operation_phoenix_case",
           "rarity": "GOLD"
         }
       ],
@@ -371,80 +254,146 @@
         {
           "type": "skin",
           "weapon": "Flip Knife",
-          "name": "Boreal Forest",
-          "wear": "FN",
+          "name": "Urban Masked",
+          "wear": "MW",
           "stattrak": false,
-          "price": 197.29,
+          "price": 165.78,
+          "case_type": "winter_offensive",
+          "case_file": "winter_offensive_case",
+          "rarity": "GOLD"
+        },
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Blue Steel",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 205.15,
           "case_type": "bravo",
           "case_file": "operation_bravo",
           "rarity": "GOLD"
         },
         {
           "type": "skin",
-          "weapon": "M9 Bayonet",
+          "weapon": "Gut Knife",
           "name": "Safari Mesh",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 458.69,
+          "wear": "WW",
+          "stattrak": true,
+          "price": 144.8,
           "case_type": "esports_winter",
           "case_file": "esports_2013_winter",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Boreal Forest",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 96.08,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
           "rarity": "GOLD"
         }
       ]
     },
     {
-      "type": "buy",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
+      "type": "sell",
+      "botName": "Nova-Lyn",
+      "botAvatar": "bot6.png",
       "offering": [
         {
+          "type": "skin",
+          "weapon": "P250",
+          "name": "Hive",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 3.96,
+          "case_type": "csgo2",
+          "case_file": "weapon_case_2",
+          "rarity": "BLUE"
+        },
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Scorched",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 137.0,
+          "case_type": "csgo",
+          "case_file": "weapon_case_1",
+          "rarity": "GOLD"
+        }
+      ],
+      "requesting": [
+        {
           "type": "money",
-          "amount": 3265.0836951678325
+          "amount": 165.91959797755806
+        }
+      ]
+    },
+    {
+      "type": "swap",
+      "botName": "Aria.Stella85",
+      "botAvatar": "bot8.png",
+      "offering": [
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Safari Mesh",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 132.76,
+          "case_type": "csgo2",
+          "case_file": "weapon_case_2",
+          "rarity": "GOLD"
         }
       ],
       "requesting": [
         {
           "type": "skin",
-          "weapon": "Karambit",
-          "name": "Slaughter",
+          "weapon": "Flip Knife",
+          "name": "Safari Mesh",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 132.76,
+          "case_type": "winter_offensive",
+          "case_file": "winter_offensive_case",
+          "rarity": "GOLD"
+        },
+        {
+          "type": "skin",
+          "weapon": "P250",
+          "name": "Undertow",
           "wear": "FT",
           "stattrak": false,
-          "price": 1035.0,
+          "price": 24.91,
           "case_type": "csgo3",
           "case_file": "weapon_case_3",
-          "rarity": "GOLD"
+          "rarity": "PINK"
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "botName": "Theo.91",
+      "botAvatar": "bot5.png",
+      "offering": [
+        {
+          "type": "money",
+          "amount": 1534.1596992005025
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "weapon": "Desert Eagle",
+          "name": "Heirloom",
+          "wear": "WW",
+          "stattrak": true,
+          "price": 15.27,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "PURPLE"
         },
         {
           "type": "skin",
           "weapon": "M9 Bayonet",
-          "name": "Fade",
-          "wear": "MW",
+          "name": "Forest DDPAT",
+          "wear": "FN",
           "stattrak": false,
-          "price": 1661.23,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Bayonet",
-          "name": "Safari Mesh",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 164.77,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
+          "price": 1370.08,
+          "case_type": "csgo",
+          "case_file": "weapon_case_1",
           "rarity": "GOLD"
         }
       ]

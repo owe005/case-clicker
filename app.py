@@ -424,6 +424,10 @@ def inventory():
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
+    count = int(request.args.get('count', 1))
+    if count not in [1, 2, 3]:  # Update to allow 3 cases
+        return jsonify({'error': 'Invalid case count'})
+        
     user_data = load_user_data()
     inventory = user_data.get('inventory', [])
     current_exp = user_data.get('exp', 0)
@@ -436,16 +440,16 @@ def open_case(case_type):
         item = inventory[i]
         if item.get('is_case') and item.get('type') == case_type:
             quantity = item.get('quantity', 0)
-            if quantity > 0:
+            if quantity >= count:
                 case_found = True
                 # Decrease case quantity
-                inventory[i]['quantity'] = quantity - 1
+                inventory[i]['quantity'] = quantity - count
                 if inventory[i]['quantity'] <= 0:
                     inventory.pop(i)
                 break
     
     if not case_found:
-        return jsonify({'error': 'No cases of this type in inventory'})
+        return jsonify({'error': f'Not enough cases ({count} needed)'})
     
     # Load the appropriate case
     case = load_case(case_type)
@@ -462,8 +466,8 @@ def open_case(case_type):
             case_data = json.load(f)
             case_price = float(case_data.get('price', 0))
             
-            # Add exp based on case price
-            new_exp = current_exp + case_price
+            # Add exp based on case price (for all cases opened)
+            new_exp = current_exp + (case_price * count)
             
             # Check for rank up
             while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
@@ -476,60 +480,56 @@ def open_case(case_type):
             
     except Exception as e:
         print(f"Error getting case price: {e}")
-        # If there's an error, keep the current exp and rank
         new_exp = current_exp
         current_rank = user_data.get('rank', 0)
     
-    skin = case.open()
-    if not skin:
-        return jsonify({'error': 'Failed to open case'})
-    
-    # Get the price from case data
-    try:
-        file_name = CASE_FILE_MAPPING.get(case_type)
-        if not file_name:
-            return jsonify({'error': 'Invalid case type'})
-            
-        with open(f'cases/{file_name}.json', 'r') as f:
-            case_data = json.load(f)
-            
-        # Find the item's price in the case data
-        price = 0
-        for grade, skins in case_data['skins'].items():
-            for case_skin in skins:
-                if case_skin['weapon'] == skin.weapon and case_skin['name'] == skin.name:
-                    prices = case_skin['prices']
-                    wear_key = 'NO' if 'NO' in prices else skin.wear.name
-                    price = prices[f"ST_{wear_key}"] if skin.stattrak else prices[wear_key]
+    # Open cases and get items
+    items = []
+    for _ in range(count):
+        skin = case.open()
+        if not skin:
+            return jsonify({'error': 'Failed to open case'})
+        
+        # Get the price from case data
+        try:
+            # Find the item's price in the case data
+            price = 0
+            for grade, skins in case_data['skins'].items():
+                for case_skin in skins:
+                    if case_skin['weapon'] == skin.weapon and case_skin['name'] == skin.name:
+                        prices = case_skin['prices']
+                        wear_key = 'NO' if 'NO' in prices else skin.wear.name
+                        price = prices[f"ST_{wear_key}"] if skin.stattrak else prices[wear_key]
+                        break
+                if price > 0:
                     break
-            if price > 0:
-                break
-    except Exception as e:
-        print(f"Error getting price: {e}")
-        price = 0
-    
-    # Convert skin to dictionary format
-    skin_dict = {
-        'weapon': skin.weapon,
-        'name': skin.name,
-        'rarity': skin.rarity.name,
-        'wear': skin.wear.name,
-        'stattrak': skin.stattrak,
-        'price': float(price),  # Ensure price is float
-        'timestamp': time.time(),
-        'case_type': case_type,
-        'is_case': False
-    }
-    
-    # Add the skin to inventory
-    inventory.append(skin_dict)
+        except Exception as e:
+            print(f"Error getting price: {e}")
+            price = 0
+        
+        # Convert skin to dictionary format
+        skin_dict = {
+            'weapon': skin.weapon,
+            'name': skin.name,
+            'rarity': skin.rarity.name,
+            'wear': skin.wear.name,
+            'stattrak': skin.stattrak,
+            'price': float(price),
+            'timestamp': time.time(),
+            'case_type': case_type,
+            'is_case': False
+        }
+        items.append(skin_dict)
+        
+        # Add the skin to inventory
+        inventory.append(skin_dict)
     
     # Update user data
     user_data['inventory'] = inventory
     save_user_data(user_data)
     
     return jsonify({
-        'item': skin_dict,
+        'items': items,
         'balance': user_data['balance'],
         'exp': new_exp,
         'rank': current_rank,
