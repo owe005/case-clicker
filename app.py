@@ -425,7 +425,7 @@ def inventory():
 @app.route('/open/<case_type>')
 def open_case(case_type):
     count = int(request.args.get('count', 1))
-    if count not in [1, 2, 3]:  # Update to allow 3 cases
+    if count not in [1, 2, 3, 4, 5]:  # Update to allow up to 5 cases
         return jsonify({'error': 'Invalid case count'})
         
     user_data = load_user_data()
@@ -557,30 +557,46 @@ def reset_session():
 
 @app.route('/sell/<int:item_index>', methods=['POST'])
 def sell_item(item_index=None):
-    user_data = load_user_data()
     try:
+        data = request.get_json() or {}
+        quantity = int(data.get('quantity', 1))
+        
+        user_data = load_user_data()
         inventory = user_data['inventory']
         
         # Get only non-case items
         skin_items = [item for item in inventory if not item.get('is_case')]
+        grouped_skins = group_identical_skins(skin_items)
         
-        if item_index is None or item_index >= len(skin_items):
+        if item_index is None or item_index >= len(grouped_skins):
             return jsonify({'error': 'Item not found'})
         
-        # Find the actual inventory index of the skin
-        skin_indices = [i for i, item in enumerate(inventory) if not item.get('is_case')]
-        actual_index = skin_indices[item_index]
+        item_to_sell = grouped_skins[item_index]
+        if quantity > item_to_sell.get('count', 1):
+            return jsonify({'error': 'Invalid quantity'})
         
-        # Get the item before removing it
-        item = inventory[actual_index]
-        if item.get('is_case'):
-            return jsonify({'error': 'Cannot sell cases'})
-            
-        sale_price = float(item.get('price', 0))
+        # Calculate sale value
+        sale_price = float(item_to_sell.get('price', 0)) * quantity
         
-        # Remove the item and update user's balance
-        inventory.pop(actual_index)
+        # Remove the items from inventory
+        remaining_inventory = []
+        items_to_remove = quantity
+        
+        for item in inventory:
+            if not item.get('is_case'):
+                # Check if this is one of the items we're selling
+                if (items_to_remove > 0 and
+                    item['weapon'] == item_to_sell['weapon'] and
+                    item['name'] == item_to_sell['name'] and
+                    item['wear'] == item_to_sell['wear'] and
+                    item['stattrak'] == item_to_sell['stattrak']):
+                    items_to_remove -= 1
+                    continue
+            remaining_inventory.append(item)
+        
+        # Update user's balance and inventory
         user_data['balance'] = float(user_data['balance']) + sale_price
+        user_data['inventory'] = remaining_inventory
         
         # Save updated user data
         save_user_data(user_data)
@@ -941,46 +957,48 @@ def buy_case():
 
 @app.route('/get_inventory')
 def get_inventory():
-    user_data = load_user_data()
-    inventory_items = user_data.get('inventory', [])
-    
-    # Update prices for non-case items
-    for item in inventory_items:
-        if not item.get('is_case'):
-            try:
-                case_type = item.get('case_type', 'csgo')
-                file_name = CASE_FILE_MAPPING.get(case_type)
-                
-                if not file_name:
-                    print(f"Unknown case type: {case_type}")
-                    continue
-                    
-                with open(f'cases/{file_name}.json', 'r') as f:
-                    case_data = json.load(f)
-                
-                # Find the item's price in the case data
-                for grade, skins in case_data['skins'].items():
-                    for skin in skins:
-                        if skin['weapon'] == item['weapon'] and skin['name'] == item['name']:
-                            prices = skin['prices']
-                            wear_key = 'NO' if 'NO' in prices else item['wear']
-                            price = prices[f"ST_{wear_key}"] if item.get('stattrak') else prices[wear_key]
-                            item['price'] = float(price)  # Ensure price is float
-                            break
-                    if item['price'] > 0:
-                        break
-                        
-            except Exception as e:
-                print(f"Error loading price for {item['weapon']} | {item['name']}: {e}")
-                continue
-    
-    # Update user data
-    user_data['inventory'] = inventory_items
-    save_user_data(user_data)
-    
-    return jsonify({
-        'inventory': inventory_items
-    })
+    try:
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
+        
+        # Separate cases and skins
+        cases = [item for item in inventory if item.get('is_case')]
+        skins = [item for item in inventory if not item.get('is_case')]
+        
+        # Group identical skins
+        grouped_skins = group_identical_skins(skins)
+        
+        # Update prices for grouped skins
+        price_cache = {}
+        for item in grouped_skins:
+            cache_key = (
+                item['weapon'],
+                item['name'],
+                item.get('wear'),
+                item['case_type']
+            )
+            
+            if cache_key in price_cache:
+                item['price'] = price_cache[cache_key]
+            else:
+                price = load_skin_price(
+                    f"{item['weapon']} | {item['name']}", 
+                    item['case_type'],
+                    item.get('wear')
+                )
+                price_cache[cache_key] = price
+                item['price'] = price
+        
+        # Combine cases and grouped skins
+        final_inventory = cases + grouped_skins
+        
+        return jsonify({
+            'inventory': final_inventory
+        })
+        
+    except Exception as e:
+        print(f"Error getting inventory: {e}")
+        return jsonify({'error': 'Failed to get inventory'})
 
 @app.route('/get_user_data')
 def get_user_data():
@@ -3231,6 +3249,43 @@ def select_responding_bot():
             'error': 'Failed to select bot',
             'details': str(e)
         })
+
+# Add this helper function near the top of the file
+def group_identical_skins(inventory):
+    """Group identical skins and count their occurrences"""
+    skin_groups = {}
+    
+    for item in inventory:
+        if item.get('is_case'):
+            continue
+            
+        # Create a unique key for each distinct skin
+        key = (
+            item['weapon'],
+            item['name'],
+            item['wear'],
+            item['stattrak'],
+            item['case_type'],
+            item['rarity']
+        )
+        
+        if key in skin_groups:
+            skin_groups[key]['count'] += 1
+            # Use the highest timestamp to keep the most recent
+            skin_groups[key]['timestamp'] = max(
+                skin_groups[key]['timestamp'],
+                item.get('timestamp', 0)
+            )
+        else:
+            item_copy = item.copy()
+            item_copy['count'] = 1
+            skin_groups[key] = item_copy
+    
+    # Convert back to list and sort by timestamp
+    grouped_items = list(skin_groups.values())
+    grouped_items.sort(key=lambda x: x.get('timestamp', 0), reverse=True)
+    
+    return grouped_items
 
 if __name__ == '__main__':
     app.run(debug=True)

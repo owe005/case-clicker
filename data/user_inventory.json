@@ -1,234 +1,14 @@
 {
-  "balance": 2266.032674464784,
+  "balance": 1830.8940025898037,
   "inventory": [
     {
-      "weapon": "Galil AR",
-      "name": "Kami",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 2.47,
-      "timestamp": 1735884994.5756783,
-      "case_type": "huntsman"
-    },
-    {
       "weapon": "Tec-9",
       "name": "Isaac",
       "rarity": "BLUE",
       "wear": "FT",
       "stattrak": false,
       "price": 2.47,
-      "timestamp": 1735884994.5766773,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.68,
-      "timestamp": 1735885038.5837421,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.68,
-      "timestamp": 1735885038.5837421,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "USP-S",
-      "name": "Caiman",
-      "rarity": "PINK",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 39.08,
-      "timestamp": 1735885055.9586298,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P90",
-      "name": "Module",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 1.98,
-      "timestamp": 1735885055.9596376,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "Galil AR",
-      "name": "Kami",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 3.29,
-      "timestamp": 1735885068.9994311,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P2000",
-      "name": "Pulse",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.77,
-      "timestamp": 1735885069.0004303,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": true,
-      "price": 2.82,
-      "timestamp": 1735885077.4226131,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.53,
-      "timestamp": 1735885077.4226131,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Atomic Alloy",
-      "rarity": "PINK",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 49.69,
-      "timestamp": 1735885085.8333974,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.54,
-      "timestamp": 1735885085.8333974,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.76,
-      "timestamp": 1735885129.6166587,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P90",
-      "name": "Module",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.88,
-      "timestamp": 1735885129.6166587,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "USP-S",
-      "name": "Caiman",
-      "rarity": "PINK",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 39.08,
-      "timestamp": 1735885137.895362,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "Tec-9",
-      "name": "Isaac",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 3.36,
-      "timestamp": 1735885172.8564909,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.54,
-      "timestamp": 1735885196.1771188,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "Galil AR",
-      "name": "Kami",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 1.63,
-      "timestamp": 1735885230.69444,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "AUG",
-      "name": "Torque",
-      "rarity": "PURPLE",
-      "wear": "WW",
-      "stattrak": true,
-      "price": 9.27,
-      "timestamp": 1735885230.69444,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P2000",
-      "name": "Pulse",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": true,
-      "price": 1.45,
-      "timestamp": 1735885253.6431746,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "XM1014",
-      "name": "Heaven Guard",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 11.63,
-      "timestamp": 1735885253.6441734,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "Tec-9",
-      "name": "Isaac",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 3.36,
-      "timestamp": 1735885253.6441734,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "PP-Bizon",
-      "name": "Antique",
-      "rarity": "PURPLE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 7.69,
-      "timestamp": 1735885299.1358316,
+      "timestamp": 1735886330.4209878,
       "case_type": "huntsman"
     },
     {
@@ -238,87 +18,7 @@
       "wear": "MW",
       "stattrak": false,
       "price": 2.47,
-      "timestamp": 1735885355.664976,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.73,
-      "timestamp": 1735885414.1170921,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P90",
-      "name": "Module",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 1.98,
-      "timestamp": 1735885414.1170921,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "MAC-10",
-      "name": "Tatter",
-      "rarity": "PURPLE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 7.67,
-      "timestamp": 1735885428.8736796,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P2000",
-      "name": "Pulse",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.77,
-      "timestamp": 1735885490.070272,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "XM1014",
-      "name": "Heaven Guard",
-      "rarity": "PURPLE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 7.57,
-      "timestamp": 1735885490.070272,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "AUG",
-      "name": "Torque",
-      "rarity": "PURPLE",
-      "wear": "FT",
-      "stattrak": true,
-      "price": 10.09,
-      "timestamp": 1735885552.155353,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.76,
-      "timestamp": 1735885620.420616,
-      "case_type": "huntsman"
-    },
-    {
-      "weapon": "P90",
-      "name": "Module",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.88,
-      "timestamp": 1735885629.509876,
+      "timestamp": 1735886330.4209878,
       "case_type": "huntsman"
     },
     {
@@ -328,34 +28,547 @@
       "wear": "WW",
       "stattrak": false,
       "price": 1.82,
-      "timestamp": 1735885629.509876,
-      "case_type": "huntsman"
-    },
-    {
-      "name": "Huntsman Case",
-      "image": "huntsman_case.png",
-      "is_case": true,
-      "type": "huntsman",
-      "quantity": 8
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.53,
-      "timestamp": 1735885648.0383852,
+      "timestamp": 1735886330.4219887,
       "case_type": "huntsman"
     },
     {
       "weapon": "P2000",
       "name": "Pulse",
       "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.14,
+      "timestamp": 1735886330.4219887,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Twist",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 2.06,
+      "timestamp": 1735886342.1424253,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.98,
+      "timestamp": 1735886342.1424253,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 3.36,
+      "timestamp": 1735886342.1424253,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.68,
+      "timestamp": 1735886342.1434252,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 3.36,
+      "timestamp": 1735886355.9435968,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Antique",
+      "rarity": "PURPLE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 12.21,
+      "timestamp": 1735886355.944596,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.02,
+      "timestamp": 1735886355.944596,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 3.36,
+      "timestamp": 1735886355.944596,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.65,
+      "timestamp": 1735886355.945596,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": true,
+      "price": 24.45,
+      "timestamp": 1735886394.15186,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 3.29,
+      "timestamp": 1735886394.152861,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.65,
+      "timestamp": 1735886394.152861,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.68,
+      "timestamp": 1735886394.152861,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 3.36,
+      "timestamp": 1735886402.4765592,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Twist",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.73,
+      "timestamp": 1735886402.4775584,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.02,
+      "timestamp": 1735886402.4775584,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 7.38,
+      "timestamp": 1735886402.4785616,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 2.47,
+      "timestamp": 1735886416.4672568,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Twist",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.73,
+      "timestamp": 1735886416.4672568,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 3.29,
+      "timestamp": 1735886416.4672568,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
       "wear": "FT",
       "stattrak": false,
       "price": 1.76,
-      "timestamp": 1735885648.0383852,
+      "timestamp": 1735886416.4682555,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.02,
+      "timestamp": 1735886416.4682555,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.67,
+      "timestamp": 1735886427.1800995,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Twist",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.73,
+      "timestamp": 1735886427.1811006,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 10.02,
+      "timestamp": 1735886427.182101,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.63,
+      "timestamp": 1735886438.1810248,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Antique",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 6.11,
+      "timestamp": 1735886438.1810248,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.6,
+      "timestamp": 1735886438.1810248,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": true,
+      "price": 13.57,
+      "timestamp": 1735886438.1820247,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Antique",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 6.11,
+      "timestamp": 1735886438.1820247,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.76,
+      "timestamp": 1735886446.3490522,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.63,
+      "timestamp": 1735886446.3500535,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.67,
+      "timestamp": 1735886446.3500535,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": true,
+      "price": 2.09,
+      "timestamp": 1735886446.351053,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.56,
+      "timestamp": 1735886454.4529092,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Tatter",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 8.08,
+      "timestamp": 1735886454.4529092,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.82,
+      "timestamp": 1735886454.453909,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Caiman",
+      "rarity": "PINK",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 54.0,
+      "timestamp": 1735886454.453909,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.49,
+      "timestamp": 1735886454.454909,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.88,
+      "timestamp": 1735886481.420899,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 3.29,
+      "timestamp": 1735886481.420899,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.98,
+      "timestamp": 1735886481.4218955,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.63,
+      "timestamp": 1735886481.4218955,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SCAR-20",
+      "name": "Cyrex",
+      "rarity": "PINK",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 53.0,
+      "timestamp": 1735886481.4218955,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 7.16,
+      "timestamp": 1735886489.9227693,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Caiman",
+      "rarity": "PINK",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 54.0,
+      "timestamp": 1735886489.9227693,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P2000",
+      "name": "Pulse",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.74,
+      "timestamp": 1735886489.923768,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.98,
+      "timestamp": 1735886489.923768,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 2.47,
+      "timestamp": 1735886489.923768,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Kami",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.63,
+      "timestamp": 1735886497.8927987,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.88,
+      "timestamp": 1735886497.8927987,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P90",
+      "name": "Module",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.49,
+      "timestamp": 1735886497.8927987,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P2000",
+      "name": "Pulse",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.91,
+      "timestamp": 1735886497.8937986,
       "case_type": "huntsman"
     },
     {
@@ -365,12 +578,72 @@
       "wear": "WW",
       "stattrak": false,
       "price": 1.53,
-      "timestamp": 1735885648.0393848,
+      "timestamp": 1735886497.8937986,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Tatter",
+      "rarity": "PURPLE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 7.83,
+      "timestamp": 1735886509.5466824,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Torque",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 7.38,
+      "timestamp": 1735886509.5466824,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Slashed",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.56,
+      "timestamp": 1735886518.0436735,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Isaac",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 5.23,
+      "timestamp": 1735886525.9013665,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "P2000",
+      "name": "Pulse",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 1.45,
+      "timestamp": 1735886525.9013665,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Twist",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.93,
+      "timestamp": 1735886525.902804,
       "case_type": "huntsman"
     }
   ],
-  "exp": 463.54975,
-  "rank": 4,
+  "exp": 272.54975000000013,
+  "rank": 6,
   "upgrades": {
     "click_value": 10,
     "max_multiplier": 8,

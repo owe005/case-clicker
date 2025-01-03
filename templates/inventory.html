@@ -47,8 +47,13 @@
                         'breakout': 'operation_breakout_case'
                     } %}
                     {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
-                    <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
-                         alt="{{ item.weapon }} | {{ item.name }}">
+                    <div class="skin-image-wrapper">
+                        <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
+                             alt="{{ item.weapon }} | {{ item.name }}">
+                        {% if item.count and item.count > 1 %}
+                        <span class="skin-count">x{{ item.count }}</span>
+                        {% endif %}
+                    </div>
                 {% endif %}
             </div>
             <div class="item-name {{ 'stattrak' if item.stattrak else '' }}">
@@ -58,7 +63,7 @@
                 {{ item.name }} ({{ item.wear }})
             </div>
             <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
-            <button class="btn sell-btn" data-sell-index="{{ skin_count.value }}">Sell</button>
+            <button class="btn sell-btn" data-sell-index="{{ skin_count.value }}" data-count="{{ item.count }}">Sell</button>
         </div>
         {% set skin_count.value = skin_count.value + 1 %}
         {% endif %}
@@ -84,6 +89,12 @@
                         {% if item.quantity >= 3 %}
                         <button class="btn-small" onclick="openCase('{{ item.type }}', 3)">Open 3x</button>
                         {% endif %}
+                        {% if item.quantity >= 4 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 4)">Open 4x</button>
+                        {% endif %}
+                        {% if item.quantity >= 5 %}
+                        <button class="btn-small" onclick="openCase('{{ item.type }}', 5)">Open 5x</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -99,21 +110,23 @@
     </audio>
     <div class="spinner-containers">
         <div class="spinner-container">
-            <div class="spinner">
-                <!-- Items will be inserted here dynamically -->
-            </div>
+            <div class="spinner"></div>
             <div class="spinner-selector"></div>
         </div>
         <div class="spinner-container hidden">
-            <div class="spinner">
-                <!-- Items will be inserted here dynamically -->
-            </div>
+            <div class="spinner"></div>
             <div class="spinner-selector"></div>
         </div>
         <div class="spinner-container hidden">
-            <div class="spinner">
-                <!-- Items will be inserted here dynamically -->
-            </div>
+            <div class="spinner"></div>
+            <div class="spinner-selector"></div>
+        </div>
+        <div class="spinner-container hidden">
+            <div class="spinner"></div>
+            <div class="spinner-selector"></div>
+        </div>
+        <div class="spinner-container hidden">
+            <div class="spinner"></div>
             <div class="spinner-selector"></div>
         </div>
     </div>
@@ -127,6 +140,16 @@
     <div class="showcase-container">
         <div class="showcase-items">
             <div class="showcase-item">
+                <div class="showcase-name"></div>
+                <div class="showcase-details"></div>
+                <div class="showcase-price"></div>
+            </div>
+            <div class="showcase-item hidden">
+                <div class="showcase-name"></div>
+                <div class="showcase-details"></div>
+                <div class="showcase-price"></div>
+            </div>
+            <div class="showcase-item hidden">
                 <div class="showcase-name"></div>
                 <div class="showcase-details"></div>
                 <div class="showcase-price"></div>
@@ -195,43 +218,74 @@
 .spinner-containers {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    max-height: 90vh;
+    gap: 15px;
+    max-height: 95vh;
     overflow-y: auto;
+    padding: 10px;
 }
 
 .spinner-container {
     flex: 1;
-    min-height: 200px;
-    background: transparent;  /* Remove any background */
+    min-height: 160px;
+    background: transparent;
 }
 
 .spinner-container.hidden {
-    display: none;  /* Completely hide instead of just visibility */
-    min-height: 0;  /* Remove min-height when hidden */
-    margin: 0;  /* Remove any margin when hidden */
+    display: none;
+    min-height: 0;
+    margin: 0;
 }
 
 /* Update showcase items layout */
 .showcase-items {
-    display: flex;  /* Change to flex instead of grid */
-    flex-wrap: wrap;  /* Allow wrapping */
-    justify-content: center;  /* Center items */
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
     margin-bottom: 20px;
+    padding: 10px;
 }
 
 .showcase-item {
-    flex: 0 1 250px;  /* Allow items to shrink but maintain preferred width */
+    flex: 0 1 230px;
     background: rgba(0, 0, 0, 0.5);
-    padding: 15px;
+    padding: 12px;
     border-radius: 8px;
     text-align: center;
 }
 
 .showcase-item.hidden {
-    display: none;  /* Completely hide instead of just visibility */
-    margin: 0;  /* Remove any margin when hidden */
+    display: none;
+    margin: 0;
+}
+
+.skin-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skin-image-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.skin-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 </style>
 
@@ -305,75 +359,161 @@ document.querySelectorAll('.category-btn').forEach(button => {
     });
 });
 
-// Update the sell button click handler
-document.querySelectorAll('.sell-btn').forEach(button => {
-    button.addEventListener('click', async function() {
-        // Prevent double-clicking
-        if (this.disabled) return;
-        this.disabled = true;
+// Add this function before refreshSkinsSection
+const sellButtonHandler = async function() {
+    if (this.disabled) return;
+    this.disabled = true;
 
-        const itemElement = this.closest('.skin');
-        if (!itemElement) {
-            console.error('Could not find parent skin element');
+    const itemElement = this.closest('.skin');
+    if (!itemElement) {
+        console.error('Could not find parent skin element');
+        this.disabled = false;
+        return;
+    }
+    
+    const index = parseInt(this.dataset.sellIndex);
+    const count = parseInt(this.dataset.count) || 1;
+    
+    // If there are multiple items, show a modal to select quantity
+    if (count > 1) {
+        const quantity = await showQuantityModal(count);
+        if (!quantity) {
             this.disabled = false;
             return;
         }
         
-        // Get the index from the sell button's data attribute
-        const index = parseInt(this.dataset.sellIndex);
-        if (isNaN(index)) {
-            console.error('Invalid sell index:', this.dataset.sellIndex);
-            this.disabled = false;
-            return;
-        }
-
+        // Add quantity to the request
         try {
             const response = await fetch(`/sell/${index}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ quantity: quantity })
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
             
             const data = await response.json();
             
             if (data.error) {
                 alert(data.error);
-                this.disabled = false;
                 return;
             }
             
             // Update balance
             document.getElementById('balance').textContent = data.balance.toFixed(2);
             
-            // Remove the sold item from display with animation
+            // If all items were sold, remove the element
+            if (quantity >= count) {
+                itemElement.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    itemElement.remove();
+                    updateRemainingIndices();
+                }, 300);
+            } else {
+                // Update the count display
+                const countElement = itemElement.querySelector('.skin-count');
+                const newCount = count - quantity;
+                if (countElement) {
+                    countElement.textContent = `x${newCount}`;
+                }
+                this.dataset.count = newCount;
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to sell items');
+        }
+    } else {
+        // Original single-item sell logic
+        try {
+            const response = await fetch(`/sell/${index}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: 1 })  // Always send JSON with quantity
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Update balance
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            
+            // Remove the sold item
             itemElement.style.animation = 'fadeOut 0.3s';
             setTimeout(() => {
                 itemElement.remove();
-                
-                // Update remaining items' indices
-                document.querySelectorAll('.skin').forEach((skin, newIndex) => {
-                    skin.dataset.index = newIndex;
-                    // Update the sell button's data-sell-index
-                    const sellBtn = skin.querySelector('.sell-btn');
-                    if (sellBtn) {
-                        sellBtn.dataset.sellIndex = newIndex;
-                    }
-                });
+                updateRemainingIndices();
             }, 300);
             
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to sell item');
-        } finally {
-            this.disabled = false;
+        }
+    }
+    
+    this.disabled = false;
+};
+
+// Update the initial sell button event listeners to use the handler
+document.querySelectorAll('.sell-btn').forEach(button => {
+    button.addEventListener('click', sellButtonHandler);
+});
+
+// Add this helper function
+function updateRemainingIndices() {
+    document.querySelectorAll('.skin').forEach((skin, newIndex) => {
+        skin.dataset.index = newIndex;
+        const sellBtn = skin.querySelector('.sell-btn');
+        if (sellBtn) {
+            sellBtn.dataset.sellIndex = newIndex;
         }
     });
-});
+}
+
+// Add this function to show a quantity selection modal
+function showQuantityModal(maxQuantity) {
+    return new Promise((resolve) => {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>Select Quantity</h3>
+                <input type="range" min="1" max="${maxQuantity}" value="1" id="quantity-slider">
+                <div id="quantity-display">1</div>
+                <div class="modal-buttons">
+                    <button id="confirm-quantity" class="btn">Confirm</button>
+                    <button id="cancel-quantity" class="btn">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const slider = modal.querySelector('#quantity-slider');
+        const display = modal.querySelector('#quantity-display');
+        
+        slider.addEventListener('input', () => {
+            display.textContent = slider.value;
+        });
+        
+        modal.querySelector('#confirm-quantity').addEventListener('click', () => {
+            const quantity = parseInt(slider.value);
+            modal.remove();
+            resolve(quantity);
+        });
+        
+        modal.querySelector('#cancel-quantity').addEventListener('click', () => {
+            modal.remove();
+            resolve(null);
+        });
+    });
+}
 
 // Replace the hardcoded caseContents object with dynamic loading
 const caseContents = {};
@@ -437,7 +577,7 @@ async function loadCaseContents(caseType) {
 
 // Update the openCase function
 async function openCase(caseType, count = 1) {
-    if (count < 1 || count > 3) {
+    if (count < 1 || count > 5) {
         console.error('Invalid case count:', count);
         return;
     }
@@ -505,6 +645,8 @@ async function openCase(caseType, count = 1) {
                 <button class="btn-small" onclick="openCase('${caseType}', 1)">Open 1x</button>
                 ${newQuantity >= 2 ? `<button class="btn-small" onclick="openCase('${caseType}', 2)">Open 2x</button>` : ''}
                 ${newQuantity >= 3 ? `<button class="btn-small" onclick="openCase('${caseType}', 3)">Open 3x</button>` : ''}
+                ${newQuantity >= 4 ? `<button class="btn-small" onclick="openCase('${caseType}', 4)">Open 4x</button>` : ''}
+                ${newQuantity >= 5 ? `<button class="btn-small" onclick="openCase('${caseType}', 5)">Open 5x</button>` : ''}
             `;
         }
         
@@ -982,9 +1124,6 @@ function updateRankProgress(exp, rank, rankName, nextRankExp) {
 // Update the refreshSkinsSection function
 async function refreshSkinsSection() {
     try {
-        // Disable all sell buttons while refreshing to prevent double-selling
-        document.querySelectorAll('.sell-btn').forEach(btn => btn.disabled = true);
-        
         const response = await fetch('/get_inventory');
         const data = await response.json();
         
@@ -999,7 +1138,7 @@ async function refreshSkinsSection() {
             return;
         }
         
-        // Clear current inventory immediately
+        // Clear current inventory
         inventoryItems.innerHTML = '';
         
         // Get only non-case items and maintain their original order
@@ -1039,8 +1178,13 @@ async function refreshSkinsSection() {
             skinDiv.innerHTML = `
                 <div class="skin-image">
                     ${!item.weapon.startsWith('★') ? `
-                        <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
-                             alt="${item.weapon} | ${item.name}">
+                        <div class="skin-image-wrapper">
+                            <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                                 alt="${item.weapon} | ${item.name}">
+                            ${item.count && item.count > 1 ? `
+                                <span class="skin-count">x${item.count}</span>
+                            ` : ''}
+                        </div>
                     ` : ''}
                 </div>
                 <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
@@ -1050,7 +1194,7 @@ async function refreshSkinsSection() {
                     ${item.name} (${item.wear})
                 </div>
                 <div class="item-price">$${item.price.toFixed(2)}</div>
-                <button class="btn sell-btn" data-sell-index="${skinIndex}">Sell</button>
+                <button class="btn sell-btn" data-sell-index="${skinIndex}" data-count="${item.count || 1}">Sell</button>
             `;
             
             fragment.appendChild(skinDiv);
@@ -1061,75 +1205,14 @@ async function refreshSkinsSection() {
         
         // Add click handlers to all sell buttons
         document.querySelectorAll('.sell-btn').forEach(button => {
-            button.addEventListener('click', async function() {
-                if (this.disabled) return;
-                this.disabled = true;
-                
-                const itemElement = this.closest('.skin');
-                if (!itemElement) {
-                    console.error('Could not find parent skin element');
-                    this.disabled = false;
-                    return;
-                }
-                
-                const index = parseInt(this.dataset.sellIndex);
-                if (isNaN(index)) {
-                    console.error('Invalid sell index:', this.dataset.sellIndex);
-                    this.disabled = false;
-                    return;
-                }
-                
-                try {
-                    const response = await fetch(`/sell/${index}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-                    
-                    // Update balance
-                    document.getElementById('balance').textContent = data.balance.toFixed(2);
-                    
-                    // Remove the sold item with animation
-                    itemElement.style.animation = 'fadeOut 0.3s';
-                    setTimeout(() => {
-                        itemElement.remove();
-                        
-                        // Update remaining items' indices
-                        document.querySelectorAll('.skin').forEach((skin, newIndex) => {
-                            skin.dataset.index = newIndex;
-                            const sellBtn = skin.querySelector('.sell-btn');
-                            if (sellBtn) {
-                                sellBtn.dataset.sellIndex = newIndex;
-                            }
-                        });
-                    }, 300);
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Failed to sell item');
-                } finally {
-                    this.disabled = false;
-                }
-            });
+            button.addEventListener('click', sellButtonHandler);
         });
+        
+        // Update the sell all button
+        updateSellAllButton();
         
     } catch (error) {
         console.error('Error refreshing skins section:', error);
-    } finally {
-        // Re-enable all sell buttons
-        document.querySelectorAll('.sell-btn').forEach(btn => btn.disabled = false);
     }
 }
 
@@ -1156,8 +1239,13 @@ document.addEventListener('DOMContentLoaded', () => {
         skinDiv.innerHTML = `
             <div class="skin-image">
                 ${!item.weapon.startsWith('★') ? `
-                    <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
-                         alt="${item.weapon} | ${item.name}">
+                    <div class="skin-image-wrapper">
+                        <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                             alt="${item.weapon} | ${item.name}">
+                        ${item.count && item.count > 1 ? `
+                            <span class="skin-count">x${item.count}</span>
+                        ` : ''}
+                    </div>
                 ` : ''}
             </div>
             <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
@@ -1196,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         itemElement.remove();
                         
-                        // Update remaining indices
+                        // Update remaining items' indices
                         document.querySelectorAll('.skin').forEach((skin, newIndex) => {
                             skin.dataset.index = newIndex;
                         });
@@ -1318,8 +1406,13 @@ async function updateInventoryDisplay() {
                 skinDiv.innerHTML = `
                     <div class="skin-image">
                         ${!item.weapon.startsWith('★') ? `
-                            <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
-                                 alt="${item.weapon} | ${item.name}">
+                            <div class="skin-image-wrapper">
+                                <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                                     alt="${item.weapon} | ${item.name}">
+                                ${item.count && item.count > 1 ? `
+                                    <span class="skin-count">x${item.count}</span>
+                                ` : ''}
+                            </div>
                         ` : ''}
                     </div>
                     <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
