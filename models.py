@@ -49,6 +49,7 @@ class Upgrades:
     critical_strike: int = 0
     progress_per_click: int = 1
     case_quality: int = 1
+    multi_open: int = 1
 
 @dataclass
 class User:

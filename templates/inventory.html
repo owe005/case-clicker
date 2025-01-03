@@ -293,27 +293,6 @@
 
 {% block scripts %}
 <script>
-// Make RANKS available to JavaScript
-const RANKS = {
-    0: "Silver I",
-    1: "Silver II", 
-    2: "Silver III",
-    3: "Silver IV",
-    4: "Silver Elite",
-    5: "Silver Elite Master",
-    6: "Gold Nova I",
-    7: "Gold Nova II",
-    8: "Gold Nova III",
-    9: "Gold Nova Master",
-    10: "Master Guardian I",
-    11: "Master Guardian II",
-    12: "Master Guardian Elite",
-    13: "Distinguished Master Guardian",
-    14: "Legendary Eagle",
-    15: "Legendary Eagle Master",
-    16: "Supreme Master First Class",
-    17: "The Global Elite"
-};
 
 // Set initial view based on server parameter
 document.addEventListener('DOMContentLoaded', async () => {
@@ -399,8 +378,8 @@ const sellButtonHandler = async function() {
                 return;
             }
             
-            // Update balance
-            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            // Use the common handler for achievement/rank updates
+            handleAchievementComplete(data);
             
             // If all items were sold, remove the element
             if (quantity >= count) {
@@ -431,7 +410,7 @@ const sellButtonHandler = async function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ quantity: 1 })  // Always send JSON with quantity
+                body: JSON.stringify({ quantity: 1 })
             });
             
             const data = await response.json();
@@ -441,8 +420,8 @@ const sellButtonHandler = async function() {
                 return;
             }
             
-            // Update balance
-            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            // Use the common handler for achievement/rank updates
+            handleAchievementComplete(data);
             
             // Remove the sold item
             itemElement.style.animation = 'fadeOut 0.3s';
@@ -1077,7 +1056,9 @@ function showItemShowcase(items) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ count: items.length })
+                body: JSON.stringify({ 
+                    count: items.length  // Send the number of items to sell
+                })
             });
             
             const data = await response.json();
@@ -1088,8 +1069,13 @@ function showItemShowcase(items) {
                 return;
             }
             
-            // Update balance
-            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            // Show success message with total amount
+            const totalAmount = data.sold_price.toFixed(2);
+            const message = items.length > 1 
+                ? `Successfully sold ${items.length} items for $${totalAmount}`
+                : `Successfully sold item for $${totalAmount}`;
+            
+            // Optional: Show a toast or notification with the message
             
             // Show level up celebration if needed
             if (items[0].levelUp) {
@@ -1306,9 +1292,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     
-                    // Update balance
-                    document.getElementById('balance').textContent = data.balance.toFixed(2);
-                    
                     // Remove the sold item
                     itemElement.style.animation = 'fadeOut 0.3s';
                     setTimeout(() => {
@@ -1358,9 +1341,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert(data.error);
                     return;
                 }
-                
-                // Update balance
-                document.getElementById('balance').textContent = data.balance.toFixed(2);
                 
                 // Remove the sold item from display with animation
                 itemElement.style.animation = 'fadeOut 0.3s';
@@ -1560,9 +1540,6 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
             alert(data.error);
             return;
         }
-        
-        // Update balance
-        document.getElementById('balance').textContent = data.balance.toFixed(2);
         
         // Remove all skins with animation
         const skins = document.querySelectorAll('.skin');

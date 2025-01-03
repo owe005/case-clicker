@@ -96,6 +96,54 @@
             transform: scaleX(1);
         }
     }
+
+    /* Achievement popup styles */
+    .achievement-popup {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        border: 2px solid #ffd700;
+        border-radius: 10px;
+        padding: 15px 20px;
+        color: white;
+        z-index: 10000;
+        animation: achievementSlide 4s ease-in-out forwards;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        min-width: 300px;
+    }
+
+    .achievement-popup .icon {
+        font-size: 24px;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+    .achievement-popup .content {
+        flex-grow: 1;
+    }
+
+    .achievement-popup .title {
+        color: #ffd700;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .achievement-popup .rewards {
+        font-size: 0.9em;
+        color: #aaa;
+    }
+
+    @keyframes achievementSlide {
+        0% { transform: translateX(120%); opacity: 0; }
+        15% { transform: translateX(0); opacity: 1; }
+        85% { transform: translateX(0); opacity: 1; }
+        100% { transform: translateX(120%); opacity: 0; }
+    }
     </style>
 </head>
 <body>
@@ -144,5 +192,120 @@
 
     <script src="{{ url_for('static', filename='js/auto_clicker.js') }}"></script>
     {% block scripts %}{% endblock %}
+
+    <script>
+    // Function to update rank progress UI
+    function updateRankProgress(exp, rank, rankName, nextRankExp) {
+        // Update rank name
+        const rankElement = document.querySelector('.current-rank');
+        if (rankElement) {
+            rankElement.textContent = rankName;
+            rankElement.dataset.rank = rank;
+        }
+        
+        // Update progress bar
+        const progressFill = document.querySelector('.progress-fill');
+        if (progressFill) {
+            if (nextRankExp) {
+                const percentage = (exp / nextRankExp * 100).toFixed(2);
+                progressFill.style.width = `${percentage}%`;
+            } else {
+                progressFill.style.width = '100%';
+            }
+        }
+        
+        // Update exp text
+        const expInfo = document.querySelector('.exp-info');
+        if (expInfo) {
+            if (nextRankExp) {
+                expInfo.textContent = `${Math.floor(exp)}/${nextRankExp} EXP`;
+            } else {
+                expInfo.textContent = 'MAX RANK';
+            }
+        }
+    }
+
+    // Function to create confetti effect
+    function createConfetti() {
+        const confettiContainer = document.createElement('div');
+        confettiContainer.className = 'confetti-container';
+        document.body.appendChild(confettiContainer);
+        
+        const colors = ['#ffd700', '#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#00ffff'];
+        
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animation = `confettiFall ${1 + Math.random() * 2}s linear forwards`;
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confettiContainer.appendChild(confetti);
+        }
+        
+        setTimeout(() => {
+            confettiContainer.remove();
+        }, 5000);
+    }
+
+    // Function to show level up banner
+    function showLevelUpBanner(newRank) {
+        const banner = document.createElement('div');
+        banner.className = 'level-up-banner';
+        banner.innerHTML = `<h2>LEVEL UP: ${newRank}</h2>`;
+        document.body.appendChild(banner);
+        
+        setTimeout(() => {
+            banner.remove();
+        }, 3000);
+    }
+
+    // Function to handle achievement completion response
+    function handleAchievementComplete(data) {
+        // Update balance
+        const balanceElement = document.getElementById('balance');
+        if (balanceElement) {
+            balanceElement.textContent = data.balance.toFixed(2);
+        }
+        
+        // Update rank progress
+        updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
+        
+        // Show achievement completion popup if there's achievement data
+        if (data.achievement) {
+            showAchievementPopup(data.achievement);
+        }
+        
+        // Show level up animation if needed
+        if (data.levelUp) {
+            createConfetti();
+            showLevelUpBanner(data.rankName);
+        }
+    }
+
+    // Function to show achievement completion popup
+    function showAchievementPopup(achievement) {
+        const popup = document.createElement('div');
+        popup.className = 'achievement-popup';
+        
+        popup.innerHTML = `
+            <div class="icon">${achievement.icon}</div>
+            <div class="content">
+                <div class="title">Achievement Unlocked!</div>
+                <div class="description">${achievement.title}</div>
+                <div class="rewards">
+                    +$${achievement.reward.toLocaleString()} • ${achievement.exp_reward.toLocaleString()} EXP
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // Remove popup after animation
+        setTimeout(() => {
+            popup.remove();
+        }, 4000);
+    }
+    </script>
 </body>
 </html> 

@@ -106,6 +106,7 @@
         margin-top: 15px;
         font-size: 0.8em;
         color: #666;
+        align-items: flex-end;
     }
 
     .achievement-reward {
@@ -143,6 +144,7 @@
         justify-content: center;
         gap: 15px;
         margin-bottom: 30px;
+        flex-wrap: wrap;
     }
 
     .category-btn {
@@ -174,117 +176,120 @@
         animation: unlock 0.5s ease;
         border-color: #ffd700;
     }
+
+    .achievement-rewards {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+
+    .achievement-reward {
+        font-size: 0.9em;
+        padding: 2px 8px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .achievement-reward.money {
+        color: #4CAF50;
+        background: rgba(76, 175, 80, 0.1);
+    }
+
+    .achievement-reward.exp {
+        color: #FF9800;
+        background: rgba(255, 152, 0, 0.1);
+    }
 </style>
 
 <div class="achievements-container">
     <div class="achievements-header">
-        <h1>Achievements - Not Implemented</h1>
+        <h1>Achievements</h1>
         <p>Track your progress and earn rewards</p>
     </div>
 
     <div class="achievements-summary">
         <div class="summary-stat">
-            <h3>12/50</h3>
+            <h3>{{ completed_count }}/{{ total_count }}</h3>
             <p>Achievements Completed</p>
         </div>
         <div class="summary-stat">
-            <h3>24%</h3>
+            <h3>{{ completion_rate }}%</h3>
             <p>Completion Rate</p>
         </div>
         <div class="summary-stat">
-            <h3>$15,420</h3>
+            <h3>${{ '{:,.0f}'.format(total_rewards) }}</h3>
             <p>Total Rewards Earned</p>
         </div>
     </div>
 
     <div class="category-filter">
-        <button class="category-btn active">All</button>
-        <button class="category-btn">Cases</button>
-        <button class="category-btn">Trading</button>
-        <button class="category-btn">Casino</button>
-        <button class="category-btn">Clicker</button>
-        <button class="category-btn">Special</button>
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="cases">Cases</button>
+        <button class="category-btn" data-category="trading">Trading</button>
+        <button class="category-btn" data-category="casino">Casino</button>
+        <button class="category-btn" data-category="clicker">Clicker</button>
+        <button class="category-btn" data-category="inventory">Inventory</button>
+        <button class="category-btn" data-category="special">Special</button>
+        <button class="category-btn" data-category="completed">Completed</button>
     </div>
 
     <div class="achievements-grid">
-        <!-- Example Achievement Cards -->
-        <div class="achievement-card">
-            <div class="achievement-icon">💰</div>
-            <div class="achievement-title">First Million</div>
-            <div class="achievement-description">Accumulate $1,000,000 in total earnings</div>
+        {% for achievement in achievements %}
+        <div class="achievement-card {% if not achievement.completed %}locked{% endif %}" 
+             data-category="{{ 'completed' if achievement.completed else achievement.category }}">
+            <div class="achievement-icon">{{ achievement.icon }}</div>
+            <div class="achievement-title">{{ achievement.title }}</div>
+            <div class="achievement-description">{{ achievement.description }}</div>
             <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 75%"></div>
+                <div class="achievement-progress-bar" style="width: {{ achievement.progress }}%"></div>
             </div>
             <div class="achievement-stats">
-                <span>750,000/1,000,000</span>
-                <span class="achievement-reward">Reward: $10,000</span>
+                <span>{{ '{:,.0f}'.format(achievement.current_value) }}/{{ '{:,.0f}'.format(achievement.target_value) }}</span>
+                <div class="achievement-rewards">
+                    <span class="achievement-reward money">💰 ${{ '{:,.0f}'.format(achievement.reward) }}</span>
+                    <span class="achievement-reward exp">✨ {{ '{:,.0f}'.format(achievement.exp_reward) }} EXP</span>
+                </div>
             </div>
         </div>
-
-        <div class="achievement-card">
-            <div class="achievement-icon">📦</div>
-            <div class="achievement-title">Case Enthusiast</div>
-            <div class="achievement-description">Open 100 cases</div>
-            <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 100%"></div>
-            </div>
-            <div class="achievement-stats">
-                <span>100/100</span>
-                <span class="achievement-reward">Reward: $5,000</span>
-            </div>
-        </div>
-
-        <div class="achievement-card locked">
-            <div class="achievement-icon">🎰</div>
-            <div class="achievement-title">High Roller</div>
-            <div class="achievement-description">Win $100,000 in a single casino game</div>
-            <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 0%"></div>
-            </div>
-            <div class="achievement-stats">
-                <span>0/100,000</span>
-                <span class="achievement-reward">Reward: $50,000</span>
-            </div>
-        </div>
-
-        <div class="achievement-card">
-            <div class="achievement-icon">🔥</div>
-            <div class="achievement-title">Trading Master</div>
-            <div class="achievement-description">Complete 50 successful trades</div>
-            <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 40%"></div>
-            </div>
-            <div class="achievement-stats">
-                <span>20/50</span>
-                <span class="achievement-reward">Reward: $25,000</span>
-            </div>
-        </div>
-
-        <div class="achievement-card locked">
-            <div class="achievement-icon">⚡</div>
-            <div class="achievement-title">Click Champion</div>
-            <div class="achievement-description">Reach 1,000 clicks per second</div>
-            <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 0%"></div>
-            </div>
-            <div class="achievement-stats">
-                <span>0/1,000</span>
-                <span class="achievement-reward">Reward: $15,000</span>
-            </div>
-        </div>
-
-        <div class="achievement-card">
-            <div class="achievement-icon">🌟</div>
-            <div class="achievement-title">Knife Collector</div>
-            <div class="achievement-description">Own 10 different knife skins</div>
-            <div class="achievement-progress">
-                <div class="achievement-progress-bar" style="width: 60%"></div>
-            </div>
-            <div class="achievement-stats">
-                <span>6/10</span>
-                <span class="achievement-reward">Reward: $100,000</span>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const achievementCards = document.querySelectorAll('.achievement-card');
+
+    // Function to filter achievements
+    function filterAchievements(category) {
+        achievementCards.forEach(card => {
+            if (category === 'all' && card.dataset.category !== 'completed') {
+                card.style.display = 'block';
+            } else if (category !== 'all' && card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+
+            const category = button.dataset.category;
+            filterAchievements(category);
+        });
+    });
+
+    // Initial filtering for 'all' category on page load
+    filterAchievements('all');
+});
+</script>
 {% endblock %} 

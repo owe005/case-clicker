@@ -1,317 +1,20 @@
 {
-  "balance": 301.0676210264427,
+  "balance": 749.0,
   "inventory": [
     {
-      "weapon": "M4A1-S",
-      "name": "Atomic Alloy",
-      "rarity": "PINK",
-      "wear": "FN",
-      "stattrak": true,
-      "price": 118.97,
-      "timestamp": 1735894501.2945745,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.73,
-      "timestamp": 1735894525.6351612,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "P90",
-      "name": "Module",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.49,
-      "timestamp": 1735894525.6351612,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
+      "weapon": "Bayonet",
+      "name": "Blue Steel",
+      "rarity": "GOLD",
       "wear": "BS",
       "stattrak": false,
-      "price": 1.68,
-      "timestamp": 1735894584.7424023,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 1.56,
-      "timestamp": 1735894584.7424023,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.54,
-      "timestamp": 1735894609.9269104,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.73,
-      "timestamp": 1735894649.064847,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "P2000",
-      "name": "Pulse",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.76,
-      "timestamp": 1735894658.984814,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 1.56,
-      "timestamp": 1735894658.984814,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "MAC-10",
-      "name": "Tatter",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 11.56,
-      "timestamp": 1735894680.3342373,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "AK-47",
-      "name": "Blue Laminate",
-      "rarity": "PURPLE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 9.95,
-      "timestamp": 1735894726.4778588,
-      "case_type": "esports_winter",
-      "is_case": false
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.76,
-      "timestamp": 1735894733.192308,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Atomic Alloy",
-      "rarity": "PINK",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 37.41,
-      "timestamp": 1735894770.0021586,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "SSG 08",
-      "name": "Slashed",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 1.56,
-      "timestamp": 1735894770.0031588,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "Tec-9",
-      "name": "Isaac",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": true,
-      "price": 24.45,
-      "timestamp": 1735894770.0031588,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "Tec-9",
-      "name": "Isaac",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 1.6,
-      "timestamp": 1735894770.0031588,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "MAC-10",
-      "name": "Tatter",
-      "rarity": "PURPLE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 8.59,
-      "timestamp": 1735894770.0031588,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "Butterfly Knife",
-      "name": "Case Hardened",
-      "rarity": "GOLD",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 870.51,
-      "timestamp": 1735894788.591572,
-      "case_type": "breakout",
-      "is_case": false
-    },
-    {
-      "weapon": "AUG",
-      "name": "Torque",
-      "rarity": "PURPLE",
-      "wear": "MW",
-      "stattrak": true,
-      "price": 12.19,
-      "timestamp": 1735894794.3700023,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "CZ75-Auto",
-      "name": "Twist",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1.73,
-      "timestamp": 1735894794.3700023,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "MAC-10",
-      "name": "Tatter",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 11.56,
-      "timestamp": 1735894794.3709943,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "SCAR-20",
-      "name": "Cyrex",
-      "rarity": "PINK",
-      "wear": "FN",
-      "stattrak": true,
-      "price": 96.2,
-      "timestamp": 1735894794.3709943,
-      "case_type": "huntsman",
-      "is_case": false
-    },
-    {
-      "weapon": "M4A4",
-      "name": "Faded Zebra",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 4.15,
-      "timestamp": 1735894802.8722625,
-      "case_type": "esports",
-      "is_case": false
-    },
-    {
-      "weapon": "SG 553",
-      "name": "Ultraviolet",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 55.2,
-      "timestamp": 1735894810.9218907,
-      "case_type": "csgo",
-      "is_case": false
-    },
-    {
-      "weapon": "AUG",
-      "name": "Wings",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 31.21,
-      "timestamp": 1735894810.9218907,
-      "case_type": "csgo",
-      "is_case": false
-    },
-    {
-      "weapon": "Glock-18",
-      "name": "Dragon Tattoo",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 148.08,
-      "timestamp": 1735894810.9228902,
-      "case_type": "csgo",
-      "is_case": false
-    },
-    {
-      "weapon": "Bayonet",
-      "name": "Crimson Web",
-      "rarity": "GOLD",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 270.28,
-      "timestamp": 1735895178.0989652,
-      "case_type": "esports_winter",
-      "is_case": false
-    },
-    {
-      "weapon": "Bayonet",
-      "name": "Slaughter",
-      "rarity": "GOLD",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 444,
-      "timestamp": 1735895178.0989652,
-      "case_type": "csgo",
+      "price": 251.0,
+      "timestamp": 1735908740.0171108,
+      "case_type": "bravo",
       "is_case": false
     }
   ],
-  "exp": 340.0,
-  "rank": 4,
+  "exp": 0,
+  "rank": 0,
   "upgrades": {
     "click_value": 1,
     "max_multiplier": 1,
@@ -319,8 +22,35 @@
     "combo_speed": 1,
     "critical_strike": 0,
     "progress_per_click": 1,
-    "case_quality": 4,
-    "multi_open": 5
+    "case_quality": 1,
+    "multi_open": 1
+  },
+  "achievements": {
+    "completed": [],
+    "in_progress": {
+      "earnings_1": {
+        "id": "earnings_1",
+        "title": "Starting Out",
+        "description": "Earn your first $1,000",
+        "target_value": 1000,
+        "reward": 100,
+        "exp_reward": 1000,
+        "icon": "\ud83d\udcb5",
+        "current_value": 753.0,
+        "category": "special",
+        "progress": 75.3
+      }
+    }
+  },
+  "stats": {
+    "total_earnings": 753.0,
+    "total_cases_opened": 0,
+    "total_trades_completed": 0,
+    "highest_win_streak": 0,
+    "total_clicks": 0,
+    "highest_value_item": 0,
+    "total_upgrades": 0,
+    "total_jackpots_won": 0
   },
   "case_progress": 0
 }

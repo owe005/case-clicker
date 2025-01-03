@@ -52,29 +52,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user' not in session:
-            # Load existing user data first
             user_data = load_user_data()
-            
-            # Only set defaults if no user data exists
-            if not user_data:
-                user_data = {
-                    'balance': 1000.0,
-                    'inventory': [],
-                    'exp': 0,
-                    'rank': 0,
-                    'upgrades': {
-                        'click_value': 1,
-                        'max_multiplier': 1,
-                        'auto_clicker': 0,
-                        'combo_speed': 1,
-                        'critical_strike': 0,
-                        'progress_per_click': 1,
-                        'case_quality': 1,
-                        'multi_open': 1  # Add this line to initialize multi_open
-                    }
-                }
-                save_user_data(user_data)
-            
             session['user'] = user_data
         return f(*args, **kwargs)
     return decorated_function
@@ -166,8 +144,9 @@ def create_user_from_dict(data: dict) -> User:
         auto_clicker=upgrades_data.get('auto_clicker', 0),
         combo_speed=upgrades_data.get('combo_speed', 1),
         critical_strike=upgrades_data.get('critical_strike', 0),
-        progress_per_click=upgrades_data.get('progress_per_click', 1),  # Add this
-        case_quality=upgrades_data.get('case_quality', 1)  # Add this
+        progress_per_click=upgrades_data.get('progress_per_click', 1),
+        case_quality=upgrades_data.get('case_quality', 1),
+        multi_open=upgrades_data.get('multi_open', 1)  # Add this line
     )
     
     user = User(
@@ -200,6 +179,7 @@ def create_user_from_dict(data: dict) -> User:
 
 def load_user_data() -> dict:
     """Load user data from JSON file with file locking."""
+    # Define complete default data structure
     default_data = {
         'balance': 1000.0,
         'inventory': [],
@@ -213,7 +193,21 @@ def load_user_data() -> dict:
             'critical_strike': 0,
             'progress_per_click': 1,
             'case_quality': 1,
-            'multi_open': 1  # Add this line to initialize multi_open
+            'multi_open': 1
+        },
+        'achievements': {
+            'completed': [],
+            'in_progress': {}
+        },
+        'stats': {
+            'total_earnings': 0,
+            'total_cases_opened': 0,
+            'total_trades_completed': 0,
+            'highest_win_streak': 0,
+            'total_clicks': 0,
+            'highest_value_item': 0,
+            'total_upgrades': 0,
+            'total_jackpots_won': 0
         },
         'case_progress': 0
     }
@@ -228,8 +222,19 @@ def load_user_data() -> dict:
         return default_data.copy()
         
     try:
+        # If file doesn't exist, create it with default data
         if not os.path.exists(file_path):
-            return default_data.copy()
+            # Create data directory if it doesn't exist
+            os.makedirs('data', exist_ok=True)
+            
+            # Initialize the first achievement
+            temp_data = default_data.copy()
+            update_earnings_achievements(temp_data, 0)
+            
+            # Save the initialized data
+            with open(file_path, 'w') as f:
+                json.dump(temp_data, f, indent=2)
+            return temp_data
             
         # Create backup of current file
         if os.path.exists(file_path):
@@ -247,17 +252,28 @@ def load_user_data() -> dict:
             
         # Deep copy the default data to ensure we don't modify it
         result = default_data.copy()
+        
+        # Update with existing data
         result.update(data)
         
-        # Ensure upgrades dict exists and has all required keys
+        # Ensure all required structures exist
+        if 'achievements' not in result:
+            result['achievements'] = default_data['achievements'].copy()
+            update_earnings_achievements(result, 0)
+            
+        if 'stats' not in result:
+            result['stats'] = default_data['stats'].copy()
+            
         if 'upgrades' not in result:
             result['upgrades'] = default_data['upgrades'].copy()
         else:
             for key, value in default_data['upgrades'].items():
                 if key not in result['upgrades']:
                     result['upgrades'][key] = value
-                elif not isinstance(result['upgrades'][key], (int, float)):
-                    result['upgrades'][key] = value
+        
+        # Save any updates
+        with open(file_path, 'w') as f:
+            json.dump(result, f, indent=2)
         
         return result
             
@@ -588,13 +604,15 @@ def sell_item(item_index=None):
         # Calculate sale value
         sale_price = float(item_to_sell.get('price', 0)) * quantity
         
+        # Store initial rank for level up check
+        initial_rank = user_data.get('rank', 0)
+        
         # Remove the items from inventory
         remaining_inventory = []
         items_to_remove = quantity
         
         for item in inventory:
             if not item.get('is_case'):
-                # Check if this is one of the items we're selling
                 if (items_to_remove > 0 and
                     item['weapon'] == item_to_sell['weapon'] and
                     item['name'] == item_to_sell['name'] and
@@ -608,13 +626,63 @@ def sell_item(item_index=None):
         user_data['balance'] = float(user_data['balance']) + sale_price
         user_data['inventory'] = remaining_inventory
         
+        # Store initial achievements state
+        initial_achievements = set(user_data['achievements']['completed'])
+        
+        # Update achievements with the earned amount
+        update_earnings_achievements(user_data, sale_price)
+        
+        # Check if any new achievements were completed
+        new_achievements = set(user_data['achievements']['completed']) - initial_achievements
+        completed_achievement = None
+        if new_achievements:
+            achievement_id = list(new_achievements)[0]  # Get the first new achievement
+            level = int(achievement_id.split('_')[1])
+            completed_achievement = {
+                'title': {
+                    1: 'Starting Out',
+                    2: 'Making Moves',
+                    3: 'Known Mogul',
+                    4: 'Expert Trader',
+                    5: 'Millionaire'
+                }[level],
+                'icon': {
+                    1: '💵',
+                    2: '💰',
+                    3: '🏦',
+                    4: '💎',
+                    5: '🏆'
+                }[level],
+                'reward': {
+                    1: 100,
+                    2: 1000,
+                    3: 5000,
+                    4: 10000,
+                    5: 100000
+                }[level],
+                'exp_reward': {
+                    1: 1000,
+                    2: 5000,
+                    3: 10000,
+                    4: 20000,
+                    5: 50000
+                }[level]
+            }
+        
         # Save updated user data
         save_user_data(user_data)
         
+        # Return data in the same format as achievement completion
         return jsonify({
             'success': True,
             'balance': user_data['balance'],
-            'sold_price': sale_price
+            'exp': user_data['exp'],
+            'rank': user_data['rank'],
+            'rankName': RANKS[user_data['rank']],
+            'nextRankExp': RANK_EXP[user_data['rank']] if user_data['rank'] < len(RANK_EXP) else None,
+            'levelUp': user_data['rank'] > initial_rank,
+            'sold_price': sale_price,
+            'achievement': completed_achievement
         })
         
     except Exception as e:
@@ -625,6 +693,8 @@ def sell_item(item_index=None):
 def sell_last_item():
     user_data = load_user_data()
     try:
+        data = request.get_json() or {}
+        count = int(data.get('count', 1))  # Get number of items to sell
         inventory = user_data['inventory']
         
         # Get only non-case items
@@ -633,100 +703,133 @@ def sell_last_item():
         if not skin_items:
             return jsonify({'error': 'No items to sell'})
         
-        # Find the most recently added skin by timestamp
-        last_skin_index = max(
+        # Sort items by timestamp in descending order
+        sorted_indices = sorted(
             range(len(inventory)),
-            key=lambda i: inventory[i].get('timestamp', 0) if not inventory[i].get('is_case') else 0
+            key=lambda i: inventory[i].get('timestamp', 0) if not inventory[i].get('is_case') else 0,
+            reverse=True
         )
         
-        # Get the item before removing it
-        item = inventory[last_skin_index]
-        if item.get('is_case'):
-            return jsonify({'error': 'Cannot sell cases'})
-            
-        # Verify the item has a price
-        if 'price' not in item:
-            return jsonify({'error': 'Item has no price'})
-            
-        sale_price = float(item.get('price', 0))
+        # Get the most recent 'count' items
+        items_to_sell = []
+        total_price = 0
+        indices_to_remove = []
         
-        # Remove the item and update user's balance
-        inventory.pop(last_skin_index)
-        user_data['balance'] = float(user_data['balance']) + sale_price
+        for idx in sorted_indices[:count]:
+            item = inventory[idx]
+            if not item.get('is_case'):
+                if 'price' not in item:
+                    continue
+                total_price += float(item.get('price', 0))
+                items_to_sell.append(item)
+                indices_to_remove.append(idx)
+                
+                if len(items_to_sell) >= count:
+                    break
+        
+        if not items_to_sell:
+            return jsonify({'error': 'No valid items to sell'})
+            
+        # Remove items in reverse order to maintain correct indices
+        for idx in sorted(indices_to_remove, reverse=True):
+            inventory.pop(idx)
+        
+        # Update user's balance
+        user_data['balance'] = float(user_data['balance']) + total_price
+        
+        # Update achievements with the total earned amount
+        update_earnings_achievements(user_data, total_price)
         
         # Save updated user data
         save_user_data(user_data)
         
         # Log the successful sale
-        print(f"Successfully sold item: {item.get('weapon')} | {item.get('name')} for ${sale_price}")
+        print(f"Successfully sold {len(items_to_sell)} items for ${total_price}")
         
         return jsonify({
             'success': True,
             'balance': user_data['balance'],
-            'sold_price': sale_price
+            'sold_price': total_price
         })
         
     except Exception as e:
         print(f"Error in sell_last_item: {e}")
-        # Return more detailed error information
         return jsonify({
-            'error': 'Failed to sell item',
+            'error': 'Failed to sell items',
             'details': str(e)
         })
 
-@app.route('/clicker')
-def clicker():
-    user_data = load_user_data()
-    return render_template('clicker.html', 
-                         balance=user_data['balance'],
-                         rank=user_data['rank'],
-                         exp=user_data['exp'],
-                         upgrades=user_data['upgrades'],
-                         user_data=user_data,  # Add this line
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
-
 @app.route('/click', methods=['POST'])
+@login_required
 def click():
-    user_data = load_user_data()
-    data = request.get_json()
-    multiplier = data.get('amount', 0)
-    critical = data.get('critical', False)
-    is_auto = data.get('auto', False)  # New flag for auto clicks
-    
-    user = create_user_from_dict(user_data)
-    
-    # For auto clicks, use base value without combo multiplier
-    if is_auto:
-        base_click = 0.01 * (1.5 ** user.upgrades.click_value)
-        earned = base_click
-    else:
-        base_click = 0.01 * (1.5 ** user.upgrades.click_value)
-        earned = base_click * multiplier
-    
-    # Apply critical multiplier if it was a critical hit
-    if critical:
-        earned *= 4
-    
-    user.balance += earned
-    
-    # Update user data
-    user_data['balance'] = user.balance
-    user_data['inventory'] = user.inventory
-    user_data['exp'] = user.exp
-    user_data['rank'] = user.rank
-    user_data['upgrades'] = asdict(user.upgrades)
-    save_user_data(user_data)
-    
-    return jsonify({
-        'success': True,
-        'balance': user.balance,
-        'earned': earned,
-        'exp': int(user.exp),
-        'rank': user.rank,
-        'rankName': RANKS[user.rank],
-        'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None
-    })
+    try:
+        data = request.get_json()
+        multiplier = float(data.get('amount', 1.0))
+        is_critical = data.get('critical', False)
+        is_auto = data.get('auto', False)
+        
+        user_data = load_user_data()
+        
+        # Ensure upgrades structure is complete
+        if 'upgrades' not in user_data:
+            user_data['upgrades'] = {
+                'click_value': 1,
+                'max_multiplier': 1,
+                'auto_clicker': 0,
+                'combo_speed': 1,
+                'critical_strike': 0,
+                'progress_per_click': 1,
+                'case_quality': 1,
+                'multi_open': 1  # Add this line
+            }
+        elif 'multi_open' not in user_data['upgrades']:
+            user_data['upgrades']['multi_open'] = 1  # Ensure multi_open exists
+        
+        # Calculate click value
+        base_value = 0.01 * (1.5 ** (user_data['upgrades']['click_value'] - 1))
+        earned = base_value * multiplier
+        
+        if is_critical:
+            earned *= 4  # 4x multiplier for critical hits
+        
+        # Update balance
+        user_data['balance'] = float(user_data['balance']) + earned
+        
+        # Add exp based on earnings
+        current_exp = float(user_data.get('exp', 0))
+        current_rank = int(user_data.get('rank', 0))
+        
+        # Add exp (1 exp per dollar earned)
+        new_exp = current_exp + earned
+        
+        # Check for rank up
+        while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+            new_exp -= RANK_EXP[current_rank]
+            current_rank += 1
+        
+        user_data['exp'] = new_exp
+        user_data['rank'] = current_rank
+        
+        # Save updated user data
+        save_user_data(user_data)
+        
+        response_data = {
+            'success': True,
+            'earned': earned,
+            'balance': user_data['balance'],
+            'exp': new_exp,
+            'rank': current_rank,
+            'rankName': RANKS[current_rank]
+        }
+        
+        if current_rank < len(RANK_EXP):
+            response_data['nextRankExp'] = RANK_EXP[current_rank]
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Error in click: {e}")
+        return jsonify({'error': 'Failed to process click'})
 
 @app.route('/update_session', methods=['POST'])
 def update_session():
@@ -1127,9 +1230,12 @@ def play_coinflip():
         # Calculate new balance but don't save yet
         new_balance = current_balance - bet_amount
         if won:
-            new_balance += bet_amount * 2
+            winnings = bet_amount * 2
+            new_balance += winnings
+            # Track earnings (winnings minus original bet)
+            update_earnings_achievements(user_data, winnings - bet_amount)
         
-        # Store the bet info in session so we can update balance after animation
+        # Store the bet info in session
         session['coinflip_bet'] = {
             'amount': bet_amount,
             'won': won,
@@ -1140,8 +1246,8 @@ def play_coinflip():
             'success': True,
             'won': won,
             'result': result,
-            'current_balance': current_balance,  # Send current balance for initial display
-            'final_balance': new_balance  # Send final balance for after animation
+            'current_balance': current_balance,
+            'final_balance': new_balance
         })
         
     except Exception as e:
@@ -1209,47 +1315,56 @@ def play_roulette():
         
         # Calculate winnings for placed bets
         winnings = 0
+        total_bet = sum(float(amount) for amount in bets.values())
+        
         for bet_type, amount in bets.items():
             amount = float(amount)
-            multiplier = 1
-            
-            # Check if it's a straight number bet and if it hit a lightning number
-            if bet_type.isdigit() and int(bet_type) == result and result in lightning_numbers:
-                # Get the multiplier from the front end (would need to be passed in the request)
-                # For now, using minimum 50x
-                multiplier = 50
-            
             if bet_type.isdigit():  # Single number bet
                 if int(bet_type) == result:
-                    winnings += amount * 36 * multiplier
+                    win_amount = amount * 36
+                    winnings += win_amount
+                    # Track earnings (win amount minus original bet)
+                    update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['red', 'black']:
                 if (bet_type == 'red' and result in RED_NUMBERS) or \
                    (bet_type == 'black' and result in BLACK_NUMBERS):
-                    winnings += amount * 2
+                    win_amount = amount * 2
+                    winnings += win_amount
+                    # Track earnings (win amount minus original bet)
+                    update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['even', 'odd']:
                 if result != 0 and \
                    ((bet_type == 'even' and result % 2 == 0) or \
                     (bet_type == 'odd' and result % 2 == 1)):
-                    winnings += amount * 2
+                    win_amount = amount * 2
+                    winnings += win_amount
+                    # Track earnings (win amount minus original bet)
+                    update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['1-18', '19-36']:
                 if (bet_type == '1-18' and 1 <= result <= 18) or \
                    (bet_type == '19-36' and 19 <= result <= 36):
-                    winnings += amount * 2
+                    win_amount = amount * 2
+                    winnings += win_amount
+                    # Track earnings (win amount minus original bet)
+                    update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['1st12', '2nd12', '3rd12']:
                 if (bet_type == '1st12' and 1 <= result <= 12) or \
                    (bet_type == '2nd12' and 13 <= result <= 24) or \
                    (bet_type == '3rd12' and 25 <= result <= 36):
-                    winnings += amount * 3
+                    win_amount = amount * 3
+                    winnings += win_amount
+                    # Track earnings (win amount minus original bet)
+                    update_earnings_achievements(user_data, win_amount - amount)
         
         # Calculate final balance
-        final_balance = current_balance - sum(float(amount) for amount in bets.values()) + winnings
+        final_balance = current_balance - total_bet + winnings
         
         # Store the game result in session
         session['roulette_result'] = {
             'result': result,
             'winnings': winnings,
             'new_balance': final_balance,
-            'total_bet': sum(float(amount) for amount in bets.values())
+            'total_bet': total_bet
         }
         
         return jsonify({
@@ -1257,7 +1372,7 @@ def play_roulette():
             'result': result,
             'winnings': winnings,
             'balance': current_balance,
-            'total_bet': sum(float(amount) for amount in bets.values())
+            'total_bet': total_bet
         })
         
     except Exception as e:
@@ -1611,15 +1726,20 @@ def play_blackjack():
             for i, won in enumerate(state['won']):
                 bet = game.bet_amount if i == 0 else game.split_bet_amount
                 if won == 'blackjack':
-                    total_won += bet * 2.5  # 3:2 payout for blackjack (includes original bet)
+                    winnings = bet * 2.5  # 3:2 payout for blackjack
+                    total_won += winnings
+                    # Track earnings (winnings minus original bet)
+                    update_earnings_achievements(user_data, winnings - bet)
                 elif won is True:
-                    total_won += bet * 2  # 2x payout (includes original bet)
+                    winnings = bet * 2  # 2x payout
+                    total_won += winnings
+                    # Track earnings (winnings minus original bet)
+                    update_earnings_achievements(user_data, winnings - bet)
                 elif won is None:  # Push
                     total_won += bet  # Return original bet
-                # If loss (won is False), bet is already deducted
+                # If loss (won is False), no need to track as it's a loss
             
             if total_won > 0:
-                # Only update balance if player won something
                 user_data['balance'] = current_balance + total_won
                 save_user_data(user_data)
             
@@ -1711,6 +1831,10 @@ def crash_cashout():
         
         # Update balance and save
         user_data['balance'] = float(user_data['balance']) + winnings
+        
+        # Track earnings (winnings minus original bet)
+        update_earnings_achievements(user_data, winnings - current_game_bet)
+        
         save_user_data(user_data)
         
         # Clear the crash bet from session
@@ -1791,7 +1915,7 @@ def take_insurance():
 @app.route('/sell/all', methods=['POST'])
 def sell_all():
     try:
-        user_data = load_user_data()  # Load current user data from file
+        user_data = load_user_data()
         inventory = user_data.get('inventory', [])
         
         # Calculate total value of all non-case items
@@ -1804,12 +1928,16 @@ def sell_all():
             else:
                 total_value += float(item.get('price', 0))
         
-        # Update user's balance and inventory
-        user_data['balance'] = float(user_data['balance']) + total_value
-        user_data['inventory'] = new_inventory
-        
-        # Save the updated user data to file
-        save_user_data(user_data)
+        if total_value > 0:
+            # Update user's balance and inventory
+            user_data['balance'] = float(user_data['balance']) + total_value
+            user_data['inventory'] = new_inventory
+            
+            # Update achievements with the total earned amount
+            update_earnings_achievements(user_data, total_value)
+            
+            # Save the updated user data
+            save_user_data(user_data)
         
         return jsonify({
             'success': True,
@@ -3305,13 +3433,293 @@ def group_identical_skins(inventory):
 @login_required
 def achievements():
     user_data = load_user_data()
-    user = create_user_from_dict(user_data)
+    
+    # Initialize achievements if needed
+    if 'achievements' not in user_data:
+        user_data['achievements'] = {
+            'completed': [],
+            'in_progress': {}
+        }
+        update_earnings_achievements(user_data, 0)
+        save_user_data(user_data)
+    
+    # Get completed achievements data
+    completed_achievements = []
+    for achievement_id in user_data['achievements']['completed']:
+        if achievement_id.startswith('earnings_'):
+            level = int(achievement_id.split('_')[1])
+            achievement_data = {
+                'id': achievement_id,
+                'completed': True,
+                'progress': 100,
+                'current_value': {
+                    1: 1000,
+                    2: 10000,
+                    3: 50000,
+                    4: 100000,
+                    5: 1000000
+                }[level],
+                'target_value': {
+                    1: 1000,
+                    2: 10000,
+                    3: 50000,
+                    4: 100000,
+                    5: 1000000
+                }[level],
+                'category': 'special',
+                'title': {
+                    1: 'Starting Out',
+                    2: 'Making Moves',
+                    3: 'Known Mogul',
+                    4: 'Expert Trader',
+                    5: 'Millionaire'
+                }[level],
+                'description': f'Earned ${"{:,.0f}".format({1: 1000, 2: 10000, 3: 50000, 4: 100000, 5: 1000000}[level])}',
+                'icon': {
+                    1: '💵',
+                    2: '💰',
+                    3: '🏦',
+                    4: '💎',
+                    5: '🏆'
+                }[level],
+                'reward': {
+                    1: 100,
+                    2: 1000,
+                    3: 5000,
+                    4: 10000,
+                    5: 100000
+                }[level],
+                'exp_reward': {  # Add this block
+                    1: 1000,
+                    2: 5000,
+                    3: 10000,
+                    4: 20000,
+                    5: 50000
+                }[level]
+            }
+            completed_achievements.append(achievement_data)
+    
+    # Get only the current in-progress earnings achievement
+    in_progress_achievements = []
+    for achievement in user_data['achievements']['in_progress'].values():
+        if achievement['id'].startswith('earnings_'):
+            in_progress_achievements.append(achievement)
+            break  # Only get the first one since we only want to show the current tier
+    
+    # Combine achievements - completed ones first, then the current in-progress one
+    all_achievements = completed_achievements + in_progress_achievements
+    
+    # Sort achievements by ID to maintain order
+    all_achievements.sort(key=lambda x: x['id'])
+    
+    # Calculate summary statistics
+    total_count = len(all_achievements)  # This now represents total tiers completed + current
+    completed_count = len(completed_achievements)
+    completion_rate = round((completed_count / 5 * 100))  # Always out of 5 total tiers
+    
+    # Calculate total rewards earned from completed achievements
+    total_rewards = sum(achievement['reward'] for achievement in completed_achievements)
+    
     return render_template('achievements.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+                         achievements=all_achievements,
+                         completed_count=completed_count,
+                         total_count=5,  # Always show out of 5 total tiers
+                         completion_rate=completion_rate,
+                         total_rewards=total_rewards,
+                         balance=user_data['balance'],
+                         rank=user_data['rank'],
+                         exp=user_data['exp'],
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
+
+# Add this function near the top with other helper functions
+def update_earnings_achievements(user_data, amount_earned):
+    """Update earnings-related achievements when user earns money"""
+    
+    # Initialize achievements if needed
+    if 'achievements' not in user_data:
+        user_data['achievements'] = {
+            'completed': [],
+            'in_progress': {}
+        }
+    
+    # Initialize stats if needed
+    if 'stats' not in user_data:
+        user_data['stats'] = {
+            'total_earnings': 0
+        }
+    
+    # Update total earnings
+    user_data['stats']['total_earnings'] += amount_earned
+    total_earnings = user_data['stats']['total_earnings']
+    
+    # Define achievement tiers
+    tiers = [
+        {
+            'id': 'earnings_1',
+            'title': 'Starting Out',
+            'description': 'Earn your first $1,000',
+            'target_value': 1000,
+            'reward': 100,
+            'exp_reward': 1000,  # Add EXP reward
+            'icon': '💵'
+        },
+        {
+            'id': 'earnings_2',
+            'title': 'Making Moves',
+            'description': 'Earn your first $10,000',
+            'target_value': 10000,
+            'reward': 1000,
+            'exp_reward': 5000,  # Add EXP reward
+            'icon': '💰'
+        },
+        {
+            'id': 'earnings_3',
+            'title': 'Known Mogul',
+            'description': 'Earn your first $50,000',
+            'target_value': 50000,
+            'reward': 5000,
+            'exp_reward': 10000,  # Add EXP reward
+            'icon': '🏦'
+        },
+        {
+            'id': 'earnings_4',
+            'title': 'Expert Trader',
+            'description': 'Earn your first $100,000',
+            'target_value': 100000,
+            'reward': 10000,
+            'exp_reward': 20000,  # Add EXP reward
+            'icon': '💎'
+        },
+        {
+            'id': 'earnings_5',
+            'title': 'Millionaire',
+            'description': 'Earn your first $1,000,000',
+            'target_value': 1000000,
+            'reward': 100000,
+            'exp_reward': 50000,  # Add EXP reward
+            'icon': '🏆'
+        }
+    ]
+    
+    # Find current tier
+    current_tier = None
+    for tier in tiers:
+        if tier['id'] not in user_data['achievements']['completed']:
+            current_tier = tier
+            break
+    
+    if current_tier:
+        # Update or add current tier achievement
+        if current_tier['id'] not in user_data['achievements']['in_progress']:
+            current_tier['current_value'] = total_earnings
+            current_tier['category'] = 'special'
+            current_tier['progress'] = min(100, (total_earnings / current_tier['target_value']) * 100)
+            user_data['achievements']['in_progress'] = {
+                current_tier['id']: current_tier
+            }
+        else:
+            # Update progress
+            if total_earnings >= current_tier['target_value']:
+                # Complete current tier
+                user_data['achievements']['completed'].append(current_tier['id'])
+                user_data['balance'] += current_tier['reward']
+                
+                # Add EXP reward
+                current_exp = float(user_data.get('exp', 0))
+                current_rank = int(user_data.get('rank', 0))
+                new_exp = current_exp + current_tier['exp_reward']
+                
+                # Check for rank up
+                while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+                    new_exp -= RANK_EXP[current_rank]
+                    current_rank += 1
+                
+                user_data['exp'] = new_exp
+                user_data['rank'] = current_rank
+                
+                # Clear in_progress
+                user_data['achievements']['in_progress'] = {}
+                # Recursively call to set up next tier
+                update_earnings_achievements(user_data, 0)
+            else:
+                # Update progress
+                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_earnings
+                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
+                    (total_earnings / current_tier['target_value']) * 100
+
+@app.route('/clicker')
+@login_required
+def clicker():
+    user_data = load_user_data()
+    return render_template('clicker.html', 
+                         balance=user_data['balance'],
+                         rank=user_data['rank'],
+                         exp=user_data['exp'],
+                         upgrades=user_data['upgrades'],
+                         user_data=user_data,
+                         RANK_EXP=RANK_EXP,
+                         RANKS=RANKS)
+
+# Add this route to handle achievement completion
+@app.route('/complete_achievement', methods=['POST'])
+@login_required
+def complete_achievement():
+    try:
+        data = request.get_json()
+        achievement_id = data.get('achievement_id')
+        
+        user_data = load_user_data()
+        
+        # Get the achievement data
+        achievement = user_data['achievements']['in_progress'].get(achievement_id)
+        if not achievement:
+            return jsonify({'error': 'Achievement not found'})
+            
+        # Store initial rank for level up check
+        initial_rank = user_data.get('rank', 0)
+        
+        # Add achievement to completed list and handle rewards
+        if achievement_id not in user_data['achievements']['completed']:
+            user_data['achievements']['completed'].append(achievement_id)
+            user_data['balance'] += achievement['reward']
+            
+            # Add EXP and handle level up
+            current_exp = float(user_data.get('exp', 0))
+            current_rank = int(user_data.get('rank', 0))
+            new_exp = current_exp + achievement['exp_reward']
+            
+            # Check for rank up
+            while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+                new_exp -= RANK_EXP[current_rank]
+                current_rank += 1
+            
+            user_data['exp'] = new_exp
+            user_data['rank'] = current_rank
+            
+        # Remove from in_progress
+        if achievement_id in user_data['achievements']['in_progress']:
+            del user_data['achievements']['in_progress'][achievement_id]
+            
+        # Save updated user data
+        save_user_data(user_data)
+        
+        # Return all necessary data for UI updates
+        response_data = {
+            'success': True,
+            'balance': user_data['balance'],
+            'exp': new_exp,
+            'rank': current_rank,
+            'rankName': RANKS[current_rank],
+            'nextRankExp': RANK_EXP[current_rank] if current_rank < len(RANK_EXP) else None,
+            'levelUp': current_rank > initial_rank
+        }
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Error completing achievement: {e}")
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)
