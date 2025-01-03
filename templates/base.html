@@ -128,6 +128,7 @@
                 <a href="{{ url_for('upgrades') }}" class="nav-link {{ 'active' if request.endpoint == 'upgrades' }}">Upgrades</a>
                 <a href="{{ url_for('casino') }}" class="nav-link {{ 'active' if request.endpoint == 'casino' }}">Casino</a>
                 <a href="{{ url_for('trading') }}" class="nav-link {{ 'active' if request.endpoint == 'trading' }}">Trading</a>
+                <a href="{{ url_for('achievements') }}" class="nav-link {{ 'active' if request.endpoint == 'achievements' }}">Achievements</a>
             </div>
             <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</span></div>
         </div>

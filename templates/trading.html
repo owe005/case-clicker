@@ -9,6 +9,7 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    color: #fff;
 }
 
 .trade-filters {
@@ -21,18 +22,22 @@
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
-    background: #2c3e50;
-    color: white;
+    background: #1a1a1a;
+    color: #fff;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
 }
 
 .trade-filter-btn.active {
-    background: #3498db;
+    background: #ffd700;
+    color: #000;
+    border-color: #ffd700;
 }
 
 .trade-filter-btn:hover {
-    background: #34495e;
+    background: #333;
+    transform: translateY(-2px);
 }
 
 .trades-grid {
@@ -42,10 +47,17 @@
 }
 
 .trade-card {
-    background: #2c3e50;
-    border-radius: 8px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    border: 1px solid #333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 .trade-header {
@@ -54,7 +66,7 @@
     align-items: center;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #34495e;
+    border-bottom: 1px solid #333;
 }
 
 .trader-info {
@@ -64,15 +76,15 @@
 }
 
 .trader-avatar {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #3498db;
+    border: 2px solid #ffd700;
 }
 
 .trader-name {
-    color: #3498db;
+    color: #ffd700;
     font-weight: bold;
     margin: 0;
 }
@@ -81,11 +93,12 @@
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.8em;
+    color: #fff;
 }
 
-.type-buy { background: #27ae60; }
-.type-sell { background: #c0392b; }
-.type-swap { background: #8e44ad; }
+.type-buy { background: #4CAF50; }
+.type-sell { background: #f44336; }
+.type-swap { background: #9c27b0; }
 
 .trade-items {
     display: flex;
@@ -99,25 +112,26 @@
 
 .trade-section-title {
     font-size: 0.9em;
-    color: #95a5a6;
+    color: #888;
     margin-bottom: 8px;
 }
 
 .trade-item {
-    background: #34495e;
-    border-radius: 4px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 8px;
     padding: 8px;
     margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 10px;
+    border: 1px solid #333;
 }
 
 .trade-item img {
     width: 50px;
     height: 50px;
     object-fit: contain;
-    background: #2c3e50;
+    background: #1a1a1a;
     border-radius: 4px;
     padding: 4px;
 }
@@ -128,16 +142,16 @@
 
 .item-name {
     font-size: 0.9em;
-    color: white;
+    color: #fff;
 }
 
 .item-wear {
     font-size: 0.8em;
-    color: #95a5a6;
+    color: #888;
 }
 
 .item-price {
-    color: #f1c40f;
+    color: #ffd700;
     font-weight: bold;
 }
 
@@ -151,19 +165,22 @@
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
-    background: #3498db;
-    color: white;
+    background: #ffd700;
+    color: #000;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
+    font-weight: bold;
 }
 
 .trade-btn:hover {
-    background: #2980b9;
+    background: #ffed4a;
+    transform: translateY(-2px);
 }
 
 .trade-btn:disabled {
-    background: #95a5a6;
+    background: #666;
     cursor: not-allowed;
+    color: #888;
 }
 
 /* Trade confirmation modal */
@@ -183,11 +200,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #2c3e50;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     max-width: 500px;
     width: 90%;
+    border: 1px solid #333;
 }
 
 .modal-header {
@@ -236,16 +254,18 @@
 /* Refresh button */
 .refresh-trades {
     padding: 8px 16px;
-    background: #3498db;
-    color: white;
+    background: #ffd700;
+    color: #000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    font-weight: bold;
 }
 
 .refresh-trades:hover {
-    background: #2980b9;
+    background: #ffed4a;
+    transform: translateY(-2px);
 }
 
 /* Loading animation */
@@ -274,11 +294,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .trades-reset-timer {
-    color: #95a5a6;
+    color: #888;
     font-size: 0.9em;
 }
 
@@ -288,15 +308,16 @@
     bottom: 0;
     right: 20px;
     width: 300px;
-    background: #2c3e50;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
     border-radius: 8px 8px 0 0;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     z-index: 1000;
+    border: 1px solid #333;
 }
 
 .chat-header {
     padding: 10px 15px;
-    background: #34495e;
+    background: #1a1a1a;
     border-radius: 8px 8px 0 0;
     display: flex;
     justify-content: space-between;
@@ -339,15 +360,16 @@
 }
 
 .chat-message.bot {
-    background: #34495e;
+    background: #2a2a2a;
     align-self: flex-start;
     border-bottom-left-radius: 5px;
 }
 
 .chat-message.user {
-    background: #3498db;
+    background: #ffd700;
     align-self: flex-end;
     border-bottom-right-radius: 5px;
+    color: #000;
 }
 
 .message-sender {
@@ -365,9 +387,10 @@
 
 .chat-input-area {
     padding: 10px;
-    background: #34495e;
+    background: #1a1a1a;
     display: flex;
     gap: 10px;
+    border: 1px solid #333;
 }
 
 .chat-input {
@@ -375,9 +398,10 @@
     padding: 8px 12px;
     border: none;
     border-radius: 20px;
-    background: #2c3e50;
+    background: #1a1a1a;
     color: white;
     outline: none;
+    border: 1px solid #333;
 }
 
 .chat-input::placeholder {
@@ -388,14 +412,14 @@
     padding: 8px 15px;
     border: none;
     border-radius: 20px;
-    background: #3498db;
-    color: white;
+    background: #ffd700;
+    color: #000;
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .chat-send:hover {
-    background: #2980b9;
+    background: #ffed4a;
 }
 
 /* Custom scrollbar for chat messages */
@@ -439,8 +463,9 @@
 }
 
 .toast {
-    background: #2ecc71;
-    color: white;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border: 1px solid #ffd700;
+    color: #fff;
     padding: 16px 24px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -452,8 +477,12 @@
     animation: slideIn 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
 }
 
+.toast.success {
+    border-color: #4CAF50;
+}
+
 .toast.error {
-    background: #e74c3c;
+    border-color: #f44336;
 }
 
 .toast-icon {

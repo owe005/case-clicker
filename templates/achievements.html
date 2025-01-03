@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Achievements - Case Clicker{% endblock %}
+
+{% block content %}
+<style>
+    .achievements-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .achievements-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #ffd700;
+    }
+
+    .achievements-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+
+    .achievements-header p {
+        color: #888;
+        font-size: 1.1em;
+    }
+
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .achievement-card {
+        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+        border-radius: 10px;
+        padding: 20px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #333;
+        overflow: hidden;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .achievement-card.locked {
+        filter: grayscale(100%);
+        opacity: 0.7;
+    }
+
+    .achievement-card.locked::after {
+        content: '🔒';
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+    }
+
+    .achievement-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 15px;
+        background: #333;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .achievement-title {
+        font-size: 1.2em;
+        color: #ffd700;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .achievement-description {
+        color: #aaa;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+
+    .achievement-progress {
+        background: #333;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+
+    .achievement-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ffd700, #ff9900);
+        transition: width 0.3s ease;
+    }
+
+    .achievement-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.8em;
+        color: #666;
+    }
+
+    .achievement-reward {
+        color: #4CAF50;
+    }
+
+    .achievements-summary {
+        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border: 1px solid #333;
+    }
+
+    .summary-stat {
+        text-align: center;
+    }
+
+    .summary-stat h3 {
+        color: #ffd700;
+        font-size: 1.8em;
+        margin-bottom: 5px;
+    }
+
+    .summary-stat p {
+        color: #888;
+        font-size: 0.9em;
+    }
+
+    .category-filter {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .category-btn {
+        background: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .category-btn:hover {
+        background: #444;
+    }
+
+    .category-btn.active {
+        background: #ffd700;
+        color: #000;
+    }
+
+    @keyframes unlock {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .achievement-card.just-unlocked {
+        animation: unlock 0.5s ease;
+        border-color: #ffd700;
+    }
+</style>
+
+<div class="achievements-container">
+    <div class="achievements-header">
+        <h1>Achievements - Not Implemented</h1>
+        <p>Track your progress and earn rewards</p>
+    </div>
+
+    <div class="achievements-summary">
+        <div class="summary-stat">
+            <h3>12/50</h3>
+            <p>Achievements Completed</p>
+        </div>
+        <div class="summary-stat">
+            <h3>24%</h3>
+            <p>Completion Rate</p>
+        </div>
+        <div class="summary-stat">
+            <h3>$15,420</h3>
+            <p>Total Rewards Earned</p>
+        </div>
+    </div>
+
+    <div class="category-filter">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Cases</button>
+        <button class="category-btn">Trading</button>
+        <button class="category-btn">Casino</button>
+        <button class="category-btn">Clicker</button>
+        <button class="category-btn">Special</button>
+    </div>
+
+    <div class="achievements-grid">
+        <!-- Example Achievement Cards -->
+        <div class="achievement-card">
+            <div class="achievement-icon">💰</div>
+            <div class="achievement-title">First Million</div>
+            <div class="achievement-description">Accumulate $1,000,000 in total earnings</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 75%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>750,000/1,000,000</span>
+                <span class="achievement-reward">Reward: $10,000</span>
+            </div>
+        </div>
+
+        <div class="achievement-card">
+            <div class="achievement-icon">📦</div>
+            <div class="achievement-title">Case Enthusiast</div>
+            <div class="achievement-description">Open 100 cases</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 100%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>100/100</span>
+                <span class="achievement-reward">Reward: $5,000</span>
+            </div>
+        </div>
+
+        <div class="achievement-card locked">
+            <div class="achievement-icon">🎰</div>
+            <div class="achievement-title">High Roller</div>
+            <div class="achievement-description">Win $100,000 in a single casino game</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>0/100,000</span>
+                <span class="achievement-reward">Reward: $50,000</span>
+            </div>
+        </div>
+
+        <div class="achievement-card">
+            <div class="achievement-icon">🔥</div>
+            <div class="achievement-title">Trading Master</div>
+            <div class="achievement-description">Complete 50 successful trades</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 40%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>20/50</span>
+                <span class="achievement-reward">Reward: $25,000</span>
+            </div>
+        </div>
+
+        <div class="achievement-card locked">
+            <div class="achievement-icon">⚡</div>
+            <div class="achievement-title">Click Champion</div>
+            <div class="achievement-description">Reach 1,000 clicks per second</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>0/1,000</span>
+                <span class="achievement-reward">Reward: $15,000</span>
+            </div>
+        </div>
+
+        <div class="achievement-card">
+            <div class="achievement-icon">🌟</div>
+            <div class="achievement-title">Knife Collector</div>
+            <div class="achievement-description">Own 10 different knife skins</div>
+            <div class="achievement-progress">
+                <div class="achievement-progress-bar" style="width: 60%"></div>
+            </div>
+            <div class="achievement-stats">
+                <span>6/10</span>
+                <span class="achievement-reward">Reward: $100,000</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

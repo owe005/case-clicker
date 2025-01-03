@@ -3300,5 +3300,18 @@ def group_identical_skins(inventory):
     
     return grouped_items
 
+# Add this route after the other routes
+@app.route('/achievements')
+@login_required
+def achievements():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
+    return render_template('achievements.html',
+                           balance=user.balance,
+                           rank=user.rank,
+                           exp=user.exp,
+                           RANKS=RANKS,
+                           RANK_EXP=RANK_EXP)
+
 if __name__ == '__main__':
     app.run(debug=True)
