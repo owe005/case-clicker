@@ -1,0 +1,493 @@
+/* Trading-specific styles */
+.trading-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+.trade-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.trade-filter-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #1a1a1a;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
+}
+
+.trade-filter-btn.active {
+    background: #ffd700;
+    color: #000;
+    border-color: #ffd700;
+}
+
+.trade-filter-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+.trades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.trade-card {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    border: 1px solid #333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.trader-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.trader-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffd700;
+}
+
+.trader-name {
+    color: #ffd700;
+    font-weight: bold;
+    margin: 0;
+}
+
+.trade-type {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    color: #fff;
+}
+
+.type-buy { background: #4CAF50; }
+.type-sell { background: #f44336; }
+.type-swap { background: #9c27b0; }
+
+.trade-items {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.trade-section {
+    flex: 1;
+}
+
+.trade-section-title {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.trade-item {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #333;
+}
+
+.trade-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 0.9em;
+    color: #fff;
+}
+
+.item-wear {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.item-price {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.trade-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.trade-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #ffd700;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.trade-btn:hover {
+    background: #ffed4a;
+    transform: translateY(-2px);
+}
+
+.trade-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+    color: #888;
+}
+
+/* Trade confirmation modal */
+.trade-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+}
+
+.trade-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid #333;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: white;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.confirm-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.cancel-btn {
+    background: #c0392b;
+    color: white;
+}
+
+/* Loading animation */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading::after {
+    content: "Loading trades...";
+    color: #95a5a6;
+}
+
+.trade-item.money-item {
+    justify-content: center;
+    font-size: 1.2em;
+}
+
+.money-item .item-price {
+    font-size: 1.2em;
+    color: #2ecc71;
+}
+
+.trading-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.trades-reset-timer {
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* Chat Area Styles */
+.chat-area {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border: 1px solid #333;
+}
+
+.chat-header {
+    padding: 10px 15px;
+    background: #1a1a1a;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-title {
+    color: white;
+    font-weight: bold;
+}
+
+.chat-minimize {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.chat-minimize:hover {
+    color: white;
+}
+
+.chat-messages {
+    height: 300px;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.chat-message.bot {
+    background: #2a2a2a;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.chat-message.user {
+    background: #ffd700;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+    color: #000;
+}
+
+.message-sender {
+    font-size: 0.8em;
+    color: #95a5a6;
+    margin-bottom: 3px;
+}
+
+.message-time {
+    font-size: 0.7em;
+    color: #7f8c8d;
+    text-align: right;
+    margin-top: 2px;
+}
+
+.chat-input-area {
+    padding: 10px;
+    background: #1a1a1a;
+    display: flex;
+    gap: 10px;
+    border: 1px solid #333;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    background: #1a1a1a;
+    color: white;
+    outline: none;
+    border: 1px solid #333;
+}
+
+.chat-input::placeholder {
+    color: #95a5a6;
+}
+
+.chat-send {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background: #ffd700;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chat-send:hover {
+    background: #ffed4a;
+}
+
+/* Custom scrollbar for chat messages */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #2c3e50;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #34495e;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #3498db;
+}
+
+/* Chat minimize animation */
+.chat-area.minimized .chat-messages,
+.chat-area.minimized .chat-input-area {
+    display: none;
+}
+
+.chat-area.minimized {
+    height: auto;
+}
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+}
+
+.toast {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border: 1px solid #ffd700;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: slideIn 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
+}
+
+.toast.success {
+    border-color: #4CAF50;
+}
+
+.toast.error {
+    border-color: #f44336;
+}
+
+.toast-icon {
+    font-size: 1.2em;
+}
+
+.toast-message {
+    font-weight: 500;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
