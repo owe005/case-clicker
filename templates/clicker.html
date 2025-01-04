@@ -249,6 +249,9 @@ let clicksToCombo = 20; // Default value
 let comboClickCount = 0; // Track clicks for combo
 let chestTimeout;
 let chestInterval;
+let pendingClicks = 0;
+let isProcessingClick = false;
+let lastProgress = 0;
 
 // Add the createFloatingMoney function
 function createFloatingMoney(amount, x, y) {
@@ -660,69 +663,105 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Case clicker functionality
 document.getElementById('case-clicker').addEventListener('click', async (event) => {
-    try {
-        const progressElement = document.querySelector('.case-progress-fill');
-        const currentProgress = parseFloat(progressElement.style.width) || 0;
+    const progressElement = document.querySelector('.case-progress-fill');
+    const progressText = document.querySelector('.case-progress-text');
+    const progressPerClick = parseFloat(document.getElementById('progress-per-click').textContent);
+    
+    // Show visual feedback immediately
+    const rect = event.target.getBoundingClientRect();
+    const floatingText = document.createElement('div');
+    floatingText.className = 'floating-money';
+    floatingText.textContent = `+${progressPerClick}%`;
+    floatingText.style.left = `${rect.left + rect.width/2}px`;
+    floatingText.style.top = `${rect.top + rect.height/2}px`;
+    document.body.appendChild(floatingText);
+    setTimeout(() => floatingText.remove(), 1000);
+
+    // Increment pending clicks
+    pendingClicks++;
+
+    // If already processing, don't start another request
+    if (isProcessingClick) {
+        return;
+    }
+
+    // Process clicks until none are pending
+    async function processClicks() {
+        isProcessingClick = true;
         
-        const response = await fetch('/case_click', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                current_progress: currentProgress
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.error) {
-            console.error('Error:', data.error);
-            return;
+        while (pendingClicks > 0) {
+            try {
+                const response = await fetch('/case_click', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        current_progress: lastProgress
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    break;
+                }
+
+                // Update last known progress
+                lastProgress = data.progress;
+                
+                // Update progress display
+                progressElement.style.width = `${data.progress}%`;
+                progressText.textContent = `${Math.floor(data.progress)}%`;
+                
+                // Update progress per click display if it changed
+                const progressPerClickDisplay = document.getElementById('progress-per-click');
+                if (progressPerClickDisplay) {
+                    progressPerClickDisplay.textContent = data.progress_per_click;
+                }
+                
+                // Show case showcase if earned
+                if (data.earned_case) {
+                    const showcase = document.getElementById('case-showcase');
+                    const caseImage = showcase.querySelector('.case-image');
+                    const caseName = showcase.querySelector('.case-name');
+                    const casePrice = showcase.querySelector('.case-price');
+                    
+                    caseImage.style.backgroundImage = `url('/static/media/cases/${data.earned_case.image}')`;
+                    caseName.textContent = data.earned_case.name;
+                    casePrice.textContent = `$${data.earned_case.price.toFixed(2)}`;
+                    
+                    showcase.classList.remove('hidden');
+                    
+                    // Reset progress and pending clicks
+                    progressElement.style.width = '0%';
+                    progressText.textContent = '0%';
+                    lastProgress = 0;
+                    pendingClicks = 0;
+                    break;
+                }
+                
+                // Decrement processed click
+                pendingClicks--;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                break;
+            }
         }
         
-        // Update progress bar
-        const progressFill = document.querySelector('.case-progress-fill');
-        const progressText = document.querySelector('.case-progress-text');
-        const progressPerClickDisplay = document.getElementById('progress-per-click');
+        isProcessingClick = false;
         
-        // Update the progress display
-        progressFill.style.width = `${data.progress}%`;
-        progressText.textContent = `${Math.floor(data.progress)}%`;
-        
-        // Update the progress per click display
-        if (progressPerClickDisplay) {
-            progressPerClickDisplay.textContent = data.progress_per_click;
+        // If there are still pending clicks, start processing again
+        if (pendingClicks > 0) {
+            processClicks();
         }
-        
-        // Create floating progress text
-        const rect = event.target.getBoundingClientRect();
-        const floatingText = document.createElement('div');
-        floatingText.className = 'floating-money';
-        floatingText.textContent = `+${data.progress_per_click}%`;
-        floatingText.style.left = `${rect.left + rect.width/2}px`;
-        floatingText.style.top = `${rect.top + rect.height/2}px`;
-        document.body.appendChild(floatingText);
-        
-        // Remove floating text after animation
-        setTimeout(() => floatingText.remove(), 1000);
-        
-        // Show case showcase if earned
-        if (data.earned_case) {
-            const showcase = document.getElementById('case-showcase');
-            const caseImage = showcase.querySelector('.case-image');
-            const caseName = showcase.querySelector('.case-name');
-            const casePrice = showcase.querySelector('.case-price');
-            
-            caseImage.style.backgroundImage = `url('/static/media/cases/${data.earned_case.image}')`;
-            caseName.textContent = data.earned_case.name;
-            casePrice.textContent = `$${data.earned_case.price.toFixed(2)}`;
-            
-            showcase.classList.remove('hidden');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
+    }
+
+    // Start processing if not already running
+    if (!isProcessingClick) {
+        processClicks();
     }
 });
 

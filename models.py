@@ -53,7 +53,7 @@ class Upgrades:
 
 @dataclass
 class User:
-    balance: float = 1000.0
+    balance: float = 100.0
     inventory: List[Union[Skin, dict]] = None
     exp: float = 0.0
     rank: int = 0

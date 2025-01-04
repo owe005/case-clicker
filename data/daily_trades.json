@@ -515,6 +515,87 @@
         }
       ],
       "type": "sell"
+    },
+    {
+      "botAvatar": "bot1.png",
+      "botName": "_Astrid47",
+      "offering": [
+        {
+          "case_file": "weapon_case_2",
+          "case_type": "csgo2",
+          "name": "Urban Masked",
+          "price": 471.99,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "M9 Bayonet",
+          "wear": "BS"
+        },
+        {
+          "case_file": "winter_offensive_case",
+          "case_type": "winter_offensive",
+          "name": "Blue Steel",
+          "price": 893.79,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "M9 Bayonet",
+          "wear": "FN"
+        },
+        {
+          "case_file": "esports_2013_winter",
+          "case_type": "esports_winter",
+          "name": "Stained",
+          "price": 250.3,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Bayonet",
+          "wear": "MW"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 1950.9072249608062,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
+    },
+    {
+      "botAvatar": "bot6.png",
+      "botName": "Nova-Lyn",
+      "offering": [
+        {
+          "case_file": "esports_2013_winter",
+          "case_type": "esports_winter",
+          "name": "Crimson Web",
+          "price": 270.28,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Bayonet",
+          "wear": "FT"
+        },
+        {
+          "case_file": "weapon_case_1",
+          "case_type": "csgo",
+          "name": "Slaughter",
+          "price": 444,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Bayonet",
+          "wear": "MW"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 868.4723789735566,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
     }
   ]
 }

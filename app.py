@@ -154,7 +154,7 @@ def create_user_from_dict(data: dict) -> User:
     )
     
     user = User(
-        balance=data.get('balance', 1000.0),
+        balance=data.get('balance', 100.0),
         exp=data.get('exp', 0),
         rank=data.get('rank', 0),
         upgrades=upgrades
@@ -407,48 +407,29 @@ def inventory():
     user_data = load_user_data()
     inventory_items = user_data.get('inventory', [])
     
-    # Create a dictionary to store already loaded prices to avoid duplicate lookups
-    price_cache = {}
-    
-    # Update prices for all non-case items
+    # Only update prices for items that don't have a base_price set
+    # (this preserves prices from upgrade game)
     for item in inventory_items:
         if not item.get('is_case'):
-            # Handle both float and float_value, standardizing to float_value
+            # Ensure float_value exists
             if 'float_value' not in item:
-                item['float_value'] = item.get('float') or generate_float_for_wear(item.get('wear', 'FT'))
-                # Remove old float key if it exists
+                item['float_value'] = item.get('float', generate_float_for_wear(item['wear']))
                 if 'float' in item:
                     del item['float']
             
-            # Create a cache key using weapon, name, wear, and case type
-            cache_key = (
-                item['weapon'],
-                item['name'],
-                item.get('wear'),
-                item['case_type'],
-                item['float_value']  # Add float_value to cache key
-            )
-            
-            # Check if we already loaded this price
-            if cache_key in price_cache:
-                item['price'] = price_cache[cache_key]
-            else:
-                # Load price and cache it
-                price = load_skin_price(
+            if 'base_price' not in item:
+                # Get the base price and adjust it
+                base_price = load_skin_price(
                     f"{item['weapon']} | {item['name']}", 
                     item['case_type'],
-                    item.get('wear'),
-                    item['float_value']  # Pass float_value to price loader
+                    item['wear'],
+                    item['float_value'],
+                    item.get('stattrak', False)  # Pass StatTrak status
                 )
-                price_cache[cache_key] = price
-                item['price'] = price
+                item['base_price'] = base_price
+                item['price'] = adjust_price_by_float(base_price, item['wear'], item['float_value'])
     
-    # Sort items so newest appears first
-    inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
-                           reverse=True)
-    
-    # Save the updated inventory with standardized float values and prices
+    # Save any price updates
     user_data['inventory'] = inventory_items
     save_user_data(user_data)
     
@@ -630,7 +611,7 @@ def open_case(case_type):
 @app.route('/reset_session')
 def reset_session():
     user_data = {
-        'balance': 1000.0,
+        'balance': 100.0,
         'inventory': [],
         'exp': 0,
         'rank': 0,
@@ -678,13 +659,61 @@ def sell_item(item_index=None):
         user_data = load_user_data()
         inventory = user_data['inventory']
         
-        # Get only non-case items and maintain their original order
-        skin_items = [item for item in inventory if not item.get('is_case')]
+        # Get only visible non-case items in display order
+        visible_items = []
+        visible_indices = []
         
-        if item_index is None or item_index >= len(skin_items):
+        # First, group identical items to match frontend display
+        item_groups = {}
+        for i, item in enumerate(inventory):
+            if item.get('is_case'):
+                continue
+                
+            # Create a unique key for each distinct skin
+            key = (
+                item['weapon'],
+                item['name'],
+                item.get('wear'),
+                item.get('stattrak', False),
+                item.get('case_type')
+            )
+            
+            if key not in item_groups:
+                item_groups[key] = {
+                    'items': [item],
+                    'indices': [i],
+                    'timestamp': item.get('timestamp', 0)
+                }
+            else:
+                item_groups[key]['items'].append(item)
+                item_groups[key]['indices'].append(i)
+                item_groups[key]['timestamp'] = max(
+                    item_groups[key]['timestamp'],
+                    item.get('timestamp', 0)
+                )
+        
+        # Convert groups to sorted list matching frontend display
+        sorted_groups = sorted(
+            item_groups.values(),
+            key=lambda x: x['timestamp'],
+            reverse=True
+        )
+        
+        # Flatten groups into visible items list
+        for group in sorted_groups:
+            visible_items.extend(group['items'])
+            visible_indices.extend(group['indices'])
+        
+        if item_index is None or item_index >= len(visible_items):
             return jsonify({'error': 'Item not found'})
         
-        item_to_sell = skin_items[item_index]
+        # Get the actual inventory index using our mapping
+        actual_index = visible_indices[item_index]
+        item_to_sell = inventory[actual_index]
+        
+        print(f"Selling item at visual index {item_index}, actual index {actual_index}")
+        print(f"Item details: {item_to_sell}")
+        
         if quantity > item_to_sell.get('count', 1):
             return jsonify({'error': 'Invalid quantity'})
         
@@ -694,34 +723,20 @@ def sell_item(item_index=None):
         # Store initial rank for level up check
         initial_rank = user_data.get('rank', 0)
         
-        # Find and remove the items from the original inventory
-        remaining_inventory = []
-        items_to_remove = quantity
-        found_count = 0
+        # Remove the item from the actual inventory
+        inventory.pop(actual_index)
         
-        for item in inventory:
-            if not item.get('is_case'):
-                if (items_to_remove > 0 and
-                    item['weapon'] == item_to_sell['weapon'] and
-                    item['name'] == item_to_sell['name'] and
-                    item['wear'] == item_to_sell['wear'] and
-                    item['stattrak'] == item_to_sell['stattrak'] and
-                    found_count == item_index):  # Add this condition
-                    items_to_remove -= 1
-                    found_count += 1
-                    continue
-                found_count += 1
-            remaining_inventory.append(item)
-        
-        # Update user's balance and inventory
+        # Update user's balance
         user_data['balance'] = float(user_data['balance']) + sale_price
-        user_data['inventory'] = remaining_inventory
         
         # Store initial achievements state
         initial_achievements = set(user_data['achievements']['completed'])
         
         # Update achievements with the earned amount
         update_earnings_achievements(user_data, sale_price)
+        
+        # Save updated user data
+        save_user_data(user_data)
         
         # Check if any new achievements were completed
         new_achievements = set(user_data['achievements']['completed']) - initial_achievements
@@ -760,9 +775,6 @@ def sell_item(item_index=None):
                 }[level]
             }
         
-        # Save updated user data
-        save_user_data(user_data)
-        
         return jsonify({
             'success': True,
             'balance': user_data['balance'],
@@ -777,6 +789,7 @@ def sell_item(item_index=None):
         
     except Exception as e:
         print(f"Error in sell_item: {e}")
+        traceback.print_exc()
         return jsonify({'error': 'Failed to sell item'})
 
 @app.route('/sell/last', methods=['POST'])
@@ -1216,13 +1229,14 @@ def get_inventory():
                 if 'float' in item:
                     del item['float']
             
-            # Create a cache key using weapon, name, wear, and case type
+            # Create a cache key using weapon, name, wear, case type, and stattrak status
             cache_key = (
                 item['weapon'],
                 item['name'],
                 item.get('wear'),
                 item['case_type'],
-                item['float_value']  # Add float_value to cache key
+                item['float_value'],
+                item.get('stattrak', False)  # Add stattrak to cache key
             )
             
             # Check if we already loaded this price
@@ -1234,7 +1248,8 @@ def get_inventory():
                     f"{item['weapon']} | {item['name']}", 
                     item['case_type'],
                     item.get('wear'),
-                    item['float_value']  # Pass float_value to price loader
+                    item['float_value'],
+                    item.get('stattrak', False)  # Pass stattrak status
                 )
                 price_cache[cache_key] = price
                 item['price'] = price
@@ -2072,11 +2087,55 @@ def sell_all():
         # Calculate total value
         total_value = sum(float(item.get('price', 0)) for item in skins)
         
+        # Store initial rank and achievements state
+        initial_rank = user_data.get('rank', 0)
+        initial_achievements = set(user_data['achievements']['completed'])
+        
         # Update user's balance
         user_data['balance'] = float(user_data['balance']) + total_value
         
         # Keep only cases in inventory
         user_data['inventory'] = cases
+        
+        # Update achievements with the total earned amount
+        update_earnings_achievements(user_data, total_value)
+        
+        # Check if any new achievements were completed
+        new_achievements = set(user_data['achievements']['completed']) - initial_achievements
+        completed_achievement = None
+        if new_achievements:
+            achievement_id = list(new_achievements)[0]
+            level = int(achievement_id.split('_')[1])
+            completed_achievement = {
+                'title': {
+                    1: 'Starting Out',
+                    2: 'Making Moves',
+                    3: 'Known Mogul',
+                    4: 'Expert Trader',
+                    5: 'Millionaire'
+                }[level],
+                'icon': {
+                    1: '💵',
+                    2: '💰',
+                    3: '🏦',
+                    4: '💎',
+                    5: '🏆'
+                }[level],
+                'reward': {
+                    1: 100,
+                    2: 1000,
+                    3: 5000,
+                    4: 10000,
+                    5: 100000
+                }[level],
+                'exp_reward': {
+                    1: 1000,
+                    2: 5000,
+                    3: 10000,
+                    4: 20000,
+                    5: 50000
+                }[level]
+            }
         
         # Save updated user data
         save_user_data(user_data)
@@ -2085,7 +2144,13 @@ def sell_all():
             'success': True,
             'balance': user_data['balance'],
             'sold_price': total_value,
-            'remaining_cases': cases  # Add this to help client update case display
+            'remaining_cases': cases,
+            'exp': user_data['exp'],
+            'rank': user_data['rank'],
+            'rankName': RANKS[user_data['rank']],
+            'nextRankExp': RANK_EXP[user_data['rank']] if user_data['rank'] < len(RANK_EXP) else None,
+            'levelUp': user_data['rank'] > initial_rank,
+            'achievement': completed_achievement
         })
         
     except Exception as e:
@@ -2612,10 +2677,10 @@ def find_best_skin_combination(available_skins, target_value, max_skins=10):
 def play_upgrade():
     try:
         data = request.get_json()
-        selected_items = data.get('items', [])
+        items = data.get('items', [])
         multiplier = float(data.get('multiplier', 2))
         
-        if not selected_items:
+        if not items:
             return jsonify({'error': 'No items selected'})
             
         # Load user data
@@ -2623,7 +2688,7 @@ def play_upgrade():
         inventory = user_data.get('inventory', [])
         
         # Calculate total value of selected items
-        total_value = sum(float(item['price']) for item in selected_items)
+        total_value = sum(float(item['price']) for item in items)
         target_value = total_value * multiplier
         
         # Success probabilities for each multiplier
@@ -2648,18 +2713,56 @@ def play_upgrade():
                         case_data = json.load(f)
                         for grade, skins in case_data['skins'].items():
                             for skin in skins:
-                                for wear, price in skin['prices'].items():
+                                # First get the base wear prices
+                                for wear, base_price in skin['prices'].items():
                                     if wear != 'NO' and not wear.startswith('ST_'):
+                                        float_value = generate_float_for_wear(wear)
+                                        
+                                        # Handle normal version
+                                        normal_price = float(base_price)
+                                        adjusted_normal_price = adjust_price_by_float(normal_price, wear, float_value)
+                                        
+                                        # Add normal version
                                         available_skins.append({
                                             'weapon': skin['weapon'],
                                             'name': skin['name'],
                                             'wear': wear,
-                                            'price': float(price),
+                                            'price': adjusted_normal_price,
+                                            'base_price': normal_price,
                                             'rarity': grade.upper(),
                                             'case_type': case_type,
                                             'stattrak': False,
-                                            'timestamp': time.time()
+                                            'timestamp': time.time(),
+                                            'float_value': float_value
                                         })
+                                        
+                                        # Handle StatTrak version if available
+                                        st_key = f'ST_{wear}'
+                                        if st_key in skin['prices']:
+                                            st_base_price = float(skin['prices'][st_key])
+                                            # Use StatTrak base price for adjustment
+                                            adjusted_st_price = adjust_price_by_float(st_base_price, wear, float_value)
+                                            
+                                            # For debugging high-value items
+                                            if st_base_price > 1000:
+                                                print(f"\nProcessing high-value StatTrak item:")
+                                                print(f"Item: {skin['weapon']} | {skin['name']} ({wear})")
+                                                print(f"StatTrak base price: ${st_base_price}")
+                                                print(f"Float value: {float_value}")
+                                                print(f"Adjusted price: ${adjusted_st_price}")
+                                            
+                                            available_skins.append({
+                                                'weapon': skin['weapon'],
+                                                'name': skin['name'],
+                                                'wear': wear,
+                                                'price': adjusted_st_price,
+                                                'base_price': st_base_price,  # Store StatTrak base price
+                                                'rarity': grade.upper(),
+                                                'case_type': case_type,
+                                                'stattrak': True,
+                                                'timestamp': time.time(),
+                                                'float_value': float_value
+                                            })
                 except Exception as e:
                     print(f"Error loading case {case_type}: {e}")
                     continue
@@ -2669,7 +2772,7 @@ def play_upgrade():
             
             # Remove selected items from inventory
             selected_indices = []
-            for selected_item in selected_items:
+            for selected_item in items:
                 for i, inv_item in enumerate(inventory):
                     if (i not in selected_indices and
                         inv_item.get('weapon') == selected_item['weapon'] and
@@ -2683,7 +2786,7 @@ def play_upgrade():
             new_inventory = [item for i, item in enumerate(inventory) 
                            if i not in selected_indices]
             
-            # Add won skins to inventory
+            # Add won skins to inventory with their adjusted prices
             new_inventory.extend(won_skins)
             
             # Update user data
@@ -2705,7 +2808,7 @@ def play_upgrade():
         else:
             # Remove selected items from inventory on loss
             selected_indices = []
-            for selected_item in selected_items:
+            for selected_item in items:
                 for i, inv_item in enumerate(inventory):
                     if (i not in selected_indices and
                         inv_item.get('weapon') == selected_item['weapon'] and
@@ -2830,36 +2933,46 @@ def case_click():
         print(f"Error in case_click: {e}")
         return jsonify({'error': str(e)})
 
-def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float = None) -> float:
-    """Load skin price from case file with float-based price adjustment"""
+def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float, is_stattrak: bool = False) -> float:
+    """Load and adjust price for a skin based on case data and float value"""
     try:
+        # Get case file name
         file_name = CASE_FILE_MAPPING.get(case_type)
         if not file_name:
             return 0
             
+        # Load case data
         with open(f'cases/{file_name}.json', 'r') as f:
             case_data = json.load(f)
             
-        # Split skin name into weapon and skin
+        # Find the skin in case data
         weapon, name = skin_name.split(' | ')
-        
-        # Find the skin in the case data
         for grade, skins in case_data['skins'].items():
             for skin in skins:
                 if skin['weapon'] == weapon and skin['name'] == name:
-                    prices = skin['prices']
-                    wear_key = 'NO' if 'NO' in prices else wear
-                    base_price = float(prices.get(wear_key, 0))
+                    # Get the correct price key based on StatTrak
+                    price_key = f'ST_{wear}' if is_stattrak else wear
+                    if price_key not in skin['prices']:
+                        return 0
+                        
+                    # Get base price
+                    base_price = float(skin['prices'][price_key])
                     
-                    # If we have a float value, adjust the price
-                    if float_value is not None:
-                        return adjust_price_by_float(base_price, wear, float_value)
-                    return base_price
+                    # Adjust price based on float value
+                    adjusted_price = adjust_price_by_float(base_price, wear, float_value)
+                    
+                    # If it's StatTrak, we need to ensure we're using the StatTrak price as base
+                    if is_stattrak:
+                        # Calculate the adjustment multiplier from the base adjustment
+                        adjustment_multiplier = adjusted_price / base_price
+                        # Apply the same multiplier to the StatTrak price
+                        return base_price * adjustment_multiplier
+                    
+                    return adjusted_price
                     
         return 0
-        
     except Exception as e:
-        print(f"Error loading price for {skin_name}: {e}")
+        print(f"Error loading skin price: {e}")
         return 0
 
 @app.route('/trading')
@@ -4100,39 +4213,95 @@ def generate_float_for_wear(wear: str) -> float:
 # Add this helper function near the top with other helpers
 def adjust_price_by_float(price: float, wear: str, float_value: float) -> float:
     """Adjust item price based on float value"""
-    if wear == 'FN' and float_value < 0.07:
-        # For Factory New, increase price for very low floats
+
+    if wear == 'FN':
         if float_value < 0.001:
-            # Ultra rare float (0.000x)
-            multiplier = 6.0  # Up to 500% increase
-        elif float_value < 0.01:
-            # Very low float (0.00x)
-            multiplier = 2.5  # 150% increase
-        elif float_value < 0.03:
-            # Low float (0.0x)
-            multiplier = 1.5  # 50% increase
+            return price * 1.5
+        elif float_value < 0.006:
+            return price * 1.2
+        elif float_value < 0.015:
+            return price * 1.1
         else:
-            multiplier = 1.0
+            return price
             
-        return price * multiplier
-        
-    elif wear == 'BS' and float_value > 0.45:
-        # For Battle-Scarred, decrease price for very high floats
-        if float_value > 0.95:
-            # Ultra high float (0.99x)
-            multiplier = 0.85  # 15% decrease
+    elif wear == 'BS':
+        if float_value > 0.97:
+            return price * 0.5
+        elif float_value > 0.93:
+            return price * 0.7
         elif float_value > 0.90:
-            # Very high float (0.9x)
-            multiplier = 0.90  # 10% decrease
-        elif float_value > 0.85:
-            # High float (0.8x)
-            multiplier = 0.95  # 5% decrease
+            return price * 0.85
         else:
-            multiplier = 1.0
-            
-        return price * multiplier
-        
+            return price
+    
     return price
+
+@app.route('/sell/item', methods=['POST'])
+def sell_specific_item():
+    try:
+        data = request.get_json() or {}
+        item_data = data.get('item')
+        quantity = int(data.get('quantity', 1))
+        
+        if not item_data:
+            return jsonify({'error': 'No item data provided'})
+            
+        user_data = load_user_data()
+        inventory = user_data['inventory']
+        
+        # Find the specific item in inventory
+        item_index = None
+        for i, inv_item in enumerate(inventory):
+            if (not inv_item.get('is_case') and
+                inv_item['weapon'] == item_data['weapon'] and
+                inv_item['name'] == item_data['name'] and
+                inv_item['wear'] == item_data['wear'] and
+                inv_item.get('stattrak', False) == item_data['stattrak'] and
+                abs(float(inv_item['float_value']) - float(item_data['float_value'])) < 0.0001):  # Compare float values with tolerance
+                item_index = i
+                break
+        
+        if item_index is None:
+            return jsonify({'error': 'Item not found in inventory'})
+            
+        item_to_sell = inventory[item_index]
+        
+        # Calculate sale value
+        sale_price = float(item_to_sell.get('price', 0)) * quantity
+        
+        # Store initial rank for level up check
+        initial_rank = user_data.get('rank', 0)
+        
+        # Remove the item from inventory
+        inventory.pop(item_index)
+        
+        # Update user's balance
+        user_data['balance'] = float(user_data['balance']) + sale_price
+        
+        # Update achievements
+        initial_achievements = set(user_data['achievements']['completed'])
+        update_earnings_achievements(user_data, sale_price)
+        
+        # Save updated user data
+        save_user_data(user_data)
+        
+        # ... rest of the function (achievement checking, etc.) remains the same ...
+        
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance'],
+            'exp': user_data['exp'],
+            'rank': user_data['rank'],
+            'rankName': RANKS[user_data['rank']],
+            'nextRankExp': RANK_EXP[user_data['rank']] if user_data['rank'] < len(RANK_EXP) else None,
+            'levelUp': user_data['rank'] > initial_rank,
+            'sold_price': sale_price
+        })
+        
+    except Exception as e:
+        print(f"Error in sell_specific_item: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to sell item'})
 
 if __name__ == '__main__':
     app.run(debug=True)

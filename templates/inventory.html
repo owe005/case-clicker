@@ -22,58 +22,121 @@
         <button id="sell-all-btn" class="sell-all-btn">Sell All: $0.00</button>
     </div>
     <div id="inventory-items" class="items-grid">
-        {% set skin_count = namespace(value=0) %}
+        {% set stacks = {} %}
         {% for item in inventory %}
-        {% if not item.is_case %}
-        <div class="skin rarity-{{ item.rarity }}" data-index="{{ skin_count.value }}">
-            <div class="skin-image">
-                {% if not item.weapon.startswith('★') %}
-                    {% set weapon_name = item.weapon.lower()
-                        .replace('-', '')
-                        .replace(' ', '')
-                        .replace('553', '553')
-                        .replace('galil ar', 'galil')
-                        .replace('galilar', 'galil') %}
-                    {% set skin_name = item.name.lower().replace(' ', '_') %}
-                    {% set case_mapping = {
-                        'csgo': 'weapon_case_1',
-                        'esports': 'esports_2013',
-                        'bravo': 'operation_bravo_case',
-                        'csgo2': 'weapon_case_2', 
-                        'esports_winter': 'esports_2013_winter',
-                        'winter_offensive': 'winter_offensive_case',
-                        'csgo3': 'weapon_case_3',
-                        'phoenix': 'operation_phoenix_case',
-                        'huntsman': 'huntsman_case',
-                        'breakout': 'operation_breakout_case',
-                        'esports_summer': 'esports_2014_summer',
-                        'vanguard': 'operation_vanguard_case',
-                        'chroma': 'chroma_case',
-                        'chroma_2': 'chroma_2_case',
-                        'falchion': 'falchion_case'
-                    } %}
-                    {% set case_path = case_mapping[item.case_type] if item.case_type in case_mapping else 'weapon_case_1' %}
-                    <div class="skin-image-wrapper">
-                        <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
-                             alt="{{ item.weapon }} | {{ item.name }}">
-                        {% if item.count and item.count > 1 %}
-                        <span class="skin-count">x{{ item.count }}</span>
+            {% if not item.is_case %}
+                {% set stack_key = item.weapon + '|' + item.name + '|' + item.wear + '|' + item.stattrak|string %}
+                {% if stack_key not in stacks %}
+                    {% set _ = stacks.update({stack_key: {'items': [], 'count': 0}}) %}
+                {% endif %}
+                {% set _ = stacks[stack_key]['items'].append(item) %}
+                {% set _ = stacks[stack_key].update({'count': stacks[stack_key]['count'] + 1}) %}
+            {% endif %}
+        {% endfor %}
+
+        {% for stack_key, stack in stacks.items() %}
+            {% set first_item = stack['items'][0] %}
+            {% if stack['count'] > 1 %}
+                <!-- Stacked items -->
+                <div class="skin rarity-{{ first_item.rarity }} skin-stack" data-stack-key="{{ stack_key }}">
+                    <div class="skin-image">
+                        {% if not first_item.weapon.startswith('★') %}
+                            {% set weapon_name = first_item.weapon.lower()
+                                .replace('-', '')
+                                .replace(' ', '')
+                                .replace('553', '553')
+                                .replace('galil ar', 'galil')
+                                .replace('galilar', 'galil') %}
+                            {% set skin_name = first_item.name.lower().replace(' ', '_') %}
+                            {% set case_mapping = {
+                                'csgo': 'weapon_case_1',
+                                'esports': 'esports_2013',
+                                'bravo': 'operation_bravo_case',
+                                'csgo2': 'weapon_case_2', 
+                                'esports_winter': 'esports_2013_winter',
+                                'winter_offensive': 'winter_offensive_case',
+                                'csgo3': 'weapon_case_3',
+                                'phoenix': 'operation_phoenix_case',
+                                'huntsman': 'huntsman_case',
+                                'breakout': 'operation_breakout_case',
+                                'esports_summer': 'esports_2014_summer',
+                                'vanguard': 'operation_vanguard_case',
+                                'chroma': 'chroma_case',
+                                'chroma_2': 'chroma_2_case',
+                                'falchion': 'falchion_case'
+                            } %}
+                            {% set case_path = case_mapping[first_item.case_type] if first_item.case_type in case_mapping else 'weapon_case_1' %}
+                            <div class="skin-image-wrapper">
+                                <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
+                                     alt="{{ first_item.weapon }} | {{ first_item.name }}">
+                                <span class="skin-count">x{{ stack['count'] }}</span>
+                            </div>
                         {% endif %}
                     </div>
-                {% endif %}
-            </div>
-            <div class="item-name {{ 'stattrak' if item.stattrak else '' }}">
-                {{ 'StatTrak™ ' if item.stattrak }}{{ item.weapon }}
-            </div>
-            <div class="item-skin">
-                {{ item.name }} ({{ item.wear }})
-            </div>
-            <div class="item-float">Float: {{ "%.8f"|format(item.float_value|float) }}</div>
-            <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
-            <button class="btn sell-btn" data-sell-index="{{ skin_count.value }}" data-count="{{ item.count }}">Sell</button>
-        </div>
-        {% set skin_count.value = skin_count.value + 1 %}
-        {% endif %}
+                    <div class="item-name {{ 'stattrak' if first_item.stattrak else '' }}">
+                        {{ 'StatTrak™ ' if first_item.stattrak }}{{ first_item.weapon }}
+                    </div>
+                    <div class="item-skin">
+                        {{ first_item.name }} ({{ first_item.wear }})
+                    </div>
+                    <div class="stack-expand">Click to expand</div>
+                    <div class="stacked-items hidden">
+                        {% for item in stack['items'] %}
+                            <div class="skin-item" data-index="{{ loop.index0 }}" data-float-value="{{ item.float_value }}">
+                                <div class="item-float">Float: {{ "%.8f"|format(item.float_value|float) }}</div>
+                                <div class="item-price">${{ "{:.2f}".format(item.price) }}</div>
+                                <button class="btn sell-btn" data-sell-index="{{ loop.index0 }}">Sell</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <!-- Single items -->
+                <div class="skin rarity-{{ first_item.rarity }}" data-index="0" data-float-value="{{ first_item.float_value }}">
+                    <div class="skin-image">
+                        {% if not first_item.weapon.startswith('★') %}
+                            {% set weapon_name = first_item.weapon.lower()
+                                .replace('-', '')
+                                .replace(' ', '')
+                                .replace('553', '553')
+                                .replace('galil ar', 'galil')
+                                .replace('galilar', 'galil') %}
+                            {% set skin_name = first_item.name.lower().replace(' ', '_') %}
+                            {% set case_mapping = {
+                                'csgo': 'weapon_case_1',
+                                'esports': 'esports_2013',
+                                'bravo': 'operation_bravo_case',
+                                'csgo2': 'weapon_case_2',
+                                'esports_winter': 'esports_2013_winter',
+                                'winter_offensive': 'winter_offensive_case',
+                                'csgo3': 'weapon_case_3',
+                                'phoenix': 'operation_phoenix_case',
+                                'huntsman': 'huntsman_case',
+                                'breakout': 'operation_breakout_case',
+                                'esports_summer': 'esports_2014_summer',
+                                'vanguard': 'operation_vanguard_case',
+                                'chroma': 'chroma_case',
+                                'chroma_2': 'chroma_2_case',
+                                'falchion': 'falchion_case'
+                            } %}
+                            {% set case_path = case_mapping[first_item.case_type] if first_item.case_type in case_mapping else 'weapon_case_1' %}
+                            <div class="skin-image-wrapper">
+                                <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
+                                     alt="{{ first_item.weapon }} | {{ first_item.name }}">
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="item-name {{ 'stattrak' if first_item.stattrak else '' }}">
+                        {{ 'StatTrak™ ' if first_item.stattrak }}{{ first_item.weapon }}
+                    </div>
+                    <div class="item-skin">
+                        {{ first_item.name }} ({{ first_item.wear }})
+                    </div>
+                    <div class="item-float">Float: {{ "%.8f"|format(first_item.float_value|float) }}</div>
+                    <div class="item-price">${{ "{:.2f}".format(first_item.price) }}</div>
+                    <button class="btn sell-btn" data-sell-index="0">Sell</button>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>
@@ -444,35 +507,84 @@
 }
 
 /* Update float color based on value ranges */
-.skin[data-float-value^="0.00"] .item-float {
-    color: #eb4b4b; /* Red for very low float */
+/* Factory New Colors */
+/* Ultra rare floats (red) */
+.skin[data-float-value^="3."] .item-float,
+.skin[data-float-value^="2."] .item-float,
+.skin[data-float-value^="1."] .item-float,
+.skin[data-float-value^="0.0000"] .item-float {
+    color: #eb4b4b; /* Red for ultra rare float */
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(235, 75, 75, 0.5);
+    background: linear-gradient(45deg, 
+        rgba(235, 75, 75, 0.1),
+        rgba(235, 75, 75, 0.2),
+        rgba(235, 75, 75, 0.1)
+    );
+    border: 1px solid rgba(235, 75, 75, 0.3);
+    animation: ultraRareShine 2s ease-in-out infinite;
+    padding: 2px 8px;
 }
 
+/* Add animation for ultra rare float shine effect */
+@keyframes ultraRareShine {
+    0% {
+        box-shadow: 0 0 5px rgba(235, 75, 75, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(235, 75, 75, 0.4),
+                    0 0 20px rgba(235, 75, 75, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(235, 75, 75, 0.2);
+    }
+}
+
+/* Very low floats (pink) - but not ultra rare */
+.skin[data-float-value^="0.001"] .item-float,
+.skin[data-float-value^="0.002"] .item-float,
+.skin[data-float-value^="0.003"] .item-float,
+.skin[data-float-value^="0.004"] .item-float,
+.skin[data-float-value^="0.005"] .item-float,
+.skin[data-float-value^="0.006"] .item-float,
+.skin[data-float-value^="0.007"] .item-float,
+.skin[data-float-value^="0.008"] .item-float,
+.skin[data-float-value^="0.009"] .item-float {
+    color: #d32ce6; /* Pink for very low float */
+    font-weight: bold;
+}
+
+/* Low floats (purple) */
 .skin[data-float-value^="0.01"] .item-float,
 .skin[data-float-value^="0.02"] .item-float {
-    color: #d32ce6; /* Pink for low float */
+    color: #8847ff; /* Purple for low float */
 }
 
-.skin[data-float-value^="0.03"],
-.skin[data-float-value^="0.04"] .item-float {
-    color: #8847ff; /* Purple for good float */
-}
-
-.skin[data-float-value^="0.95"],
-.skin[data-float-value^="0.96"],
-.skin[data-float-value^="0.97"],
-.skin[data-float-value^="0.98"],
+/* Battle-Scarred Colors */
+.skin[data-float-value^="0.97"] .item-float,
+.skin[data-float-value^="0.98"] .item-float,
 .skin[data-float-value^="0.99"] .item-float {
-    color: #4b69ff; /* Blue for high float */
+    color: #eb4b4b; /* Red for ultra high float */
+    font-weight: bold;
 }
 
-/* Adjust skin card layout to accommodate float value */
-.skin {
-    padding-bottom: 8px; /* Add a bit more padding at bottom */
+.skin[data-float-value^="0.93"] .item-float,
+.skin[data-float-value^="0.94"] .item-float,
+.skin[data-float-value^="0.95"] .item-float,
+.skin[data-float-value^="0.96"] .item-float {
+    color: #d32ce6; /* Pink for very high float */
+    font-weight: bold;
 }
 
-.item-price {
-    margin-top: 4px; /* Add some space between float and price */
+.skin[data-float-value^="0.90"] .item-float,
+.skin[data-float-value^="0.91"] .item-float,
+.skin[data-float-value^="0.92"] .item-float {
+    color: #8847ff; /* Purple for high float */
+}
+
+/* Default color for all other floats */
+.item-float {
+    color: #888; /* Grey for normal float ranges */
 }
 
 /* Update the case opening overlay styles */
@@ -543,6 +655,74 @@
     transform: translateY(1px);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
+
+/* Add these styles for stacked items */
+.skin-stack {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.skin-stack:hover {
+    transform: translateY(-2px);
+}
+
+.stack-expand {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    margin-top: 4px;
+}
+
+.stacked-items {
+    display: none; /* Hide the container */
+}
+
+.stacked-items.hidden {
+    display: none;
+}
+
+.skin-stack {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.stack-collapsed {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.skin-stack:hover .stack-collapsed {
+    transform: translateY(-2px);
+}
+
+.skin-item {
+    padding: 4px;
+    margin: 4px 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.skin-item .sell-btn {
+    padding: 2px 8px;
+    font-size: 12px;
+}
+
+/* Ensure main grid accommodates unstacked items */
+#inventory-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
 </style>
 
 {% endblock %}
@@ -560,10 +740,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     
-    // If we're starting on the skins view, refresh it
-    if (initialView === 'skins' || !initialView) {
-        await refreshSkinsSection();
-    }
+    // Remove the automatic refresh on load
+    // if (initialView === 'skins' || !initialView) {
+    //     await refreshSkinsSection();
+    // }
+
+    // Just update the sell all button instead
+    updateSellAllButton();
 });
 
 // Add category switching functionality
@@ -587,109 +770,75 @@ document.querySelectorAll('.category-btn').forEach(button => {
         const section = document.getElementById(`${category}-section`);
         section.classList.remove('hidden');
         
-        // If switching to skins section, refresh it
-        if (category === 'skins') {
+        // Only refresh if explicitly switching to skins from another category
+        if (category === 'skins' && !section.classList.contains('active')) {
             await refreshSkinsSection();
         }
+        section.classList.add('active');
     });
 });
 
-// Add this function before refreshSkinsSection
+// Update the sellButtonHandler
 const sellButtonHandler = async function() {
     if (this.disabled) return;
     this.disabled = true;
 
-    const itemElement = this.closest('.skin');
-    if (!itemElement) {
+    // Get either the single skin or the skin-item parent
+    const skin = this.closest('.skin');
+    if (!skin) {
         console.error('Could not find parent skin element');
         this.disabled = false;
         return;
     }
     
-    const index = parseInt(this.dataset.sellIndex);
-    const count = parseInt(this.dataset.count) || 1;
+    // Get the item data
+    const itemData = {
+        weapon: skin.querySelector('.item-name').textContent.replace('StatTrak™ ', '').trim(),
+        name: skin.querySelector('.item-skin').textContent.split('(')[0].trim(),
+        wear: skin.querySelector('.item-skin').textContent.match(/\((.*?)\)/)[1],
+        stattrak: skin.querySelector('.item-name').classList.contains('stattrak'),
+        float_value: parseFloat(skin.dataset.floatValue)
+    };
     
-    // If there are multiple items, show a modal to select quantity
-    if (count > 1) {
-        const quantity = await showQuantityModal(count);
-        if (!quantity) {
-            this.disabled = false;
+    try {
+        const response = await fetch(`/sell/item`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                item: itemData,
+                quantity: 1
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            alert(data.error);
             return;
         }
         
-        // Add quantity to the request
-        try {
-            const response = await fetch(`/sell/${index}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ quantity: quantity })
-            });
-            
-            const data = await response.json();
-            
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-            
-            // Use the common handler for achievement/rank updates
-            handleAchievementComplete(data);
-            
-            // If all items were sold, remove the element
-            if (quantity >= count) {
-                itemElement.style.animation = 'fadeOut 0.3s';
-                setTimeout(() => {
-                    itemElement.remove();
-                    updateRemainingIndices();
-                }, 300);
-            } else {
-                // Update the count display
-                const countElement = itemElement.querySelector('.skin-count');
-                const newCount = count - quantity;
-                if (countElement) {
-                    countElement.textContent = `x${newCount}`;
-                }
-                this.dataset.count = newCount;
-            }
-            
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to sell items');
+        // Handle achievement/rank updates
+        handleAchievementComplete(data);
+        
+        // Update balance display
+        const balanceElement = document.querySelector('.balance');
+        if (balanceElement) {
+            balanceElement.textContent = `Balance: $${data.balance.toFixed(2)}`;
         }
-    } else {
-        // Original single-item sell logic
-        try {
-            const response = await fetch(`/sell/${index}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ quantity: 1 })
-            });
-            
-            const data = await response.json();
-            
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-            
-            // Use the common handler for achievement/rank updates
-            handleAchievementComplete(data);
-            
-            // Remove the sold item
-            itemElement.style.animation = 'fadeOut 0.3s';
-            setTimeout(() => {
-                itemElement.remove();
-                updateRemainingIndices();
-            }, 300);
-            
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to sell item');
-        }
+        
+        // Remove the sold item with animation
+        skin.style.animation = 'fadeOut 0.3s';
+        setTimeout(() => {
+            skin.remove();
+            updateRemainingIndices();
+            updateSellAllButton();
+        }, 300);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to sell item');
     }
     
     this.disabled = false;
@@ -702,11 +851,17 @@ document.querySelectorAll('.sell-btn').forEach(button => {
 
 // Add this helper function
 function updateRemainingIndices() {
-    document.querySelectorAll('.skin').forEach((skin, newIndex) => {
-        skin.dataset.index = newIndex;
-        const sellBtn = skin.querySelector('.sell-btn');
+    // Update indices for all visible items in the main grid
+    const inventoryGrid = document.getElementById('inventory-items');
+    const visibleItems = Array.from(inventoryGrid.children).filter(item => 
+        item.style.display !== 'none' && !item.classList.contains('hidden')
+    );
+    
+    visibleItems.forEach((item, index) => {
+        item.dataset.index = index;
+        const sellBtn = item.querySelector('.sell-btn');
         if (sellBtn) {
-            sellBtn.dataset.sellIndex = newIndex;
+            sellBtn.dataset.sellIndex = index;
         }
     });
 }
@@ -1518,73 +1673,54 @@ async function refreshSkinsSection() {
             return;
         }
         
+        // Store the expanded state of all stacks before refresh
+        const expandedStacks = new Set();
+        document.querySelectorAll('.skin-stack').forEach(stack => {
+            const stackedItems = stack.querySelector('.stacked-items');
+            if (stackedItems && !stackedItems.classList.contains('hidden')) {
+                expandedStacks.add(stack.dataset.stackKey);
+            }
+        });
+        
         // Clear current inventory
         inventoryItems.innerHTML = '';
         
         // Get only non-case items and maintain their original order
         const skinItems = data.inventory.filter(item => !item.is_case);
         
+        // Group items by stack key
+        const stacks = {};
+        skinItems.forEach(item => {
+            const stackKey = `${item.weapon}|${item.name}|${item.wear}|${item.stattrak}`;
+            if (!stacks[stackKey]) {
+                stacks[stackKey] = [];
+            }
+            stacks[stackKey].push(item);
+        });
+        
         // Create and append all items at once
         const fragment = document.createDocumentFragment();
         
-        skinItems.forEach((item, skinIndex) => {
-            const skinDiv = document.createElement('div');
-            skinDiv.className = `skin rarity-${item.rarity}`;
-            skinDiv.dataset.index = skinIndex;
-            skinDiv.dataset.rarity = item.rarity;
-            skinDiv.dataset.floatValue = item.float_value.toString();
-            
-            const weaponName = item.weapon.toLowerCase()
-                .replace('-', '')
-                .replace(' ', '')
-                .replace('553', '553')
-                .replace('galil ar', 'galil')
-                .replace('galilar', 'galil');
-            const skinName = item.name.toLowerCase().replace(/ /g, '_');
-            
-            const caseMapping = {
-                'csgo': 'weapon_case_1',
-                'esports': 'esports_2013',
-                'bravo': 'operation_bravo_case',
-                'csgo2': 'weapon_case_2',
-                'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case',
-                'csgo3': 'weapon_case_3',
-                'phoenix': 'operation_phoenix_case',
-                'huntsman': 'huntsman_case',
-                'breakout': 'operation_breakout_case',
-                'esports_summer': 'esports_2014_summer',
-                'vanguard': 'operation_vanguard_case',
-                'chroma': 'chroma_case',
-                'chroma_2': 'chroma_2_case',
-                'falchion': 'falchion_case'
-            };
-            const casePath = caseMapping[item.case_type] || 'weapon_case_1';
-            
-            skinDiv.innerHTML = `
-                <div class="skin-image">
-                    ${!item.weapon.startsWith('★') ? `
-                        <div class="skin-image-wrapper">
-                            <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
-                                 alt="${item.weapon} | ${item.name}">
-                            ${item.count && item.count > 1 ? `
-                                <span class="skin-count">x${item.count}</span>
-                            ` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
-                    ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
-                </div>
-                <div class="item-skin">
-                    ${item.name} (${item.wear})
-                </div>
-                <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
-                <div class="item-price">$${item.price.toFixed(2)}</div>
-                <button class="btn sell-btn" data-sell-index="${skinIndex}" data-count="${item.count || 1}">Sell</button>
-            `;
-            
-            fragment.appendChild(skinDiv);
+        Object.entries(stacks).forEach(([stackKey, items]) => {
+            if (items.length > 1) {
+                // Create stacked item
+                const stackDiv = createStackedItem(stackKey, items);
+                // Restore expanded state if it was expanded before
+                if (expandedStacks.has(stackKey)) {
+                    const stackedItems = stackDiv.querySelector('.stacked-items');
+                    if (stackedItems) {
+                        stackedItems.classList.remove('hidden');
+                        const expandText = stackDiv.querySelector('.stack-expand');
+                        if (expandText) {
+                            expandText.textContent = 'Click to collapse';
+                        }
+                    }
+                }
+                fragment.appendChild(stackDiv);
+            } else {
+                // Create single item
+                fragment.appendChild(createSingleItem(items[0]));
+            }
         });
         
         // Add all items to the DOM at once
@@ -1601,6 +1737,146 @@ async function refreshSkinsSection() {
     } catch (error) {
         console.error('Error refreshing skins section:', error);
     }
+}
+
+// Helper function to create a stacked item
+function createStackedItem(stackKey, items) {
+    const firstItem = items[0];
+    const div = document.createElement('div');
+    div.className = `skin rarity-${firstItem.rarity} skin-stack`;
+    div.dataset.stackKey = stackKey;
+    div.dataset.floatValue = firstItem.float_value;
+    
+    const weaponName = firstItem.weapon.toLowerCase()
+        .replace('-', '')
+        .replace(' ', '')
+        .replace('553', '553')
+        .replace('galil ar', 'galil')
+        .replace('galilar', 'galil');
+    const skinName = firstItem.name.toLowerCase().replace(/ /g, '_');
+    
+    const caseMapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo_case',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case',
+        'csgo3': 'weapon_case_3',
+        'phoenix': 'operation_phoenix_case',
+        'huntsman': 'huntsman_case',
+        'breakout': 'operation_breakout_case',
+        'esports_summer': 'esports_2014_summer',
+        'vanguard': 'operation_vanguard_case',
+        'chroma': 'chroma_case',
+        'chroma_2': 'chroma_2_case',
+        'falchion': 'falchion_case'
+    };
+    const casePath = caseMapping[firstItem.case_type] || 'weapon_case_1';
+    
+    // Create the collapsed view
+    div.innerHTML = `
+        <div class="stack-collapsed">
+            <div class="skin-image">
+                ${!firstItem.weapon.startsWith('★') ? `
+                    <div class="skin-image-wrapper">
+                        <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                             alt="${firstItem.weapon} | ${firstItem.name}">
+                        <span class="skin-count">x${items.length}</span>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="item-name ${firstItem.stattrak ? 'stattrak' : ''}">
+                ${firstItem.stattrak ? 'StatTrak™ ' : ''}${firstItem.weapon}
+            </div>
+            <div class="item-skin">
+                ${firstItem.name} (${firstItem.wear})
+            </div>
+            <div class="stack-expand">Click to expand</div>
+        </div>
+        <div class="stacked-items hidden">
+            ${items.map((item, index) => `
+                <div class="skin rarity-${item.rarity}" data-index="${index}" data-float-value="${item.float_value}" data-stack-key="${stackKey}">
+                    <div class="skin-image">
+                        ${!item.weapon.startsWith('★') ? `
+                            <div class="skin-image-wrapper">
+                                <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                                     alt="${item.weapon} | ${item.name}">
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+                        ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+                    </div>
+                    <div class="item-skin">
+                        ${item.name} (${item.wear})
+                    </div>
+                    <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                    <button class="btn sell-btn" data-sell-index="${index}">Sell</button>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    return div;
+}
+
+// Helper function to create a single item
+function createSingleItem(item) {
+    const div = document.createElement('div');
+    div.className = `skin rarity-${item.rarity}`;
+    div.dataset.index = "0";
+    div.dataset.floatValue = item.float_value;
+    
+    const weaponName = item.weapon.toLowerCase()
+        .replace('-', '')
+        .replace(' ', '')
+        .replace('553', '553')
+        .replace('galil ar', 'galil')
+        .replace('galilar', 'galil');
+    const skinName = item.name.toLowerCase().replace(/ /g, '_');
+    
+    const caseMapping = {
+        'csgo': 'weapon_case_1',
+        'esports': 'esports_2013',
+        'bravo': 'operation_bravo_case',
+        'csgo2': 'weapon_case_2',
+        'esports_winter': 'esports_2013_winter',
+        'winter_offensive': 'winter_offensive_case',
+        'csgo3': 'weapon_case_3',
+        'phoenix': 'operation_phoenix_case',
+        'huntsman': 'huntsman_case',
+        'breakout': 'operation_breakout_case',
+        'esports_summer': 'esports_2014_summer',
+        'vanguard': 'operation_vanguard_case',
+        'chroma': 'chroma_case',
+        'chroma_2': 'chroma_2_case',
+        'falchion': 'falchion_case'
+    };
+    const casePath = caseMapping[item.case_type] || 'weapon_case_1';
+    
+    div.innerHTML = `
+        <div class="skin-image">
+            ${!item.weapon.startsWith('★') ? `
+                <div class="skin-image-wrapper">
+                    <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
+                         alt="${item.weapon} | ${item.name}">
+                </div>
+            ` : ''}
+        </div>
+        <div class="item-name ${item.stattrak ? 'stattrak' : ''}">
+            ${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon}
+        </div>
+        <div class="item-skin">
+            ${item.name} (${item.wear})
+        </div>
+        <div class="item-float">Float: ${item.float_value.toFixed(8)}</div>
+        <div class="item-price">$${item.price.toFixed(2)}</div>
+        <button class="btn sell-btn" data-sell-index="0">Sell</button>
+    `;
+    
+    return div;
 }
 
 // Update the DOMContentLoaded event handler
@@ -1870,33 +2146,16 @@ function showLevelUpBanner(newRank) {
     }, 3000);
 }
 
-// Add after the existing scripts
-function updateSellAllButton() {
-    const sellAllBtn = document.getElementById('sell-all-btn');
-    const skins = document.querySelectorAll('.skin');
-    let totalValue = 0;
+// Update sell all button click handler
+document.getElementById('sell-all-btn').addEventListener('click', function() {
+    const totalValue = parseFloat(this.dataset.totalValue);
+    if (totalValue <= 0) return;
     
-    skins.forEach(skin => {
-        const priceElement = skin.querySelector('.item-price');
-        const countElement = skin.querySelector('.skin-count');
-        if (priceElement) {
-            const price = parseFloat(priceElement.textContent.replace('$', ''));
-            const count = countElement ? parseInt(countElement.textContent.replace('x', '')) : 1;
-            if (!isNaN(price)) {
-                totalValue += price * count;
-            }
-        }
-    });
-    
-    // Only show amount if there are items to sell
-    if (totalValue > 0) {
-        sellAllBtn.textContent = `Sell All: $${totalValue.toFixed(2)}`;
-        sellAllBtn.dataset.totalValue = totalValue;
-    } else {
-        sellAllBtn.textContent = 'Sell All: $0.00';
-        sellAllBtn.dataset.totalValue = '0';
-    }
-}
+    const modal = document.getElementById('sell-all-modal');
+    const modalPrice = document.getElementById('modal-price');
+    modalPrice.textContent = `$${totalValue.toFixed(2)}`;
+    modal.classList.remove('hidden');
+});
 
 // Add sell all functionality
 document.getElementById('sell-all-btn').addEventListener('click', function() {
@@ -1941,23 +2200,26 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
             return;
         }
 
-        console.log('Checking for existing overlay');
-        const existingOverlay = document.getElementById('case-opening-overlay');
-        console.log('Existing overlay:', { exists: !!existingOverlay });
-        
-        if (existingOverlay) {
-            console.log('Removing existing overlay');
-            existingOverlay.remove();
-            
-            // Verify removal
-            const verifyRemoval = document.getElementById('case-opening-overlay');
-            console.log('Verify overlay removed:', { stillExists: !!verifyRemoval });
-        }
-
         // Update balance display immediately
         const balanceElement = document.querySelector('.balance');
         if (balanceElement) {
             balanceElement.textContent = `Balance: $${data.balance.toFixed(2)}`;
+        }
+        
+        // Handle achievement completion
+        if (data.achievement) {
+            showAchievementPopup(data.achievement);
+        }
+        
+        // Handle level up
+        if (data.levelUp) {
+            createConfetti();
+            showLevelUpBanner(data.rankName);
+        }
+        
+        // Update rank progress if provided
+        if (data.exp !== undefined && data.rank !== undefined) {
+            updateRankProgress(data.exp, data.rank, data.rankName, data.nextRankExp);
         }
         
         // Remove all skins with animation
@@ -1968,6 +2230,7 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
         
         await new Promise(resolve => setTimeout(resolve, 300));
         
+        // Clear inventory display
         const inventoryItems = document.getElementById('inventory-items');
         inventoryItems.innerHTML = '';
         
@@ -2013,8 +2276,6 @@ document.getElementById('confirm-sell-all').addEventListener('click', async func
         alert('Failed to sell all items');
     } finally {
         document.getElementById('sell-all-modal').classList.add('hidden');
-        // Forcefully refresh the page
-        location.reload();
     }
 });
 
@@ -2136,5 +2397,90 @@ refreshSkinsSection = async function() {
     await originalRefreshSkinsSection();
     updateSellAllButton();
 };
+
+// Add this after your existing DOMContentLoaded event listener
+document.addEventListener('click', function(e) {
+    const stack = e.target.closest('.skin-stack');
+    if (stack && !e.target.closest('.sell-btn') && !e.target.closest('.stack-expand')) {
+        const stackedItems = stack.querySelector('.stacked-items');
+        const expandText = stack.querySelector('.stack-expand');
+        const inventoryGrid = document.getElementById('inventory-items');
+        
+        if (stackedItems) {
+            if (stackedItems.classList.contains('hidden')) {
+                // Expanding - move items to main grid
+                const items = Array.from(stackedItems.children);
+                stack.style.display = 'none'; // Hide the stack
+                
+                // Calculate new starting index based on existing items
+                const startIndex = inventoryGrid.children.length;
+                
+                items.forEach((item, i) => {
+                    // Update the item's index and sell button before moving it
+                    item.dataset.index = startIndex + i;
+                    const sellBtn = item.querySelector('.sell-btn');
+                    if (sellBtn) {
+                        sellBtn.dataset.sellIndex = startIndex + i;
+                    }
+                    inventoryGrid.appendChild(item);
+                });
+            } else {
+                // Collapsing - move items back to stack
+                const stackKey = stack.dataset.stackKey;
+                const items = Array.from(document.querySelectorAll(`.skin[data-stack-key="${stackKey}"]`));
+                items.forEach((item, i) => {
+                    // Reset indices when moving back to stack
+                    item.dataset.index = i;
+                    const sellBtn = item.querySelector('.sell-btn');
+                    if (sellBtn) {
+                        sellBtn.dataset.sellIndex = i;
+                    }
+                    stackedItems.appendChild(item);
+                });
+                stack.style.display = ''; // Show the stack
+                stackedItems.classList.add('hidden');
+            }
+            expandText.textContent = stackedItems.classList.contains('hidden') ? 
+                'Click to expand' : 'Click to collapse';
+                
+            // Update all indices after expanding/collapsing
+            updateRemainingIndices();
+        }
+    }
+});
+
+// Update the sell all functionality
+function updateSellAllButton() {
+    const sellAllBtn = document.getElementById('sell-all-btn');
+    let totalValue = 0;
+    
+    // Get all individual skin prices
+    document.querySelectorAll('.skin:not(.skin-stack) .item-price').forEach(priceElement => {
+        const price = parseFloat(priceElement.textContent.replace('$', ''));
+        if (!isNaN(price)) {
+            totalValue += price;
+        }
+    });
+    
+    // Get all stacked item prices
+    document.querySelectorAll('.skin-stack .skin-item').forEach(item => {
+        const priceElement = item.querySelector('.item-price');
+        if (priceElement) {
+            const price = parseFloat(priceElement.textContent.replace('$', ''));
+            if (!isNaN(price)) {
+                totalValue += price;
+            }
+        }
+    });
+    
+    // Only show amount if there are items to sell
+    if (totalValue > 0) {
+        sellAllBtn.textContent = `Sell All: $${totalValue.toFixed(2)}`;
+        sellAllBtn.dataset.totalValue = totalValue;
+    } else {
+        sellAllBtn.textContent = 'Sell All: $0.00';
+        sellAllBtn.dataset.totalValue = '0';
+    }
+}
 </script>
 {% endblock %} 
