@@ -1,8 +1,8 @@
 {
-  "balance": 0.6060000000000016,
+  "balance": 19774.945,
   "inventory": [],
-  "exp": 31.0,
-  "rank": 3,
+  "exp": 2511.0,
+  "rank": 7,
   "upgrades": {
     "click_value": 1,
     "max_multiplier": 1,
@@ -14,20 +14,11 @@
     "multi_open": 1
   },
   "achievements": {
-    "completed": [],
+    "completed": [
+      "earnings_1",
+      "earnings_2"
+    ],
     "in_progress": {
-      "earnings_1": {
-        "id": "earnings_1",
-        "title": "Starting Out",
-        "description": "Earn your first $1,000",
-        "target_value": 1000,
-        "reward": 100,
-        "exp_reward": 1000,
-        "icon": "\ud83d\udcb5",
-        "current_value": 37.606,
-        "category": "special",
-        "progress": 3.7606
-      },
       "cases_1": {
         "id": "cases_1",
         "title": "Case Opener",
@@ -36,9 +27,9 @@
         "reward": 100,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 5,
+        "current_value": 7,
         "category": "cases",
-        "progress": 50.0
+        "progress": 70.0
       },
       "clicks_1": {
         "id": "clicks_1",
@@ -51,12 +42,24 @@
         "current_value": 0,
         "category": "clicks",
         "progress": 0.0
+      },
+      "earnings_3": {
+        "id": "earnings_3",
+        "title": "Known Mogul",
+        "description": "Earn your first $50,000",
+        "target_value": 50000,
+        "reward": 5000,
+        "exp_reward": 10000,
+        "icon": "\ud83c\udfe6",
+        "current_value": 48766.94499999999,
+        "category": "special",
+        "progress": 97.53388999999999
       }
     }
   },
   "stats": {
-    "total_earnings": 37.606,
-    "total_cases_opened": 5,
+    "total_earnings": 48766.94499999999,
+    "total_cases_opened": 7,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,

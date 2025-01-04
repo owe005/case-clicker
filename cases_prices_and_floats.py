@@ -28,7 +28,9 @@ def adjust_price_by_float(price: float, wear: str, float_value: float) -> float:
     """Adjust item price based on float value"""
 
     if wear == 'FN':
-        if float_value < 0.001:
+        if float_value < 0.0009:
+            return price * 4.0
+        elif float_value < 0.001:
             return price * 1.5
         elif float_value < 0.006:
             return price * 1.2

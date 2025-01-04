@@ -7,7 +7,10 @@ import traceback
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from functools import wraps
-from typing import List
+from typing import List, Optional
+import heapq
+from threading import Thread, Lock
+import threading
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -24,7 +27,7 @@ from casino import find_best_skin_combination
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
-                   CASE_TYPES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL)
+                   CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL)
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 
@@ -37,6 +40,19 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static file
 
 FEATURED_SKINS = None
 LAST_REFRESH_TIME = None
+CURRENT_AUCTION: Optional[dict] = None
+AUCTION_BIDS = []
+AUCTION_END_TIME = None
+AUCTION_BOT_BUDGETS = {}
+LAST_BID_TIME = None
+MIN_BID_INCREMENT = 10  # Minimum bid increment in dollars
+
+# Add these globals
+auction_lock = Lock()
+auction_thread = None
+
+# Add this global variable at the top with the other globals
+LAST_BIDDER = None
 
 def login_required(f):
     @wraps(f)
@@ -2820,6 +2836,385 @@ def sell_specific_item():
         print(f"Error in sell_specific_item: {e}")
         traceback.print_exc()
         return jsonify({'error': 'Failed to sell item'})
+
+def start_auction_thread():
+    """Start the background thread for auction processing"""
+    global auction_thread
+    if auction_thread is None or not auction_thread.is_alive():
+        auction_thread = Thread(target=process_auction_background, daemon=True)
+        auction_thread.start()
+
+def process_auction_background():
+    """Background thread to process bot bids"""
+    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS
+    
+    while True:
+        try:
+            with auction_lock:
+                if (CURRENT_AUCTION and AUCTION_END_TIME and 
+                    datetime.now() < AUCTION_END_TIME):
+                    process_bot_bids()
+            
+            # Sleep for a random interval between 5-15 seconds
+            time_remaining = (AUCTION_END_TIME - datetime.now()).total_seconds()
+            if time_remaining < 60:  # Last minute
+                sleep_time = random.uniform(1, 3)
+            elif time_remaining < 300:  # Last 5 minutes
+                sleep_time = random.uniform(3, 8)
+            elif time_remaining < 600:  # Last 10 minutes
+                sleep_time = random.uniform(5, 15)
+            elif time_remaining < 1800:  # Last 30 minutes
+                sleep_time = random.uniform(15, 30)
+            
+            time.sleep(sleep_time)
+            
+        except Exception as e:
+            print(f"Error in auction background thread: {e}")
+            time.sleep(5)  # Sleep on error to prevent rapid retries
+
+@app.route('/auction')
+@login_required
+def auction():
+    user_data = load_user_data()
+    user = create_user_from_dict(user_data)
+    
+    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS, AUCTION_BOT_BUDGETS
+    
+    with auction_lock:
+        # Check if current auction has ended
+        if (CURRENT_AUCTION and AUCTION_END_TIME and datetime.now() >= AUCTION_END_TIME):
+            complete_auction()
+            CURRENT_AUCTION = None
+            AUCTION_END_TIME = None
+            AUCTION_BIDS = []
+            AUCTION_BOT_BUDGETS = {}
+            global LAST_BIDDER
+            LAST_BIDDER = None
+        
+        # Initialize new auction if needed
+        if not CURRENT_AUCTION or not AUCTION_END_TIME:
+            CURRENT_AUCTION = generate_auction_item()
+            AUCTION_END_TIME = datetime.now() + timedelta(minutes=30)
+            AUCTION_BIDS = []
+            AUCTION_BOT_BUDGETS = generate_bot_budgets(CURRENT_AUCTION['base_price'])
+            LAST_BIDDER = None
+            start_auction_thread()
+    
+    return render_template('auction.html',
+                         balance=user.balance,
+                         rank=user.rank,
+                         exp=user.exp,
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP,
+                         auction_item=CURRENT_AUCTION,
+                         end_time=AUCTION_END_TIME,
+                         current_bid=get_current_bid(),
+                         bids=AUCTION_BIDS,
+                         debug=app.debug)
+
+def generate_auction_item():
+    """Generate a rare/valuable item for auction"""
+    try:
+        # Load all case data
+        all_valuable_skins = []
+        
+        # Get wear ranges from cases_prices_and_floats
+        wear_ranges = {
+            'FN': (0.00, 0.07),
+            'MW': (0.07, 0.15),
+            'FT': (0.15, 0.38),
+            'WW': (0.38, 0.45),
+            'BS': (0.45, 1.00)
+        }
+        
+        for case_type in CASE_TYPES:
+            file_name = CASE_FILE_MAPPING.get(case_type)
+            folder_name = CASE_SKINS_FOLDER_NAMES.get(case_type)
+            if not file_name:
+                continue
+                
+            with open(f'cases/{file_name}.json', 'r') as f:
+                case_data = json.load(f)
+                
+                # Look through all skins
+                for grade, skins in case_data['skins'].items():
+                    for skin in skins:
+                        # Use the image path from the JSON file
+                        image_path = f"media/skins/{folder_name}/{skin['image']}"
+                        
+                        # Check prices for valuable items
+                        for wear, price in skin['prices'].items():
+                            if wear != 'NO' and not wear.startswith('ST_'):
+                                try:
+                                    price_value = float(price)
+                                    if price_value >= 1000:  # Only include $1000+ skins
+                                        # Generate float based on wear range
+                                        wear_range = wear_ranges.get(wear)
+                                        if not wear_range:
+                                            continue
+                                        
+                                        # Generate a very good float for the wear range
+                                        min_float, max_float = wear_range
+                                        # Use first 20% of the wear range for auction items
+                                        float_range = max_float - min_float
+                                        max_special = min_float + (float_range * 0.2)
+                                        float_value = random.uniform(min_float, max_special)
+                                        
+                                        # Adjust price based on special float
+                                        adjusted_price = adjust_price_by_float(
+                                            price_value,
+                                            wear,
+                                            float_value
+                                        )
+                                        
+                                        all_valuable_skins.append({
+                                            'weapon': skin['weapon'],
+                                            'name': skin['name'],
+                                            'wear': wear,
+                                            'float_value': float_value,
+                                            'rarity': grade.upper(),
+                                            'case_type': case_type,
+                                            'base_price': price_value,
+                                            'adjusted_price': adjusted_price,
+                                            'stattrak': False,
+                                            'image': image_path
+                                        })
+                                        
+                                        # Also add StatTrak version if available
+                                        st_key = f'ST_{wear}'
+                                        if st_key in skin['prices']:
+                                            st_price = float(skin['prices'][st_key])
+                                            if st_price >= 1000:
+                                                # Calculate StatTrak adjusted price
+                                                st_adjusted_price = adjust_price_by_float(
+                                                    st_price,
+                                                    wear,
+                                                    float_value
+                                                )
+                                                
+                                                all_valuable_skins.append({
+                                                    'weapon': skin['weapon'],
+                                                    'name': skin['name'],
+                                                    'wear': wear,
+                                                    'float_value': float_value,
+                                                    'rarity': grade.upper(),
+                                                    'case_type': case_type,
+                                                    'base_price': st_price,
+                                                    'adjusted_price': st_adjusted_price,
+                                                    'stattrak': True,
+                                                    'image': image_path
+                                                })
+                                except Exception as e:
+                                    print(f"Error processing price: {e}")
+                                    continue
+        
+        if not all_valuable_skins:
+            raise ValueError("No valuable skins found")
+            
+        # Select random valuable skin
+        return random.choice(all_valuable_skins)
+        
+    except Exception as e:
+        print(f"Error generating auction item: {e}")
+        # Return a fallback item if something goes wrong
+        return {
+            'weapon': 'Karambit',
+            'name': 'Fade',
+            'wear': 'FN',
+            'float_value': 0.0007,
+            'rarity': 'GOLD',
+            'case_type': 'csgo',
+            'base_price': 1500.0,
+            'adjusted_price': 2000.0,
+            'stattrak': False
+        }
+
+def generate_bot_budgets(base_price):
+    """Generate random budgets for bots based on item base price"""
+    budgets = {}
+    print("\nBot Budgets for Current Auction:")
+    print("-" * 40)
+    print(f"Item Base Price: ${base_price:,.2f}")
+    print("-" * 40)
+    
+    for bot_name in BOT_PERSONALITIES.keys():
+        # Set budget between 100-150% of base price
+        max_budget = base_price * random.uniform(1.0, 1.5)
+        budgets[bot_name] = max_budget
+        print(f"{bot_name}: ${max_budget:,.2f}")
+    
+    print("-" * 40)
+    return budgets
+
+def get_current_bid():
+    """Get the current highest bid"""
+    if not AUCTION_BIDS:
+        return CURRENT_AUCTION['base_price'] * 0.1  # Start at 10% of base price
+    return AUCTION_BIDS[-1]['amount']
+
+@app.route('/place_bid', methods=['POST'])
+@login_required
+def place_bid():
+    try:
+        data = request.get_json()
+        bid_amount = float(data.get('amount', 0))
+        
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+        
+        if bid_amount > current_balance:
+            return jsonify({'error': 'Insufficient funds'})
+        
+        global LAST_BIDDER, AUCTION_END_TIME
+        with auction_lock:
+            current_bid = get_current_bid()
+            if bid_amount <= current_bid:
+                return jsonify({'error': f'Bid must be higher than ${current_bid:.2f}'})
+            
+            # Add bid to list
+            AUCTION_BIDS.append({
+                'bidder': 'You',
+                'amount': bid_amount,
+                'timestamp': datetime.now()
+            })
+            LAST_BIDDER = 'You'  # Update last bidder
+            
+            # Extend timer if less than 1 minute remaining
+            time_remaining = AUCTION_END_TIME - datetime.now()
+            if time_remaining.total_seconds() < 60:  # 1 minute
+                AUCTION_END_TIME += timedelta(seconds=15)
+                print(f"Timer extended by 15s. New end time: {AUCTION_END_TIME}")
+        
+        return jsonify({
+            'success': True,
+            'current_bid': get_current_bid(),
+            'end_time': AUCTION_END_TIME.isoformat(),
+            'bids': AUCTION_BIDS
+        })
+        
+    except Exception as e:
+        print(f"Error placing bid: {e}")
+        return jsonify({'error': 'Failed to place bid'})
+
+def process_bot_bids(trigger_bid=None):
+    """Process automatic bot bidding responses"""
+    global LAST_BIDDER, AUCTION_END_TIME
+    time_remaining = (AUCTION_END_TIME - datetime.now()).total_seconds()
+    
+    # Calculate base response chance based on time remaining
+    if time_remaining < 60:  # Last minute
+        base_chance = 0.4
+    elif time_remaining < 300:  # Last 5 minutes
+        base_chance = 0.25
+    elif time_remaining < 600:  # Last 10 minutes
+        base_chance = 0.15
+    elif time_remaining < 1800:  # Last 30 minutes
+        base_chance = 0.08
+    
+    # Increase chance if there was a recent bid
+    if trigger_bid:
+        base_chance *= 1.2
+    
+    # Process bot responses
+    active_bots = list(AUCTION_BOT_BUDGETS.items())
+    # Filter out the last bidder
+    if LAST_BIDDER:
+        active_bots = [(name, budget) for name, budget in active_bots if name != LAST_BIDDER]
+    random.shuffle(active_bots)  # Randomize bot order
+    
+    for bot_name, max_budget in active_bots:
+        if random.random() < base_chance:
+            current_bid = get_current_bid()
+            if current_bid < max_budget:
+                # Calculate bid increment (larger near end)
+                if time_remaining < 600:
+                    increment = random.uniform(MIN_BID_INCREMENT * 1.5, MIN_BID_INCREMENT * 3)
+                else:
+                    increment = random.uniform(MIN_BID_INCREMENT, MIN_BID_INCREMENT * 1.5)
+                
+                # Add some randomness to bid amounts
+                increment *= random.uniform(1.0, 1.2)
+                
+                new_bid = min(current_bid + increment, max_budget)
+                if new_bid > current_bid:
+                    AUCTION_BIDS.append({
+                        'bidder': bot_name,
+                        'amount': new_bid,
+                        'timestamp': datetime.now()
+                    })
+                    LAST_BIDDER = bot_name  # Update last bidder
+                    
+                    # Extend timer if less than 1 minute remaining
+                    if time_remaining < 60:  # 1 minute
+                        AUCTION_END_TIME += timedelta(seconds=15)
+                        print(f"Timer extended by 15s (bot bid). New end time: {AUCTION_END_TIME}")
+                    
+                    # Small chance for immediate response from another bot
+                    if random.random() < 0.3:
+                        process_bot_bids(trigger_bid=True)
+                    return  # Only one bot bids at a time
+
+# Add new debug route
+@app.route('/debug/decrease_timer', methods=['POST'])
+@login_required
+def decrease_timer():
+    if not app.debug:
+        return jsonify({'error': 'Debug mode not enabled'})
+        
+    global AUCTION_END_TIME
+    data = request.get_json()
+    minutes = int(data.get('minutes', 30))  # Default to 30 if not specified
+    AUCTION_END_TIME = AUCTION_END_TIME - timedelta(minutes=minutes)
+    
+    return jsonify({
+        'success': True,
+        'new_end_time': AUCTION_END_TIME.isoformat()
+    })
+
+# Add this function to handle auction completion
+def complete_auction():
+    """Handle auction completion and award item to winner"""
+    global CURRENT_AUCTION, AUCTION_BIDS
+    
+    if not AUCTION_BIDS:
+        return
+        
+    # Get winning bid
+    winning_bid = AUCTION_BIDS[-1]
+    print(f"\nAuction completed! Winner: {winning_bid['bidder']} with ${winning_bid['amount']:,.2f}")
+    
+    # If player won
+    if winning_bid['bidder'] == 'You':
+        try:
+            user_data = load_user_data()
+            
+            # Deduct winning bid amount
+            user_data['balance'] = float(user_data['balance']) - winning_bid['amount']
+            
+            # Add item to inventory
+            won_item = CURRENT_AUCTION.copy()
+            won_item['price'] = won_item['adjusted_price']  # Use adjusted price as item value
+            won_item['timestamp'] = time.time()
+            won_item['is_case'] = False
+            
+            user_data['inventory'].append(won_item)
+            save_user_data(user_data)
+            
+            print(f"Item added to player inventory: {won_item['weapon']} | {won_item['name']}")
+            
+        except Exception as e:
+            print(f"Error completing auction: {e}")
+            traceback.print_exc()
+
+@app.route('/get_auction_status')
+@login_required
+def get_auction_status():
+    with auction_lock:
+        return jsonify({
+            'current_bid': get_current_bid(),
+            'bids': AUCTION_BIDS,
+            'end_time': AUCTION_END_TIME.isoformat() if AUCTION_END_TIME else None
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)

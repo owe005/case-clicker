@@ -117,6 +117,24 @@ CASE_TYPES = [
     'falchion'
 ]
 
+CASE_SKINS_FOLDER_NAMES = {
+    'csgo': 'weapon_case_1',
+    'esports': 'esports_2013',
+    'bravo': 'operation_bravo_case',
+    'csgo2': 'weapon_case_2',
+    'esports_winter': 'esports_2013_winter',
+    'winter_offensive': 'winter_offensive_case',
+    'csgo3': 'weapon_case_3',
+    'phoenix': 'operation_phoenix_case',
+    'huntsman': 'huntsman_case',
+    'breakout': 'operation_breakout_case',
+    'esports_summer': 'esports_2014_summer',
+    'vanguard': 'operation_vanguard_case',
+    'chroma': 'chroma_case',
+    'chroma_2': 'chroma_2_case',
+    'falchion': 'falchion_case'
+}
+
 CASE_DATA = {
     'csgo': {
         'name': 'CS:GO Weapon Case',

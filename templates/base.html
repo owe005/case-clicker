@@ -11,36 +11,37 @@
     <link rel="preload" href="{{ url_for('static', filename='media/cases/esports_2013_case.png') }}" as="image">
 </head>
 <body>
+    <div class="rank-progress">
+        <div class="rank-info">
+            <span class="current-rank" data-rank="{{ rank }}">{{ RANKS[rank] }}</span>
+            <div class="progress-bar">
+                {% if rank < 17 %}
+                    <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
+                {% else %}
+                    <div class="progress-fill" style="width: 100%"></div>
+                {% endif %}
+            </div>
+            <span class="exp-info">
+                {% if rank < 17 %}
+                    {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
+                {% else %}
+                    MAX RANK
+                {% endif %}
+            </span>
+        </div>
+    </div>
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-links">
                 <a href="{{ url_for('index') }}" class="nav-link {{ 'active' if request.endpoint == 'index' }}">Home</a>
                 <a href="{{ url_for('shop') }}" class="nav-link {{ 'active' if request.endpoint == 'shop' }}">Shop</a>
-                <div class="rank-progress">
-                    <div class="rank-info">
-                        <span class="current-rank" data-rank="{{ rank }}">{{ RANKS[rank] }}</span>
-                        <div class="progress-bar">
-                            {% if rank < 17 %}
-                                <div class="progress-fill" style='width: {{ (exp / RANK_EXP[rank] * 100)|round(2) }}%'></div>
-                            {% else %}
-                                <div class="progress-fill" style="width: 100%"></div>
-                            {% endif %}
-                        </div>
-                        <span class="exp-info">
-                            {% if rank < 17 %}
-                                {{ exp|int }}/{{ RANK_EXP[rank] }} EXP
-                            {% else %}
-                                MAX RANK
-                            {% endif %}
-                        </span>
-                    </div>
-                </div>
                 <a href="{{ url_for('inventory') }}" class="nav-link {{ 'active' if request.endpoint == 'inventory' }}">Inventory</a>
                 <a href="{{ url_for('clicker') }}" class="nav-link {{ 'active' if request.endpoint == 'clicker' }}">Clicker</a>
                 <a href="{{ url_for('upgrades') }}" class="nav-link {{ 'active' if request.endpoint == 'upgrades' }}">Upgrades</a>
                 <a href="{{ url_for('casino') }}" class="nav-link {{ 'active' if request.endpoint == 'casino' }}">Casino</a>
                 <a href="{{ url_for('trading') }}" class="nav-link {{ 'active' if request.endpoint == 'trading' }}">Trading</a>
                 <a href="{{ url_for('achievements') }}" class="nav-link {{ 'active' if request.endpoint == 'achievements' }}">Achievements</a>
+                <a href="{{ url_for('auction') }}" class="nav-link {{ 'active' if request.endpoint == 'auction' }}">Auction</a>
             </div>
             <div class="balance">Balance: $<span id="balance">{{ "%.2f"|format(balance) }}</span></div>
         </div>

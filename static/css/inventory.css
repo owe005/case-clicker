@@ -240,12 +240,50 @@
 
 /* Update float color based on value ranges */
 /* Factory New Colors */
-/* Ultra rare floats (red) */
+/* Ultra rare floats (0.0009 and below) - gold color */
+.skin[data-float-value^="0.0000"] .item-float,
+.skin[data-float-value^="0.0001"] .item-float,
+.skin[data-float-value^="0.0002"] .item-float,
+.skin[data-float-value^="0.0003"] .item-float,
+.skin[data-float-value^="0.0004"] .item-float,
+.skin[data-float-value^="0.0005"] .item-float,
+.skin[data-float-value^="0.0006"] .item-float,
+.skin[data-float-value^="0.0007"] .item-float,
+.skin[data-float-value^="0.0008"] .item-float,
+.skin[data-float-value^="0.0009"] .item-float {
+    color: #ffd700; /* Gold for ultra rare float */
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.5);
+    background: linear-gradient(45deg, 
+        rgba(255, 215, 0, 0.1),
+        rgba(255, 215, 0, 0.2),
+        rgba(255, 215, 0, 0.1)
+    );
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    animation: ultraRareGoldShine 2s ease-in-out infinite;
+    padding: 2px 8px;
+}
+
+/* Add animation for ultra rare gold float shine effect */
+@keyframes ultraRareGoldShine {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.4),
+                    0 0 20px rgba(255, 215, 0, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+    }
+}
+
+/* Very rare floats (red) */
 .skin[data-float-value^="3."] .item-float,
 .skin[data-float-value^="2."] .item-float,
 .skin[data-float-value^="1."] .item-float,
-.skin[data-float-value^="0.0000"] .item-float {
-    color: #eb4b4b; /* Red for ultra rare float */
+.skin[data-float-value^="0.001"] .item-float {
+    color: #eb4b4b; /* Red for very rare float */
     font-weight: bold;
     text-shadow: 0 0 2px rgba(235, 75, 75, 0.5);
     background: linear-gradient(45deg, 
@@ -256,20 +294,6 @@
     border: 1px solid rgba(235, 75, 75, 0.3);
     animation: ultraRareShine 2s ease-in-out infinite;
     padding: 2px 8px;
-}
-
-/* Add animation for ultra rare float shine effect */
-@keyframes ultraRareShine {
-    0% {
-        box-shadow: 0 0 5px rgba(235, 75, 75, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 10px rgba(235, 75, 75, 0.4),
-                    0 0 20px rgba(235, 75, 75, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 5px rgba(235, 75, 75, 0.2);
-    }
 }
 
 /* Very low floats (pink) - but not ultra rare */
@@ -454,4 +478,91 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
+}
+
+/* Add these styles to fix the item card layout */
+.skin {
+    display: grid;
+    grid-template-rows: auto minmax(40px, auto) auto auto auto auto;
+    gap: 4px;
+    min-height: 200px;
+    padding: 10px;
+}
+
+.skin-image {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.item-name {
+    font-size: 14px;
+    line-height: 1.2;
+    min-height: 2.4em;
+    display: -webkit-box;
+    /*-webkit-line-clamp: 2;*/
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.item-skin {
+    font-size: 13px;
+    line-height: 1.2;
+    min-height: 1.2em;
+    margin: 0;
+}
+
+.item-float,
+.item-price {
+    margin: 4px 0;
+    line-height: 1.2;
+}
+
+.sell-btn {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Update stacked items layout */
+.skin-stack {
+    display: grid;
+    grid-template-rows: auto minmax(40px, auto) auto auto;
+    gap: 4px;
+    min-height: 200px;
+    padding: 10px;
+}
+
+.stack-collapsed {
+    display: grid;
+    grid-template-rows: auto minmax(40px, auto) auto auto;
+    gap: 4px;
+}
+
+/* Update the stacked items container */
+.stacked-items .skin {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    gap: 8px;
+    min-height: unset;
+    padding: 8px;
+    align-items: center;
+}
+
+.stacked-items .skin-image,
+.stacked-items .item-name,
+.stacked-items .item-skin {
+    grid-column: 1;
+}
+
+.stacked-items .item-float,
+.stacked-items .item-price,
+.stacked-items .sell-btn {
+    grid-column: 2;
+    margin: 2px 0;
 }
