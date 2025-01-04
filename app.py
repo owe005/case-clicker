@@ -1,22 +1,32 @@
-from flask import Flask, render_template, jsonify, session, redirect, url_for, request, send_from_directory
-from dataclasses import asdict
-import random
-from typing import Dict, Union, List, Any
-import time
+# Standard library imports
 import json
-from functools import wraps
-from datetime import timedelta, date, datetime
-from dataclasses import dataclass
-from typing import List, Optional
-import traceback
 import os
-from enum import Enum
-import threading
-from openai import OpenAI
-from dotenv import load_dotenv
+import random
+import time
+import traceback
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import List
 
-from config import Rarity, RED_NUMBERS, BLACK_NUMBERS, RANK_EXP, RANKS, CASE_FILE_MAPPING
-from models import Case, User, Upgrades
+# Third-party imports
+from dotenv import load_dotenv
+from flask import (Flask, jsonify, redirect, render_template, request, send_from_directory,
+                  session, url_for)
+
+# Local imports
+from achievements import (update_case_achievements, update_click_achievements,
+                        update_earnings_achievements)
+from bots import (client, create_system_message, format_bot_selection_history,
+                 format_bot_selection_system_message, format_conversation_history,
+                 generate_bot_players, get_trades_context, select_bot_with_ai)
+from casino import find_best_skin_combination
+from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
+                                   get_case_prices, load_case, load_skin_price)
+from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
+                   CASE_TYPES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL)
+from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
+from user_data import create_user_from_dict, load_user_data, save_user_data
 
 # Load environment variables
 load_dotenv('config.env')
@@ -27,26 +37,6 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static file
 
 FEATURED_SKINS = None
 LAST_REFRESH_TIME = None
-REFRESH_INTERVAL = 3600  # 1 hour in seconds
-
-# Add this at the top with other globals
-file_lock = threading.Lock()
-
-# Initialize OpenAI client with API key from environment
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-
-BOT_PERSONALITIES = {
-    "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
-    "Kai.Jayden_02": "A forsen viewer who spams KEKW and PepeLaugh, uses lots of Twitch emotes and speaks in Twitch chat style",
-    "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
-    "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
-    "Theo.91": "Another forsen viewer who spams OMEGALUL and Pepega, speaks in broken English and uses lots of BATCHEST",
-    "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
-    "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
-    "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
-    "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
-    "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
-}
 
 def login_required(f):
     @wraps(f)
@@ -60,323 +50,6 @@ def login_required(f):
 @app.context_processor
 def inject_ranks():
     return {'RANKS': RANKS}
-
-def load_case(case_type: str) -> Union[Case, Dict, None]:
-    """
-    Load case data from JSON file. Returns either a Case object for opening cases,
-    or a dictionary with basic case info for the shop display.
-    """
-    try:
-        # If we just need basic case info for the shop
-        if case_type == 'all':
-            cases = {}
-            for case_key, file_name in CASE_FILE_MAPPING.items():
-                try:
-                    with open(f'cases/{file_name}.json', 'r') as f:
-                        case_data = json.load(f)
-                        cases[case_key] = {
-                            'name': case_data['name'],
-                            'image': case_data['image'],
-                            'price': case_data['price']
-                        }
-                except Exception as e:
-                    print(f"Error loading {file_name}: {e}")
-            return cases
-            
-        # For opening specific cases
-        file_name = CASE_FILE_MAPPING.get(case_type)
-        if not file_name:
-            print(f"Invalid case type: {case_type}")
-            return None
-            
-        with open(f'cases/{file_name}.json', 'r') as f:
-            data = json.load(f)
-            
-        # For opening cases, create a Case object with full skin data
-        contents = {
-            Rarity.CONTRABAND: [],  # Add CONTRABAND rarity
-            Rarity.GOLD: [],
-            Rarity.RED: [],
-            Rarity.PINK: [],
-            Rarity.PURPLE: [],
-            Rarity.BLUE: []
-        }
-        
-        grade_map = {
-            'contraband': Rarity.CONTRABAND,  # Add contraband mapping
-            'gold': Rarity.GOLD,
-            'red': Rarity.RED,
-            'pink': Rarity.PINK,
-            'purple': Rarity.PURPLE,
-            'blue': Rarity.BLUE
-        }
-        
-        for grade, items in data['skins'].items():
-            rarity = grade_map[grade]
-            for item in items:
-                contents[rarity].append((item['weapon'], item['name']))
-        
-        return Case(data['name'], contents, file_name)
-        
-    except Exception as e:
-        print(f"Error loading case {case_type}: {e}")
-        return None
-
-# Update the case prices to load from JSON files
-def get_case_price(case_type: str) -> float:
-    try:
-        file_name = CASE_FILE_MAPPING.get(case_type)
-        if not file_name:
-            print(f"Unknown case type: {case_type}")
-            return 0
-            
-        with open(f'cases/{file_name}.json', 'r') as f:
-            data = json.load(f)
-            return data.get('price', 0)
-    except Exception:
-        return 0
-
-# Replace hardcoded CASE_PRICES with dynamic loading
-def get_case_prices() -> Dict[str, float]:
-    return {case_type: get_case_price(case_type) for case_type in CASE_FILE_MAPPING.keys()}
-
-def create_user_from_dict(data: dict) -> User:
-    upgrades_data = data.get('upgrades', {})
-    upgrades = Upgrades(
-        click_value=upgrades_data.get('click_value', 1),
-        max_multiplier=upgrades_data.get('max_multiplier', 1),
-        auto_clicker=upgrades_data.get('auto_clicker', 0),
-        combo_speed=upgrades_data.get('combo_speed', 1),
-        critical_strike=upgrades_data.get('critical_strike', 0),
-        progress_per_click=upgrades_data.get('progress_per_click', 1),
-        case_quality=upgrades_data.get('case_quality', 1),
-        multi_open=upgrades_data.get('multi_open', 1)  # Add this line
-    )
-    
-    user = User(
-        balance=data.get('balance', 100.0),
-        exp=data.get('exp', 0),
-        rank=data.get('rank', 0),
-        upgrades=upgrades
-    )
-    
-    if data.get('inventory'):
-        for item in data['inventory']:
-            # Check if item is a case
-            if item.get('is_case'):
-                # Just append the case data directly to inventory
-                user.inventory.append(item)
-            else:
-                # Create Skin object for weapon skins and preserve case_type
-                skin_dict = {
-                    'weapon': item['weapon'],
-                    'name': item['name'],
-                    'rarity': item['rarity'],
-                    'wear': item.get('wear', 'FT'),
-                    'stattrak': item.get('stattrak', False),
-                    'price': item.get('price', 0),
-                    'timestamp': item.get('timestamp', 0),
-                    'case_type': item.get('case_type', 'csgo')
-                }
-                user.inventory.append(skin_dict)
-    return user
-
-def load_user_data() -> dict:
-    """Load user data from JSON file with file locking."""
-    # Define complete default data structure
-    default_data = {
-        'balance': 1000.0,
-        'inventory': [],
-        'exp': 0,
-        'rank': 0,
-        'upgrades': {
-            'click_value': 1,
-            'max_multiplier': 1,
-            'auto_clicker': 0,
-            'combo_speed': 1,
-            'critical_strike': 0,
-            'progress_per_click': 1,
-            'case_quality': 1,
-            'multi_open': 1
-        },
-        'achievements': {
-            'completed': [],
-            'in_progress': {}
-        },
-        'stats': {
-            'total_earnings': 0,
-            'total_cases_opened': 0,
-            'total_trades_completed': 0,
-            'highest_win_streak': 0,
-            'total_clicks': 0,
-            'highest_value_item': 0,
-            'total_upgrades': 0,
-            'total_jackpots_won': 0
-        },
-        'case_progress': 0
-    }
-    
-    file_path = 'data/user_inventory.json'
-    backup_path = file_path + '.bak'
-    
-    # Use a timeout to prevent deadlocks
-    lock_acquired = file_lock.acquire(timeout=5)
-    if not lock_acquired:
-        print("Warning: Could not acquire file lock, returning default data")
-        return default_data.copy()
-        
-    try:
-        # If file doesn't exist, create it with default data
-        if not os.path.exists(file_path):
-            # Create data directory if it doesn't exist
-            os.makedirs('data', exist_ok=True)
-            
-            # Initialize the first achievement
-            temp_data = default_data.copy()
-            update_earnings_achievements(temp_data, 0)
-            update_case_achievements(temp_data)
-            update_click_achievements(temp_data)  # Add this line
-            
-            # Save the initialized data
-            with open(file_path, 'w') as f:
-                json.dump(temp_data, f, indent=2)
-            return temp_data
-            
-        # Create backup of current file
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                current_data = f.read()
-            with open(backup_path, 'w') as f:
-                f.write(current_data)
-        
-        # Try to load the file
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-            
-        if not isinstance(data, dict):
-            raise ValueError("Invalid data structure")
-            
-        # Deep copy the default data to ensure we don't modify it
-        result = default_data.copy()
-        
-        # Update with existing data
-        result.update(data)
-        
-        # Ensure all required structures exist
-        if 'achievements' not in result:
-            result['achievements'] = default_data['achievements'].copy()
-            update_earnings_achievements(result, 0)
-            update_case_achievements(result)
-            update_click_achievements(result)  # Add this line
-            
-        if 'stats' not in result:
-            result['stats'] = default_data['stats'].copy()
-            
-        if 'upgrades' not in result:
-            result['upgrades'] = default_data['upgrades'].copy()
-        else:
-            for key, value in default_data['upgrades'].items():
-                if key not in result['upgrades']:
-                    result['upgrades'][key] = value
-        
-        # Save any updates
-        with open(file_path, 'w') as f:
-            json.dump(result, f, indent=2)
-        
-        return result
-            
-    except Exception as e:
-        print(f"Error loading user data: {e}")
-        try:
-            if os.path.exists(backup_path):
-                with open(backup_path, 'r') as f:
-                    data = json.load(f)
-                with open(file_path, 'w') as f:
-                    json.dump(data, f, indent=2)
-                return data
-        except:
-            pass
-        
-        return default_data.copy()
-    finally:
-        file_lock.release()
-
-def save_user_data(user_data: dict):
-    """Save user data to JSON file with file locking."""
-    temp_file = 'data/user_inventory.tmp'
-    final_file = 'data/user_inventory.json'
-    backup_file = final_file + '.bak'
-    
-    # Use a timeout to prevent deadlocks
-    lock_acquired = file_lock.acquire(timeout=5)  # 5 second timeout
-    if not lock_acquired:
-        print("Warning: Could not acquire file lock, skipping save")
-        return
-        
-    try:
-        # Create data directory if it doesn't exist
-        os.makedirs('data', exist_ok=True)
-        
-        # Create backup of current file if it exists
-        try:
-            if os.path.exists(final_file):
-                with open(final_file, 'r') as src, open(backup_file, 'w') as dst:
-                    dst.write(src.read())
-        except Exception as e:
-            print(f"Warning: Failed to create backup: {e}")
-        
-        # Write to temporary file
-        with open(temp_file, 'w') as f:
-            json.dump(user_data, f, indent=2)
-            f.flush()
-            try:
-                os.fsync(f.fileno())
-            except Exception as e:
-                print(f"Warning: Failed to fsync: {e}")
-        
-        # Close any open handles to the files
-        try:
-            import gc
-            gc.collect()  # Force garbage collection
-        except Exception as e:
-            print(f"Warning: Failed to force garbage collection: {e}")
-        
-        # Small delay to ensure file handles are released
-        time.sleep(0.1)
-        
-        try:
-            if os.path.exists(final_file):
-                os.remove(final_file)
-            os.rename(temp_file, final_file)
-                
-        except Exception as e:
-            print(f"Error during file replacement: {e}")
-            if os.path.exists(backup_file):
-                try:
-                    if os.path.exists(final_file):
-                        os.remove(final_file)
-                    os.rename(backup_file, final_file)
-                except Exception as restore_error:
-                    print(f"Failed to restore from backup: {restore_error}")
-            raise
-            
-    except Exception as e:
-        print(f"Error saving user data: {e}")
-        if not os.path.exists(final_file) and os.path.exists(backup_file):
-            try:
-                os.rename(backup_file, final_file)
-            except Exception as restore_error:
-                print(f"Failed to restore from backup: {restore_error}")
-    finally:
-        # Clean up temporary files
-        try:
-            if os.path.exists(temp_file):
-                os.remove(temp_file)
-        except Exception as e:
-            print(f"Warning: Failed to remove temporary file: {e}")
-        
-        # Always release the lock
-        file_lock.release()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -441,7 +114,8 @@ def inventory():
                          RANK_EXP=RANK_EXP,
                          RANKS=RANKS,
                          upgrades=user_data.get('upgrades', {}),
-                         initial_view=request.args.get('view', 'skins'))
+                         initial_view=request.args.get('view', 'skins'),
+                         CASE_MAPPING=CASE_FILE_MAPPING)
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
@@ -1036,13 +710,7 @@ def cheat():
     user = create_user_from_dict(user_data)
     user.balance += 10000.0
     
-    # Update user data while preserving all fields
     user_data['balance'] = user.balance
-    # Don't overwrite other fields - remove these lines
-    # user_data['inventory'] = user.inventory
-    # user_data['exp'] = user.exp
-    # user_data['rank'] = user.rank
-    # user_data['upgrades'] = asdict(user.upgrades)
     save_user_data(user_data)
     
     return redirect(url_for('shop'))
@@ -1089,98 +757,7 @@ def buy_case():
     user.balance -= total_cost
     
     # Add cases to inventory
-    case_data = {
-        'csgo': {
-            'name': 'CS:GO Weapon Case',
-            'image': 'weapon_case_1.png',
-            'is_case': True,
-            'type': 'csgo'
-        },
-        'esports': {
-            'name': 'eSports 2013 Case',
-            'image': 'esports_2013_case.png',
-            'is_case': True,
-            'type': 'esports'
-        },
-        'bravo': {
-            'name': 'Operation Bravo Case',
-            'image': 'operation_bravo_case.png',
-            'is_case': True,
-            'type': 'bravo'
-        },
-        'csgo2': {
-            'name': 'CS:GO Weapon Case 2',
-            'image': 'weapon_case_2.png',
-            'is_case': True,
-            'type': 'csgo2'
-        },
-        'esports_winter': {
-            'name': 'eSports 2013 Winter Case',
-            'image': 'esports_2013_winter_case.png',
-            'is_case': True,
-            'type': 'esports_winter'
-        },
-        'winter_offensive': {
-            'name': 'Winter Offensive Case',
-            'image': 'winter_offensive_case.png',
-            'is_case': True,
-            'type': 'winter_offensive'
-        },
-        'csgo3': {
-            'name': 'CS:GO Weapon Case 3',
-            'image': 'weapon_case_3.png',
-            'is_case': True,
-            'type': 'csgo3'
-        },
-        'phoenix': {
-            'name': 'Operation Phoenix Case',
-            'image': 'operation_phoenix_case.png',
-            'is_case': True,
-            'type': 'phoenix'
-        },
-        'huntsman': {
-            'name': 'Huntsman Case',
-            'image': 'huntsman_case.png',
-            'is_case': True,
-            'type': 'huntsman'
-        },
-        'breakout': {  # Add this block
-            'name': 'Operation Breakout Case',
-            'image': 'operation_breakout_case.png',
-            'is_case': True,
-            'type': 'breakout'
-        },
-        'esports_summer': {  # Add this block
-            'name': 'eSports 2014 Summer Case',
-            'image': 'esports_2014_summer_case.png',
-            'is_case': True,
-            'type': 'esports_summer'
-        },
-        'vanguard': {  # Add this block
-            'name': 'Operation Vanguard Case',
-            'image': 'operation_vanguard_case.png',
-            'is_case': True,
-            'type': 'vanguard'
-        },
-        'chroma': {  # Add this block
-            'name': 'Chroma Case',
-            'image': 'chroma_case.png',
-            'is_case': True,
-            'type': 'chroma'
-        },
-        'chroma_2': {  # Add this block
-            'name': 'Chroma 2 Case',
-            'image': 'chroma_2_case.png',
-            'is_case': True,
-            'type': 'chroma_2'
-        },
-        'falchion': {  # Add this block
-            'name': 'Falchion Case',
-            'image': 'falchion_case.png',
-            'is_case': True,
-            'type': 'falchion'
-        }
-    }
+    case_data = CASE_DATA
     
     # Get current inventory
     inventory = user_data.get('inventory', [])
@@ -1283,43 +860,19 @@ def get_user_data():
 
 @app.route('/data/case_contents/<case_type>')
 def get_case_contents(case_type):
-    # Update the case file mapping to match actual JSON filenames
-    case_file_mapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case',
-        'csgo3': 'weapon_case_3',
-        'phoenix': 'operation_phoenix_case',
-        'huntsman': 'huntsman_case',
-        'breakout': 'operation_breakout_case',
-        'esports_summer': 'esports_2014_summer',
-        'vanguard': 'operation_vanguard_case',
-        'chroma': 'chroma_case',
-        'chroma_2': 'chroma_2_case',
-        'falchion': 'falchion_case'
-    }
-    
-    if case_type not in case_file_mapping:
+    # Use CASE_FILE_MAPPING from config.py
+    if case_type not in CASE_FILE_MAPPING:
         print(f"Invalid case type requested: {case_type}")
         return jsonify({'error': 'Invalid case type'}), 404
         
     try:
-        # Add debugging prints
-        file_path = f'cases/{case_file_mapping[case_type]}.json'
+        file_path = f'cases/{CASE_FILE_MAPPING[case_type]}.json'
         print(f"Attempting to load case file: {file_path}")
         
-        # Check if file exists
-        import os
         if not os.path.exists(file_path):
             print(f"File not found: {file_path}")
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Files in cases directory: {os.listdir('cases')}")
             return jsonify({'error': 'Case data not found'}), 404
             
-        # Add .json extension to the file path
         with open(file_path, 'r') as f:
             data = json.load(f)
             print(f"Successfully loaded case data for {case_type}")
@@ -2324,113 +1877,6 @@ def start_jackpot():
         print(f"Error traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Failed to start game'})
 
-def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any]]:
-    bot_names = [
-        "_Astrid47", "Kai.Jayden_02", "Orion_Phoenix98", "ElaraB_23", "Theo.91", "Nova-Lyn", "FelixHaven19", "Aria.Stella85", "Lucien_Kai", "Mira-Eclipse"
-    ]
-    
-    # Load all case data
-    case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']  # Add 'breakout'
-    all_skins = []  # Change to a single list
-    
-    # Load skins from each case
-    for case_type in case_types:
-        try:
-            case_file_mapping = {
-                'csgo': 'weapon_case_1',
-                'esports': 'esports_2013',
-                'bravo': 'operation_bravo',  # Changed back to match JSON filename
-                'csgo2': 'weapon_case_2',
-                'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case',
-                'csgo3': 'weapon_case_3',  # Add this line
-                'phoenix': 'operation_phoenix_case',
-                'huntsman': 'huntsman_case',  # Add huntsman case
-                'breakout': 'operation_breakout_case',
-                'esports_summer': 'esports_2014_summer',
-                'vanguard': 'operation_vanguard_case',
-                'chroma': 'chroma_case',
-                'chroma_2': 'chroma_2_case',
-                'falchion': 'falchion_case'
-            }
-            
-            with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
-                case_data = json.load(f)
-                
-                # Add all skins to the pool
-                for grade, items in case_data['skins'].items():
-                    for item in items:
-                        all_skins.append({
-                            'weapon': item['weapon'],
-                            'name': item['name'],
-                            'prices': item['prices'],
-                            'case_type': case_type,
-                            'case_file': case_file_mapping[case_type],
-                            'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
-                            'rarity': grade.upper()
-                        })
-        except Exception as e:
-            print(f"Error loading case {case_type}: {e}")
-            continue
-    
-    bots = []
-    used_names = set()
-    
-    for _ in range(num_bots):
-        available_names = [name for name in bot_names if name not in used_names]
-        if not available_names:
-            break
-        bot_name = random.choice(available_names)
-        used_names.add(bot_name)
-        
-        # Generate 1-10 items for the bot within price range
-        num_items = random.randint(1, 10)
-        bot_items = []
-        attempts = 0
-        max_attempts = 100
-        
-        while len(bot_items) < num_items and attempts < max_attempts:
-            attempts += 1
-            if not all_skins:
-                break
-                
-            skin = random.choice(all_skins)
-            
-            # Get valid wear options
-            wear_options = [w for w in skin['prices'].keys() 
-                          if not w.startswith('ST_') and w != 'NO']
-            if not wear_options:
-                continue
-                
-            wear = random.choice(wear_options)
-            stattrak = random.random() < 0.1  # 10% chance
-            
-            price_key = f"ST_{wear}" if stattrak else wear
-            try:
-                price = float(skin['prices'].get(price_key, 0))
-                
-                # Only add if price is within mode range
-                if mode_limits['min'] <= price <= mode_limits['max']:
-                    bot_items.append({
-                        'weapon': skin['weapon'],
-                        'name': skin['name'],
-                        'wear': wear,
-                        'rarity': skin['rarity'],
-                        'stattrak': stattrak,
-                        'price': price,
-                        'case_type': skin['case_type']
-                    })
-            except (ValueError, TypeError):
-                continue
-        
-        if bot_items:
-            bots.append({
-                'name': bot_name,
-                'items': bot_items
-            })
-    
-    return bots
-
 @app.route('/buy_skin', methods=['POST'])
 @login_required
 def buy_skin():
@@ -2480,35 +1926,18 @@ def get_featured_skins():
     
     current_time = time.time()
     
-    # Check if we need to refresh the skins
     if not FEATURED_SKINS or not LAST_REFRESH_TIME or (current_time - LAST_REFRESH_TIME) >= REFRESH_INTERVAL:
         try:
             # Load all case contents
-            case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']  # Add 'breakout'
             all_skins = []
             
             # Load skins from each case
-            for case_type in case_types:
+            for case_type in CASE_TYPES:  # Use CASE_TYPES from config
                 try:
-                    case_file_mapping = {
-                        'csgo': 'weapon_case_1',
-                        'esports': 'esports_2013',
-                        'bravo': 'operation_bravo',
-                        'csgo2': 'weapon_case_2',
-                        'esports_winter': 'esports_2013_winter',
-                        'winter_offensive': 'winter_offensive_case',
-                        'csgo3': 'weapon_case_3',  # csgo3 is included
-                        'phoenix': 'operation_phoenix_case',
-                        'huntsman': 'huntsman_case',  # Add huntsman case
-                        'breakout': 'operation_breakout_case',  # Add this line
-                        'esports_summer': 'esports_2014_summer',
-                        'vanguard': 'operation_vanguard_case',
-                        'chroma': 'chroma_case',
-                        'chroma_2': 'chroma_2_case',
-                        'falchion': 'falchion_case'
-                    }
-                    
-                    with open(f'cases/{case_file_mapping[case_type]}.json', 'r') as f:
+                    file_name = CASE_FILE_MAPPING.get(case_type)
+                    if not file_name:
+                        continue
+                    with open(f'cases/{file_name}.json', 'r') as f:
                         case_data = json.load(f)
                         
                         # Add all skins to the pool
@@ -2519,7 +1948,7 @@ def get_featured_skins():
                                     'name': item['name'],
                                     'prices': item['prices'],
                                     'case_type': case_type,
-                                    'case_file': case_file_mapping[case_type],
+                                    'case_file': file_name,
                                     'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
                                     'rarity': grade.upper()
                                 })
@@ -2583,94 +2012,6 @@ def upgrade_game():
                            exp=user.exp,
                            RANKS=RANKS,
                            RANK_EXP=RANK_EXP)
-
-def find_best_skin_combination(available_skins, target_value, max_skins=10):
-    """
-    Find the best combination of skins closest to the target value.
-    Prioritizes high-value single items and StatTrak versions.
-    """
-    # Create a list that includes both normal and StatTrak versions
-    all_skins = []
-    for skin in available_skins:
-        # Add normal version
-        all_skins.append(skin)
-        
-        # Add StatTrak version if price exists in case data
-        try:
-            case_file = CASE_FILE_MAPPING.get(skin['case_type'])
-            with open(f'cases/{case_file}.json', 'r') as f:
-                case_data = json.load(f)
-                for grade, items in case_data['skins'].items():
-                    for item in items:
-                        if item['weapon'] == skin['weapon'] and item['name'] == skin['name']:
-                            st_price_key = f"ST_{skin['wear']}"
-                            if st_price_key in item['prices']:
-                                st_skin = skin.copy()
-                                st_skin['stattrak'] = True
-                                st_skin['price'] = float(item['prices'][st_price_key])
-                                all_skins.append(st_skin)
-        except Exception as e:
-            print(f"Error adding StatTrak version: {e}")
-            continue
-
-    # Sort by price descending
-    all_skins = sorted(all_skins, key=lambda x: float(x['price']), reverse=True)
-
-    # First try to find a single high-value skin within 5% of target
-    for skin in all_skins:
-        price = float(skin['price'])
-        if abs(price - target_value) <= target_value * 0.05:
-            return [skin]
-
-    # If no single skin matches, try to find the highest value skin under target
-    # and combine with other skins to reach the target
-    result_skins = []
-    remaining_target = target_value
-    used_indices = set()
-
-    # First try to get the highest value skin possible
-    for i, skin in enumerate(all_skins):
-        price = float(skin['price'])
-        if price <= remaining_target * 1.05:  # Allow 5% over
-            result_skins.append(skin)
-            used_indices.add(i)
-            remaining_target -= price
-            break
-
-    # Then fill in with additional skins if needed
-    while remaining_target > 0 and len(result_skins) < max_skins:
-        best_skin = None
-        best_price_diff = float('inf')
-        best_index = -1
-
-        for i, skin in enumerate(all_skins):
-            if i in used_indices:
-                continue
-
-            price = float(skin['price'])
-            if price <= remaining_target:
-                diff = remaining_target - price
-                if diff < best_price_diff:
-                    best_skin = skin
-                    best_price_diff = diff
-                    best_index = i
-
-        if best_skin is None:
-            break
-
-        result_skins.append(best_skin)
-        used_indices.add(best_index)
-        remaining_target -= float(best_skin['price'])
-
-    # If we couldn't get close to target value, try different approach
-    total_value = sum(float(skin['price']) for skin in result_skins)
-    if total_value < target_value * 0.9:  # If we're getting less than 90% of target
-        # Try to find the best single high-value skin
-        best_single = max(all_skins, key=lambda x: float(x['price']))
-        if float(best_single['price']) > total_value:
-            return [best_single]
-
-    return result_skins
 
 @app.route('/play_upgrade', methods=['POST'])
 @login_required
@@ -2933,48 +2274,6 @@ def case_click():
         print(f"Error in case_click: {e}")
         return jsonify({'error': str(e)})
 
-def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float, is_stattrak: bool = False) -> float:
-    """Load and adjust price for a skin based on case data and float value"""
-    try:
-        # Get case file name
-        file_name = CASE_FILE_MAPPING.get(case_type)
-        if not file_name:
-            return 0
-            
-        # Load case data
-        with open(f'cases/{file_name}.json', 'r') as f:
-            case_data = json.load(f)
-            
-        # Find the skin in case data
-        weapon, name = skin_name.split(' | ')
-        for grade, skins in case_data['skins'].items():
-            for skin in skins:
-                if skin['weapon'] == weapon and skin['name'] == name:
-                    # Get the correct price key based on StatTrak
-                    price_key = f'ST_{wear}' if is_stattrak else wear
-                    if price_key not in skin['prices']:
-                        return 0
-                        
-                    # Get base price
-                    base_price = float(skin['prices'][price_key])
-                    
-                    # Adjust price based on float value
-                    adjusted_price = adjust_price_by_float(base_price, wear, float_value)
-                    
-                    # If it's StatTrak, we need to ensure we're using the StatTrak price as base
-                    if is_stattrak:
-                        # Calculate the adjustment multiplier from the base adjustment
-                        adjustment_multiplier = adjusted_price / base_price
-                        # Apply the same multiplier to the StatTrak price
-                        return base_price * adjustment_multiplier
-                    
-                    return adjusted_price
-                    
-        return 0
-    except Exception as e:
-        print(f"Error loading skin price: {e}")
-        return 0
-
 @app.route('/trading')
 @login_required
 def trading():
@@ -2987,240 +2286,20 @@ def trading():
                          RANKS=RANKS,
                          RANK_EXP=RANK_EXP)
 
-# Add this new function to generate and cache daily trades
-def generate_daily_trades():
-    """Generate 10 random trades for the day"""
-    try:
-        # Load all case data for available skins
-        case_types = ['csgo', 'esports', 'bravo', 'csgo2', 'esports_winter', 
-                     'winter_offensive', 'csgo3', 'phoenix', 'huntsman', 'breakout', 'esports_summer', 'vanguard', 'chroma', 'chroma_2', 'falchion']
-        all_skins = []
-        
-        # Load skins from each case
-        for case_type in case_types:
-            try:
-                file_name = CASE_FILE_MAPPING.get(case_type)
-                if not file_name:
-                    continue
-                    
-                with open(f'cases/{file_name}.json', 'r') as f:
-                    case_data = json.load(f)
-                    
-                    for grade, items in case_data['skins'].items():
-                        for item in items:
-                            skin_info = {
-                                'weapon': item['weapon'],
-                                'name': item['name'],
-                                'prices': item['prices'],
-                                'case_type': case_type,
-                                'case_file': file_name,
-                                'rarity': grade.upper()
-                            }
-                            all_skins.append(skin_info)
-            except Exception as e:
-                print(f"Error loading case {case_type}: {e}")
-                continue
-
-        bot_names = [
-            {"name": "_Astrid47", "avatar": "bot1.png"},
-            {"name": "Kai.Jayden_02", "avatar": "bot2.png"},
-            {"name": "Orion_Phoenix98", "avatar": "bot3.png"},
-            {"name": "ElaraB_23", "avatar": "bot4.png"},
-            {"name": "Theo.91", "avatar": "bot5.png"},
-            {"name": "Nova-Lyn", "avatar": "bot6.png"},
-            {"name": "FelixHaven19", "avatar": "bot7.png"},
-            {"name": "Aria.Stella85", "avatar": "bot8.png"},
-            {"name": "Lucien_Kai", "avatar": "bot9.png"},
-            {"name": "Mira-Eclipse", "avatar": "bot10.png"}
-        ]
-
-        trades = []
-        
-        # Generate exactly 10 trades
-        while len(trades) < 10:
-            trade_type = random.choice(['buy', 'sell', 'swap'])
-            bot = random.choice(bot_names)
-            
-            # Generate trade items
-            if trade_type == 'buy':
-                # Bot offers money for skins
-                num_requested = random.randint(1, 3)
-                requested_skins = []
-                
-                for _ in range(num_requested):
-                    skin = random.choice(all_skins)
-                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
-                    stattrak = random.random() < 0.1
-                    
-                    price_key = f"ST_{wear}" if stattrak else wear
-                    if price_key in skin['prices']:
-                        price = float(skin['prices'][price_key])
-                        requested_skins.append({
-                            'type': 'skin',
-                            'weapon': skin['weapon'],
-                            'name': skin['name'],
-                            'wear': wear,
-                            'stattrak': stattrak,
-                            'price': price,
-                            'case_type': skin['case_type'],
-                            'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
-                        })
-                
-                if not requested_skins:  # Skip if no valid skins were found
-                    continue
-                    
-                # Bot offers slightly more than market value to buy specific skins
-                total_value = sum(skin['price'] for skin in requested_skins)
-                variance = random.uniform(1.05, 1.15)  # Bot pays 5-15% more than market
-                money_amount = total_value * variance
-                
-                trade = {
-                    'type': 'buy',
-                    'botName': bot['name'],
-                    'botAvatar': bot['avatar'],
-                    'offering': [{'type': 'money', 'amount': money_amount}],
-                    'requesting': requested_skins
-                }
-                
-            elif trade_type == 'sell':
-                # Bot offers skins for money
-                num_offered = random.randint(1, 3)
-                offered_skins = []
-                total_value = 0
-                
-                for _ in range(num_offered):
-                    skin = random.choice(all_skins)
-                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
-                    stattrak = random.random() < 0.1
-                    
-                    price_key = f"ST_{wear}" if stattrak else wear
-                    if price_key in skin['prices']:
-                        price = float(skin['prices'][price_key])
-                        total_value += price
-                        offered_skins.append({
-                            'type': 'skin',
-                            'weapon': skin['weapon'],
-                            'name': skin['name'],
-                            'wear': wear,
-                            'stattrak': stattrak,
-                            'price': price,
-                            'case_type': skin['case_type'],
-                            'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
-                        })
-                
-                if not offered_skins:  # Skip if no valid skins were found
-                    continue
-                
-                # Bot sells at a premium - users pay more for specific skins
-                markup = random.uniform(1.15, 1.35)  # 15-35% markup for desired skins
-                money_requested = total_value * markup
-                
-                trade = {
-                    'type': 'sell',
-                    'botName': bot['name'],
-                    'botAvatar': bot['avatar'],
-                    'offering': offered_skins,
-                    'requesting': [{'type': 'money', 'amount': money_requested}]
-                }
-                
-            else:  # swap
-                # Bot offers skins for other skins
-                num_each = random.randint(1, 2)
-                offered_skins = []
-                requested_skins = []
-                offered_value = 0
-                
-                for _ in range(num_each):
-                    # Offered skins
-                    skin = random.choice(all_skins)
-                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
-                    stattrak = random.random() < 0.1
-                    
-                    price_key = f"ST_{wear}" if stattrak else wear
-                    if price_key in skin['prices']:
-                        price = float(skin['prices'][price_key])
-                        offered_value += price
-                        offered_skins.append({
-                            'type': 'skin',
-                            'weapon': skin['weapon'],
-                            'name': skin['name'],
-                            'wear': wear,
-                            'stattrak': stattrak,
-                            'price': price,
-                            'case_type': skin['case_type'],
-                            'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
-                        })
-                
-                if not offered_skins:  # Skip if no valid skins were found
-                    continue
-                    
-                # Bot offers fair-ish trades but still wants a small premium
-                target_value = offered_value * random.uniform(1.05, 1.15)  # 5-15% premium
-                current_value = 0
-                
-                while current_value < target_value and len(requested_skins) < 3:
-                    skin = random.choice(all_skins)
-                    wear = random.choice(['FN', 'MW', 'FT', 'WW', 'BS'])
-                    stattrak = random.random() < 0.1
-                    
-                    price_key = f"ST_{wear}" if stattrak else wear
-                    if price_key in skin['prices']:
-                        price = float(skin['prices'][price_key])
-                        if current_value + price <= target_value * 1.1:  # Keep it close to target
-                            current_value += price
-                            requested_skins.append({
-                                'type': 'skin',
-                                'weapon': skin['weapon'],
-                                'name': skin['name'],
-                                'wear': wear,
-                                'stattrak': stattrak,
-                                'price': price,
-                                'case_type': skin['case_type'],
-                                'case_file': skin['case_file'],
-                                'rarity': skin['rarity']
-                            })
-                
-                if not requested_skins:  # Skip if no valid skins were found
-                    continue
-                
-                trade = {
-                    'type': 'swap',
-                    'botName': bot['name'],
-                    'botAvatar': bot['avatar'],
-                    'offering': offered_skins,
-                    'requesting': requested_skins
-                }
-            
-            # Only add valid trades until we have 10
-            if ((trade['offering'] and trade['requesting']) and
-                (len(trade['offering']) > 0 and len(trade['requesting']) > 0)):
-                trades.append(trade)
-        
-        # Save trades with current date
-        daily_trades = {
-            'date': date.today().isoformat(),
-            'trades': trades
-        }
-        
-        with open('data/daily_trades.json', 'w') as f:
-            json.dump(daily_trades, f, indent=2)
-            
-        return trades
-        
-    except Exception as e:
-        print(f"Error generating daily trades: {e}")
-        traceback.print_exc()  # Add this to get more detailed error info
-        return []
-
-# Modify the get_trades route
 @app.route('/get_trades')
 @login_required
 def get_trades():
     try:
         trades_data = load_daily_trades()
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        
+        # Check if trades need to be regenerated
+        if not trades_data.get('trades') or trades_data.get('date') != current_date:
+            # Generate new trades for the day
+            trades_data['trades'] = generate_daily_trades()
+            trades_data['date'] = current_date
+            trades_data['completed_trades'] = []  # Reset completed trades
+            save_daily_trades(trades_data)
         
         # Filter out completed trades
         active_trades = [trade for trade in trades_data['trades'] 
@@ -3382,107 +2461,23 @@ def chat_with_bot():
         if not bot_name or not message:
             return jsonify({'error': 'Missing bot name or message'})
             
-        # Get bot's personality
         personality = BOT_PERSONALITIES.get(bot_name, "A friendly CS:GO skin trader")
-        
-        # Load current trades from daily_trades.json
-        try:
-            with open('data/daily_trades.json', 'r') as f:
-                daily_trades = json.load(f)
-                trades_info = []
-                for trade in daily_trades.get('trades', []):
-                    # Format each trade into a readable string
-                    offering = []
-                    for item in trade['offering']:
-                        if item['type'] == 'money':
-                            offering.append(f"${item['amount']}")
-                        else:
-                            offering.append(f"{item['weapon']} | {item['name']} ({item['wear']})")
-                    
-                    requesting = []
-                    for item in trade['requesting']:
-                        if item['type'] == 'money':
-                            requesting.append(f"${item['amount']}")
-                        else:
-                            requesting.append(f"{item['weapon']} | {item['name']} ({item['wear']})")
-                    
-                    trades_info.append(f"{trade['botName']} is trading: {', '.join(offering)} for {', '.join(requesting)}")
-                
-                trades_context = "\n".join(trades_info)
-        except Exception as e:
-            print(f"Error loading trades: {e}")
-            trades_context = "No active trades available."
-        
-        # Create the system message with trades context
-        system_message = f"""You are {bot_name}, {personality} in a CS:GO trading chatroom.
-Keep these guidelines in mind:
-- Keep all messages EXTREMELY short (max 10 words)
-- Use lots of slang and abbreviations
-- Be toxic and aggressive
-- Use emotes like xD kekw etc
-- Never write paragraphs or long responses
-- React to others naturally but briefly
-- If someone's rude, be toxic back
-- Each bot should stay in character:
-  * _Astrid47: elitist trader
-  * Kai.Jayden_02: forsen viewer, spams KEKW and PepeLaugh
-  * Orion_Phoenix98: easily triggered
-  * ElaraB_23: chill until provoked
-  * Theo.91: forsen viewer, spams OMEGALUL and Pepega
-  * Nova-Lyn: toxic pro-wannabe
-  * FelixHaven19: know-it-all
-  * Aria.Stella85: stattrak fanatic
-  * Lucien_Kai: pattern snob
-  * Mira-Eclipse: sticker elitist
+        trades_context = get_trades_context()
+        system_message = create_system_message(bot_name, personality, trades_context)
 
-Current active trades in the room:
-{trades_context}
-
-For Twitch chat style bots (Kai.Jayden_02 and Theo.91):
-- Use lots of Twitch emotes (KEKW, PepeLaugh, OMEGALUL, Pepega, BATCHEST)
-- Type in broken English
-- Use forsen-style responses
-- Example messages:
-  * "KEKW HE DOESNT KNOW PepeLaugh"
-  * "Pepega Clap WR TRADE"
-  * "BATCHEST I HECKIN LOVE TRADING"
-  * "forsenE nice trade bajs"
-  * "OMEGALUL SO BAD"
-
-You can reference and comment on any active trades when relevant.
-Never break character or write long messages."""
-
-        # Example responses to guide the AI
+        # Add example responses
         EXAMPLE_RESPONSES = [
-            "kys noob",
-            "trash inv fr fr",
-            "ratio + didn't ask",
-            "nice pattern KEKW",
-            "ur poor lmao",
-            "actual silver trader xD",
-            "cope harder kid",
-            "nice lowball kekw",
-            "imagine being this broke",
+            "kys noob", "trash inv fr fr", "ratio + didn't ask",
+            "nice pattern KEKW", "ur poor lmao", "actual silver trader xD",
+            "cope harder kid", "nice lowball kekw", "imagine being this broke",
             "skill issue + L"
         ]
-
-        # Add these examples to the system message
         system_message += f"\n\nExample responses: {', '.join(EXAMPLE_RESPONSES)}"
 
-        # Format chat history for context
-        conversation_history = []
-        for msg in chat_history[-5:]:  # Only use last 5 messages for context
-            role = "assistant" if msg['isBot'] else "user"
-            # Don't include the sender name in the content since it's already shown in the chat
-            content = msg['message']
-            conversation_history.append({"role": role, "content": content})
-
-        # Add the current message without sender name
-        conversation_history.append({"role": "user", "content": message})
+        conversation_history = format_conversation_history(chat_history, message)
 
         try:
             print("Sending request to OpenAI API...")
-            
             completion = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
@@ -3527,67 +2522,9 @@ def select_responding_bot():
         message = data.get('message')
         chat_history = data.get('chatHistory', [])
         
-        system_message = """You are a bot selector for a CS:GO trading chat.
-        Based on the recent messages and context, select ONE bot that would be most appropriate to respond.
-        
-        STRICT TRADING RULES:
-        * Bots will defend their own trades if criticized
-        * Bots cannot criticize their own trades
-        * Bots can criticize other bots' trades
-        * If someone asks about a bot's trade, that bot should respond
-        * Bots should be proud of their own trades
-        * If someone asks about trades, prefer the bot who owns the trade being discussed
-
-        STRICT PERSONALITY RULES:
-        * Only Kai.Jayden_02 and Theo.91 can use Twitch emotes (KEKW, PepeLaugh, OMEGALUL, etc)
-        * If someone mentions a bot by name, that bot MUST respond
-        * If someone criticizes/challenges a bot, that bot MUST respond
-        * If the last message was directed at a specific bot, that bot should respond
-        * Each bot must stay strictly in character:
-            - _Astrid47: elitist trader, never uses emotes
-            - Kai.Jayden_02: pure Twitch chatter, always uses emotes
-            - Orion_Phoenix98: serious collector, gets angry if disrespected
-            - ElaraB_23: casual and chill, uses xD but no Twitch emotes
-            - Theo.91: pure Twitch chatter, always uses emotes
-            - Nova-Lyn: toxic pro-wannabe, uses basic emotes only
-            - FelixHaven19: know-it-all, corrects others
-            - Aria.Stella85: StatTrak obsessed, judges non-ST users
-            - Lucien_Kai: pattern snob, criticizes patterns
-            - Mira-Eclipse: sticker elitist, judges sticker combos
-
-        Recent chat history:
-        {chat_history}
-
-        Current message:
-        {message}
-
-        Respond ONLY with the username of the single most appropriate bot to respond, nothing else."""
-
-        # Format chat history for context
-        conversation_history = []
-        for msg in chat_history[-5:]:
-            role = "assistant" if msg['isBot'] else "user"
-            content = f"{msg['sender']}: {msg['message']}"
-            conversation_history.append({"role": role, "content": content})
-
-        # Add the current message
-        conversation_history.append({"role": "user", "content": f"User: {message}"})
-
-        completion = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": system_message},
-                *conversation_history
-            ],
-            max_tokens=20,
-            temperature=0.3  # Lower temperature for more consistent selections
-        )
-        
-        selected_bot = completion.choices[0].message.content.strip()
-        
-        # Validate the selected bot
-        if selected_bot not in BOT_PERSONALITIES:
-            selected_bot = random.choice(list(BOT_PERSONALITIES.keys()))
+        system_message = format_bot_selection_system_message(chat_history, message)
+        conversation_history = format_bot_selection_history(chat_history, message)
+        selected_bot = select_bot_with_ai(system_message, conversation_history)
             
         return jsonify({
             'success': True,
@@ -3601,43 +2538,6 @@ def select_responding_bot():
             'error': 'Failed to select bot',
             'details': str(e)
         })
-
-# Add this helper function near the top of the file
-def group_identical_skins(inventory):
-    """Group identical skins and count their occurrences"""
-    skin_groups = {}
-    
-    for item in inventory:
-        if item.get('is_case'):
-            continue
-            
-        # Create a unique key for each distinct skin
-        key = (
-            item['weapon'],
-            item['name'],
-            item['wear'],
-            item['stattrak'],
-            item['case_type'],
-            item['rarity']
-        )
-        
-        if key in skin_groups:
-            skin_groups[key]['count'] += 1
-            # Use the highest timestamp to keep the most recent
-            skin_groups[key]['timestamp'] = max(
-                skin_groups[key]['timestamp'],
-                item.get('timestamp', 0)
-            )
-        else:
-            item_copy = item.copy()
-            item_copy['count'] = 1
-            skin_groups[key] = item_copy
-    
-    # Convert back to list and sort by timestamp
-    grouped_items = list(skin_groups.values())
-    grouped_items.sort(key=lambda x: x.get('timestamp', 0), reverse=True)
-    
-    return grouped_items
 
 # Add this route after the other routes
 @app.route('/achievements')
@@ -3783,325 +2683,6 @@ def achievements():
                          RANKS=RANKS,
                          RANK_EXP=RANK_EXP)
 
-# Add this function near the top with other helper functions
-def update_earnings_achievements(user_data: dict, amount_earned):
-    """Update earnings-related achievements when user earns money"""
-    
-    # Initialize achievements if needed
-    if 'achievements' not in user_data:
-        user_data['achievements'] = {
-            'completed': [],
-            'in_progress': {}
-        }
-    
-    # Initialize stats if needed
-    if 'stats' not in user_data:
-        user_data['stats'] = {
-            'total_earnings': 0
-        }
-    
-    # Update total earnings
-    user_data['stats']['total_earnings'] += amount_earned
-    total_earnings = user_data['stats']['total_earnings']
-    
-    # Define achievement tiers
-    tiers = [
-        {
-            'id': 'earnings_1',
-            'title': 'Starting Out',
-            'description': 'Earn your first $1,000',
-            'target_value': 1000,
-            'reward': 100,
-            'exp_reward': 1000,
-            'icon': '💵'
-        },
-        {
-            'id': 'earnings_2',
-            'title': 'Making Moves',
-            'description': 'Earn your first $10,000',
-            'target_value': 10000,
-            'reward': 1000,
-            'exp_reward': 5000,  # Add EXP reward
-            'icon': '💰'
-        },
-        {
-            'id': 'earnings_3',
-            'title': 'Known Mogul',
-            'description': 'Earn your first $50,000',
-            'target_value': 50000,
-            'reward': 5000,
-            'exp_reward': 10000,  # Add EXP reward
-            'icon': '🏦'
-        },
-        {
-            'id': 'earnings_4',
-            'title': 'Expert Trader',
-            'description': 'Earn your first $100,000',
-            'target_value': 100000,
-            'reward': 10000,
-            'exp_reward': 20000,  # Add EXP reward
-            'icon': '💎'
-        },
-        {
-            'id': 'earnings_5',
-            'title': 'Millionaire',
-            'description': 'Earn your first $1,000,000',
-            'target_value': 1000000,
-            'reward': 100000,
-            'exp_reward': 50000,  # Add EXP reward
-            'icon': '🏆'
-        }
-    ]
-    
-    # Find current tier
-    current_tier = None
-    for tier in tiers:
-        if tier['id'] not in user_data['achievements']['completed']:
-            current_tier = tier
-            break
-    
-    if current_tier:
-        # Update or add current tier achievement
-        if current_tier['id'] not in user_data['achievements']['in_progress']:
-            current_tier['current_value'] = total_earnings
-            current_tier['category'] = 'special'
-            current_tier['progress'] = min(100, (total_earnings / current_tier['target_value']) * 100)
-            user_data['achievements']['in_progress'].update({
-                current_tier['id']: current_tier
-            })
-        else:
-            # Update progress
-            if total_earnings >= current_tier['target_value']:
-                # Complete current tier
-                user_data['achievements']['completed'].append(current_tier['id'])
-                user_data['balance'] += current_tier['reward']
-                
-                # Add EXP reward
-                current_exp = float(user_data.get('exp', 0))
-                current_rank = int(user_data.get('rank', 0))
-                new_exp = current_exp + current_tier['exp_reward']
-                
-                # Check for rank up
-                while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
-                    new_exp -= RANK_EXP[current_rank]
-                    current_rank += 1
-                
-                user_data['exp'] = new_exp
-                user_data['rank'] = current_rank
-                
-                # Remove only this achievement from in_progress
-                del user_data['achievements']['in_progress'][current_tier['id']]
-                # Recursively call to set up next tier
-                update_earnings_achievements(user_data, 0)
-            else:
-                # Update progress
-                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_earnings
-                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
-                    (total_earnings / current_tier['target_value']) * 100
-
-def update_case_achievements(user_data: dict):
-    """Update case opening related achievements"""
-    
-    # Initialize achievements if needed
-    if 'achievements' not in user_data:
-        user_data['achievements'] = {
-            'completed': [],
-            'in_progress': {}
-        }
-    
-    # Get current total cases opened
-    total_cases = user_data['stats']['total_cases_opened']
-    
-    # Define case achievement tiers
-    tiers = [
-        {
-            'id': 'cases_1',
-            'title': 'Case Opener',
-            'description': 'Open 10 cases',
-            'target_value': 10,
-            'reward': 100,
-            'exp_reward': 0,
-            'icon': '📦'
-        },
-        {
-            'id': 'cases_2',
-            'title': 'Case Enthusiast',
-            'description': 'Open 100 cases',
-            'target_value': 100,
-            'reward': 500,
-            'exp_reward': 0,
-            'icon': '📦'
-        },
-        {
-            'id': 'cases_3',
-            'title': 'Case Veteran',
-            'description': 'Open 1,000 cases',
-            'target_value': 1000,
-            'reward': 1000,
-            'exp_reward': 0,
-            'icon': '📦'
-        },
-        {
-            'id': 'cases_4',
-            'title': 'Case Master',
-            'description': 'Open 10,000 cases',
-            'target_value': 10000,
-            'reward': 2000,
-            'exp_reward': 0,
-            'icon': '📦'
-        },
-        {
-            'id': 'cases_5',
-            'title': 'Case God',
-            'description': 'Open 100,000 cases',
-            'target_value': 100000,
-            'reward': 5000,
-            'exp_reward': 0,
-            'icon': '📦'
-        }
-    ]
-    
-    # Find current tier
-    current_tier = None
-    for tier in tiers:
-        if tier['id'] not in user_data['achievements']['completed']:
-            current_tier = tier
-            break
-    
-    if current_tier:
-        # Update or add current tier achievement
-        if current_tier['id'] not in user_data['achievements']['in_progress']:
-            current_tier['current_value'] = total_cases
-            current_tier['category'] = 'cases'
-            current_tier['progress'] = min(100, (total_cases / current_tier['target_value']) * 100)
-            user_data['achievements']['in_progress'].update({
-                current_tier['id']: current_tier
-            })
-        else:
-            # Update progress
-            if total_cases >= current_tier['target_value']:
-                # Complete current tier
-                user_data['achievements']['completed'].append(current_tier['id'])
-                user_data['balance'] += current_tier['reward']
-                
-                # Remove only this achievement from in_progress
-                del user_data['achievements']['in_progress'][current_tier['id']]
-                # Recursively call to set up next tier
-                update_case_achievements(user_data)
-            else:
-                # Update progress
-                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_cases
-                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
-                    (total_cases / current_tier['target_value']) * 100
-
-def update_click_achievements(user_data: dict):
-    """Update click-related achievements"""
-    
-    # Initialize achievements if needed
-    if 'achievements' not in user_data:
-        user_data['achievements'] = {
-            'completed': [],
-            'in_progress': {}
-        }
-    
-    # Get current total clicks
-    total_clicks = user_data['stats']['total_clicks']
-    
-    # Define click achievement tiers
-    tiers = [
-        {
-            'id': 'clicks_1',
-            'title': 'Dedicated Clicker',
-            'description': 'Click 1,000 times',
-            'target_value': 1000,
-            'reward': 100,
-            'exp_reward': 50,
-            'icon': '🖱️'
-        },
-        {
-            'id': 'clicks_2',
-            'title': 'Click Enthusiast',
-            'description': 'Click 5,000 times',
-            'target_value': 5000,
-            'reward': 200,
-            'exp_reward': 100,
-            'icon': '🖱️'
-        },
-        {
-            'id': 'clicks_3',
-            'title': 'Click Master',
-            'description': 'Click 10,000 times',
-            'target_value': 10000,
-            'reward': 400,
-            'exp_reward': 200,
-            'icon': '🖱️'
-        },
-        {
-            'id': 'clicks_4',
-            'title': 'Click Expert',
-            'description': 'Click 20,000 times',
-            'target_value': 20000,
-            'reward': 800,
-            'exp_reward': 400,
-            'icon': '🖱️'
-        },
-        {
-            'id': 'clicks_5',
-            'title': 'Click God',
-            'description': 'Click 50,000 times',
-            'target_value': 50000,
-            'reward': 2000,
-            'exp_reward': 1000,
-            'icon': '🖱️'
-        }
-    ]
-    
-    # Find current tier
-    current_tier = None
-    for tier in tiers:
-        if tier['id'] not in user_data['achievements']['completed']:
-            current_tier = tier
-            break
-    
-    if current_tier:
-        # Update or add current tier achievement
-        if current_tier['id'] not in user_data['achievements']['in_progress']:
-            current_tier['current_value'] = total_clicks
-            current_tier['category'] = 'clicks'
-            current_tier['progress'] = min(100, (total_clicks / current_tier['target_value']) * 100)
-            user_data['achievements']['in_progress'].update({
-                current_tier['id']: current_tier
-            })
-        else:
-            # Update progress
-            if total_clicks >= current_tier['target_value']:
-                # Complete current tier
-                user_data['achievements']['completed'].append(current_tier['id'])
-                user_data['balance'] += current_tier['reward']
-                
-                # Add EXP reward
-                current_exp = float(user_data.get('exp', 0))
-                current_rank = int(user_data.get('rank', 0))
-                new_exp = current_exp + current_tier['exp_reward']
-                
-                # Check for rank up
-                while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
-                    new_exp -= RANK_EXP[current_rank]
-                    current_rank += 1
-                
-                user_data['exp'] = new_exp
-                user_data['rank'] = current_rank
-                
-                # Remove only this achievement from in_progress
-                del user_data['achievements']['in_progress'][current_tier['id']]
-                # Recursively call to set up next tier
-                update_click_achievements(user_data)
-            else:
-                # Update progress
-                user_data['achievements']['in_progress'][current_tier['id']]['current_value'] = total_clicks
-                user_data['achievements']['in_progress'][current_tier['id']]['progress'] = \
-                    (total_clicks / current_tier['target_value']) * 100
-
 @app.route('/clicker')
 @login_required
 def clicker():
@@ -4175,67 +2756,6 @@ def complete_achievement():
         print(f"Error completing achievement: {e}")
         return jsonify({'error': str(e)})
 
-# Add these helper functions
-def load_daily_trades():
-    """Load daily trades from JSON file"""
-    try:
-        with open('data/daily_trades.json', 'r') as f:
-            data = json.load(f)
-            # Initialize completed_trades if it doesn't exist
-            if 'completed_trades' not in data:
-                data['completed_trades'] = []
-            return data
-    except FileNotFoundError:
-        return {'date': datetime.now().strftime('%Y-%m-%d'), 'trades': [], 'completed_trades': []}
-
-def save_daily_trades(trades_data):
-    """Save daily trades to JSON file"""
-    with open('data/daily_trades.json', 'w') as f:
-        json.dump(trades_data, f, indent=2)
-
-# Add this helper function near the top with other helpers
-def generate_float_for_wear(wear: str) -> float:
-    """Generate a random float value based on wear condition"""
-    wear_ranges = {
-        'FN': (0.00, 0.07),
-        'MW': (0.07, 0.15),
-        'FT': (0.15, 0.38),
-        'WW': (0.38, 0.45),
-        'BS': (0.45, 1.00)
-    }
-    
-    if wear not in wear_ranges:
-        return 0.0
-        
-    min_float, max_float = wear_ranges[wear]
-    return round(random.uniform(min_float, max_float), 8)
-
-# Add this helper function near the top with other helpers
-def adjust_price_by_float(price: float, wear: str, float_value: float) -> float:
-    """Adjust item price based on float value"""
-
-    if wear == 'FN':
-        if float_value < 0.001:
-            return price * 1.5
-        elif float_value < 0.006:
-            return price * 1.2
-        elif float_value < 0.015:
-            return price * 1.1
-        else:
-            return price
-            
-    elif wear == 'BS':
-        if float_value > 0.97:
-            return price * 0.5
-        elif float_value > 0.93:
-            return price * 0.7
-        elif float_value > 0.90:
-            return price * 0.85
-        else:
-            return price
-    
-    return price
-
 @app.route('/sell/item', methods=['POST'])
 def sell_specific_item():
     try:
@@ -4284,9 +2804,7 @@ def sell_specific_item():
         
         # Save updated user data
         save_user_data(user_data)
-        
-        # ... rest of the function (achievement checking, etc.) remains the same ...
-        
+                
         return jsonify({
             'success': True,
             'balance': user_data['balance'],

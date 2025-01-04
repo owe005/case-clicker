@@ -1,147 +1,95 @@
 {
-  "balance": 10171.310621026552,
+  "balance": 0.0,
   "inventory": [
     {
-      "weapon": "Karambit",
-      "name": "Fade",
+      "weapon": "UMP-45",
+      "name": "Labyrinth",
+      "rarity": "BLUE",
       "wear": "FN",
-      "price": 2877.408,
-      "base_price": 2397.84,
-      "rarity": "GOLD",
-      "case_type": "phoenix",
       "stattrak": false,
-      "timestamp": 1735953494.2806673,
-      "float_value": 0.00294182
+      "price": 0.276,
+      "timestamp": 1736007098.2945633,
+      "case_type": "breakout",
+      "float_value": 0.00102551,
+      "is_case": false
     },
     {
-      "weapon": "AK-47",
-      "name": "Red Laminate",
-      "rarity": "PINK",
+      "weapon": "AUG",
+      "name": "Wings",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 31.21,
+      "timestamp": 1736007089.9504397,
+      "case_type": "csgo",
+      "float_value": 0.0741573,
+      "is_case": false
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Rocket Pop",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 2.19,
+      "timestamp": 1736006951.8580344,
+      "case_type": "falchion",
+      "float_value": 0.12735309,
+      "is_case": false,
+      "base_price": 2.19
+    },
+    {
+      "weapon": "Nova",
+      "name": "Ranger",
+      "rarity": "BLUE",
       "wear": "FN",
       "stattrak": false,
-      "price": 275.0,
-      "timestamp": 1735953488.9238572,
+      "price": 0.71,
+      "timestamp": 1736004785.5208983,
+      "case_type": "falchion",
+      "float_value": 0.03548023,
+      "base_price": 0.71
+    },
+    {
+      "weapon": "FAMAS",
+      "name": "Doomkitty",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 3.22,
+      "timestamp": 1736004641.2969291,
       "case_type": "esports",
-      "is_case": false,
-      "float_value": 0.05989845,
-      "base_price": 275.0
-    },
-    {
-      "weapon": "AK-47",
-      "name": "Wasteland Rebel",
-      "rarity": "RED",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 24.47,
-      "timestamp": 1735953487.7672822,
-      "case_type": "vanguard",
-      "is_case": false,
-      "float_value": 0.33269458,
-      "base_price": 24.47
-    },
-    {
-      "weapon": "AK-47",
-      "name": "Wasteland Rebel",
-      "rarity": "RED",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 24.47,
-      "timestamp": 1735953487.4766376,
-      "case_type": "vanguard",
-      "is_case": false,
-      "float_value": 0.27194832,
-      "base_price": 24.47
-    },
-    {
-      "weapon": "AK-47",
-      "name": "Wasteland Rebel",
-      "rarity": "RED",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 24.47,
-      "timestamp": 1735953487.1767154,
-      "case_type": "vanguard",
-      "is_case": false,
-      "float_value": 0.15303987,
-      "base_price": 24.47
-    },
-    {
-      "weapon": "AK-47",
-      "name": "Wasteland Rebel",
-      "rarity": "RED",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 24.47,
-      "timestamp": 1735953486.9994223,
-      "case_type": "vanguard",
-      "is_case": false,
-      "float_value": 0.23593682,
-      "base_price": 24.47
-    },
-    {
-      "weapon": "Flip Knife",
-      "name": "Forest DDPAT",
-      "rarity": "GOLD",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 146.46,
-      "timestamp": 1735953486.694561,
-      "case_type": "phoenix",
-      "is_case": false,
-      "float_value": 0.07840976,
-      "base_price": 146.46
-    },
-    {
-      "weapon": "Flip Knife",
-      "name": "Forest DDPAT",
-      "rarity": "GOLD",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 146.46,
-      "timestamp": 1735953486.1320062,
-      "case_type": "phoenix",
-      "is_case": false,
-      "float_value": 0.10460908,
-      "base_price": 146.46
-    },
-    {
-      "weapon": "Flip Knife",
-      "name": "Forest DDPAT",
-      "rarity": "GOLD",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 146.46,
-      "timestamp": 1735953485.7028365,
-      "case_type": "phoenix",
-      "is_case": false,
-      "float_value": 0.13611749,
-      "base_price": 146.46
-    },
-    {
-      "name": "Falchion Case",
-      "image": "falchion_case.png",
-      "is_case": true,
-      "type": "falchion",
-      "quantity": 10
+      "float_value": 0.16690995,
+      "base_price": 3.22
     }
   ],
-  "exp": 141.0,
-  "rank": 5,
+  "exp": 31.0,
+  "rank": 3,
   "upgrades": {
     "click_value": 1,
     "max_multiplier": 1,
-    "auto_clicker": 4,
+    "auto_clicker": 0,
     "combo_speed": 1,
     "critical_strike": 0,
     "progress_per_click": 1,
     "case_quality": 1,
-    "multi_open": 5
+    "multi_open": 1
   },
   "achievements": {
-    "completed": [
-      "earnings_1"
-    ],
+    "completed": [],
     "in_progress": {
+      "earnings_1": {
+        "id": "earnings_1",
+        "title": "Starting Out",
+        "description": "Earn your first $1,000",
+        "target_value": 1000,
+        "reward": 100,
+        "exp_reward": 1000,
+        "icon": "\ud83d\udcb5",
+        "current_value": 0,
+        "category": "special",
+        "progress": 0.0
+      },
       "cases_1": {
         "id": "cases_1",
         "title": "Case Opener",
@@ -150,9 +98,9 @@
         "reward": 100,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 0,
+        "current_value": 5,
         "category": "cases",
-        "progress": 0.0
+        "progress": 50.0
       },
       "clicks_1": {
         "id": "clicks_1",
@@ -162,30 +110,18 @@
         "reward": 100,
         "exp_reward": 50,
         "icon": "\ud83d\uddb1\ufe0f",
-        "current_value": 481,
+        "current_value": 0,
         "category": "clicks",
-        "progress": 48.1
-      },
-      "earnings_2": {
-        "id": "earnings_2",
-        "title": "Making Moves",
-        "description": "Earn your first $10,000",
-        "target_value": 10000,
-        "reward": 1000,
-        "exp_reward": 5000,
-        "icon": "\ud83d\udcb0",
-        "current_value": 3696.273,
-        "category": "special",
-        "progress": 36.96273
+        "progress": 0.0
       }
     }
   },
   "stats": {
-    "total_earnings": 3696.273,
-    "total_cases_opened": 0,
+    "total_earnings": 0,
+    "total_cases_opened": 5,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 481,
+    "total_clicks": 0,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

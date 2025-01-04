@@ -48,24 +48,7 @@
                                 .replace('galil ar', 'galil')
                                 .replace('galilar', 'galil') %}
                             {% set skin_name = first_item.name.lower().replace(' ', '_') %}
-                            {% set case_mapping = {
-                                'csgo': 'weapon_case_1',
-                                'esports': 'esports_2013',
-                                'bravo': 'operation_bravo_case',
-                                'csgo2': 'weapon_case_2', 
-                                'esports_winter': 'esports_2013_winter',
-                                'winter_offensive': 'winter_offensive_case',
-                                'csgo3': 'weapon_case_3',
-                                'phoenix': 'operation_phoenix_case',
-                                'huntsman': 'huntsman_case',
-                                'breakout': 'operation_breakout_case',
-                                'esports_summer': 'esports_2014_summer',
-                                'vanguard': 'operation_vanguard_case',
-                                'chroma': 'chroma_case',
-                                'chroma_2': 'chroma_2_case',
-                                'falchion': 'falchion_case'
-                            } %}
-                            {% set case_path = case_mapping[first_item.case_type] if first_item.case_type in case_mapping else 'weapon_case_1' %}
+                            {% set case_path = CASE_MAPPING[first_item.case_type] if first_item.case_type in CASE_MAPPING else 'weapon_case_1' %}
                             <div class="skin-image-wrapper">
                                 <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
                                      alt="{{ first_item.weapon }} | {{ first_item.name }}">
@@ -102,24 +85,7 @@
                                 .replace('galil ar', 'galil')
                                 .replace('galilar', 'galil') %}
                             {% set skin_name = first_item.name.lower().replace(' ', '_') %}
-                            {% set case_mapping = {
-                                'csgo': 'weapon_case_1',
-                                'esports': 'esports_2013',
-                                'bravo': 'operation_bravo_case',
-                                'csgo2': 'weapon_case_2',
-                                'esports_winter': 'esports_2013_winter',
-                                'winter_offensive': 'winter_offensive_case',
-                                'csgo3': 'weapon_case_3',
-                                'phoenix': 'operation_phoenix_case',
-                                'huntsman': 'huntsman_case',
-                                'breakout': 'operation_breakout_case',
-                                'esports_summer': 'esports_2014_summer',
-                                'vanguard': 'operation_vanguard_case',
-                                'chroma': 'chroma_case',
-                                'chroma_2': 'chroma_2_case',
-                                'falchion': 'falchion_case'
-                            } %}
-                            {% set case_path = case_mapping[first_item.case_type] if first_item.case_type in case_mapping else 'weapon_case_1' %}
+                            {% set case_path = CASE_MAPPING[first_item.case_type] if first_item.case_type in CASE_MAPPING else 'weapon_case_1' %}
                             <div class="skin-image-wrapper">
                                 <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
                                      alt="{{ first_item.weapon }} | {{ first_item.name }}">
@@ -1356,24 +1322,6 @@ function createItemElement(item) {
             <div class="item-skin">Rare Special Item</div>
         `;
     } else if (item.rarity === 'CONTRABAND') {
-        // For contraband items, show the actual item
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case',
-            'csgo3': 'weapon_case_3',
-            'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case',
-            'esports_summer': 'esports_2014_summer',
-            'vanguard': 'operation_vanguard_case',
-            'chroma': 'chroma_case',
-            'chroma_2': 'chroma_2_case',
-            'falchion': 'falchion_case'
-        };
         const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
         
         const weaponName = item.weapon.toLowerCase()
@@ -1406,29 +1354,13 @@ function createItemElement(item) {
             .replace(' ', '')
             .replace('553', '553')
             .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
+            .replace('galilar', 'galil')  // Add this line to handle 'galilar' case
+            .replace(/\s+/g, '');  // Remove any remaining spaces
+            
         const skinName = item.name.toLowerCase()
             .replace(/ /g, '_');
         
-        // Update case path mapping
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case',
-            'csgo3': 'weapon_case_3',
-            'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case',
-            'esports_summer': 'esports_2014_summer',
-            'vanguard': 'operation_vanguard_case',
-            'chroma': 'chroma_case',
-            'chroma_2': 'chroma_2_case',
-            'falchion': 'falchion_case'
-        };
-        const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+        const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
         
         const img = document.createElement('img');
         img.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
@@ -1475,29 +1407,10 @@ function showItemShowcase(items) {
             const weaponName = items[index].weapon.toLowerCase()
                 .replace('-', '')
                 .replace(' ', '')
-                .replace('553', '553')
-                .replace('galil ar', 'galil')
-                .replace('galilar', 'galil');
-            const skinName = items[index].name.toLowerCase().replace(/ /g, '_');
+                .replace('553', '553');
+            const skinName = items[index].name.toLowerCase().replace(' ', '_');
             
-            const casePathMapping = {
-                'csgo': 'weapon_case_1',
-                'esports': 'esports_2013',
-                'bravo': 'operation_bravo_case',
-                'csgo2': 'weapon_case_2',
-                'esports_winter': 'esports_2013_winter',
-                'winter_offensive': 'winter_offensive_case',
-                'csgo3': 'weapon_case_3',
-                'phoenix': 'operation_phoenix_case',
-                'huntsman': 'huntsman_case',
-                'breakout': 'operation_breakout_case',
-                'esports_summer': 'esports_2014_summer',
-                'vanguard': 'operation_vanguard_case',
-                'chroma': 'chroma_case',
-                'chroma_2': 'chroma_2_case',
-                'falchion': 'falchion_case'
-            };
-            const casePath = casePathMapping[items[index].case_type] || 'weapon_case_1';
+            const casePath = CASE_MAPPING[items[index].case_type] || 'weapon_case_1';
             
             imageElement.src = `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`;
             imageElement.alt = `${items[index].weapon} | ${items[index].name}`;
@@ -1755,24 +1668,7 @@ function createStackedItem(stackKey, items) {
         .replace('galilar', 'galil');
     const skinName = firstItem.name.toLowerCase().replace(/ /g, '_');
     
-    const caseMapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo_case',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case',
-        'csgo3': 'weapon_case_3',
-        'phoenix': 'operation_phoenix_case',
-        'huntsman': 'huntsman_case',
-        'breakout': 'operation_breakout_case',
-        'esports_summer': 'esports_2014_summer',
-        'vanguard': 'operation_vanguard_case',
-        'chroma': 'chroma_case',
-        'chroma_2': 'chroma_2_case',
-        'falchion': 'falchion_case'
-    };
-    const casePath = caseMapping[firstItem.case_type] || 'weapon_case_1';
+    const casePath = CASE_MAPPING[firstItem.case_type] || 'weapon_case_1';
     
     // Create the collapsed view
     div.innerHTML = `
@@ -1834,27 +1730,11 @@ function createSingleItem(item) {
         .replace(' ', '')
         .replace('553', '553')
         .replace('galil ar', 'galil')
-        .replace('galilar', 'galil');
+        .replace('galilar', 'galil')  // Add this line
+        .replace(/\s+/g, '');  // Remove any remaining spaces
     const skinName = item.name.toLowerCase().replace(/ /g, '_');
     
-    const caseMapping = {
-        'csgo': 'weapon_case_1',
-        'esports': 'esports_2013',
-        'bravo': 'operation_bravo_case',
-        'csgo2': 'weapon_case_2',
-        'esports_winter': 'esports_2013_winter',
-        'winter_offensive': 'winter_offensive_case',
-        'csgo3': 'weapon_case_3',
-        'phoenix': 'operation_phoenix_case',
-        'huntsman': 'huntsman_case',
-        'breakout': 'operation_breakout_case',
-        'esports_summer': 'esports_2014_summer',
-        'vanguard': 'operation_vanguard_case',
-        'chroma': 'chroma_case',
-        'chroma_2': 'chroma_2_case',
-        'falchion': 'falchion_case'
-    };
-    const casePath = caseMapping[item.case_type] || 'weapon_case_1';
+    const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
     
     div.innerHTML = `
         <div class="skin-image">
@@ -2029,26 +1909,7 @@ async function updateInventoryDisplay() {
         
         // Clear current inventory
         inventoryItems.innerHTML = '';
-        
-        // Update case path mapping
-        const casePathMapping = {
-            'csgo': 'weapon_case_1',
-            'esports': 'esports_2013',
-            'bravo': 'operation_bravo_case',
-            'csgo2': 'weapon_case_2',
-            'esports_winter': 'esports_2013_winter',
-            'winter_offensive': 'winter_offensive_case',
-            'csgo3': 'weapon_case_3',
-            'phoenix': 'operation_phoenix_case',
-            'huntsman': 'huntsman_case',
-            'breakout': 'operation_breakout_case',
-            'esports_summer': 'esports_2014_summer',
-            'vanguard': 'operation_vanguard_case',
-            'chroma': 'chroma_case',
-            'chroma_2': 'chroma_2_case',
-            'falchion': 'falchion_case'
-        };
-        
+            
         // Add each item
         let skinIndex = 0;
         for (const item of data.inventory) {
@@ -2066,7 +1927,7 @@ async function updateInventoryDisplay() {
                     .replace('galil ar', 'galil')
                     .replace('galilar', 'galil');
                 const skinName = item.name.toLowerCase().replace(/ /g, '_');
-                const casePath = casePathMapping[item.case_type] || 'weapon_case_1';
+                const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
                 
                 skinDiv.innerHTML = `
                     <div class="skin-image">

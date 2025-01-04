@@ -1,4 +1,25 @@
+# Standard library imports
+import os
 from enum import Enum
+
+# Third-party imports
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# Load environment variables
+load_dotenv()
+
+# Featured skins refresh interval
+REFRESH_INTERVAL = 3600 
+
+# Initialize OpenAI client with API key from environment
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    print("Warning: OPENAI_API_KEY not found in environment variables")
+    client = None
+else:
+    print(f"API key loaded: {api_key[:8]}...") # Debug print to verify key is loaded
+    client = OpenAI(api_key=api_key)
 
 class Rarity(Enum):
     CONTRABAND = "CONTRABAND"
@@ -76,4 +97,128 @@ CASE_FILE_MAPPING = {
     'chroma': 'chroma_case',
     'chroma_2': 'chroma_2_case',
     'falchion': 'falchion_case'
+}
+
+CASE_TYPES = [
+    'csgo', 
+    'esports', 
+    'bravo', 
+    'csgo2', 
+    'esports_winter', 
+    'winter_offensive', 
+    'csgo3', 
+    'phoenix', 
+    'huntsman', 
+    'breakout', 
+    'esports_summer', 
+    'vanguard', 
+    'chroma', 
+    'chroma_2', 
+    'falchion'
+]
+
+CASE_DATA = {
+    'csgo': {
+        'name': 'CS:GO Weapon Case',
+        'image': 'weapon_case_1.png',
+        'is_case': True,
+        'type': 'csgo'
+    },
+    'esports': {
+        'name': 'eSports 2013 Case',
+        'image': 'esports_2013_case.png',
+        'is_case': True,
+        'type': 'esports'
+    },
+    'bravo': {
+        'name': 'Operation Bravo Case',
+        'image': 'operation_bravo_case.png',
+        'is_case': True,
+        'type': 'bravo'
+    },
+    'csgo2': {
+        'name': 'CS:GO Weapon Case 2',
+        'image': 'weapon_case_2.png',
+        'is_case': True,
+        'type': 'csgo2'
+    },
+    'esports_winter': {
+        'name': 'eSports 2013 Winter Case',
+        'image': 'esports_2013_winter_case.png',
+        'is_case': True,
+        'type': 'esports_winter'
+    },
+    'winter_offensive': {
+        'name': 'Winter Offensive Case',
+        'image': 'winter_offensive_case.png',
+        'is_case': True,
+        'type': 'winter_offensive'
+    },
+    'csgo3': {
+        'name': 'CS:GO Weapon Case 3',
+        'image': 'weapon_case_3.png',
+        'is_case': True,
+        'type': 'csgo3'
+    },
+    'phoenix': {
+        'name': 'Operation Phoenix Case',
+        'image': 'operation_phoenix_case.png',
+        'is_case': True,
+        'type': 'phoenix'
+    },
+    'huntsman': {
+        'name': 'Huntsman Case',
+        'image': 'huntsman_case.png',
+        'is_case': True,
+        'type': 'huntsman'
+    },
+    'breakout': {
+        'name': 'Operation Breakout Case',
+        'image': 'operation_breakout_case.png',
+        'is_case': True,
+        'type': 'breakout'
+    },
+    'esports_summer': {
+        'name': 'eSports 2014 Summer Case',
+        'image': 'esports_2014_summer_case.png',
+        'is_case': True,
+        'type': 'esports_summer'
+    },
+    'vanguard': {
+        'name': 'Operation Vanguard Case',
+        'image': 'operation_vanguard_case.png',
+        'is_case': True,
+        'type': 'vanguard'
+    },
+    'chroma': {
+        'name': 'Chroma Case',
+        'image': 'chroma_case.png',
+        'is_case': True,
+        'type': 'chroma'
+    },
+    'chroma_2': {
+        'name': 'Chroma 2 Case',
+        'image': 'chroma_2_case.png',
+        'is_case': True,
+        'type': 'chroma_2'
+    },
+    'falchion': {
+        'name': 'Falchion Case',
+        'image': 'falchion_case.png',
+        'is_case': True,
+        'type': 'falchion'
+    }
+}
+
+BOT_PERSONALITIES = {
+    "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
+    "Kai.Jayden_02": "A forsen viewer who spams KEKW and PepeLaugh, uses lots of Twitch emotes and speaks in Twitch chat style",
+    "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
+    "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
+    "Theo.91": "Another forsen viewer who spams OMEGALUL and Pepega, speaks in broken English and uses lots of BATCHEST",
+    "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
+    "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
+    "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
+    "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
+    "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
 }
