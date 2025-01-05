@@ -829,7 +829,7 @@
                     }
                     // For gold rarity in other cases (knives), filter based on case type
                     else if (grade === 'gold') {
-                        if (caseType === 'chroma' || caseType === 'chroma_2') {
+                        if (caseType === 'chroma' || caseType === 'chroma_2' || caseType === 'chroma_3') {
                             itemsToShow = items.filter(item => item.name === 'Doppler');
                         } else {
                             itemsToShow = items.filter(item => item.name === 'Vanilla');

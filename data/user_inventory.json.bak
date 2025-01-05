@@ -1,5 +1,5 @@
 {
-  "balance": 19671.427499999998,
+  "balance": 19668.6275,
   "inventory": [
     {
       "weapon": "Desert Eagle",
@@ -292,6 +292,13 @@
       "is_case": true,
       "type": "revolution",
       "quantity": 14
+    },
+    {
+      "name": "Revolver Case",
+      "image": "revolver_case.png",
+      "is_case": true,
+      "type": "revolver",
+      "quantity": 1
     }
   ],
   "exp": 1587.0700000000004,
