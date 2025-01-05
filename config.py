@@ -97,7 +97,10 @@ CASE_FILE_MAPPING = {
     'chroma': 'chroma_case',
     'chroma_2': 'chroma_2_case',
     'falchion': 'falchion_case',
-    'shadow': 'shadow_case'
+    'shadow': 'shadow_case',
+    'revolution': 'revolution_case',
+    'wildfire': 'operation_wildfire_case',
+    'revolver': 'revolver_case'
 }
 
 CASE_TYPES = [
@@ -116,7 +119,10 @@ CASE_TYPES = [
     'chroma', 
     'chroma_2', 
     'falchion',
-    'shadow'
+    'shadow',
+    'revolution',
+    'wildfire',
+    'revolver'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -135,7 +141,10 @@ CASE_SKINS_FOLDER_NAMES = {
     'chroma': 'chroma_case',
     'chroma_2': 'chroma_2_case',
     'falchion': 'falchion_case',
-    'shadow': 'shadow_case'
+    'shadow': 'shadow_case',
+    'revolution': 'revolution_case',
+    'wildfire': 'operation_wildfire_case',
+    'revolver': 'revolver_case'
 }
 
 CASE_DATA = {
@@ -234,6 +243,24 @@ CASE_DATA = {
         'image': 'shadow_case.png',
         'is_case': True,
         'type': 'shadow'
+    },
+    'revolution': {
+        'name': 'Revolution Case',
+        'image': 'revolution_case.png',
+        'is_case': True,
+        'type': 'revolution'
+    },
+    'wildfire': {
+        'name': 'Operation Wildfire Case',
+        'image': 'operation_wildfire_case.png',
+        'is_case': True,
+        'type': 'wildfire'
+    },
+    'revolver': {
+        'name': 'Revolver Case',
+        'image': 'revolver_case.png',
+        'is_case': True,
+        'type': 'revolver'
     }
 }
 

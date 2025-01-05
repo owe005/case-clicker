@@ -811,13 +811,27 @@
                     const grid = rarityRow.querySelector('.items-grid');
                     let itemsToShow = items;
                     
-                    // For gold rarity (knives), filter based on case type
-                    if (grade === 'gold') {
+                    // Special handling for Revolution Case gloves
+                    if (grade === 'gold' && caseType === 'revolution') {
+                        // Get one of each glove type
+                        const gloveTypes = new Set();
+                        const uniqueGloves = [];
+                        
+                        items.forEach(item => {
+                            const gloveType = item.weapon;
+                            if (!gloveTypes.has(gloveType)) {
+                                gloveTypes.add(gloveType);
+                                uniqueGloves.push(item);
+                            }
+                        });
+                        
+                        itemsToShow = uniqueGloves;
+                    }
+                    // For gold rarity in other cases (knives), filter based on case type
+                    else if (grade === 'gold') {
                         if (caseType === 'chroma' || caseType === 'chroma_2') {
-                            // Only show Doppler knives for Chroma cases
                             itemsToShow = items.filter(item => item.name === 'Doppler');
                         } else {
-                            // For all other cases, show only vanilla knives
                             itemsToShow = items.filter(item => item.name === 'Vanilla');
                         }
                     }

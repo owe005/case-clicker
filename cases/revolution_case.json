@@ -1,0 +1,672 @@
+{
+    "name": "Revolution Case",
+    "image": "revolution_case.png",
+    "price": 0.55,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Driver Gloves",
+                "name": "Imperial Plaid",
+                "image": "drivergloves_imperial_plaid.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1215.74,
+                    "MW": 560.00,
+                    "FT": 300.99,
+                    "WW": 250.00,
+                    "BS": 202.59
+                }
+            },
+            {
+                "weapon": "Driver Gloves",
+                "name": "King Snake",
+                "image": "drivergloves_king_snake.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 5789.55,
+                    "MW": 1131.79,
+                    "FT": 310.76,
+                    "WW": 231.17,
+                    "BS": 167.54
+                }
+            },
+            {
+                "weapon": "Driver Gloves",
+                "name": "Racing Green",
+                "image": "drivergloves_racing_green.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 258.53,
+                    "MW": 91.23,
+                    "FT": 61.60,
+                    "WW": 61.41,
+                    "BS": 62.03
+                }
+            },
+            {
+                "weapon": "Driver Gloves",
+                "name": "Overtake",
+                "image": "drivergloves_overtake.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 495.72,
+                    "MW": 152.56,
+                    "FT": 100.67,
+                    "WW": 85.60,
+                    "BS": 77.60
+                }
+            },
+            {
+                "weapon": "Sport Gloves",
+                "name": "Omega",
+                "image": "sportgloves_omega.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2527.11,
+                    "MW": 933.97,
+                    "FT": 390.75,
+                    "WW": 298.80,
+                    "BS": 218.42
+                }
+            },
+            {
+                "weapon": "Sport Gloves",
+                "name": "Bronze Morph",
+                "image": "sportgloves_bronze_morph.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 651.54,
+                    "MW": 205.72,
+                    "FT": 131.12,
+                    "WW": 120.75,
+                    "BS": 111.53
+                }
+            },
+            {
+                "weapon": "Specialist Gloves",
+                "name": "Buckshot",
+                "image": "specialistgloves_buckshot.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 324.09,
+                    "MW": 111.58,
+                    "FT": 89.11,
+                    "WW": 81.20,
+                    "BS": 77.24
+                }
+            },
+            {
+                "weapon": "Specialist Gloves",
+                "name": "Mogul",
+                "image": "specialistgloves_mogul.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 817.13,
+                    "MW": 283.80,
+                    "FT": 157.97,
+                    "WW": 137.21,
+                    "BS": 120.97
+                }
+            },
+            {
+                "weapon": "Sport Gloves",
+                "name": "Vice",
+                "image": "sportgloves_vice.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 14069.88,
+                    "MW": 3386.26,
+                    "FT": 998.03,
+                    "WW": 820.52,
+                    "BS": 501.36
+                }
+            },
+            {
+                "weapon": "Specialist Gloves",
+                "name": "Crimson Web",
+                "image": "specialistgloves_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1546.18,
+                    "MW": 564.92,
+                    "FT": 230.75,
+                    "WW": 188.74,
+                    "BS": 134.62
+                }
+            },
+            {
+                "weapon": "Moto Gloves",
+                "name": "POW!",
+                "image": "motogloves_pow.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1183.09,
+                    "MW": 463.78,
+                    "FT": 176.74,
+                    "WW": 135.39,
+                    "BS": 100.33
+                }
+            },
+            {
+                "weapon": "Moto Gloves",
+                "name": "Polygon",
+                "image": "motogloves_polygon.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 729.00,
+                    "MW": 300.00,
+                    "FT": 168.74,
+                    "WW": 148.48,
+                    "BS": 115.70
+                }
+            },
+            {
+                "weapon": "Moto Gloves",
+                "name": "Transport",
+                "image": "motogloves_transport.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 349.69,
+                    "MW": 113.55,
+                    "FT": 86.79,
+                    "WW": 74.52,
+                    "BS": 71.17
+                }
+            },
+            {
+                "weapon": "Hydra Gloves",
+                "name": "Mangrove",
+                "image": "hydragloves_mangrove.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 844.93,
+                    "MW": 80.00,
+                    "FT": 57.78,
+                    "WW": 60.09,
+                    "BS": 60.10
+                }
+            },
+            {
+                "weapon": "Moto Gloves",
+                "name": "Turtle",
+                "image": "motogloves_turtle.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 686.41,
+                    "MW": 229.95,
+                    "FT": 123.08,
+                    "WW": 107.20,
+                    "BS": 97.72
+                }
+            },
+            {
+                "weapon": "Hydra Gloves",
+                "name": "Emerald",
+                "image": "hydragloves_emerald.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 255.00,
+                    "MW": 96.32,
+                    "FT": 64.26,
+                    "WW": 65.48,
+                    "BS": 63.61
+                }
+            },
+            {
+                "weapon": "Hydra Gloves",
+                "name": "Case Hardened",
+                "image": "hydragloves_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 485.00,
+                    "MW": 148.58,
+                    "FT": 99.80,
+                    "WW": 95.66,
+                    "BS": 91.62
+                }
+            },
+            {
+                "weapon": "Hand Wraps",
+                "name": "Cobalt Skulls",
+                "image": "handwraps_cobalt_skulls.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1857.77,
+                    "MW": 695.80,
+                    "FT": 381.99,
+                    "WW": 321.14,
+                    "BS": 268.83
+                }
+            },
+            {
+                "weapon": "Sport Gloves",
+                "name": "Amphibious",
+                "image": "sportgloves_amphibious.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4371.22,
+                    "MW": 1340.90,
+                    "FT": 645.00,
+                    "WW": 531.78,
+                    "BS": 402.49
+                }
+            },
+            {
+                "weapon": "Hand Wraps",
+                "name": "Arboreal",
+                "image": "handwraps_arboreal.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 259.00,
+                    "MW": 112.24,
+                    "FT": 98.29,
+                    "WW": 88.10,
+                    "BS": 83.00
+                }
+            },
+            {
+                "weapon": "Hydra Gloves",
+                "name": "Rattler",
+                "image": "hydragloves_rattler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 204.62,
+                    "MW": 82.70,
+                    "FT": 59.83,
+                    "WW": 62.27,
+                    "BS": 59.34
+                }
+            },
+            {
+                "weapon": "Hand Wraps",
+                "name": "Duct Tape",
+                "image": "handwraps_duct_tape.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 349.04,
+                    "MW": 102.24,
+                    "FT": 85.79,
+                    "WW": 79.50,
+                    "BS": 78.00
+                }
+            },
+            {
+                "weapon": "Specialist Gloves",
+                "name": "Fade",
+                "image": "specialistgloves_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2798.60,
+                    "MW": 950.60,
+                    "FT": 298.67,
+                    "WW": 259.54,
+                    "BS": 161.29
+                }
+            },
+            {
+                "weapon": "Hand Wraps",
+                "name": "Overprint",
+                "image": "handwraps_overprint.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 703.72,
+                    "MW": 307.69,
+                    "FT": 189.99,
+                    "WW": 161.80,
+                    "BS": 108.13
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "M4A4",
+                "name": "Temukau",
+                "image": "m4a4_temukau.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 95.07,
+                    "MW": 37.64,
+                    "FT": 9.20,
+                    "WW": 8.89,
+                    "BS": 5.22,
+                    "ST_FN": 186.85,
+                    "ST_MW": 71.95,
+                    "ST_FT": 19.32,
+                    "ST_WW": 20.52,
+                    "ST_BS": 16.18
+                }
+            },
+            {
+                "weapon": "AK-47",
+                "name": "Head Shot",
+                "image": "ak47_head_shot.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 50.26,
+                    "MW": 15.66,
+                    "FT": 7.07,
+                    "WW": 4.76,
+                    "BS": 4.25,
+                    "ST_FN": 99.89,
+                    "ST_MW": 39.90,
+                    "ST_FT": 20.00,
+                    "ST_WW": 13.99,
+                    "ST_BS": 13.50
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "AWP",
+                "name": "Duality",
+                "image": "awp_duality.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.21,
+                    "MW": 4.33,
+                    "FT": 1.71,
+                    "WW": 1.76,
+                    "BS": 1.30,
+                    "ST_FN": 23.22,
+                    "ST_MW": 10.17,
+                    "ST_FT": 4.10,
+                    "ST_WW": 5.11,
+                    "ST_BS": 4.16
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Wicked Sick",
+                "image": "p2000_wicked_sick.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 9.55,
+                    "MW": 3.71,
+                    "FT": 1.42,
+                    "WW": 1.12,
+                    "BS": 1.02,
+                    "ST_FN": 18.91,
+                    "ST_MW": 6.45,
+                    "ST_FT": 2.72,
+                    "ST_WW": 1.80,
+                    "ST_BS": 1.63
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Wild Child",
+                "image": "ump45_wild_child.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 8.94,
+                    "MW": 3.60,
+                    "FT": 1.47,
+                    "WW": 1.08,
+                    "BS": 1.00,
+                    "ST_FN": 18.30,
+                    "ST_MW": 6.19,
+                    "ST_FT": 2.47,
+                    "ST_WW": 1.93,
+                    "ST_BS": 1.72
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Emphorosaur-S",
+                "image": "m4a1s_emphorosaur-S.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.19,
+                    "MW": 0.89,
+                    "FT": 0.33,
+                    "WW": 0.54,
+                    "BS": 0.29,
+                    "ST_FN": 7.12,
+                    "ST_MW": 2.74,
+                    "ST_FT": 1.30,
+                    "ST_WW": 1.85,
+                    "ST_BS": 1.36
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Umbral Rabbit",
+                "image": "glock18_umbral_rabbit.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.37,
+                    "MW": 0.68,
+                    "FT": 0.28,
+                    "WW": 0.35,
+                    "BS": 0.23,
+                    "ST_FN": 4.14,
+                    "ST_MW": 1.77,
+                    "ST_FT": 0.64,
+                    "ST_WW": 0.73,
+                    "ST_BS": 0.52
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Sakkaku",
+                "image": "mac10_sakkaku.png",
+                "grade": "purple",
+                "valid_wears": ["FT", "WW", "BS"],
+                "prices": {
+                    "FT": 0.69,
+                    "WW": 0.25,
+                    "BS": 0.21,
+                    "ST_FT": 2.36,
+                    "ST_WW": 0.95,
+                    "ST_BS": 0.50
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Neoqueen",
+                "image": "p90_neoqueen.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.21,
+                    "MW": 0.62,
+                    "FT": 0.28,
+                    "WW": 0.25,
+                    "BS": 0.26,
+                    "ST_FN": 2.75,
+                    "ST_MW": 1.13,
+                    "ST_FT": 0.48,
+                    "ST_WW": 0.84,
+                    "ST_BS": 1.01
+                }
+            },
+            {
+                "weapon": "R8 Revolver",
+                "name": "Banana Cannon",
+                "image": "r8revolver_banana_cannon.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.66,
+                    "MW": 0.62,
+                    "FT": 0.27,
+                    "WW": 0.23,
+                    "BS": 0.20,
+                    "ST_FN": 3.61,
+                    "ST_MW": 1.09,
+                    "ST_FT": 0.42,
+                    "ST_WW": 0.30,
+                    "ST_BS": 0.33
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "MP5",
+                "name": "Liquidation",
+                "image": "mp5_liquidation.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.23,
+                    "MW": 0.09,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 1.04,
+                    "ST_MW": 0.24,
+                    "ST_FT": 0.09,
+                    "ST_WW": 0.08,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Featherweight",
+                "image": "mp9_featherweight.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.25,
+                    "MW": 0.09,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 1.17,
+                    "ST_MW": 0.25,
+                    "ST_FT": 0.10,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Cyberforce",
+                "image": "sg553_cyberforce.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.25,
+                    "MW": 0.09,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.97,
+                    "ST_MW": 0.24,
+                    "ST_FT": 0.09,
+                    "ST_WW": 0.09,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Fragments",
+                "image": "scar20_fragments.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.18,
+                    "MW": 0.09,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.03,
+                    "ST_FN": 0.56,
+                    "ST_MW": 0.23,
+                    "ST_FT": 0.09,
+                    "ST_WW": 0.09,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Rebuilt",
+                "image": "p250_rebuilt.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.24,
+                    "MW": 0.09,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.04,
+                    "ST_FN": 0.72,
+                    "ST_MW": 0.23,
+                    "ST_FT": 0.08,
+                    "ST_WW": 0.08,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "MAG-7",
+                "name": "Insomnia",
+                "image": "mag7_insomnia.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.23,
+                    "MW": 0.07,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.80,
+                    "ST_MW": 0.23,
+                    "ST_FT": 0.09,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Rebel",
+                "image": "tec9_rebel.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.24,
+                    "MW": 0.08,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.77,
+                    "ST_MW": 0.24,
+                    "ST_FT": 0.10,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.08
+                }
+            }
+        ]
+    }
+}

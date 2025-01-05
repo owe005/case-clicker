@@ -1,0 +1,510 @@
+{
+    "name": "Operation Wildfire Case",
+    "image": "operation_wildfire_case.png",
+    "price": 3.00,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Bowie Knife",
+                "name": "Fade",
+                "image": "bowieknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 370.90,
+                    "MW": 378.11,
+                    "ST_FN": 416.63,
+                    "ST_MW": 374.02
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Slaughter",
+                "image": "bowieknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 295.00,
+                    "MW": 263.52,
+                    "FT": 247.13,
+                    "ST_FN": 377.96,
+                    "ST_MW": 279.86,
+                    "ST_FT": 265.99
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Safari Mesh",
+                "image": "bowieknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 185.50,
+                    "MW": 100.27,
+                    "FT": 97.75,
+                    "WW": 100.30,
+                    "BS": 98.98,
+                    "ST_FN": 927.50,
+                    "ST_MW": 113.92,
+                    "ST_FT": 98.62,
+                    "ST_WW": 283.34,
+                    "ST_BS": 118.15
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Case Hardened",
+                "image": "bowieknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 558.84,
+                    "MW": 234.00,
+                    "FT": 197.00,
+                    "WW": 184.00,
+                    "BS": 173.92,
+                    "ST_FN": 745.50,
+                    "ST_MW": 285.96,
+                    "ST_FT": 280.31,
+                    "ST_WW": 287.06,
+                    "ST_BS": 268.74
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Crimson Web",
+                "image": "bowieknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1395.00,
+                    "MW": 240.17,
+                    "FT": 172.74,
+                    "WW": 153.17,
+                    "BS": 235.00,
+                    "ST_FN": 5200.00,
+                    "ST_MW": 281.12,
+                    "ST_FT": 186.41,
+                    "ST_WW": 243.90,
+                    "ST_BS": 280.00
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Blue Steel",
+                "image": "bowieknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 233.58,
+                    "MW": 164.93,
+                    "FT": 146.39,
+                    "WW": 135.79,
+                    "BS": 140.00,
+                    "ST_FN": 500.00,
+                    "ST_MW": 190.33,
+                    "ST_FT": 213.85,
+                    "ST_WW": 260.73,
+                    "ST_BS": 481.10
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Night",
+                "image": "bowieknife_night.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 243.14,
+                    "MW": 131.13,
+                    "FT": 106.63,
+                    "WW": 101.76,
+                    "BS": 100.00,
+                    "ST_FN": 1550.00,
+                    "ST_MW": 197.79,
+                    "ST_FT": 104.73,
+                    "ST_WW": 121.30,
+                    "ST_BS": 109.14
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Vanilla",
+                "image": "bowieknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 152.22,
+                    "ST_NO": 170.00
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Boreal Forest",
+                "image": "bowieknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 168.64,
+                    "MW": 104.62,
+                    "FT": 98.89,
+                    "WW": 111.96,
+                    "BS": 96.98,
+                    "ST_FN": 842.00,
+                    "ST_MW": 155.12,
+                    "ST_FT": 98.98,
+                    "ST_WW": 107.13,
+                    "ST_BS": 99.99
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Urban Masked",
+                "image": "bowieknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 203.59,
+                    "MW": 112.42,
+                    "FT": 101.29,
+                    "WW": 100.35,
+                    "BS": 100.13,
+                    "ST_FN": 1017.95,
+                    "ST_MW": 121.23,
+                    "ST_FT": 103.06,
+                    "ST_WW": 126.90,
+                    "ST_BS": 121.30
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Forest DDPAT",
+                "image": "bowieknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 170.88,
+                    "MW": 106.42,
+                    "FT": 101.08,
+                    "WW": 98.11,
+                    "BS": 99.03,
+                    "ST_FN": 854.40,
+                    "ST_MW": 121.00,
+                    "ST_FT": 101.01,
+                    "ST_WW": 245.28,
+                    "ST_BS": 103.49
+                }
+            },
+            {
+                "weapon": "Bowie Knife",
+                "name": "Stained",
+                "image": "bowieknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 218.49,
+                    "MW": 126.35,
+                    "FT": 119.74,
+                    "WW": 113.37,
+                    "BS": 112.56,
+                    "ST_FN": 277.77,
+                    "ST_MW": 170.08,
+                    "ST_FT": 136.23,
+                    "ST_WW": 124.30,
+                    "ST_BS": 160.44
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "AK-47",
+                "name": "Fuel Injector",
+                "image": "ak47_fuel_injector.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 353.93,
+                    "MW": 211.31,
+                    "FT": 162.56,
+                    "WW": 124.84,
+                    "BS": 116.65,
+                    "ST_FN": 693.61,
+                    "ST_MW": 408.17,
+                    "ST_FT": 300.00,
+                    "ST_WW": 212.11,
+                    "ST_BS": 164.73
+                }
+            },
+            {
+                "weapon": "M4A4",
+                "name": "The Battlestar",
+                "image": "m4a4_the_battlestar.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.90,
+                    "MW": 4.21,
+                    "FT": 3.21,
+                    "WW": 6.16,
+                    "BS": 3.13,
+                    "ST_FN": 36.54,
+                    "ST_MW": 17.89,
+                    "ST_FT": 12.99,
+                    "ST_WW": 16.00,
+                    "ST_BS": 16.52
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "Desert Eagle",
+                "name": "Kumicho Dragon",
+                "image": "deserteagle_kumicho_dragon.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 27.22,
+                    "MW": 19.97,
+                    "FT": 14.53,
+                    "WW": 14.73,
+                    "BS": 12.99,
+                    "ST_FN": 68.55,
+                    "ST_MW": 42.37,
+                    "ST_FT": 29.18,
+                    "ST_WW": 33.05,
+                    "ST_BS": 28.34
+                }
+            },
+            {
+                "weapon": "AWP",
+                "name": "Elite Build",
+                "image": "awp_elite_build.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 27.17,
+                    "MW": 18.06,
+                    "FT": 14.18,
+                    "WW": 13.49,
+                    "BS": 12.07,
+                    "ST_FN": 66.74,
+                    "ST_MW": 35.79,
+                    "ST_FT": 24.22,
+                    "ST_WW": 24.89,
+                    "ST_BS": 24.69
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Hyper Beast",
+                "image": "nova_hyper_beast.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 24.35,
+                    "MW": 16.98,
+                    "FT": 14.77,
+                    "WW": 13.38,
+                    "BS": 12.29,
+                    "ST_FN": 54.52,
+                    "ST_MW": 34.53,
+                    "ST_FT": 26.28,
+                    "ST_WW": 21.95,
+                    "ST_BS": 19.00
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "FAMAS",
+                "name": "Valence",
+                "image": "famas_valence.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4.65,
+                    "MW": 2.84,
+                    "FT": 1.88,
+                    "WW": 1.90,
+                    "BS": 1.70,
+                    "ST_FN": 12.67,
+                    "ST_MW": 5.99,
+                    "ST_FT": 3.32,
+                    "ST_WW": 3.76,
+                    "ST_BS": 3.19
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Royal Legion",
+                "image": "glock18_royal_legion.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 5.42,
+                    "MW": 2.89,
+                    "FT": 1.93,
+                    "WW": 1.94,
+                    "BS": 1.88,
+                    "ST_FN": 25.94,
+                    "ST_MW": 7.06,
+                    "ST_FT": 3.95,
+                    "ST_WW": 2.99,
+                    "ST_BS": 2.80
+                }
+            },
+            {
+                "weapon": "MAG-7",
+                "name": "Praetorian",
+                "image": "mag7_praetorian.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 3.29,
+                    "MW": 2.29,
+                    "FT": 1.93,
+                    "WW": 1.78,
+                    "ST_FN": 6.96,
+                    "ST_MW": 4.55,
+                    "ST_FT": 3.49,
+                    "ST_WW": 3.09
+                }
+            },
+            {
+                "weapon": "Five-SeveN",
+                "name": "Triumvirate",
+                "image": "fiveseven_triumvirate.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.11,
+                    "MW": 2.42,
+                    "FT": 1.90,
+                    "WW": 1.61,
+                    "BS": 1.72,
+                    "ST_FN": 7.94,
+                    "ST_MW": 4.81,
+                    "ST_FT": 3.47,
+                    "ST_WW": 3.71,
+                    "ST_BS": 3.35
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "USP-S",
+                "name": "Lead Conduit",
+                "image": "usps_lead_conduit.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.75,
+                    "MW": 1.08,
+                    "FT": 0.65,
+                    "WW": 0.54,
+                    "BS": 0.53,
+                    "ST_FN": 16.15,
+                    "ST_MW": 3.96,
+                    "ST_FT": 2.34,
+                    "ST_WW": 1.81,
+                    "ST_BS": 1.85
+                }
+            },
+            {
+                "weapon": "SSG 08",
+                "name": "Necropos",
+                "image": "ssg08_necropos.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.79,
+                    "MW": 0.44,
+                    "FT": 0.45,
+                    "WW": 0.36,
+                    "BS": 0.37,
+                    "ST_FN": 4.83,
+                    "ST_MW": 1.02,
+                    "ST_FT": 0.47,
+                    "ST_WW": 0.44,
+                    "ST_BS": 0.40
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Lapis Gator",
+                "image": "mac10_lapis_gator.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.59,
+                    "MW": 0.51,
+                    "FT": 0.46,
+                    "WW": 0.43,
+                    "BS": 0.46,
+                    "ST_FN": 1.87,
+                    "ST_MW": 1.11,
+                    "ST_FT": 0.55,
+                    "ST_WW": 0.64,
+                    "ST_BS": 0.50
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Jambiya",
+                "image": "tec9_jambiya.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.10,
+                    "MW": 0.50,
+                    "FT": 0.46,
+                    "WW": 0.32,
+                    "BS": 0.34,
+                    "ST_FN": 3.75,
+                    "ST_MW": 1.04,
+                    "ST_FT": 0.53,
+                    "ST_WW": 0.42,
+                    "ST_BS": 0.38
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Cartel",
+                "image": "dualberettas_cartel.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.33,
+                    "MW": 0.45,
+                    "FT": 0.45,
+                    "WW": 0.32,
+                    "BS": 0.31,
+                    "ST_FN": 4.46,
+                    "ST_MW": 1.00,
+                    "ST_FT": 0.52,
+                    "ST_WW": 0.36,
+                    "ST_BS": 0.34
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Photic Zone",
+                "image": "ppbizon_photic_zone.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.23,
+                    "MW": 0.51,
+                    "FT": 0.45,
+                    "WW": 0.32,
+                    "BS": 0.31,
+                    "ST_FN": 3.81,
+                    "ST_MW": 1.06,
+                    "ST_FT": 0.55,
+                    "ST_WW": 0.36,
+                    "ST_BS": 0.36
+                }
+            }
+        ]
+    }
+}
