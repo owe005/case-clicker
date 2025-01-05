@@ -9,7 +9,7 @@
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 300px;
     gap: 20px;
 }
 
@@ -456,6 +456,155 @@
         text-shadow: none;
     }
 }
+
+/* Add styles for the active bots list */
+.active-bots {
+    background: linear-gradient(145deg, #1a1a1a, #222);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 2px solid #2a2a2a;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.active-bots h3 {
+    margin: 0 0 15px;
+    font-size: 18px;
+    color: #4CAF50;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.active-bots ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.active-bots li {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.active-bots li:hover {
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateX(5px);
+}
+
+.active-bots h3 span {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.active-bots li.inactive {
+    color: #666;
+    background: rgba(0, 0, 0, 0.1);
+    animation: outTransition 0.5s ease-out forwards;
+}
+
+.active-bots li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4CAF50;
+    transition: background 0.3s ease;
+}
+
+.active-bots li.inactive::before {
+    background: #666;
+}
+
+.active-bots li.offline {
+    color: #666;
+    background: rgba(0, 0, 0, 0.1);
+    font-style: italic;
+}
+
+.active-bots li.offline::before {
+    background: #444;
+}
+
+.active-bots li .status {
+    margin-left: auto;
+    font-size: 0.8em;
+    transition: all 0.3s ease;
+}
+
+/* Add animation for users who are out */
+@keyframes fadeOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 0.6;
+    }
+}
+
+/* Add specific style for 'out' status */
+.active-bots li.inactive .status {
+    color: #666;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+}
+
+/* Add a shake animation when user first goes inactive */
+@keyframes shakeOut {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+.active-bots li.just-out {
+    color: #ff4444 !important;
+    background: rgba(255, 68, 68, 0.1) !important;
+    animation: shakeOut 0.5s ease-in-out;
+}
+
+/* Update the outTransition animation */
+@keyframes outTransition {
+    0% {
+        color: #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+    }
+    100% {
+        color: #666;
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Update the shakeOut animation */
+@keyframes shakeOut {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+/* Update the status color for inactive bidders */
+.active-bots li.inactive .status {
+    color: #666;
+}
+
+/* Add new style for the status when they first go out */
+.active-bots li.just-out .status {
+    color: #ff4444 !important;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+}
 </style>
 
 <div class="auction-container">
@@ -531,6 +680,18 @@
         </div>
     </div>
 
+    <div class="active-bots">
+        <h3>Bidders <span id="activeCount"></span></h3>
+        <ul id="biddersList">
+            {% for bot in active_bots %}
+            <li data-bot="{{ bot.name }}" class="{{ 'offline' if bot.status == 'offline' else '' }}">
+                {{ bot.name }}
+                <span class="status">{{ bot.status }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <div class="winning-screen" id="winningScreen">
         <div class="winning-content">
             <div class="winning-title">Congratulations!</div>
@@ -603,6 +764,11 @@ async function pollAuctionStatus() {
         // Update current bid
         document.getElementById('currentBid').textContent = data.current_bid.toFixed(2);
         
+        // Update balance if provided
+        if (data.balance !== undefined) {
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+        }
+        
         // Update bid history if there are new bids
         if (data.bids.length !== lastBidCount) {
             updateBidHistory(data.bids);
@@ -613,6 +779,11 @@ async function pollAuctionStatus() {
             if (bidInput) {
                 bidInput.min = data.current_bid + 10;
             }
+        }
+        
+        // Update bidder statuses
+        if (data.bot_statuses) {
+            updateBidderStatus(data.bot_statuses);
         }
         
     } catch (error) {
@@ -659,6 +830,11 @@ function updateBidHistory(bids) {
     const currentBids = new Set(Array.from(history.children).map(el => el.dataset.timestamp));
     const currentBidElement = document.getElementById('currentBid');
     const oldBid = parseFloat(currentBidElement.textContent);
+    
+    if (!bids || bids.length === 0) {
+        history.innerHTML = '';
+        return;
+    }
     
     history.innerHTML = bids.reverse().map(bid => {
         const isNew = !currentBids.has(bid.timestamp);
@@ -714,6 +890,11 @@ async function placeBid() {
         document.getElementById('currentBid').textContent = data.current_bid.toFixed(2);
         document.getElementById('bidAmount').value = '';
         document.getElementById('bidAmount').min = data.current_bid + 10;
+        
+        // Update balance immediately
+        if (data.balance !== undefined) {
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+        }
         
         endTime = new Date(data.end_time);
         updateBidHistory(data.bids);
@@ -776,6 +957,56 @@ function setQuickBid(increment) {
     const bidInput = document.getElementById('bidAmount');
     const newBid = currentBid + increment;
     bidInput.value = newBid.toFixed(2);
+}
+
+function updateBidderStatus(botStatuses) {
+    const biddersList = document.getElementById('biddersList');
+    const activeCount = botStatuses.filter(bot => bot.active && bot.status === 'online').length;
+    const onlineCount = botStatuses.filter(bot => bot.status === 'online').length;
+    
+    // Update the title to show active count
+    document.getElementById('activeCount').textContent = 
+        `(${activeCount} active / ${onlineCount} online)`;
+    
+    // Update each bot's status
+    botStatuses.forEach(bot => {
+        const botElement = biddersList.querySelector(`[data-bot="${bot.name}"]`);
+        if (botElement) {
+            const wasActive = !botElement.classList.contains('inactive');
+            const willBeInactive = !bot.active && bot.status === 'online';
+            
+            // Clear existing classes
+            botElement.classList.remove('inactive', 'offline', 'just-out');
+            
+            // Update status classes
+            if (bot.status === 'offline') {
+                botElement.classList.add('offline');
+            } else if (!bot.active) {
+                botElement.classList.add('inactive');
+                // Add just-out class if the bot just became inactive
+                if (wasActive && willBeInactive) {
+                    botElement.classList.add('just-out');
+                    // Remove the just-out class after animation completes
+                    setTimeout(() => {
+                        botElement.classList.remove('just-out');
+                    }, 500);
+                }
+            }
+            
+            // Update status text
+            let statusText = bot.status === 'offline' ? 'offline' : 
+                           (!bot.active ? 'out' : 'active');
+            
+            // Update or create status span
+            let statusSpan = botElement.querySelector('.status');
+            if (!statusSpan) {
+                statusSpan = document.createElement('span');
+                statusSpan.className = 'status';
+                botElement.appendChild(statusSpan);
+            }
+            statusSpan.textContent = statusText;
+        }
+    });
 }
 </script>
 {% endblock %} 

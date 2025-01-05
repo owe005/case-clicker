@@ -155,6 +155,7 @@
     background: #3a3a3a;
     cursor: pointer;
     transition: all 0.2s;
+    position: relative;
 }
 
 .special-bet:hover {
@@ -242,43 +243,66 @@
     border-bottom: 1px solid #3a3a3a;
 }
 
-.result-overlay {
+.result-notification {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    top: -100px; /* Start above viewport */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(26, 26, 26, 0.95);
+    padding: 15px 25px;
+    border-radius: 10px;
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.result-notification.visible {
+    top: 20px;
+}
+
+.result-number-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
 }
 
-.result-content {
-    background: #2a2a2a;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-}
+.result-number-circle.red { background: #dc3545; }
+.result-number-circle.black { background: #212529; }
+.result-number-circle.green { background: #28a745; }
 
-.result-number {
-    font-size: 48px;
-    margin-bottom: 20px;
+.result-details {
+    flex-grow: 1;
 }
 
 .result-text {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #e4e4e4;
 }
 
 .result-amount {
-    font-size: 32px;
-    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .result-amount.win { color: #4CAF50; }
 .result-amount.lose { color: #dc3545; }
+
+/* Remove old result overlay styles */
+.result-overlay {
+    display: none;
+}
 
 .result-buttons {
     display: flex;
@@ -416,30 +440,24 @@
 
 /* Special handling for green zero when lightning */
 .number.zero.lightning::before {
-    bottom: 2px;
+    bottom: auto;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 50%);
 }
 
-/* Electric field effect */
+/* Remove or replace the electric field effect */
 .number.lightning::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    background: 
-        repeating-linear-gradient(45deg, 
-            transparent 0%, 
-            transparent 48%, 
-            rgba(79, 243, 255, 0.1) 50%,
-            transparent 52%, 
-            transparent 100%
-        );
-    animation: electricField 10s linear infinite;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(79, 243, 255, 0.1);
     pointer-events: none;
     z-index: 1;
+    border-radius: inherit;
 }
 
 /* Lightning bolt overlay */
@@ -493,12 +511,8 @@
 }
 
 @keyframes electricField {
-    0% {
-        transform: rotate(0deg) scale(2);
-    }
-    100% {
-        transform: rotate(360deg) scale(2);
-    }
+    0% { transform: none; }
+    100% { transform: none; }
 }
 
 @keyframes boltFlash {
@@ -610,4 +624,139 @@
     0% { text-shadow: 0 0 5px #4ff3ff; }
     50% { text-shadow: 0 0 15px #4ff3ff; }
     100% { text-shadow: 0 0 5px #4ff3ff; }
+}
+
+/* Add these styles for chips */
+.chip {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.chip.chip-1 { background-image: url('/static/media/casino/chip_1.png'); }
+.chip.chip-5 { background-image: url('/static/media/casino/chip_5.png'); }
+.chip.chip-10 { background-image: url('/static/media/casino/chip_10.png'); }
+.chip.chip-50 { background-image: url('/static/media/casino/chip_50.png'); }
+.chip.chip-100 { background-image: url('/static/media/casino/chip_100.png'); }
+.chip.chip-500 { background-image: url('/static/media/casino/chip_500.png'); }
+.chip.chip-1000 { background-image: url('/static/media/casino/chip_1000.png'); }
+
+/* Update number position to relative for chip positioning */
+.number {
+    position: relative;
+}
+
+/* Add slight offset for stacked chips */
+.chip:nth-child(2) { 
+    transform: translate(-40%, -40%);
+    z-index: 11;
+}
+.chip:nth-child(3) { 
+    transform: translate(-30%, -30%);
+    z-index: 12;
+}
+.chip:nth-child(4) { 
+    transform: translate(-20%, -20%);
+    z-index: 13;
+}
+.chip:nth-child(5) { 
+    transform: translate(-10%, -10%);
+    z-index: 14;
+}
+
+/* Update special bet positioning */
+.special-bet {
+    position: relative;
+}
+
+/* Ensure betting areas have proper positioning */
+.number, .special-bet {
+    position: relative;
+    overflow: visible !important;
+}
+
+/* Update the selected state to not interfere with chips */
+.number.selected::after, .special-bet.selected {
+    border: 2px solid #4CAF50;
+    z-index: 1;
+}
+
+/* Add these styles for the betting overlay */
+.betting-board {
+    position: relative;
+}
+
+.betting-overlay {
+    position: absolute;
+    top: 0;
+    left: -110px;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.betting-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.betting-overlay-text {
+    color: #e4e4e4;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    opacity: 0.8;
+}
+
+/* Update betting controls for overlay */
+.betting-controls {
+    position: relative;
+}
+
+/* Ensure chips stay under the overlay */
+.chip {
+    z-index: 5;
+}
+
+/* Ensure the zero tile stays clickable when betting is open */
+.number.zero {
+    z-index: 5;
+}
+
+/* Add specific styles for lightning zero */
+.number.zero.lightning {
+    width: calc(100% / 12); /* Maintain the original zero width */
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-110%);
+}
+
+/* Update the lightning multiplier position for zero */
+.number.zero.lightning::before {
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+}
+
+/* Adjust the bolt position for zero */
+.number.zero.lightning > .bolt {
+    width: 100%;
+    height: 100%;
 }

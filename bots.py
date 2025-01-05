@@ -4,6 +4,19 @@ from typing import Any, Dict, List
 
 from config import BOT_PERSONALITIES, CASE_FILE_MAPPING, CASE_TYPES, client
 
+images_bots_avatars = {
+    'Astrid47': 'bot1.png',
+    'Kai.Jayden_02': 'bot2.png',
+    'Orion_Phoenix98': 'bot3.png',
+    'ElaraB_23': 'bot4.png',
+    'Theo.91': 'bot5.png',
+    'Nova-Lyn': 'bot6.png',
+    'FelixHaven19': 'bot7.png',
+    'Aria.Stella85': 'bot8.png',
+    'Lucien_Kai': 'bot9.png',
+    'Mira-Eclipse': 'bot10.png'
+}
+
 def generate_bot_players(num_bots: int, mode_limits: dict) -> List[Dict[str, Any]]:
     bot_names = [
         "_Astrid47", "Kai.Jayden_02", "Orion_Phoenix98", "ElaraB_23", "Theo.91", 

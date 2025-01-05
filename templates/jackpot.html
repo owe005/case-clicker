@@ -46,6 +46,11 @@
     <!-- Game progress section -->
     <div class="game-progress hidden" id="game-progress">
         <h3>Current Game</h3>
+        
+        <div class="progress-info">
+            <div class="win-chance">Your Chance: <span id="win-percentage">0</span>%</div>
+        </div>
+        
         <div class="players-container">
             <div class="joining-text hidden" id="joining-text">
                 <span class="bot-name">Waiting for players...</span>
@@ -57,8 +62,13 @@
                 <!-- Players and their items will be shown here -->
             </div>
         </div>
-        <div class="progress-info">
-            <div class="win-chance">Your Chance: <span id="win-percentage">0</span>%</div>
+    </div>
+    
+    <!-- Add this inside the game-progress section, before the winner-overlay -->
+    <div class="jackpot-wheel-container hidden" id="jackpot-wheel-container">
+        <div class="wheel-pointer"></div>
+        <div class="jackpot-wheel" id="jackpot-wheel">
+            <!-- Wheel items will be added dynamically -->
         </div>
     </div>
     
@@ -82,6 +92,19 @@
 {% block scripts %}
 
 <script>
+const BOT_AVATARS = {
+    '_Astrid47': 'bot1.png',
+    'Kai.Jayden_02': 'bot2.png',
+    'Orion_Phoenix98': 'bot3.png',
+    'ElaraB_23': 'bot4.png',
+    'Theo.91': 'bot5.png',
+    'Nova-Lyn': 'bot6.png',
+    'FelixHaven19': 'bot7.png',
+    'Aria.Stella85': 'bot8.png',
+    'Lucien_Kai': 'bot9.png',
+    'Mira-Eclipse': 'bot10.png'
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     let selectedItems = [];
     let totalValue = 0;
@@ -367,32 +390,135 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function showWinner(winnerData) {
-        const overlay = document.getElementById('winner-overlay');
-        const winnerName = overlay.querySelector('.winner-name');
-        const wonAmount = overlay.querySelector('.won-amount');
-        const winnerItems = overlay.querySelector('.winner-items');
+        const wheelContainer = document.getElementById('jackpot-wheel-container');
+        const wheel = document.getElementById('jackpot-wheel');
+        wheel.innerHTML = '';
         
-        winnerName.textContent = winnerData.name;
-        wonAmount.textContent = `$${winnerData.totalValue.toFixed(2)}`;
+        // Get all players and their win percentages
+        const players = document.querySelectorAll('.player-entry');
+        const playersArray = Array.from(players).map(player => ({
+            name: player.querySelector('.player-name').textContent,
+            isUser: player.querySelector('.player-name').textContent === 'You',
+            percentage: parseFloat(player.querySelector('.win-chance').textContent)
+        }));
         
-        // Only show items if user won
-        if (winnerData.isUser) {
-            winnerItems.innerHTML = '';
-            winnerData.items.forEach(item => {
-                const itemElement = createItemElement(item);
-                winnerItems.appendChild(itemElement);
+        // Find winner data
+        const winner = playersArray.find(p => p.name === winnerData.name);
+        if (!winner) {
+            console.error('Winner not found in players array');
+            return;
+        }
+        
+        // Create weighted array based on win percentages
+        const weightedPlayers = [];
+        playersArray.forEach(player => {
+            const entries = Math.round(player.percentage);
+            for (let i = 0; i < entries; i++) {
+                weightedPlayers.push(player);
+            }
+        });
+        
+        // Generate base items for one segment
+        const segmentItems = 20; // Items in one segment
+        const baseItems = [];
+        
+        // Generate random items based on probabilities
+        for (let i = 0; i < segmentItems; i++) {
+            const player = weightedPlayers[Math.floor(Math.random() * weightedPlayers.length)];
+            const avatarSrc = player.isUser ? 
+                '/static/media/casino/player_avatar.png' : 
+                `/static/media/casino/${BOT_AVATARS[player.name]}`;
+            
+            baseItems.push({
+                name: player.name,
+                avatar: avatarSrc,
+                isUser: player.isUser
             });
-            winnerItems.classList.remove('hidden');
-        } else {
-            winnerItems.classList.add('hidden');
         }
         
-        overlay.classList.remove('hidden');
+        // Insert winner at a specific position
+        const winningPosition = Math.floor(segmentItems * 0.7);
+        baseItems[winningPosition] = {
+            name: winner.name,
+            avatar: winner.isUser ? '/static/media/casino/player_avatar.png' : 
+                    `/static/media/casino/${BOT_AVATARS[winner.name]}`,
+            isUser: winner.isUser,
+            isWinner: true
+        };
         
-        // If user won, update their inventory
-        if (winnerData.isUser) {
-            loadInventory();
+        // Create multiple segments for infinite scrolling
+        const segments = 5;
+        const items = [];
+        for (let i = 0; i < segments; i++) {
+            items.push(...baseItems);
         }
+        
+        // Create wheel items
+        items.forEach((item, i) => {
+            const wheelItem = document.createElement('div');
+            wheelItem.className = 'wheel-item';
+            if (item.isWinner && i === winningPosition + (2 * segmentItems)) { // Winner in middle segment
+                wheelItem.dataset.winner = 'true';
+            }
+            
+            wheelItem.innerHTML = `
+                <img src="${item.avatar}" alt="${item.name}">
+                <div class="player-name">${item.name}</div>
+            `;
+            
+            wheel.appendChild(wheelItem);
+        });
+        
+        // Show wheel container
+        wheelContainer.classList.remove('hidden');
+        
+        // Reset wheel position instantly (no animation)
+        wheel.style.transition = 'none';
+        wheel.style.transform = 'translateX(0)';
+        
+        // Force reflow
+        wheel.offsetHeight;
+        
+        // Restore animation and spin to winner
+        wheel.style.transition = 'transform 8s cubic-bezier(0.32, 0.64, 0.45, 1)';
+        const itemWidth = 120;
+        const containerWidth = wheelContainer.offsetWidth;
+        const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+        
+        // Find the winning item in the middle segment
+        const winningItem = wheel.querySelector('[data-winner="true"]');
+        const finalPosition = winningItem.offsetLeft - centerOffset;
+        
+        // Start spin animation
+        requestAnimationFrame(() => {
+            wheel.style.transform = `translateX(-${finalPosition}px)`;
+        });
+        
+        // Show winner overlay after wheel animation
+        setTimeout(() => {
+            wheelContainer.classList.add('hidden');
+            const overlay = document.getElementById('winner-overlay');
+            const winnerName = overlay.querySelector('.winner-name');
+            const wonAmount = overlay.querySelector('.won-amount');
+            const winnerItems = overlay.querySelector('.winner-items');
+            
+            winnerName.textContent = winnerData.name;
+            wonAmount.textContent = `$${winnerData.totalValue.toFixed(2)}`;
+            
+            if (winnerData.isUser) {
+                winnerItems.innerHTML = '';
+                winnerData.items.forEach(item => {
+                    const itemElement = createItemElement(item);
+                    winnerItems.appendChild(itemElement);
+                });
+                winnerItems.classList.remove('hidden');
+                loadInventory();
+            } else {
+                winnerItems.classList.add('hidden');
+            }
+            
+            overlay.classList.remove('hidden');
+        }, 8500);
     }
     
     // Close winner overlay handler

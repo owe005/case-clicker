@@ -50,7 +50,7 @@
                                 .replace('galil ar', 'galil')
                                 .replace('galilar', 'galil') %}
                             {% set skin_name = first_item.name.lower().replace(' ', '_') %}
-                            {% set case_path = CASE_MAPPING[first_item.case_type] if first_item.case_type in CASE_MAPPING else 'weapon_case_1' %}
+                            {% set case_path = CASE_SKINS_FOLDER_NAMES[first_item.case_type] if first_item.case_type in CASE_SKINS_FOLDER_NAMES else 'weapon_case_1' %}
                             <div class="skin-image-wrapper">
                                 <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
                                      alt="{{ first_item.weapon }} | {{ first_item.name }}">
@@ -87,7 +87,7 @@
                                 .replace('galil ar', 'galil')
                                 .replace('galilar', 'galil') %}
                             {% set skin_name = first_item.name.lower().replace(' ', '_') %}
-                            {% set case_path = CASE_MAPPING[first_item.case_type] if first_item.case_type in CASE_MAPPING else 'weapon_case_1' %}
+                            {% set case_path = CASE_SKINS_FOLDER_NAMES[first_item.case_type] if first_item.case_type in CASE_SKINS_FOLDER_NAMES else 'weapon_case_1' %}
                             <div class="skin-image-wrapper">
                                 <img src="{{ url_for('static', filename='media/skins/' + case_path + '/' + weapon_name + '_' + skin_name + '.png') }}" 
                                      alt="{{ first_item.weapon }} | {{ first_item.name }}">
@@ -1209,7 +1209,8 @@ function createStackedItem(stackKey, items) {
         .replace('galilar', 'galil');
     const skinName = firstItem.name.toLowerCase().replace(/ /g, '_');
     
-    const casePath = CASE_MAPPING[firstItem.case_type] || 'weapon_case_1';
+    // Use CASE_SKINS_FOLDER_NAMES instead of CASE_MAPPING
+    const casePath = CASE_SKINS_FOLDER_NAMES[firstItem.case_type] || 'weapon_case_1';
     
     // Create the collapsed view
     div.innerHTML = `
@@ -1271,11 +1272,12 @@ function createSingleItem(item) {
         .replace(' ', '')
         .replace('553', '553')
         .replace('galil ar', 'galil')
-        .replace('galilar', 'galil')  // Add this line
-        .replace(/\s+/g, '');  // Remove any remaining spaces
+        .replace('galilar', 'galil')
+        .replace(/\s+/g, '');
     const skinName = item.name.toLowerCase().replace(/ /g, '_');
     
-    const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
+    // Use CASE_SKINS_FOLDER_NAMES instead of CASE_MAPPING
+    const casePath = CASE_SKINS_FOLDER_NAMES[item.case_type] || 'weapon_case_1';
     
     div.innerHTML = `
         <div class="skin-image">
@@ -1318,14 +1320,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const weaponName = item.weapon.toLowerCase()
             .replace('-', '')
             .replace(' ', '')
-            .replace('553', '553');
-        const skinName = item.name.toLowerCase().replace(' ', '_');
+            .replace('553', '553')
+            .replace('galil ar', 'galil')
+            .replace('galilar', 'galil');
+        const skinName = item.name.toLowerCase().replace(/ /g, '_');
+        
+        // Use CASE_SKINS_FOLDER_NAMES instead of hardcoded path
+        const casePath = CASE_SKINS_FOLDER_NAMES[item.case_type] || 'weapon_case_1';
         
         skinDiv.innerHTML = `
             <div class="skin-image">
                 ${!item.weapon.startsWith('★') ? `
                     <div class="skin-image-wrapper">
-                        <img src="/static/media/skins/weapon_case_1/${weaponName}_${skinName}.png" 
+                        <img src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 
                              alt="${item.weapon} | ${item.name}">
                         ${item.count && item.count > 1 ? `
                             <span class="skin-count">x${item.count}</span>
@@ -1468,7 +1475,7 @@ async function updateInventoryDisplay() {
                     .replace('galil ar', 'galil')
                     .replace('galilar', 'galil');
                 const skinName = item.name.toLowerCase().replace(/ /g, '_');
-                const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
+                const casePath = CASE_SKINS_FOLDER_NAMES[item.case_type] || 'weapon_case_1';
                 
                 skinDiv.innerHTML = `
                     <div class="skin-image">

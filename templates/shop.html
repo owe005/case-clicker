@@ -123,6 +123,7 @@
                 <div class="skin-info">
                     <div class="skin-name"></div>
                     <div class="skin-wear"></div>
+                    <div class="skin-float"></div>
                     <div class="skin-price"></div>
                     <button class="buy-skin-btn">Purchase</button>
                 </div>
@@ -132,6 +133,7 @@
                 <div class="skin-info">
                     <div class="skin-name"></div>
                     <div class="skin-wear"></div>
+                    <div class="skin-float"></div>
                     <div class="skin-price"></div>
                     <button class="buy-skin-btn">Purchase</button>
                 </div>
@@ -141,6 +143,7 @@
                 <div class="skin-info">
                     <div class="skin-name"></div>
                     <div class="skin-wear"></div>
+                    <div class="skin-float"></div>
                     <div class="skin-price"></div>
                     <button class="buy-skin-btn">Purchase</button>
                 </div>
@@ -150,6 +153,7 @@
                 <div class="skin-info">
                     <div class="skin-name"></div>
                     <div class="skin-wear"></div>
+                    <div class="skin-float"></div>
                     <div class="skin-price"></div>
                     <button class="buy-skin-btn">Purchase</button>
                 </div>
@@ -159,6 +163,7 @@
                 <div class="skin-info">
                     <div class="skin-name"></div>
                     <div class="skin-wear"></div>
+                    <div class="skin-float"></div>
                     <div class="skin-price"></div>
                     <button class="buy-skin-btn">Purchase</button>
                 </div>
@@ -993,14 +998,9 @@
 
             console.log(`Updating ${rarity} skin:`, skin);
             
-            // Use the image path from the skin data
             const imageContainer = card.querySelector('.skin-image');
-            // If it's a knife, handle the image name differently
             const casePath = skin.case_type === 'bravo' ? 'operation_bravo_case' : skin.case_file;
-            const imgPath = skin.rarity === 'GOLD' ? 
-                `/static/media/skins/${casePath}/${skin.image}` :  // Use the exact image name from JSON
-                `/static/media/skins/${casePath}/${skin.image}`;
-            console.log('Loading image:', imgPath);
+            const imgPath = `/static/media/skins/${casePath}/${skin.image}`;
             
             imageContainer.innerHTML = `
                 <img src="${imgPath}" 
@@ -1008,10 +1008,11 @@
                      onerror="this.onerror=null; this.src='/static/media/skins/weapon_case_1/ak47_case_hardened.png'">
             `;
 
-            // Update info
+            // Update info including float value
             card.querySelector('.skin-name').textContent = 
                 `${skin.stattrak ? 'StatTrak™ ' : ''}${skin.weapon} | ${skin.name}`;
             card.querySelector('.skin-wear').textContent = skin.wear;
+            card.querySelector('.skin-float').textContent = `Float: ${skin.float_value.toFixed(8)}`;
             card.querySelector('.skin-price').textContent = `$${skin.price.toFixed(2)}`;
 
             // Update button

@@ -187,3 +187,24 @@
 .content-row.rarity-CONTRABAND {
     border-left: 4px solid #FF8C00;
 }
+
+/* Add styles for the float value display */
+.skin-float {
+    color: #888;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 3px 6px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Update spacing for the new element */
+.skin-info > * {
+    margin-bottom: 8px;
+}
+
+.skin-info > :last-child {
+    margin-bottom: 0;
+}

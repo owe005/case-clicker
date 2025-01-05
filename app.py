@@ -8,9 +8,8 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from functools import wraps
 from typing import List, Optional
-import heapq
-from threading import Thread, Lock
-import threading
+from threading import Thread, Lock, Timer
+import atexit
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -22,7 +21,7 @@ from achievements import (update_case_achievements, update_click_achievements,
                         update_earnings_achievements)
 from bots import (client, create_system_message, format_bot_selection_history,
                  format_bot_selection_system_message, format_conversation_history,
-                 generate_bot_players, get_trades_context, select_bot_with_ai)
+                 generate_bot_players, get_trades_context, select_bot_with_ai, images_bots_avatars)
 from casino import find_best_skin_combination
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
@@ -53,6 +52,10 @@ auction_thread = None
 
 # Add this global variable at the top with the other globals
 LAST_BIDDER = None
+
+# Add these global variables near the other globals
+auction_timer = None
+last_auction_check = None
 
 def login_required(f):
     @wraps(f)
@@ -131,7 +134,8 @@ def inventory():
                          RANKS=RANKS,
                          upgrades=user_data.get('upgrades', {}),
                          initial_view=request.args.get('view', 'skins'),
-                         CASE_MAPPING=CASE_FILE_MAPPING)
+                         CASE_MAPPING=CASE_FILE_MAPPING,
+                         CASE_SKINS_FOLDER_NAMES=CASE_SKINS_FOLDER_NAMES)
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
@@ -1009,19 +1013,25 @@ def update_coinflip_balance():
 def roulette():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
+    
+    # Check if there is an in-progress bet
+    roulette_bet = session.get('roulette_bet')
+    if roulette_bet and roulette_bet.get('in_progress'):
+        # Only clear the session, money was already deducted
+        session.pop('roulette_bet', None)  # Clear the bet state
+    
     return render_template('roulette.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+                         balance=user.balance,
+                         rank=user.rank,
+                         exp=user.exp,
+                         RANKS=RANKS,
+                         RANK_EXP=RANK_EXP)
 
 @app.route('/play_roulette', methods=['POST'])
 @login_required
 def play_roulette():
     try:
         data = request.get_json()
-        bets = data.get('bets', {})
         lightning_numbers = set(data.get('lightningNumbers', []))
         
         # Load current user data
@@ -1031,8 +1041,11 @@ def play_roulette():
         # Determine result
         result = random.randint(0, 36)
         
-        # If no bets, just return the result for spectating
-        if not bets:
+        # Get the stored bet info from session
+        bet_info = session.get('roulette_bet')
+        
+        # If no bets or spectating, just return the result
+        if not bet_info or not bet_info.get('bets'):
             return jsonify({
                 'success': True,
                 'result': result,
@@ -1040,10 +1053,16 @@ def play_roulette():
                 'balance': current_balance,
                 'total_bet': 0
             })
+            
+        # Verify bet was properly closed
+        if not bet_info.get('balance_deducted'):
+            return jsonify({'error': 'Bet not properly closed'})
+            
+        bets = bet_info['bets']
+        total_bet = bet_info['total_bet']
         
         # Calculate winnings for placed bets
         winnings = 0
-        total_bet = sum(float(amount) for amount in bets.values())
         
         for bet_type, amount in bets.items():
             amount = float(amount)
@@ -1051,14 +1070,12 @@ def play_roulette():
                 if int(bet_type) == result:
                     win_amount = amount * 36
                     winnings += win_amount
-                    # Track earnings (win amount minus original bet)
                     update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['red', 'black']:
                 if (bet_type == 'red' and result in RED_NUMBERS) or \
                    (bet_type == 'black' and result in BLACK_NUMBERS):
                     win_amount = amount * 2
                     winnings += win_amount
-                    # Track earnings (win amount minus original bet)
                     update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['even', 'odd']:
                 if result != 0 and \
@@ -1066,14 +1083,12 @@ def play_roulette():
                     (bet_type == 'odd' and result % 2 == 1)):
                     win_amount = amount * 2
                     winnings += win_amount
-                    # Track earnings (win amount minus original bet)
                     update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['1-18', '19-36']:
                 if (bet_type == '1-18' and 1 <= result <= 18) or \
                    (bet_type == '19-36' and 19 <= result <= 36):
                     win_amount = amount * 2
                     winnings += win_amount
-                    # Track earnings (win amount minus original bet)
                     update_earnings_achievements(user_data, win_amount - amount)
             elif bet_type in ['1st12', '2nd12', '3rd12']:
                 if (bet_type == '1st12' and 1 <= result <= 12) or \
@@ -1081,11 +1096,12 @@ def play_roulette():
                    (bet_type == '3rd12' and 25 <= result <= 36):
                     win_amount = amount * 3
                     winnings += win_amount
-                    # Track earnings (win amount minus original bet)
                     update_earnings_achievements(user_data, win_amount - amount)
         
-        # Calculate final balance
-        final_balance = current_balance - total_bet + winnings
+        # Update final balance with winnings
+        final_balance = float(user_data['balance']) + winnings
+        user_data['balance'] = final_balance
+        save_user_data(user_data)
         
         # Store the game result in session
         session['roulette_result'] = {
@@ -1094,6 +1110,9 @@ def play_roulette():
             'new_balance': final_balance,
             'total_bet': total_bet
         }
+        
+        # Mark the bet as completed
+        session['roulette_bet']['in_progress'] = False
         
         return jsonify({
             'success': True,
@@ -1904,26 +1923,28 @@ def buy_skin():
         # Load user data
         user_data = load_user_data()
         current_balance = float(user_data['balance'])
-        price = float(data.get('price', 0))
+        shop_price = float(data.get('price', 0))  # This is the marked up price
 
-        if price > current_balance:
+        if shop_price > current_balance:
             return jsonify({'error': 'Insufficient funds'})
 
-        # Create skin item
+        # Create skin item with original adjusted price (not shop price)
         skin_item = {
             'weapon': data['weapon'],
             'name': data['name'],
             'rarity': data['rarity'],
             'wear': data['wear'],
             'stattrak': data['stattrak'],
-            'price': price,
+            'price': data.get('adjusted_price', data.get('price')),  # Use original adjusted price
+            'float_value': data['float_value'],
             'timestamp': time.time(),
             'case_type': data['case_type'],
-            'is_case': False
+            'is_case': False,
+            'base_price': data.get('base_price', data['price'])
         }
 
-        # Update user data
-        user_data['balance'] = current_balance - price
+        # Update user data using shop price for purchase
+        user_data['balance'] = current_balance - shop_price
         user_data['inventory'].append(skin_item)
         save_user_data(user_data)
 
@@ -1948,7 +1969,7 @@ def get_featured_skins():
             all_skins = []
             
             # Load skins from each case
-            for case_type in CASE_TYPES:  # Use CASE_TYPES from config
+            for case_type in CASE_TYPES:
                 try:
                     file_name = CASE_FILE_MAPPING.get(case_type)
                     if not file_name:
@@ -1959,15 +1980,32 @@ def get_featured_skins():
                         # Add all skins to the pool
                         for grade, items in case_data['skins'].items():
                             for item in items:
-                                all_skins.append({
-                                    'weapon': item['weapon'],
-                                    'name': item['name'],
-                                    'prices': item['prices'],
-                                    'case_type': case_type,
-                                    'case_file': file_name,
-                                    'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
-                                    'rarity': grade.upper()
-                                })
+                                wear_options = [w for w in item['prices'].keys() 
+                                              if not w.startswith('ST_') and w != 'NO']
+                                if wear_options:
+                                    wear = random.choice(wear_options)
+                                    float_value = generate_float_for_wear(wear)
+                                    base_price = float(item['prices'][wear])
+                                    adjusted_price = adjust_price_by_float(base_price, wear, float_value)
+                                    
+                                    # Apply 10% shop markup
+                                    shop_price = adjusted_price * 1.1
+                                    
+                                    all_skins.append({
+                                        'weapon': item['weapon'],
+                                        'name': item['name'],
+                                        'prices': item['prices'],
+                                        'case_type': case_type,
+                                        'case_file': file_name,
+                                        'image': item.get('image', f"{item['weapon'].lower().replace(' ', '')}_{item['name'].lower().replace(' ', '_')}.png"),
+                                        'rarity': grade.upper(),
+                                        'wear': wear,
+                                        'float_value': float_value,
+                                        'base_price': base_price,
+                                        'adjusted_price': adjusted_price,  # Store original adjusted price
+                                        'price': shop_price,  # Display price with markup
+                                        'stattrak': random.random() < 0.1  # 10% chance for StatTrak
+                                    })
                 except Exception as e:
                     print(f"Error loading case {case_type}: {e}")
                     continue
@@ -1977,32 +2015,9 @@ def get_featured_skins():
             rarities = ['GOLD', 'RED', 'PINK', 'PURPLE', 'BLUE']
             
             for rarity in rarities:
-                # Filter skins by rarity
                 rarity_skins = [skin for skin in all_skins if skin['rarity'] == rarity]
                 if rarity_skins:
-                    selected_skin = random.choice(rarity_skins)
-                    
-                    # Generate random wear and StatTrak
-                    wear_options = [w for w in selected_skin['prices'].keys() 
-                                  if not w.startswith('ST_') and w != 'NO']
-                    if wear_options:
-                        wear = random.choice(wear_options)
-                        stattrak = random.random() < 0.1  # 10% chance
-                        
-                        price_key = f"ST_{wear}" if stattrak else wear
-                        price = float(selected_skin['prices'].get(price_key, selected_skin['prices'].get(wear, 0)))
-                        
-                        FEATURED_SKINS[rarity] = {
-                            'weapon': selected_skin['weapon'],
-                            'name': selected_skin['name'],
-                            'wear': wear,
-                            'stattrak': stattrak,
-                            'price': price,
-                            'case_type': selected_skin['case_type'],
-                            'case_file': selected_skin['case_file'],
-                            'image': selected_skin['image'],
-                            'rarity': rarity
-                        }
+                    FEATURED_SKINS[rarity] = random.choice(rarity_skins)
             
             LAST_REFRESH_TIME = current_time
             
@@ -2846,24 +2861,33 @@ def start_auction_thread():
 
 def process_auction_background():
     """Background thread to process bot bids"""
-    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS
+    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS, last_auction_check
     
     while True:
         try:
+            current_time = datetime.now()
+            
             with auction_lock:
-                if (CURRENT_AUCTION and AUCTION_END_TIME and 
-                    datetime.now() < AUCTION_END_TIME):
+                # Check if auction has ended
+                if CURRENT_AUCTION and current_time >= AUCTION_END_TIME:
+                    complete_auction()
+                    break
+                
+                # Only process bids if auction is active
+                if CURRENT_AUCTION and current_time < AUCTION_END_TIME:
+                    # Update last check time
+                    last_auction_check = current_time
                     process_bot_bids()
             
-            # Sleep for a random interval between 5-15 seconds
-            time_remaining = (AUCTION_END_TIME - datetime.now()).total_seconds()
+            # Sleep for a random interval
+            time_remaining = (AUCTION_END_TIME - current_time).total_seconds()
             if time_remaining < 60:  # Last minute
                 sleep_time = random.uniform(1, 3)
             elif time_remaining < 300:  # Last 5 minutes
                 sleep_time = random.uniform(3, 8)
             elif time_remaining < 600:  # Last 10 minutes
                 sleep_time = random.uniform(5, 15)
-            elif time_remaining < 1800:  # Last 30 minutes
+            else:  # Earlier in auction
                 sleep_time = random.uniform(15, 30)
             
             time.sleep(sleep_time)
@@ -2900,6 +2924,15 @@ def auction():
             LAST_BIDDER = None
             start_auction_thread()
     
+    # Get initial bot statuses with correct online/offline state
+    current_bid = get_current_bid()
+    initial_bot_statuses = []
+    for bot_name, data in AUCTION_BOT_BUDGETS.items():
+        initial_bot_statuses.append({
+            'name': bot_name,
+            'status': data['status']
+        })
+    
     return render_template('auction.html',
                          balance=user.balance,
                          rank=user.rank,
@@ -2910,6 +2943,7 @@ def auction():
                          end_time=AUCTION_END_TIME,
                          current_bid=get_current_bid(),
                          bids=AUCTION_BIDS,
+                         active_bots=initial_bot_statuses,  # Pass the full status objects
                          debug=app.debug)
 
 def generate_auction_item():
@@ -3037,11 +3071,44 @@ def generate_bot_budgets(base_price):
     print(f"Item Base Price: ${base_price:,.2f}")
     print("-" * 40)
     
-    for bot_name in BOT_PERSONALITIES.keys():
-        # Set budget between 100-150% of base price
-        max_budget = base_price * random.uniform(1.0, 1.5)
-        budgets[bot_name] = max_budget
-        print(f"{bot_name}: ${max_budget:,.2f}")
+    # Calculate estimated market value (adjusted price)
+    estimated_value = CURRENT_AUCTION['adjusted_price']
+    print(f"Estimated Value: ${estimated_value:,.2f}")
+    print("-" * 40)
+    
+    # Randomly select 3-10 bots to participate
+    all_bots = list(BOT_PERSONALITIES.keys())
+    num_active_bots = random.randint(3, 10)
+    active_bots = random.sample(all_bots, num_active_bots)
+    
+    # Generate budgets for all bots (active ones get real budgets, inactive ones get 0)
+    for bot_name in all_bots:
+        if bot_name in active_bots:
+            # Determine bot's budget strategy
+            strategy = random.choices(['low', 'normal', 'high', 'whale'], 
+                                   weights=[0.2, 0.6, 0.15, 0.05])[0]
+            
+            if strategy == 'low':
+                # Low budget: 30-70% of base price
+                max_budget = base_price * random.uniform(0.3, 0.7)
+            elif strategy == 'normal':
+                # Normal budget: 80-120% of estimated value
+                max_budget = estimated_value * random.uniform(0.8, 1.2)
+            elif strategy == 'high':
+                # High budget: 130-150% of estimated value
+                max_budget = estimated_value * random.uniform(1.3, 1.5)
+            else:  # whale
+                # Whale budget: 160-200% of estimated value
+                max_budget = estimated_value * random.uniform(1.6, 2.0)
+            
+            status = 'online'
+            print(f"{bot_name}: ${max_budget:,.2f} ({strategy})")
+        else:
+            max_budget = 0
+            status = 'offline'
+            print(f"{bot_name}: Offline")
+        
+        budgets[bot_name] = {'budget': max_budget, 'status': status}
     
     print("-" * 40)
     return budgets
@@ -3071,6 +3138,18 @@ def place_bid():
             if bid_amount <= current_bid:
                 return jsonify({'error': f'Bid must be higher than ${current_bid:.2f}'})
             
+            # If user had a previous bid, refund it
+            if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You':
+                previous_bid = AUCTION_BIDS[-1]['amount']
+                current_balance += previous_bid
+            
+            # Deduct new bid amount
+            current_balance -= bid_amount
+            
+            # Update user's balance
+            user_data['balance'] = current_balance
+            save_user_data(user_data)
+            
             # Add bid to list
             AUCTION_BIDS.append({
                 'bidder': 'You',
@@ -3089,7 +3168,8 @@ def place_bid():
             'success': True,
             'current_bid': get_current_bid(),
             'end_time': AUCTION_END_TIME.isoformat(),
-            'bids': AUCTION_BIDS
+            'bids': AUCTION_BIDS,
+            'balance': current_balance
         })
         
     except Exception as e:
@@ -3115,11 +3195,11 @@ def process_bot_bids(trigger_bid=None):
     if trigger_bid:
         base_chance *= 1.2
     
-    # Process bot responses
-    active_bots = list(AUCTION_BOT_BUDGETS.items())
-    # Filter out the last bidder
-    if LAST_BIDDER:
-        active_bots = [(name, budget) for name, budget in active_bots if name != LAST_BIDDER]
+    # Process bot responses - only consider online bots with budgets
+    active_bots = [(name, data['budget']) 
+                   for name, data in AUCTION_BOT_BUDGETS.items() 
+                   if data['status'] == 'online' and name != LAST_BIDDER]
+    
     random.shuffle(active_bots)  # Randomize bot order
     
     for bot_name, max_budget in active_bots:
@@ -3137,6 +3217,15 @@ def process_bot_bids(trigger_bid=None):
                 
                 new_bid = min(current_bid + increment, max_budget)
                 if new_bid > current_bid:
+                    # If player was outbid, refund their bid
+                    if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You':
+                        try:
+                            user_data = load_user_data()
+                            user_data['balance'] += AUCTION_BIDS[-1]['amount']
+                            save_user_data(user_data)
+                        except Exception as e:
+                            print(f"Error refunding outbid: {e}")
+                    
                     AUCTION_BIDS.append({
                         'bidder': bot_name,
                         'amount': new_bid,
@@ -3188,8 +3277,8 @@ def complete_auction():
         try:
             user_data = load_user_data()
             
-            # Deduct winning bid amount
-            user_data['balance'] = float(user_data['balance']) - winning_bid['amount']
+            # Don't deduct the bid amount again since it was already deducted when placing the bid
+            # user_data['balance'] = float(user_data['balance']) - winning_bid['amount']  # Remove this line
             
             # Add item to inventory
             won_item = CURRENT_AUCTION.copy()
@@ -3210,11 +3299,124 @@ def complete_auction():
 @login_required
 def get_auction_status():
     with auction_lock:
+        current_bid = get_current_bid()
+        # Get active/inactive status for each bot
+        bot_statuses = []
+        for bot_name, data in AUCTION_BOT_BUDGETS.items():
+            bot_statuses.append({
+                'name': bot_name,
+                'active': data['budget'] > current_bid,  # Bot is active if their budget is higher than current bid
+                'status': data['status']  # Include online/offline status
+            })
+        
         return jsonify({
-            'current_bid': get_current_bid(),
+            'current_bid': current_bid,
             'bids': AUCTION_BIDS,
-            'end_time': AUCTION_END_TIME.isoformat() if AUCTION_END_TIME else None
+            'end_time': AUCTION_END_TIME.isoformat() if AUCTION_END_TIME else None,
+            'bot_statuses': bot_statuses
         })
 
+@app.route('/close_roulette_bets', methods=['POST'])
+@login_required
+def close_roulette_bets():
+    try:
+        data = request.get_json()
+        bets = data.get('bets', {})
+        
+        # If no bets, just return success
+        if not bets:
+            return jsonify({'success': True})
+            
+        # Load current user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+        
+        # Calculate total bet amount
+        total_bet = sum(float(amount) for amount in bets.values())
+        
+        # Immediately deduct the bet amount and save
+        user_data['balance'] -= total_bet
+        save_user_data(user_data)
+        
+        # Store the bet state in session
+        session['roulette_bet'] = {
+            'bets': bets,
+            'total_bet': total_bet,
+            'in_progress': True,
+            'balance_deducted': True
+        }
+        
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance']
+        })
+        
+    except Exception as e:
+        print(f"Error closing roulette bets: {e}")
+        return jsonify({'error': 'Failed to close bets'})
+
+# Add this function to start a new auction
+def start_new_auction():
+    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS, AUCTION_BOT_BUDGETS, LAST_BIDDER, last_auction_check
+    
+    with auction_lock:
+        CURRENT_AUCTION = generate_auction_item()
+        AUCTION_END_TIME = datetime.now() + timedelta(minutes=30)
+        AUCTION_BIDS = []
+        AUCTION_BOT_BUDGETS = generate_bot_budgets(CURRENT_AUCTION['base_price'])
+        LAST_BIDDER = None
+        last_auction_check = datetime.now()
+        
+    # Start the auction processing thread
+    start_auction_thread()
+    
+    # Schedule the next auction
+    schedule_next_auction()
+
+# Add this function to schedule the next auction
+def schedule_next_auction():
+    global auction_timer
+    
+    # Cancel any existing timer
+    if auction_timer:
+        auction_timer.cancel()
+    
+    # Schedule new auction to start when current one ends
+    time_until_next = (AUCTION_END_TIME - datetime.now()).total_seconds()
+    auction_timer = Timer(time_until_next, start_new_auction)
+    auction_timer.daemon = True  # Make sure the timer doesn't prevent app shutdown
+    auction_timer.start()
+
+# Add this function to clean up on shutdown
+def cleanup_auction():
+    global auction_timer
+    if auction_timer:
+        auction_timer.cancel()
+
+# Add this initialization code after app = Flask(__name__)
+def init_auction_system():
+    global CURRENT_AUCTION, last_auction_check
+    
+    # If there's no auction running, start one
+    if not CURRENT_AUCTION:
+        start_new_auction()
+    else:
+        # If there is an auction, make sure it's still valid
+        with auction_lock:
+            if datetime.now() >= AUCTION_END_TIME:
+                start_new_auction()
+            else:
+                # Existing auction is still valid, just schedule the next one
+                schedule_next_auction()
+                start_auction_thread()
+
+# Register the cleanup function
+atexit.register(cleanup_auction)
+
+# Initialize auction system when app starts
+with app.app_context():
+    init_auction_system()
+
 if __name__ == '__main__':
+    init_auction_system()  # Keep this line
     app.run(debug=True)

@@ -1,0 +1,550 @@
+{
+    "name": "Shadow Case",
+    "image": "shadow_case.png",
+    "price": 1.19,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Case Hardened",
+                "image": "shadowdaggers_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 222.24,
+                    "MW": 129.49,
+                    "FT": 113.72,
+                    "WW": 111.80,
+                    "BS": 107.50,
+                    "ST_FN": 272.86,
+                    "ST_MW": 194.74,
+                    "ST_FT": 157.41,
+                    "ST_WW": 151.93,
+                    "ST_BS": 154.93
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Boreal Forest",
+                "image": "shadowdaggers_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 112.01,
+                    "MW": 95.41,
+                    "FT": 91.74,
+                    "WW": 98.88,
+                    "BS": 89.85,
+                    "ST_FN": 560.05,
+                    "ST_MW": 102.43,
+                    "ST_FT": 93.11,
+                    "ST_WW": 138.30,
+                    "ST_BS": 104.99
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Crimson Web",
+                "image": "shadowdaggers_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 403.00,
+                    "MW": 124.49,
+                    "FT": 98.97,
+                    "WW": 99.71,
+                    "BS": 96.98,
+                    "ST_FN": 2015.00,
+                    "ST_MW": 222.50,
+                    "ST_FT": 114.27,
+                    "ST_WW": 122.99,
+                    "ST_BS": 123.08
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Stained",
+                "image": "shadowdaggers_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 139.63,
+                    "MW": 98.99,
+                    "FT": 93.95,
+                    "WW": 91.67,
+                    "BS": 94.04,
+                    "ST_FN": 875.00,
+                    "ST_MW": 122.28,
+                    "ST_FT": 108.41,
+                    "ST_WW": 104.99,
+                    "ST_BS": 124.00
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Fade",
+                "image": "shadowdaggers_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 212.00,
+                    "MW": 246.48,
+                    "ST_FN": 266.09,
+                    "ST_MW": 288.00
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Urban Masked",
+                "image": "shadowdaggers_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 122.45,
+                    "MW": 94.99,
+                    "FT": 92.00,
+                    "WW": 94.55,
+                    "BS": 92.70,
+                    "ST_FN": 612.25,
+                    "ST_MW": 98.35,
+                    "ST_FT": 96.30,
+                    "ST_WW": 130.00,
+                    "ST_BS": 98.21
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Slaughter",
+                "image": "shadowdaggers_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 145.61,
+                    "MW": 132.50,
+                    "FT": 129.97,
+                    "ST_FN": 194.82,
+                    "ST_MW": 155.09,
+                    "ST_FT": 617.28
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Vanilla",
+                "image": "shadowdaggers_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 122.59,
+                    "ST_NO": 125.86
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Blue Steel",
+                "image": "shadowdaggers_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 157.09,
+                    "MW": 98.00,
+                    "FT": 95.21,
+                    "WW": 93.08,
+                    "BS": 95.05,
+                    "ST_FN": 190.72,
+                    "ST_MW": 135.91,
+                    "ST_FT": 106.13,
+                    "ST_WW": 103.00,
+                    "ST_BS": 120.00
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Forest DDPAT",
+                "image": "shadowdaggers_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 106.71,
+                    "MW": 95.02,
+                    "FT": 92.00,
+                    "WW": 93.25,
+                    "BS": 91.38,
+                    "ST_FN": 1749.00,
+                    "ST_MW": 96.30,
+                    "ST_FT": 91.24,
+                    "ST_WW": 115.51,
+                    "ST_BS": 94.52
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Scorched",
+                "image": "shadowdaggers_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 300.00,
+                    "MW": 95.61,
+                    "FT": 91.30,
+                    "WW": 93.50,
+                    "BS": 90.97,
+                    "ST_FN": 1549.00,
+                    "ST_MW": 102.45,
+                    "ST_FT": 94.18,
+                    "ST_WW": 186.91,
+                    "ST_BS": 93.57
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Night",
+                "image": "shadowdaggers_night.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 640.00,
+                    "MW": 98.35,
+                    "FT": 93.01,
+                    "WW": 91.18,
+                    "BS": 92.06,
+                    "ST_FN": 3200.00,
+                    "ST_MW": 98.08,
+                    "ST_FT": 95.25,
+                    "ST_WW": 136.46,
+                    "ST_BS": 96.32
+                }
+            },
+            {
+                "weapon": "Shadow Daggers",
+                "name": "Safari Mesh",
+                "image": "shadowdaggers_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 121.30,
+                    "MW": 91.52,
+                    "FT": 91.99,
+                    "WW": 92.20,
+                    "BS": 91.00,
+                    "ST_FN": 606.50,
+                    "ST_MW": 630.49,
+                    "ST_FT": 91.46,
+                    "ST_WW": 946.49,
+                    "ST_BS": 110.00
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "USP-S",
+                "name": "Kill Confirmed",
+                "image": "usps_kill_confirmed.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 132.13,
+                    "MW": 70.03,
+                    "FT": 42.34,
+                    "WW": 35.49,
+                    "BS": 33.88,
+                    "ST_FN": 456.24,
+                    "ST_MW": 219.29,
+                    "ST_FT": 125.69,
+                    "ST_WW": 89.49,
+                    "ST_BS": 86.69
+                }
+            },
+            {
+                "weapon": "M4A1-S",
+                "name": "Golden Coil",
+                "image": "m4a1s_golden_coil.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 136.29,
+                    "MW": 91.60,
+                    "FT": 57.93,
+                    "WW": 39.09,
+                    "BS": 34.00,
+                    "ST_FN": 290.95,
+                    "ST_MW": 164.68,
+                    "ST_FT": 104.50,
+                    "ST_WW": 70.42,
+                    "ST_BS": 67.00
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "AK-47",
+                "name": "Frontside Misty",
+                "image": "ak47_frontside_misty.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 67.00,
+                    "MW": 22.21,
+                    "FT": 11.17,
+                    "WW": 10.44,
+                    "BS": 8.96,
+                    "ST_FN": 117.28,
+                    "ST_MW": 54.89,
+                    "ST_FT": 26.36,
+                    "ST_WW": 26.15,
+                    "ST_BS": 24.71
+                }
+            },
+            {
+                "weapon": "SSG 08",
+                "name": "Big Iron",
+                "image": "ssg08_big_iron.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 17.29,
+                    "MW": 10.62,
+                    "FT": 8.02,
+                    "WW": 7.56,
+                    "BS": 6.58,
+                    "ST_FN": 48.04,
+                    "ST_MW": 29.04,
+                    "ST_FT": 15.04,
+                    "ST_WW": 15.77,
+                    "ST_BS": 14.20
+                }
+            },
+            {
+                "weapon": "G3SG1",
+                "name": "Flux",
+                "image": "g3sg1_flux.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 17.01,
+                    "MW": 10.25,
+                    "FT": 7.86,
+                    "WW": 6.99,
+                    "BS": 5.12,
+                    "ST_FN": 47.54,
+                    "ST_MW": 27.11,
+                    "ST_FT": 15.23,
+                    "ST_WW": 11.59,
+                    "ST_BS": 10.71
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "Galil AR",
+                "name": "Stone Cold",
+                "image": "galil_stone_cold.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 5.66,
+                    "MW": 2.68,
+                    "FT": 1.37,
+                    "WW": 1.20,
+                    "BS": 1.15,
+                    "ST_FN": 18.53,
+                    "ST_MW": 6.42,
+                    "ST_FT": 3.06,
+                    "ST_WW": 2.59,
+                    "ST_BS": 2.29
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Wing Shot",
+                "image": "p250_wing_shot.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4.32,
+                    "MW": 2.08,
+                    "FT": 1.22,
+                    "WW": 1.04,
+                    "BS": 0.86,
+                    "ST_FN": 8.15,
+                    "ST_MW": 4.97,
+                    "ST_FT": 2.45,
+                    "ST_WW": 2.09,
+                    "ST_BS": 2.01
+                }
+            },
+            {
+                "weapon": "M249",
+                "name": "Nebula Crusader",
+                "image": "m249_nebula_crusader.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.74,
+                    "MW": 2.05,
+                    "FT": 1.12,
+                    "WW": 0.80,
+                    "BS": 0.82,
+                    "ST_FN": 8.56,
+                    "ST_MW": 4.60,
+                    "ST_FT": 2.47,
+                    "ST_WW": 1.89,
+                    "ST_BS": 1.84
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Special Delivery",
+                "image": "mp7_special_delivery.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.58,
+                    "MW": 2.03,
+                    "FT": 1.20,
+                    "WW": 1.51,
+                    "BS": 0.93,
+                    "ST_FN": 7.66,
+                    "ST_MW": 4.12,
+                    "ST_FT": 2.62,
+                    "ST_WW": 2.77,
+                    "ST_BS": 2.45
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Glock-18",
+                "name": "Wraiths",
+                "image": "glock18_wraiths.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.97,
+                    "MW": 0.33,
+                    "FT": 0.14,
+                    "WW": 0.28,
+                    "BS": 0.10,
+                    "ST_FN": 4.26,
+                    "ST_MW": 1.24,
+                    "ST_FT": 0.43,
+                    "ST_WW": 1.48,
+                    "ST_BS": 0.38
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Survivor Z",
+                "image": "famas_survivor_z.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.45,
+                    "MW": 0.30,
+                    "FT": 0.14,
+                    "WW": 0.17,
+                    "BS": 0.14,
+                    "ST_FN": 1.22,
+                    "ST_MW": 0.75,
+                    "ST_FT": 0.38,
+                    "ST_WW": 0.62,
+                    "ST_BS": 0.34
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Dualing Dragons",
+                "image": "dualberettas_dualing_dragons.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.42,
+                    "MW": 0.34,
+                    "FT": 0.15,
+                    "WW": 0.11,
+                    "BS": 0.11,
+                    "ST_FN": 5.00,
+                    "ST_MW": 0.92,
+                    "ST_FT": 0.49,
+                    "ST_WW": 0.34,
+                    "ST_BS": 0.31
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Rangeen",
+                "image": "mac10_rangeen.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.49,
+                    "MW": 0.28,
+                    "FT": 0.15,
+                    "WW": 0.15,
+                    "BS": 0.16,
+                    "ST_FN": 1.15,
+                    "ST_MW": 0.56,
+                    "ST_FT": 0.31,
+                    "ST_WW": 0.30,
+                    "ST_BS": 0.30
+                }
+            },
+            {
+                "weapon": "MAG-7",
+                "name": "Cobalt Core",
+                "image": "mag7_cobalt_core.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.44,
+                    "MW": 0.26,
+                    "FT": 0.13,
+                    "WW": 0.17,
+                    "BS": 0.14,
+                    "ST_FN": 1.30,
+                    "ST_MW": 0.69,
+                    "ST_FT": 0.33,
+                    "ST_WW": 0.26,
+                    "ST_BS": 0.24
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Scumbria",
+                "image": "xm1014_scumbria.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.58,
+                    "MW": 0.28,
+                    "FT": 0.15,
+                    "WW": 0.10,
+                    "BS": 0.07,
+                    "ST_FN": 2.11,
+                    "ST_MW": 0.56,
+                    "ST_FT": 0.28,
+                    "ST_WW": 0.22,
+                    "ST_BS": 0.21
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Green Marine",
+                "image": "scar20_green_marine.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.48,
+                    "MW": 0.40,
+                    "FT": 0.15,
+                    "WW": 0.15,
+                    "BS": 0.09,
+                    "ST_FN": 1.22,
+                    "ST_MW": 0.58,
+                    "ST_FT": 0.24,
+                    "ST_WW": 0.24,
+                    "ST_BS": 0.19
+                }
+            }
+        ]
+    }
+}

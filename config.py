@@ -96,7 +96,8 @@ CASE_FILE_MAPPING = {
     'vanguard': 'operation_vanguard_case',
     'chroma': 'chroma_case',
     'chroma_2': 'chroma_2_case',
-    'falchion': 'falchion_case'
+    'falchion': 'falchion_case',
+    'shadow': 'shadow_case'
 }
 
 CASE_TYPES = [
@@ -114,7 +115,8 @@ CASE_TYPES = [
     'vanguard', 
     'chroma', 
     'chroma_2', 
-    'falchion'
+    'falchion',
+    'shadow'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -132,7 +134,8 @@ CASE_SKINS_FOLDER_NAMES = {
     'vanguard': 'operation_vanguard_case',
     'chroma': 'chroma_case',
     'chroma_2': 'chroma_2_case',
-    'falchion': 'falchion_case'
+    'falchion': 'falchion_case',
+    'shadow': 'shadow_case'
 }
 
 CASE_DATA = {
@@ -225,6 +228,12 @@ CASE_DATA = {
         'image': 'falchion_case.png',
         'is_case': True,
         'type': 'falchion'
+    },
+    'shadow': {
+        'name': 'Shadow Case',
+        'image': 'shadow_case.png',
+        'is_case': True,
+        'type': 'shadow'
     }
 }
 

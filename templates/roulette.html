@@ -58,6 +58,11 @@
                 <div class="special-bet" data-bet="19-36">19-36</div>
             </div>
         </div>
+
+        <!-- Add this inside the betting-board div, right after the special-bets div -->
+        <div class="betting-overlay">
+            <div class="betting-overlay-text">BETTING CLOSED</div>
+        </div>
     </div>
 
     <!-- Betting controls -->
@@ -94,44 +99,51 @@
         </div>
     </div>
 
-    <!-- Result overlay -->
-    <div class="result-overlay hidden">
-        <div class="result-content">
-            <h2 class="result-number"></h2>
-            <div class="result-text"></div>
-            <div class="result-amount"></div>
-            <div class="result-buttons">
-                <button class="play-again-btn">Play Again</button>
-                <a href="{{ url_for('casino') }}" class="return-btn">Return</a>
+    <!-- Result notification -->
+    <div class="result-notification">
+        <div class="result-number-circle">0</div>
+        <div class="result-details">
+            <div class="result-text">You Won!</div>
+            <div class="result-amount">+$0.00</div>
+        </div>
+    </div>
+
+    <!-- Add this right after the timer-container div -->
+    <div class="timer-container">
+        <div class="timer-bar"></div>
+        <div class="timer-text">
+            Betting closes in <span class="countdown">25</span>s
+        </div>
+    </div>
+
+    <!-- Add these styles for the lightning popup -->
+    <div class="lightning-popup">
+        <div class="lightning-popup-content">
+            <h2>Lightning Numbers</h2>
+            <div class="lightning-numbers-grid">
+                <!-- Lightning numbers will be added here dynamically -->
             </div>
         </div>
+    </div>
+
+    <!-- Add these styles for the lightning win notification -->
+    <div class="lightning-win-notification">
+        Lightning Win Notification
     </div>
 </div>
 
 <div id="confetti-container"></div>
 
-<div class="timer-container">
-    <div class="timer-bar"></div>
-    <div class="timer-text">
-        Betting closes in <span class="countdown">25</span>s
+<!-- Add this right after the timer-container div -->
+<div class="result-notification">
+    <div class="result-number-circle">0</div>
+    <div class="result-details">
+        <div class="result-text">You Won!</div>
+        <div class="result-amount">+$0.00</div>
     </div>
 </div>
 
-<!-- Add these styles for the lightning popup -->
-<div class="lightning-popup">
-    <div class="lightning-popup-content">
-        <h2>Lightning Numbers</h2>
-        <div class="lightning-numbers-grid">
-            <!-- Lightning numbers will be added here dynamically -->
-        </div>
-    </div>
-</div>
-
-<!-- Add these styles for the lightning win notification -->
-<div class="lightning-win-notification">
-    Lightning Win Notification
-</div>
-
+<!-- Update the JavaScript section -->
 {% endblock %}
 
 {% block scripts %}
@@ -206,10 +218,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Number and special bet selection
     document.querySelectorAll('.number, .special-bet').forEach(element => {
         element.addEventListener('click', () => {
+            // Add check for betting closed
             if (!bettingOpen) {
-                alert('Betting is closed for this round!');
-                return;
+                return; // Exit early if betting is closed
             }
+
             const betAmount = parseFloat(betInput.value);
             const currentBalance = parseFloat(document.getElementById('balance').textContent);
             
@@ -232,6 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastBetPattern = null;
     
     function placeBet(betType, amount) {
+        // Add check for betting closed
+        if (!bettingOpen) {
+            console.log('Betting is closed');
+            return;
+        }
+
         if (currentBets[betType]) {
             currentBets[betType] += amount;
         } else {
@@ -249,11 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Enable repeat button when we have a pattern
         document.querySelector('.repeat-bet').disabled = false;
         
-        // Update visual selection
+        // Update visual selection and add chips
         const element = document.querySelector(`[data-number="${betType}"]`) || 
                        document.querySelector(`[data-bet="${betType}"]`);
         if (element) {
             element.classList.add('selected');
+            visualizeChips(element, currentBets[betType]);
         }
     }
     
@@ -298,9 +318,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentBets = {};
         updateBetsList();
         
-        // Clear visual selections
+        // Clear visual selections and chips
         document.querySelectorAll('.selected').forEach(element => {
             element.classList.remove('selected');
+            element.querySelectorAll('.chip').forEach(chip => chip.remove());
         });
     }
     
@@ -409,8 +430,11 @@ document.addEventListener('DOMContentLoaded', () => {
         timeRemaining = BETTING_TIME;
         bettingOpen = true;
         
+        // Remove overlay when new round starts
+        document.querySelector('.betting-overlay').classList.remove('active');
+        
         // Re-enable all betting buttons
-        document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet').forEach(el => {
+        document.querySelectorAll('.quick-bet, .bet-adjust').forEach(el => {
             el.disabled = false;
         });
         
@@ -443,10 +467,27 @@ document.addEventListener('DOMContentLoaded', () => {
             timeRemaining--;
             
             if (timeRemaining === WARNING_TIME) {
-                // Close betting and generate lightning numbers at 5 seconds remaining
+                // Close betting and show overlay
                 bettingOpen = false;
-                document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet')
-                    .forEach(el => el.disabled = true);
+                document.querySelector('.betting-overlay').classList.add('active');
+                document.querySelectorAll('.quick-bet, .bet-adjust').forEach(el => {
+                    el.disabled = true;
+                });
+                
+                // Close bets and deduct money
+                fetch('/close_roulette_bets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bets: currentBets })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('balance').textContent = data.balance.toFixed(2);
+                    }
+                });
                 
                 // Generate lightning numbers when betting closes
                 generateLightningNumbers();
@@ -571,13 +612,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Only show result if user placed bets
                         if (Object.keys(currentBets).length > 0) {
-                            const resultOverlay = document.querySelector('.result-overlay');
-                            const resultNumber = resultOverlay.querySelector('.result-number');
-                            const resultText = resultOverlay.querySelector('.result-text');
-                            const resultAmount = resultOverlay.querySelector('.result-amount');
+                            const notification = document.querySelector('.result-notification');
+                            const numberCircle = notification.querySelector('.result-number-circle');
+                            const resultText = notification.querySelector('.result-text');
+                            const resultAmount = notification.querySelector('.result-amount');
 
-                            resultNumber.textContent = data.result;
-                            resultNumber.className = `result-number ${getNumberColor(data.result)}`;
+                            numberCircle.textContent = data.result;
+                            numberCircle.className = `result-number-circle ${getNumberColor(data.result)}`;
 
                             // Calculate net win/loss
                             const netWin = data.winnings - data.total_bet;
@@ -593,7 +634,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 resultAmount.className = 'result-amount lose';
                             }
 
-                            resultOverlay.classList.remove('hidden');
+                            notification.classList.add('visible');
+
+                            // Hide notification after 4 seconds
+                            setTimeout(() => {
+                                notification.classList.remove('visible');
+                            }, 4000);
 
                             // Update balance after result
                             fetch('/update_roulette_balance', {
@@ -627,22 +673,6 @@ document.addEventListener('DOMContentLoaded', () => {
             startGameCycle();
         }
     }
-
-    // Modify the play again button handler
-    document.querySelector('.play-again-btn').addEventListener('click', () => {
-        document.querySelector('.result-overlay').classList.add('hidden');
-        
-        // Re-enable betting
-        bettingOpen = true;
-        
-        // Re-enable all betting buttons
-        document.querySelectorAll('.quick-bet, .bet-adjust, .number, .special-bet').forEach(el => {
-            el.disabled = false;
-        });
-        
-        // Start a new game cycle
-        startGameCycle();
-    });
 
     // Add repeat bet functionality
     document.querySelector('.repeat-bet').addEventListener('click', () => {
@@ -758,6 +788,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return numbers;
     }
+
+    // Add this function after the other function definitions
+    function visualizeChips(element, amount) {
+        // Remove existing chips
+        element.querySelectorAll('.chip').forEach(chip => chip.remove());
+        
+        // Available chip denominations
+        const denominations = [1000, 500, 100, 50, 10, 5, 1];
+        let remainingAmount = Math.floor(amount); // Ensure we're working with whole numbers
+        let chipsToAdd = [];
+        
+        // Calculate which chips to use
+        for (const denom of denominations) {
+            while (remainingAmount >= denom) {
+                chipsToAdd.push(denom);
+                remainingAmount -= denom;
+            }
+        }
+        
+        // Add chips to the element (limit to 5 chips max)
+        chipsToAdd.slice(0, 5).forEach((denom, index) => {
+            const chip = document.createElement('div');
+            chip.className = `chip chip-${denom}`;
+            
+            // Center the chip in the betting area
+            chip.style.left = '50%';
+            chip.style.top = '50%';
+            
+            // Add debug info
+            console.log(`Adding chip: ${denom} to element:`, element);
+            
+            element.appendChild(chip);
+        });
+        
+        // Debug info
+        console.log(`Visualizing chips for amount: ${amount}`);
+        console.log(`Chips to add:`, chipsToAdd);
+    }
+
+    // Debug: Verify chip images are loading
+    const denominations = [1, 5, 10, 50, 100, 500, 1000];
+    denominations.forEach(denom => {
+        const img = new Image();
+        img.onload = () => console.log(`Chip ${denom} image loaded successfully`);
+        img.onerror = () => console.error(`Failed to load chip ${denom} image`);
+        img.src = `/static/media/casino/chip_${denom}.png`;
+    });
 });
 </script>
 {% endblock %} 

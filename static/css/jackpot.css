@@ -122,7 +122,8 @@
 }
 
 .players-container {
-    margin: 20px 0;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
 .player-list {
@@ -195,7 +196,7 @@
 
 .progress-info {
     text-align: center;
-    margin: 20px 0;
+    margin-bottom: 20px;
     padding: 15px;
     background: #1a1a1a;
     border-radius: 5px;
@@ -390,4 +391,95 @@
 .mode-btn.active {
     background: #4CAF50;
     border-color: #4CAF50;
+}
+
+/* Add these styles for the jackpot wheel */
+.jackpot-wheel-container {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.jackpot-wheel {
+    display: flex;
+    position: absolute;
+    height: 100%;
+    transition: transform 8s cubic-bezier(0.32, 0.64, 0.45, 1);
+    /* Add these properties for smooth infinite scrolling */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.wheel-item {
+    flex: 0 0 120px;
+    height: 120px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #2a2a2a;
+    border: 2px solid #3a3a3a;
+    margin: 0 5px;
+    /* Add for smoother rendering */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.wheel-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.wheel-item .player-name {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+/* Add pointer indicator */
+.wheel-pointer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: #4CAF50;
+    z-index: 1;
+}
+
+.wheel-pointer::before,
+.wheel-pointer::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+}
+
+.wheel-pointer::before {
+    top: 0;
+    border-top: 10px solid #4CAF50;
+}
+
+.wheel-pointer::after {
+    bottom: 0;
+    border-bottom: 10px solid #4CAF50;
 }
