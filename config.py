@@ -101,7 +101,13 @@ CASE_FILE_MAPPING = {
     'revolution': 'revolution_case',
     'wildfire': 'operation_wildfire_case',
     'revolver': 'revolver_case',
-    'chroma_3': 'chroma_3_case'
+    'chroma_3': 'chroma_3_case',
+    'gamma': 'gamma_case',
+    'gamma_2': 'gamma_2_case',
+    'hydra': 'operation_hydra_case',
+    'glove': 'glove_case',
+    'spectrum': 'spectrum_case',
+    'spectrum_2': 'spectrum_2_case'
 }
 
 CASE_TYPES = [
@@ -124,7 +130,13 @@ CASE_TYPES = [
     'revolution',
     'wildfire',
     'revolver',
-    'chroma_3'
+    'chroma_3',
+    'gamma',
+    'gamma_2',
+    'hydra',
+    'glove',
+    'spectrum',
+    'spectrum_2'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -147,7 +159,13 @@ CASE_SKINS_FOLDER_NAMES = {
     'revolution': 'revolution_case',
     'wildfire': 'operation_wildfire_case',
     'revolver': 'revolver_case',
-    'chroma_3': 'chroma_3_case'
+    'chroma_3': 'chroma_3_case',
+    'gamma': 'gamma_case',
+    'gamma_2': 'gamma_2_case',
+    'hydra': 'operation_hydra_case',
+    'glove': 'glove_case',
+    'spectrum': 'spectrum_case',
+    'spectrum_2': 'spectrum_2_case'
 }
 
 CASE_DATA = {
@@ -270,6 +288,42 @@ CASE_DATA = {
         'image': 'chroma_3_case.png',
         'is_case': True,
         'type': 'chroma_3'
+    },
+    'gamma': {
+        'name': 'Gamma Case',
+        'image': 'gamma_case.png',
+        'is_case': True,
+        'type': 'gamma'
+    },
+    'gamma_2': {
+        'name': 'Gamma 2 Case',
+        'image': 'gamma_2_case.png',
+        'is_case': True,
+        'type': 'gamma_2'
+    },
+    'hydra': {
+        'name': 'Operation Hydra Case',
+        'image': 'operation_hydra_case.png',
+        'is_case': True,
+        'type': 'hydra'
+    },
+    'glove': {
+        'name': 'Glove Case',
+        'image': 'glove_case.png',
+        'is_case': True,
+        'type': 'glove'
+    },
+    'spectrum': {
+        'name': 'Spectrum Case',
+        'image': 'spectrum_case.png',
+        'is_case': True,
+        'type': 'spectrum'
+    },
+    'spectrum_2': {
+        'name': 'Spectrum 2 Case',
+        'image': 'spectrum_2_case.png',
+        'is_case': True,
+        'type': 'spectrum_2'
     }
 }
 

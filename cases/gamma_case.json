@@ -1,0 +1,857 @@
+{
+    "name": "Gamma Case",
+    "image": "gamma_case.png",
+    "price": 3.50,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Karambit",
+                "name": "Freehand",
+                "image": "karambit_freehand.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 803.11,
+                    "MW": 740.43,
+                    "FT": 700.00,
+                    "WW": 644.59,
+                    "BS": 659.57,
+                    "ST_FN": 799.99,
+                    "ST_MW": 723.77,
+                    "ST_FT": 649.87,
+                    "ST_WW": 663.16,
+                    "ST_BS": 655.68
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Gamma Doppler",
+                "image": "bayonet_gamma_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 789.91,
+                    "MW": 805.94,
+                    "ST_FN": 794.00,
+                    "ST_MW": 1094.54
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Autotronic",
+                "image": "bayonet_autotronic.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 706.45,
+                    "MW": 519.01,
+                    "FT": 417.61,
+                    "WW": 410.98,
+                    "BS": 355.16,
+                    "ST_FN": 695.65,
+                    "ST_MW": 497.14,
+                    "ST_FT": 407.79,
+                    "ST_WW": 409.80,
+                    "ST_BS": 368.61
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Lore",
+                "image": "flipknife_lore.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 420.89,
+                    "MW": 330.02,
+                    "FT": 269.65,
+                    "WW": 238.94,
+                    "BS": 219.50,
+                    "ST_FN": 419.77,
+                    "ST_MW": 333.71,
+                    "ST_FT": 266.78,
+                    "ST_WW": 242.54,
+                    "ST_BS": 245.00
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Lore",
+                "image": "gutknife_lore.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 201.64,
+                    "MW": 157.50,
+                    "FT": 127.38,
+                    "WW": 133.66,
+                    "BS": 124.00,
+                    "ST_FN": 298.47,
+                    "ST_MW": 163.78,
+                    "ST_FT": 137.48,
+                    "ST_WW": 191.17,
+                    "ST_BS": 136.60
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Black Laminate",
+                "image": "m9bayonet_black_laminate.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 955.00,
+                    "MW": 813.78,
+                    "FT": 785.56,
+                    "WW": 740.23,
+                    "BS": 720.00,
+                    "ST_FN": 942.67,
+                    "ST_MW": 734.91,
+                    "ST_FT": 723.98,
+                    "ST_WW": 710.32,
+                    "ST_BS": 703.49
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Gamma Doppler",
+                "image": "gutknife_gamma_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 230.80,
+                    "MW": 242.99,
+                    "ST_FN": 250.80,
+                    "ST_MW": 492.58
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Bright Water",
+                "image": "karambit_bright_water.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 780.74,
+                    "MW": 740.99,
+                    "FT": 683.94,
+                    "WW": 628.36,
+                    "BS": 608.54,
+                    "ST_FN": 759.99,
+                    "ST_MW": 776.49,
+                    "ST_FT": 652.81,
+                    "ST_WW": 628.22,
+                    "ST_BS": 655.68
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Freehand",
+                "image": "gutknife_freehand.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 108.30,
+                    "MW": 102.67,
+                    "FT": 99.71,
+                    "WW": 94.59,
+                    "BS": 96.98,
+                    "ST_FN": 122.82,
+                    "ST_MW": 118.00,
+                    "ST_FT": 113.37,
+                    "ST_WW": 121.52,
+                    "ST_BS": 295.78
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Freehand",
+                "image": "flipknife_freehand.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 218.76,
+                    "MW": 203.62,
+                    "FT": 191.49,
+                    "WW": 175.26,
+                    "BS": 196.70,
+                    "ST_FN": 221.15,
+                    "ST_MW": 207.11,
+                    "ST_FT": 189.80,
+                    "ST_WW": 182.50,
+                    "ST_BS": 191.24
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Gamma Doppler",
+                "image": "flipknife_gamma_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 608.47,
+                    "MW": 638.83,
+                    "ST_FN": 610.00,
+                    "ST_MW": 661.83
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Bright Water",
+                "image": "bayonet_bright_water.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 314.18,
+                    "MW": 278.52,
+                    "FT": 230.56,
+                    "WW": 215.97,
+                    "BS": 218.56,
+                    "ST_FN": 318.27,
+                    "ST_MW": 285.00,
+                    "ST_FT": 231.53,
+                    "ST_WW": 430.00,
+                    "ST_BS": 232.29
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Bright Water",
+                "image": "gutknife_bright_water.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 108.19,
+                    "MW": 102.43,
+                    "FT": 98.07,
+                    "WW": 101.14,
+                    "BS": 95.30,
+                    "ST_FN": 115.59,
+                    "ST_MW": 119.79,
+                    "ST_FT": 99.21,
+                    "ST_WW": 139.39,
+                    "ST_BS": 102.16
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Autotronic",
+                "image": "flipknife_autotronic.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 445.00,
+                    "MW": 327.00,
+                    "FT": 271.56,
+                    "WW": 254.48,
+                    "BS": 219.85,
+                    "ST_FN": 462.80,
+                    "ST_MW": 311.17,
+                    "ST_FT": 253.79,
+                    "ST_WW": 240.14,
+                    "ST_BS": 216.33
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Autotronic",
+                "image": "gutknife_autotronic.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 226.62,
+                    "MW": 163.84,
+                    "FT": 145.47,
+                    "WW": 143.29,
+                    "BS": 133.24,
+                    "ST_FN": 311.52,
+                    "ST_MW": 176.21,
+                    "ST_FT": 161.14,
+                    "ST_WW": 150.26,
+                    "ST_BS": 137.28
+                }
+            },
+            {
+                "weapon": "Gut Knife",
+                "name": "Black Laminate",
+                "image": "gutknife_black_laminate.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 122.80,
+                    "MW": 102.44,
+                    "FT": 100.04,
+                    "WW": 95.62,
+                    "BS": 96.02,
+                    "ST_FN": 216.91,
+                    "ST_MW": 114.67,
+                    "ST_FT": 103.70,
+                    "ST_WW": 103.74,
+                    "ST_BS": 105.79
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Black Laminate",
+                "image": "flipknife_black_laminate.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 268.54,
+                    "MW": 212.12,
+                    "FT": 200.30,
+                    "WW": 184.41,
+                    "BS": 181.12,
+                    "ST_FN": 286.86,
+                    "ST_MW": 215.76,
+                    "ST_FT": 200.99,
+                    "ST_WW": 181.69,
+                    "ST_BS": 183.04
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Freehand",
+                "image": "bayonet_freehand.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 318.58,
+                    "MW": 287.40,
+                    "FT": 254.00,
+                    "WW": 245.14,
+                    "BS": 238.98,
+                    "ST_FN": 310.00,
+                    "ST_MW": 302.83,
+                    "ST_FT": 252.21,
+                    "ST_WW": 409.00,
+                    "ST_BS": 472.19
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Bright Water",
+                "image": "m9bayonet_bright_water.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 669.33,
+                    "MW": 622.89,
+                    "FT": 566.75,
+                    "WW": 504.05,
+                    "BS": 489.71,
+                    "ST_FN": 655.68,
+                    "ST_MW": 621.48,
+                    "ST_FT": 543.94,
+                    "ST_WW": 484.93,
+                    "ST_BS": 539.04
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Lore",
+                "image": "m9bayonet_lore.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2396.79,
+                    "MW": 1677.45,
+                    "FT": 870.00,
+                    "WW": 719.02,
+                    "BS": 587.38,
+                    "ST_FN": 2113.76,
+                    "ST_MW": 1475.00,
+                    "ST_FT": 833.26,
+                    "ST_WW": 701.82,
+                    "ST_BS": 573.72
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Freehand",
+                "image": "m9bayonet_freehand.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 648.85,
+                    "MW": 623.27,
+                    "FT": 577.13,
+                    "WW": 512.25,
+                    "BS": 490.29,
+                    "ST_FN": 616.21,
+                    "ST_MW": 600.36,
+                    "ST_FT": 543.65,
+                    "ST_WW": 518.40,
+                    "ST_BS": 517.78
+                }
+            },
+            {
+                "weapon": "M9 Bayonet",
+                "name": "Gamma Doppler",
+                "image": "m9bayonet_gamma_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1727.17,
+                    "MW": 1707.51,
+                    "ST_FN": 1610.06,
+                    "ST_MW": 1707.51
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Autotronic",
+                "image": "karambit_autotronic.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1868.00,
+                    "MW": 1393.05,
+                    "FT": 1161.10,
+                    "WW": 1075.73,
+                    "BS": 895.00,
+                    "ST_FN": 1706.14,
+                    "ST_MW": 1243.06,
+                    "ST_FT": 1044.99,
+                    "ST_WW": 1046.36,
+                    "ST_BS": 915.06
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Black Laminate",
+                "image": "karambit_black_laminate.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1180.93,
+                    "MW": 988.98,
+                    "FT": 927.14,
+                    "WW": 863.76,
+                    "BS": 824.75,
+                    "ST_FN": 1350.00,
+                    "ST_MW": 958.00,
+                    "ST_FT": 860.44,
+                    "ST_WW": 820.83,
+                    "ST_BS": 808.67
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Lore",
+                "image": "karambit_lore.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1753.21,
+                    "MW": 1242.00,
+                    "FT": 874.70,
+                    "WW": 739.18,
+                    "BS": 655.00,
+                    "ST_FN": 1652.59,
+                    "ST_MW": 1224.49,
+                    "ST_FT": 846.92,
+                    "ST_WW": 772.47,
+                    "ST_BS": 689.83
+                }
+            },
+            {
+                "weapon": "Karambit",
+                "name": "Gamma Doppler",
+                "image": "karambit_gamma_doppler.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 2190.50,
+                    "MW": 2142.75,
+                    "ST_FN": 2107.00,
+                    "ST_MW": 2595.41
+                }
+            },
+            {
+                "weapon": "Flip Knife",
+                "name": "Bright Water",
+                "image": "flipknife_bright_water.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 215.00,
+                    "MW": 205.85,
+                    "FT": 190.55,
+                    "WW": 175.92,
+                    "BS": 178.54,
+                    "ST_FN": 219.85,
+                    "ST_MW": 203.39,
+                    "ST_FT": 183.91,
+                    "ST_WW": 245.88,
+                    "ST_BS": 181.67
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Black Laminate",
+                "image": "bayonet_black_laminate.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 395.00,
+                    "MW": 292.00,
+                    "FT": 268.30,
+                    "WW": 251.34,
+                    "BS": 248.65,
+                    "ST_FN": 439.28,
+                    "ST_MW": 297.78,
+                    "ST_FT": 266.99,
+                    "ST_WW": 254.89,
+                    "ST_BS": 254.76
+                }
+            },
+            {
+                "weapon": "Bayonet",
+                "name": "Lore",
+                "image": "bayonet_lore.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 700.76,
+                    "MW": 543.67,
+                    "FT": 400.00,
+                    "WW": 371.12,
+                    "BS": 316.80,
+                    "ST_FN": 762.73,
+                    "ST_MW": 544.76,
+                    "ST_FT": 409.66,
+                    "ST_WW": 409.80,
+                    "ST_BS": 365.00
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Mecha Industries",
+                "image": "m4a1s_mecha_industries.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 93.99,
+                    "MW": 49.18,
+                    "FT": 24.19,
+                    "WW": 24.30,
+                    "BS": 17.69,
+                    "ST_FN": 145.00,
+                    "ST_MW": 84.57,
+                    "ST_FT": 54.56,
+                    "ST_WW": 52.98,
+                    "ST_BS": 51.15
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Wasteland Rebel",
+                "image": "glock18_wasteland_rebel.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4.51,
+                    "MW": 3.27,
+                    "FT": 2.95,
+                    "WW": 4.45,
+                    "BS": 2.92,
+                    "ST_FN": 25.04,
+                    "ST_MW": 14.94,
+                    "ST_FT": 13.45,
+                    "ST_WW": 13.04,
+                    "ST_BS": 15.50
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "M4A4",
+                "name": "Desolate Space",
+                "image": "m4a4_desolate_space.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 16.21,
+                    "MW": 7.29,
+                    "FT": 4.43,
+                    "WW": 3.83,
+                    "BS": 3.93,
+                    "ST_FN": 62.33,
+                    "ST_MW": 22.26,
+                    "ST_FT": 12.02,
+                    "ST_WW": 10.38,
+                    "ST_BS": 10.74
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Imperial Dragon",
+                "image": "p2000_imperial_dragon.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.98,
+                    "MW": 4.15,
+                    "FT": 2.65,
+                    "WW": 2.54,
+                    "BS": 2.72,
+                    "ST_FN": 16.39,
+                    "ST_MW": 7.92,
+                    "ST_FT": 4.38,
+                    "ST_WW": 4.78,
+                    "ST_BS": 6.07
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Bloodsport",
+                "image": "scar20_bloodsport.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 7.69,
+                    "MW": 4.09,
+                    "FT": 2.63,
+                    "WW": 2.67,
+                    "ST_FN": 14.89,
+                    "ST_MW": 7.08,
+                    "ST_FT": 4.91,
+                    "ST_WW": 4.80
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "AWP",
+                "name": "Phobos",
+                "image": "awp_phobos.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 1.76,
+                    "MW": 1.11,
+                    "FT": 0.94,
+                    "WW": 2.36,
+                    "ST_FN": 5.81,
+                    "ST_MW": 3.83,
+                    "ST_FT": 3.51,
+                    "ST_WW": 7.82
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Aristocrat",
+                "image": "aug_aristocrat.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.72,
+                    "MW": 0.88,
+                    "FT": 0.51,
+                    "WW": 0.55,
+                    "BS": 0.42,
+                    "ST_FN": 4.80,
+                    "ST_MW": 2.21,
+                    "ST_FT": 0.87,
+                    "ST_WW": 1.85,
+                    "ST_BS": 0.95
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Chopper",
+                "image": "p90_chopper.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.52,
+                    "MW": 0.74,
+                    "FT": 0.45,
+                    "WW": 0.42,
+                    "BS": 0.43,
+                    "ST_FN": 4.53,
+                    "ST_MW": 1.89,
+                    "ST_FT": 1.02,
+                    "ST_WW": 1.18,
+                    "ST_BS": 1.00
+                }
+            },
+            {
+                "weapon": "R8 Revolver",
+                "name": "Reboot",
+                "image": "r8revolver_reboot.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.80,
+                    "MW": 0.96,
+                    "FT": 0.44,
+                    "WW": 0.33,
+                    "BS": 0.30,
+                    "ST_FN": 12.04,
+                    "ST_MW": 3.79,
+                    "ST_FT": 1.49,
+                    "ST_WW": 0.80,
+                    "ST_BS": 0.75
+                }
+            },
+            {
+                "weapon": "Sawed-Off",
+                "name": "Limelight",
+                "image": "sawedoff_limelight.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.60,
+                    "MW": 0.86,
+                    "FT": 0.45,
+                    "WW": 0.33,
+                    "BS": 0.33,
+                    "ST_FN": 4.24,
+                    "ST_MW": 1.76,
+                    "ST_FT": 0.85,
+                    "ST_WW": 0.71,
+                    "ST_BS": 0.69
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Five-SeveN",
+                "name": "Violent Daimyo",
+                "image": "fiveseven_violent_daimyo.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.61,
+                    "MW": 0.29,
+                    "FT": 0.14,
+                    "WW": 0.19,
+                    "BS": 0.12,
+                    "ST_FN": 2.21,
+                    "ST_MW": 1.02,
+                    "ST_FT": 0.46,
+                    "ST_WW": 0.81,
+                    "ST_BS": 0.46
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Ice Cap",
+                "image": "tec9_ice_cap.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.66,
+                    "MW": 0.32,
+                    "FT": 0.13,
+                    "WW": 0.15,
+                    "BS": 0.12,
+                    "ST_FN": 1.82,
+                    "ST_MW": 0.78,
+                    "ST_FT": 0.31,
+                    "ST_WW": 0.28,
+                    "ST_BS": 0.32
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Aerial",
+                "image": "sg553_aerial.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.20,
+                    "MW": 0.12,
+                    "FT": 0.12,
+                    "WW": 0.13,
+                    "BS": 0.11,
+                    "ST_FN": 0.79,
+                    "ST_MW": 0.36,
+                    "ST_FT": 0.17,
+                    "ST_WW": 0.22,
+                    "ST_BS": 0.14
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Exo",
+                "image": "nova_exo.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.21,
+                    "MW": 0.13,
+                    "FT": 0.12,
+                    "WW": 0.09,
+                    "BS": 0.10,
+                    "ST_FN": 0.71,
+                    "ST_MW": 0.34,
+                    "ST_FT": 0.19,
+                    "ST_WW": 0.15,
+                    "ST_BS": 0.19
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Carnivore",
+                "image": "mac10_carnivore.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.44,
+                    "MW": 0.14,
+                    "FT": 0.11,
+                    "WW": 0.11,
+                    "BS": 0.09,
+                    "ST_FN": 2.00,
+                    "ST_MW": 0.41,
+                    "ST_FT": 0.19,
+                    "ST_WW": 0.14,
+                    "ST_BS": 0.14
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Iron Clad",
+                "image": "p250_iron_clad.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.43,
+                    "MW": 0.10,
+                    "FT": 0.11,
+                    "WW": 0.12,
+                    "BS": 0.09,
+                    "ST_FN": 1.99,
+                    "ST_MW": 0.36,
+                    "ST_FT": 0.16,
+                    "ST_WW": 0.20,
+                    "ST_BS": 0.17
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Harvester",
+                "image": "ppbizon_harvester.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.38,
+                    "MW": 0.14,
+                    "FT": 0.12,
+                    "WW": 0.09,
+                    "BS": 0.10,
+                    "ST_FN": 1.65,
+                    "ST_MW": 0.38,
+                    "ST_FT": 0.19,
+                    "ST_WW": 0.14,
+                    "ST_BS": 0.13
+                }
+            }
+        ]
+    }
+}

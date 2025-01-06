@@ -1,6 +1,295 @@
 {
-  "balance": 19668.6275,
+  "balance": 19512.7875,
   "inventory": [
+    {
+      "weapon": "G3SG1",
+      "name": "Hunter",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736201819.122784,
+      "case_type": "spectrum_2",
+      "float_value": 0.79361314,
+      "is_case": false
+    },
+    {
+      "weapon": "Sawed-Off",
+      "name": "Morris",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.05,
+      "timestamp": 1736201819.122784,
+      "case_type": "spectrum_2",
+      "float_value": 0.35549907,
+      "is_case": false
+    },
+    {
+      "weapon": "Glock-18",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.58,
+      "timestamp": 1736201819.122784,
+      "case_type": "spectrum_2",
+      "float_value": 0.02287667,
+      "is_case": false
+    },
+    {
+      "weapon": "Glock-18",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.06,
+      "timestamp": 1736201819.1217835,
+      "case_type": "spectrum_2",
+      "float_value": 0.38654806,
+      "is_case": false
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Exposure",
+      "rarity": "PURPLE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.34,
+      "timestamp": 1736201819.1217835,
+      "case_type": "spectrum_2",
+      "float_value": 0.18939252,
+      "is_case": false
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Jungle Slipstream",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.21,
+      "timestamp": 1736201809.6947572,
+      "case_type": "spectrum",
+      "float_value": 0.07196399,
+      "is_case": false
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Oxide Blaze",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 1.08,
+      "timestamp": 1736201809.6947572,
+      "case_type": "spectrum",
+      "float_value": 0.49263721,
+      "is_case": false
+    },
+    {
+      "weapon": "MP7",
+      "name": "Akoben",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 0.21,
+      "timestamp": 1736201809.6947572,
+      "case_type": "spectrum",
+      "float_value": 0.54201202,
+      "is_case": false
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Scaffold",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 3.03,
+      "timestamp": 1736201809.6937494,
+      "case_type": "spectrum",
+      "float_value": 0.055702,
+      "is_case": false
+    },
+    {
+      "weapon": "MP7",
+      "name": "Akoben",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.15,
+      "timestamp": 1736201809.6937494,
+      "case_type": "spectrum",
+      "float_value": 0.68865323,
+      "is_case": false
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Blueprint",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 2.87,
+      "timestamp": 1736200299.5815372,
+      "case_type": "hydra",
+      "float_value": 0.73631741,
+      "is_case": false,
+      "base_price": 2.87
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Metal Flowers",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 3.07,
+      "timestamp": 1736200299.5815372,
+      "case_type": "hydra",
+      "float_value": 0.72016311,
+      "is_case": false,
+      "base_price": 3.07
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Blueprint",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 3.37,
+      "timestamp": 1736200299.5815372,
+      "case_type": "hydra",
+      "float_value": 0.35346225,
+      "is_case": false,
+      "base_price": 3.37
+    },
+    {
+      "weapon": "P2000",
+      "name": "Woodsman",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 8.96,
+      "timestamp": 1736200299.580538,
+      "case_type": "hydra",
+      "float_value": 0.04966853,
+      "is_case": false,
+      "base_price": 8.96
+    },
+    {
+      "weapon": "MAG-7",
+      "name": "Hard Water",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 2.06,
+      "timestamp": 1736200299.580538,
+      "case_type": "hydra",
+      "float_value": 0.20409554,
+      "is_case": false,
+      "base_price": 2.06
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Metal Flowers",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.79,
+      "timestamp": 1736200253.465126,
+      "case_type": "hydra",
+      "float_value": 0.01525723,
+      "is_case": false,
+      "base_price": 2.79
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Sugar Rush",
+      "rarity": "PINK",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0,
+      "timestamp": 1736200253.464126,
+      "case_type": "hydra",
+      "float_value": 0.01618644,
+      "is_case": false,
+      "base_price": 0
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Briefing",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 3.63,
+      "timestamp": 1736200253.464126,
+      "case_type": "hydra",
+      "float_value": 0.40787039,
+      "is_case": false,
+      "base_price": 3.63
+    },
+    {
+      "weapon": "MAG-7",
+      "name": "Sonar",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.13,
+      "timestamp": 1736200242.417613,
+      "case_type": "glove",
+      "float_value": 0.11094079,
+      "is_case": false,
+      "base_price": 0.13
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Cyrex",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.85,
+      "timestamp": 1736200242.4166129,
+      "case_type": "glove",
+      "float_value": 0.43785036,
+      "is_case": false,
+      "base_price": 0.85
+    },
+    {
+      "weapon": "G3SG1",
+      "name": "Stinger",
+      "rarity": "PURPLE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.56,
+      "timestamp": 1736200242.4166129,
+      "case_type": "glove",
+      "float_value": 0.08818664,
+      "is_case": false,
+      "base_price": 0.56
+    },
+    {
+      "weapon": "MP9",
+      "name": "Sand Scale",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.09,
+      "timestamp": 1736200242.4166129,
+      "case_type": "glove",
+      "float_value": 0.17213129,
+      "is_case": false,
+      "base_price": 0.09
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Flashback",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.29,
+      "timestamp": 1736200242.4166129,
+      "case_type": "glove",
+      "float_value": 0.73828926,
+      "is_case": false,
+      "base_price": 0.29
+    },
     {
       "weapon": "Desert Eagle",
       "name": "Corinthian",
@@ -11,7 +300,8 @@
       "timestamp": 1736114214.1522171,
       "case_type": "revolver",
       "float_value": 0.23485418,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.16
     },
     {
       "weapon": "Tec-9",
@@ -299,9 +589,37 @@
       "is_case": true,
       "type": "revolver",
       "quantity": 1
+    },
+    {
+      "name": "Glove Case",
+      "image": "glove_case.png",
+      "is_case": true,
+      "type": "glove",
+      "quantity": 1
+    },
+    {
+      "name": "Operation Hydra Case",
+      "image": "operation_hydra_case.png",
+      "is_case": true,
+      "type": "hydra",
+      "quantity": 9
+    },
+    {
+      "name": "Spectrum Case",
+      "image": "spectrum_case.png",
+      "is_case": true,
+      "type": "spectrum",
+      "quantity": 9
+    },
+    {
+      "name": "Spectrum 2 Case",
+      "image": "spectrum_2_case.png",
+      "is_case": true,
+      "type": "spectrum_2",
+      "quantity": 11
     }
   ],
-  "exp": 1587.0700000000004,
+  "exp": 1914.0700000000004,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -318,7 +636,8 @@
       "earnings_1",
       "earnings_2",
       "earnings_3",
-      "cases_1"
+      "cases_1",
+      "cases_2"
     ],
     "in_progress": {
       "clicks_1": {
@@ -341,27 +660,27 @@
         "reward": 10000,
         "exp_reward": 20000,
         "icon": "\ud83d\udc8e",
-        "current_value": 67290.52549999999,
+        "current_value": 67291.68549999999,
         "category": "special",
-        "progress": 67.29052549999999
+        "progress": 67.29168549999999
       },
-      "cases_2": {
-        "id": "cases_2",
-        "title": "Case Enthusiast",
-        "description": "Open 100 cases",
-        "target_value": 100,
-        "reward": 500,
+      "cases_3": {
+        "id": "cases_3",
+        "title": "Case Veteran",
+        "description": "Open 1,000 cases",
+        "target_value": 1000,
+        "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 80,
+        "current_value": 110,
         "category": "cases",
-        "progress": 80.0
+        "progress": 11.0
       }
     }
   },
   "stats": {
-    "total_earnings": 67290.52549999999,
-    "total_cases_opened": 80,
+    "total_earnings": 67291.68549999999,
+    "total_cases_opened": 110,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,

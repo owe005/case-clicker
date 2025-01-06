@@ -811,8 +811,45 @@
                     const grid = rarityRow.querySelector('.items-grid');
                     let itemsToShow = items;
                     
+                    // Special handling for glove cases
+                    if (grade === 'gold' && (caseType === 'hydra' || caseType === 'glove')) {
+                        const gloveImages = [
+                            'sportgloves_pandoras_box.png',
+                            'specialistgloves_emerald_web.png',
+                            'motogloves_spearmint.png',
+                            'handwraps_slaughter.png',
+                            'drivergloves_crimson_weave.png',
+                            'bloodhoundgloves_charred.png'
+                        ];
+                        
+                        const gloveNameMapping = {
+                            'sportgloves': 'Sport Gloves',
+                            'specialistgloves': 'Specialist Gloves',
+                            'motogloves': 'Moto Gloves',
+                            'handwraps': 'Hand Wraps',
+                            'drivergloves': 'Driver Gloves',
+                            'bloodhoundgloves': 'Bloodhound Gloves'
+                        };
+                        
+                        itemsToShow = gloveImages.map(image => {
+                            const gloveType = image.split('_')[0];
+                            const skinName = image.split('_')
+                                .slice(1)
+                                .join(' ')
+                                .replace('.png', '')
+                                .split(' ')
+                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ');
+                                
+                            return {
+                                weapon: gloveNameMapping[gloveType],
+                                name: skinName,
+                                image: image
+                            };
+                        });
+                    }
                     // Special handling for Revolution Case gloves
-                    if (grade === 'gold' && caseType === 'revolution') {
+                    else if (grade === 'gold' && caseType === 'revolution') {
                         // Get one of each glove type
                         const gloveTypes = new Set();
                         const uniqueGloves = [];
@@ -830,6 +867,10 @@
                     // For gold rarity in other cases (knives), filter based on case type
                     else if (grade === 'gold') {
                         if (caseType === 'chroma' || caseType === 'chroma_2' || caseType === 'chroma_3') {
+                            itemsToShow = items.filter(item => item.name === 'Doppler');
+                        } else if (caseType === 'gamma' || caseType === 'gamma_2') {
+                            itemsToShow = items.filter(item => item.name === 'Gamma Doppler');
+                        } else if (caseType === 'spectrum' || caseType === 'spectrum_2') {
                             itemsToShow = items.filter(item => item.name === 'Doppler');
                         } else {
                             itemsToShow = items.filter(item => item.name === 'Vanilla');
