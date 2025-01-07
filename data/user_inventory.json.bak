@@ -1,6 +1,66 @@
 {
-  "balance": 19512.7875,
+  "balance": 19507.837499999998,
   "inventory": [
+    {
+      "weapon": "Five-SeveN",
+      "name": "Flame Test",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": true,
+      "price": 0.2,
+      "timestamp": 1736229217.4151647,
+      "case_type": "clutch",
+      "float_value": 0.43850029,
+      "is_case": false
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Arctic Wolf",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.161,
+      "timestamp": 1736229217.4141645,
+      "case_type": "clutch",
+      "float_value": 0.94289923,
+      "is_case": false
+    },
+    {
+      "weapon": "P2000",
+      "name": "Urban Hazard",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.19,
+      "timestamp": 1736229217.4141645,
+      "case_type": "clutch",
+      "float_value": 0.0448562,
+      "is_case": false
+    },
+    {
+      "weapon": "MP9",
+      "name": "Black Sand",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.03,
+      "timestamp": 1736229217.4141645,
+      "case_type": "clutch",
+      "float_value": 0.69284768,
+      "is_case": false
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Night Riot",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 0.2,
+      "timestamp": 1736229217.4131644,
+      "case_type": "clutch",
+      "float_value": 0.13723567,
+      "is_case": false
+    },
     {
       "weapon": "G3SG1",
       "name": "Hunter",
@@ -11,7 +71,8 @@
       "timestamp": 1736201819.122784,
       "case_type": "spectrum_2",
       "float_value": 0.79361314,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.04
     },
     {
       "weapon": "Sawed-Off",
@@ -23,7 +84,8 @@
       "timestamp": 1736201819.122784,
       "case_type": "spectrum_2",
       "float_value": 0.35549907,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.05
     },
     {
       "weapon": "Glock-18",
@@ -35,7 +97,8 @@
       "timestamp": 1736201819.122784,
       "case_type": "spectrum_2",
       "float_value": 0.02287667,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.58
     },
     {
       "weapon": "Glock-18",
@@ -47,7 +110,8 @@
       "timestamp": 1736201819.1217835,
       "case_type": "spectrum_2",
       "float_value": 0.38654806,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.06
     },
     {
       "weapon": "UMP-45",
@@ -59,7 +123,8 @@
       "timestamp": 1736201819.1217835,
       "case_type": "spectrum_2",
       "float_value": 0.18939252,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.34
     },
     {
       "weapon": "PP-Bizon",
@@ -71,7 +136,8 @@
       "timestamp": 1736201809.6947572,
       "case_type": "spectrum",
       "float_value": 0.07196399,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.21
     },
     {
       "weapon": "Desert Eagle",
@@ -83,7 +149,8 @@
       "timestamp": 1736201809.6947572,
       "case_type": "spectrum",
       "float_value": 0.49263721,
-      "is_case": false
+      "is_case": false,
+      "base_price": 1.08
     },
     {
       "weapon": "MP7",
@@ -95,7 +162,8 @@
       "timestamp": 1736201809.6947572,
       "case_type": "spectrum",
       "float_value": 0.54201202,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.21
     },
     {
       "weapon": "UMP-45",
@@ -107,7 +175,8 @@
       "timestamp": 1736201809.6937494,
       "case_type": "spectrum",
       "float_value": 0.055702,
-      "is_case": false
+      "is_case": false,
+      "base_price": 3.03
     },
     {
       "weapon": "MP7",
@@ -119,7 +188,8 @@
       "timestamp": 1736201809.6937494,
       "case_type": "spectrum",
       "float_value": 0.68865323,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.15
     },
     {
       "weapon": "USP-S",
@@ -617,9 +687,16 @@
       "is_case": true,
       "type": "spectrum_2",
       "quantity": 11
+    },
+    {
+      "name": "Clutch Case",
+      "image": "clutch_case.png",
+      "is_case": true,
+      "type": "clutch",
+      "quantity": 4
     }
   ],
-  "exp": 1914.0700000000004,
+  "exp": 1916.8200000000004,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -672,15 +749,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 110,
+        "current_value": 115,
         "category": "cases",
-        "progress": 11.0
+        "progress": 11.5
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 110,
+    "total_cases_opened": 115,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,

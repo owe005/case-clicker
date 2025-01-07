@@ -849,7 +849,7 @@
                         });
                     }
                     // Special handling for Revolution Case gloves
-                    else if (grade === 'gold' && caseType === 'revolution') {
+                    else if (grade === 'gold' && (caseType === 'revolution' || caseType === 'clutch')) {
                         // Get one of each glove type
                         const gloveTypes = new Set();
                         const uniqueGloves = [];

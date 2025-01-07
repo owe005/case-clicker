@@ -107,7 +107,8 @@ CASE_FILE_MAPPING = {
     'hydra': 'operation_hydra_case',
     'glove': 'glove_case',
     'spectrum': 'spectrum_case',
-    'spectrum_2': 'spectrum_2_case'
+    'spectrum_2': 'spectrum_2_case',
+    'clutch': 'clutch_case'
 }
 
 CASE_TYPES = [
@@ -136,7 +137,8 @@ CASE_TYPES = [
     'hydra',
     'glove',
     'spectrum',
-    'spectrum_2'
+    'spectrum_2',
+    'clutch'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -165,7 +167,8 @@ CASE_SKINS_FOLDER_NAMES = {
     'hydra': 'operation_hydra_case',
     'glove': 'glove_case',
     'spectrum': 'spectrum_case',
-    'spectrum_2': 'spectrum_2_case'
+    'spectrum_2': 'spectrum_2_case',
+    'clutch': 'clutch_case'
 }
 
 CASE_DATA = {
@@ -324,6 +327,12 @@ CASE_DATA = {
         'image': 'spectrum_2_case.png',
         'is_case': True,
         'type': 'spectrum_2'
+    },
+    'clutch': {
+        'name': 'Clutch Case',
+        'image': 'clutch_case.png',
+        'is_case': True,
+        'type': 'clutch'
     }
 }
 
