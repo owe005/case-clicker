@@ -1,0 +1,242 @@
+{
+    "name": "CS20 Case",
+    "image": "cs20_case.png",
+    "price": 0.90,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Classic Knife",
+                "name": "Safari Mesh",
+                "image": "classicknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 184.35,
+                    "MW": 115.25,
+                    "FT": 114.07,
+                    "WW": 113.62,
+                    "BS": 111.16,
+                    "ST_FN": 1300.00,
+                    "ST_MW": 106.98,
+                    "ST_FT": 112.00,
+                    "ST_WW": 116.07,
+                    "ST_BS": 107.46
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Night Stripe",
+                "image": "classicknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 320.00,
+                    "MW": 144.00,
+                    "FT": 143.38,
+                    "WW": 162.57,
+                    "BS": 137.24,
+                    "ST_FN": 1700.00,
+                    "ST_MW": 150.14,
+                    "ST_FT": 148.85,
+                    "ST_WW": 177.18,
+                    "ST_BS": 191.18
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Crimson Web",
+                "image": "classicknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1061.47,
+                    "MW": 297.70,
+                    "FT": 250.99,
+                    "WW": 327.67,
+                    "BS": 213.03,
+                    "ST_FN": 6585.00,
+                    "ST_MW": 285.13,
+                    "ST_FT": 241.16,
+                    "ST_WW": 331.23,
+                    "ST_BS": 222.99
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Slaughter",
+                "image": "classicknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 324.27,
+                    "MW": 296.00,
+                    "FT": 289.50,
+                    "ST_FN": 338.00,
+                    "ST_MW": 291.98,
+                    "ST_FT": 314.08
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Scorched",
+                "image": "classicknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 436.99,
+                    "MW": 124.70,
+                    "FT": 125.90,
+                    "WW": 124.96,
+                    "BS": 114.96,
+                    "ST_FN": 779.00,
+                    "ST_MW": 136.55,
+                    "ST_FT": 128.65,
+                    "ST_WW": 136.55,
+                    "ST_BS": 118.38
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Case Hardened",
+                "image": "classicknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 332.95,
+                    "MW": 243.93,
+                    "FT": 204.06,
+                    "WW": 178.75,
+                    "BS": 170.19,
+                    "ST_FN": 1500.00,
+                    "ST_MW": 244.44,
+                    "ST_FT": 211.25,
+                    "ST_WW": 193.01,
+                    "ST_BS": 191.11
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Forest DDPAT",
+                "image": "classicknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 260.00,
+                    "MW": 119.99,
+                    "FT": 113.45,
+                    "WW": 113.27,
+                    "BS": 112.52,
+                    "ST_FN": 380.00,
+                    "ST_MW": 125.00,
+                    "ST_FT": 113.39,
+                    "ST_WW": 117.44,
+                    "ST_BS": 106.96
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Urban Masked",
+                "image": "classicknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 232.15,
+                    "MW": 125.63,
+                    "FT": 120.17,
+                    "WW": 121.26,
+                    "BS": 114.71,
+                    "ST_FN": 450.00,
+                    "ST_MW": 157.31,
+                    "ST_FT": 124.25,
+                    "ST_WW": 130.00,
+                    "ST_BS": 116.82
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Blue Steel",
+                "image": "classicknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 256.55,
+                    "MW": 194.00,
+                    "FT": 180.38,
+                    "WW": 173.99,
+                    "BS": 167.70,
+                    "ST_FN": 1150.00,
+                    "ST_MW": 190.77,
+                    "ST_FT": 178.68,
+                    "ST_WW": 173.43,
+                    "ST_BS": 166.87
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Stained",
+                "image": "classicknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 220.61,
+                    "MW": 170.00,
+                    "FT": 149.30,
+                    "WW": 133.66,
+                    "BS": 131.68,
+                    "ST_FN": 247.76,
+                    "ST_MW": 176.02,
+                    "ST_FT": 150.14,
+                    "ST_WW": 155.71,
+                    "ST_BS": 135.89
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Boreal Forest",
+                "image": "classicknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 200.00,
+                    "MW": 120.17,
+                    "FT": 113.39,
+                    "WW": 114.66,
+                    "BS": 111.01,
+                    "ST_FN": 449.99,
+                    "ST_MW": 158.84,
+                    "ST_FT": 113.18,
+                    "ST_WW": 118.51,
+                    "ST_BS": 112.66
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Vanilla",
+                "image": "classicknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 284.00,
+                    "ST_FN": 290.18
+                }
+            },
+            {
+                "weapon": "Classic Knife",
+                "name": "Fade",
+                "image": "classicknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 525.39,
+                    "MW": 517.84,
+                    "ST_FN": 520.99,
+                    "ST_MW": 546.03
+                }
+            }
+        ],
+        "red": [],
+        "pink": [],
+        "purple": [],
+        "blue": []
+    }
+}
