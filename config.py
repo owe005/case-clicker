@@ -111,7 +111,11 @@ CASE_FILE_MAPPING = {
     'clutch': 'clutch_case',
     'cs20': 'cs20_case',
     'danger_zone': 'danger_zone_case',
-    'horizon': 'horizon_case'
+    'horizon': 'horizon_case',
+    'riptide': 'operation_riptide_case',
+    'shattered_web': 'shattered_web_case',
+    'dreams_&_nightmares': 'dreams_&_nightmares_case',
+    'fracture': 'fracture_case'
 }
 
 CASE_TYPES = [
@@ -144,7 +148,11 @@ CASE_TYPES = [
     'clutch',
     'cs20',
     'danger_zone',
-    'horizon'
+    'horizon',
+    'riptide',
+    'shattered_web',
+    'dreams_&_nightmares',
+    'fracture'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -177,7 +185,11 @@ CASE_SKINS_FOLDER_NAMES = {
     'clutch': 'clutch_case',
     'cs20': 'cs20_case',
     'danger_zone': 'danger_zone_case',
-    'horizon': 'horizon_case'
+    'horizon': 'horizon_case',
+    'riptide': 'operation_riptide_case',
+    'shattered_web': 'shattered_web_case',
+    'dreams_&_nightmares': 'dreams_&_nightmares_case',
+    'fracture': 'fracture_case'
 }
 
 CASE_DATA = {
@@ -360,6 +372,30 @@ CASE_DATA = {
         'image': 'horizon_case.png',
         'is_case': True,
         'type': 'horizon'
+    },
+    'riptide': {
+        'name': 'Operation Riptide Case',
+        'image': 'operation_riptide_case.png',
+        'is_case': True,
+        'type': 'riptide'
+    },
+    'shattered_web': {
+        'name': 'Shattered Web Case',
+        'image': 'shattered_web_case.png',
+        'is_case': True,
+        'type': 'shattered_web'
+    },
+    'dreams_&_nightmares': {
+        'name': 'Dreams & Nightmares Case',
+        'image': 'dreams_&_nightmares_case.png',
+        'is_case': True,
+        'type': 'dreams_&_nightmares'
+    },
+    'fracture': {
+        'name': 'Fracture Case',
+        'image': 'fracture_case.png',
+        'is_case': True,
+        'type': 'fracture'
     }
 }
 

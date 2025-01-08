@@ -1,0 +1,1224 @@
+{
+    "name": "Fracture Case",
+    "image": "fracture_case.png",
+    "price": 0.30,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Nomad Knife",
+                "name": "Case Hardened",
+                "image": "nomadknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 530.49,
+                    "MW": 350.98,
+                    "FT": 286.49,
+                    "WW": 233.26,
+                    "BS": 225.14,
+                    "ST_FN": 740.00,
+                    "ST_MW": 355.22,
+                    "ST_FT": 269.95,
+                    "ST_WW": 263.42,
+                    "ST_BS": 242.87
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Safari Mesh",
+                "image": "skeletonknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 424.70,
+                    "MW": 200.91,
+                    "FT": 197.81,
+                    "WW": 190.74,
+                    "BS": 187.48,
+                    "ST_FN": 1274.10,
+                    "ST_MW": 202.00,
+                    "ST_FT": 191.08,
+                    "ST_WW": 196.54,
+                    "ST_BS": 194.69
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Boreal Forest",
+                "image": "nomadknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 286.49,
+                    "MW": 144.30,
+                    "FT": 133.02,
+                    "WW": 124.61,
+                    "BS": 120.91,
+                    "ST_FN": 508.93,
+                    "ST_MW": 152.43,
+                    "ST_FT": 127.63,
+                    "ST_WW": 126.93,
+                    "ST_BS": 125.43
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Safari Mesh",
+                "image": "nomadknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 204.73,
+                    "MW": 133.07,
+                    "FT": 125.57,
+                    "WW": 122.84,
+                    "BS": 121.15,
+                    "ST_FN": 272.98,
+                    "ST_MW": 140.51,
+                    "ST_FT": 122.53,
+                    "ST_WW": 122.70,
+                    "ST_BS": 122.77
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Forest DDPAT",
+                "image": "nomadknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 211.56,
+                    "MW": 141.07,
+                    "FT": 131.00,
+                    "WW": 123.33,
+                    "BS": 122.43,
+                    "ST_FN": 827.24,
+                    "ST_MW": 145.95,
+                    "ST_FT": 129.39,
+                    "ST_WW": 125.43,
+                    "ST_BS": 129.66
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Boreal Forest",
+                "image": "skeletonknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 354.74,
+                    "MW": 218.35,
+                    "FT": 201.74,
+                    "WW": 193.95,
+                    "BS": 188.90,
+                    "ST_FN": 1064.22,
+                    "ST_MW": 230.39,
+                    "ST_FT": 190.91,
+                    "ST_WW": 192.45,
+                    "ST_BS": 189.35
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Scorched",
+                "image": "paracordknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 163.10,
+                    "MW": 103.73,
+                    "FT": 98.94,
+                    "WW": 95.49,
+                    "BS": 95.87,
+                    "ST_FN": 489.30,
+                    "ST_MW": 109.19,
+                    "ST_FT": 97.27,
+                    "ST_WW": 95.54,
+                    "ST_BS": 96.99
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Forest DDPAT",
+                "image": "survivalknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 142.81,
+                    "MW": 102.09,
+                    "FT": 99.17,
+                    "WW": 95.40,
+                    "BS": 95.70,
+                    "ST_FN": 417.26,
+                    "ST_MW": 106.78,
+                    "ST_FT": 97.38,
+                    "ST_WW": 100.40,
+                    "ST_BS": 98.13
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Night Stripe",
+                "image": "nomadknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 294.00,
+                    "MW": 197.35,
+                    "FT": 162.90,
+                    "WW": 148.55,
+                    "BS": 138.05,
+                    "ST_FN": 1637.90,
+                    "ST_MW": 196.54,
+                    "ST_FT": 156.68,
+                    "ST_WW": 151.50,
+                    "ST_BS": 138.26
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Vanilla",
+                "image": "paracordknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 161.78,
+                    "ST_NO": 159.42
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Scorched",
+                "image": "survivalknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 163.89,
+                    "MW": 102.48,
+                    "FT": 100.18,
+                    "WW": 95.81,
+                    "BS": 96.71,
+                    "ST_FN": 492.00,
+                    "ST_MW": 104.34,
+                    "ST_FT": 96.22,
+                    "ST_WW": 109.05,
+                    "ST_BS": 96.90
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Fade",
+                "image": "survivalknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 304.54,
+                    "MW": 333.91,
+                    "ST_FN": 312.56,
+                    "ST_MW": 355.87
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Stained",
+                "image": "skeletonknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 509.11,
+                    "MW": 389.49,
+                    "FT": 358.03,
+                    "WW": 303.47,
+                    "BS": 286.63,
+                    "ST_FN": 539.14,
+                    "ST_MW": 384.90,
+                    "ST_FT": 351.25,
+                    "ST_WW": 310.94,
+                    "ST_BS": 276.49
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Forest DDPAT",
+                "image": "paracordknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 205.71,
+                    "MW": 100.30,
+                    "FT": 97.90,
+                    "WW": 94.17,
+                    "BS": 95.68,
+                    "ST_FN": 395.62,
+                    "ST_MW": 103.25,
+                    "ST_FT": 97.13,
+                    "ST_WW": 108.59,
+                    "ST_BS": 95.81
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Stained",
+                "image": "survivalknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 147.41,
+                    "MW": 117.31,
+                    "FT": 108.29,
+                    "WW": 104.36,
+                    "BS": 101.65,
+                    "ST_FN": 1100.00,
+                    "ST_MW": 149.66,
+                    "ST_FT": 115.29,
+                    "ST_WW": 133.99,
+                    "ST_BS": 197.40
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Urban Masked",
+                "image": "survivalknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 170.61,
+                    "MW": 103.22,
+                    "FT": 98.16,
+                    "WW": 95.54,
+                    "BS": 95.44,
+                    "ST_FN": 510.00,
+                    "ST_MW": 109.19,
+                    "ST_FT": 97.85,
+                    "ST_WW": 120.25,
+                    "ST_BS": 105.03
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Blue Steel",
+                "image": "paracordknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 193.81,
+                    "MW": 137.90,
+                    "FT": 127.61,
+                    "WW": 121.20,
+                    "BS": 122.70,
+                    "ST_FN": 266.15,
+                    "ST_MW": 162.56,
+                    "ST_FT": 136.15,
+                    "ST_WW": 143.24,
+                    "ST_BS": 143.31
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Case Hardened",
+                "image": "survivalknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 234.55,
+                    "MW": 162.98,
+                    "FT": 148.48,
+                    "WW": 134.72,
+                    "BS": 131.54,
+                    "ST_FN": 350.99,
+                    "ST_MW": 184.19,
+                    "ST_FT": 151.50,
+                    "ST_WW": 150.00,
+                    "ST_BS": 145.85
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Stained",
+                "image": "nomadknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 338.49,
+                    "MW": 270.00,
+                    "FT": 240.99,
+                    "WW": 207.63,
+                    "BS": 196.80,
+                    "ST_FN": 354.81,
+                    "ST_MW": 266.15,
+                    "ST_FT": 231.89,
+                    "ST_WW": 211.56,
+                    "ST_BS": 211.00
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Crimson Web",
+                "image": "paracordknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1430.00,
+                    "MW": 228.41,
+                    "FT": 155.38,
+                    "WW": 147.44,
+                    "BS": 135.12,
+                    "ST_FN": 2338.92,
+                    "ST_MW": 265.31,
+                    "ST_FT": 154.66,
+                    "ST_WW": 193.15,
+                    "ST_BS": 153.91
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Blue Steel",
+                "image": "survivalknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 175.80,
+                    "MW": 124.73,
+                    "FT": 117.65,
+                    "WW": 113.18,
+                    "BS": 110.55,
+                    "ST_FN": 331.31,
+                    "ST_MW": 132.12,
+                    "ST_FT": 136.21,
+                    "ST_WW": 129.11,
+                    "ST_BS": 133.76
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Scorched",
+                "image": "skeletonknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 762.03,
+                    "MW": 254.01,
+                    "FT": 226.00,
+                    "WW": 218.57,
+                    "BS": 195.09,
+                    "ST_FN": 783.00,
+                    "ST_MW": 261.00,
+                    "ST_FT": 225.21,
+                    "ST_WW": 222.20,
+                    "ST_BS": 204.60
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Slaughter",
+                "image": "skeletonknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 724.73,
+                    "MW": 661.51,
+                    "FT": 656.45,
+                    "ST_FN": 747.32,
+                    "ST_MW": 661.91,
+                    "ST_FT": 648.19
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Safari Mesh",
+                "image": "paracordknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 170.67,
+                    "MW": 99.69,
+                    "FT": 98.05,
+                    "WW": 95.99,
+                    "BS": 95.00,
+                    "ST_FN": 1337.00,
+                    "ST_MW": 101.68,
+                    "ST_FT": 96.63,
+                    "ST_WW": 111.81,
+                    "ST_BS": 94.00
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Crimson Web",
+                "image": "survivalknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 747.42,
+                    "MW": 191.86,
+                    "FT": 155.25,
+                    "WW": 141.80,
+                    "BS": 133.13,
+                    "ST_FN": 3500.00,
+                    "ST_MW": 229.00,
+                    "ST_FT": 171.28,
+                    "ST_WW": 178.99,
+                    "ST_BS": 150.14
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Stained",
+                "image": "paracordknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 151.64,
+                    "MW": 118.74,
+                    "FT": 112.60,
+                    "WW": 102.21,
+                    "BS": 102.09,
+                    "ST_FN": 531.36,
+                    "ST_MW": 130.00,
+                    "ST_FT": 122.70,
+                    "ST_WW": 113.28,
+                    "ST_BS": 110.90
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Urban Masked",
+                "image": "paracordknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 183.09,
+                    "MW": 106.74,
+                    "FT": 98.77,
+                    "WW": 96.22,
+                    "BS": 95.47,
+                    "ST_FN": 2750.00,
+                    "ST_MW": 119.07,
+                    "ST_FT": 100.32,
+                    "ST_WW": 111.56,
+                    "ST_BS": 100.93
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Case Hardened",
+                "image": "paracordknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 280.05,
+                    "MW": 181.95,
+                    "FT": 160.77,
+                    "WW": 141.75,
+                    "BS": 134.74,
+                    "ST_FN": 427.30,
+                    "ST_MW": 227.59,
+                    "ST_FT": 172.38,
+                    "ST_WW": 175.06,
+                    "ST_BS": 184.26
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Scorched",
+                "image": "nomadknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 438.88,
+                    "MW": 160.00,
+                    "FT": 139.76,
+                    "WW": 132.94,
+                    "BS": 124.88,
+                    "ST_FN": 1316.64,
+                    "ST_MW": 166.51,
+                    "ST_FT": 134.42,
+                    "ST_WW": 133.07,
+                    "ST_BS": 124.47
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Blue Steel",
+                "image": "skeletonknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 578.50,
+                    "MW": 450.79,
+                    "FT": 419.99,
+                    "WW": 393.00,
+                    "BS": 390.36,
+                    "ST_FN": 822.79,
+                    "ST_MW": 434.03,
+                    "ST_FT": 410.26,
+                    "ST_WW": 367.81,
+                    "ST_BS": 389.00
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Boreal Forest",
+                "image": "paracordknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 159.08,
+                    "MW": 101.00,
+                    "FT": 95.69,
+                    "WW": 96.26,
+                    "BS": 94.99,
+                    "ST_FN": 640.97,
+                    "ST_MW": 107.23,
+                    "ST_FT": 96.85,
+                    "ST_WW": 102.99,
+                    "ST_BS": 96.12
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Blue Steel",
+                "image": "nomadknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 419.55,
+                    "MW": 305.71,
+                    "FT": 287.92,
+                    "WW": 257.44,
+                    "BS": 260.00,
+                    "ST_FN": 409.47,
+                    "ST_MW": 303.28,
+                    "ST_FT": 273.11,
+                    "ST_WW": 261.92,
+                    "ST_BS": 261.39
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Urban Masked",
+                "image": "skeletonknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 566.26,
+                    "MW": 275.32,
+                    "FT": 233.40,
+                    "WW": 218.31,
+                    "BS": 200.91,
+                    "ST_FN": 1699.00,
+                    "ST_MW": 283.53,
+                    "ST_FT": 229.16,
+                    "ST_WW": 218.11,
+                    "ST_BS": 204.73
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Crimson Web",
+                "image": "nomadknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1160.00,
+                    "MW": 463.39,
+                    "FT": 319.69,
+                    "WW": 278.75,
+                    "BS": 226.57,
+                    "ST_FN": 3480.00,
+                    "ST_MW": 401.15,
+                    "ST_FT": 289.48,
+                    "ST_WW": 283.35,
+                    "ST_BS": 228.38
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Slaughter",
+                "image": "survivalknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 219.97,
+                    "MW": 202.54,
+                    "FT": 197.94,
+                    "ST_FN": 245.00,
+                    "ST_MW": 224.52,
+                    "ST_FT": 225.00
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Night Stripe",
+                "image": "survivalknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 197.91,
+                    "MW": 107.82,
+                    "FT": 100.98,
+                    "WW": 96.12,
+                    "BS": 95.44,
+                    "ST_FN": 784.99,
+                    "ST_MW": 109.73,
+                    "ST_FT": 96.94,
+                    "ST_WW": 99.36,
+                    "ST_BS": 97.71
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Night Stripe",
+                "image": "paracordknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 273.09,
+                    "MW": 119.68,
+                    "FT": 99.98,
+                    "WW": 96.70,
+                    "BS": 98.00,
+                    "ST_FN": 819.27,
+                    "ST_MW": 120.79,
+                    "ST_FT": 107.70,
+                    "ST_WW": 133.39,
+                    "ST_BS": 114.58
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Vanilla",
+                "image": "skeletonknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 642.88,
+                    "ST_NO": 609.99
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Safari Mesh",
+                "image": "survivalknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 152.85,
+                    "MW": 100.25,
+                    "FT": 98.00,
+                    "WW": 94.50,
+                    "BS": 94.17,
+                    "ST_FN": 1399.60,
+                    "ST_MW": 98.27,
+                    "ST_FT": 98.14,
+                    "ST_WW": 93.95,
+                    "ST_BS": 95.47
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Vanilla",
+                "image": "nomadknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 390.95,
+                    "ST_NO": 365.00
+                }
+            },
+            {
+                "weapon": "Survival Knife",
+                "name": "Vanilla",
+                "image": "survivalknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["NO"],
+                "prices": {
+                    "NO": 160.78,
+                    "ST_NO": 150.87
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Night Stripe",
+                "image": "skeletonknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 563.00,
+                    "MW": 321.06,
+                    "FT": 279.24,
+                    "WW": 271.61,
+                    "BS": 241.23,
+                    "ST_FN": 1689.00,
+                    "ST_MW": 326.21,
+                    "ST_FT": 272.84,
+                    "ST_WW": 272.98,
+                    "ST_BS": 246.20
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Crimson Web",
+                "image": "skeletonknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2456.85,
+                    "MW": 795.44,
+                    "FT": 604.63,
+                    "WW": 556.08,
+                    "BS": 431.04,
+                    "ST_FN": 7370.55,
+                    "ST_MW": 832.33,
+                    "ST_FT": 578.17,
+                    "ST_WW": 545.96,
+                    "ST_BS": 450.00
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Forest DDPAT",
+                "image": "skeletonknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 373.73,
+                    "MW": 215.11,
+                    "FT": 197.33,
+                    "WW": 193.13,
+                    "BS": 188.76,
+                    "ST_FN": 3500.00,
+                    "ST_MW": 222.61,
+                    "ST_FT": 199.75,
+                    "ST_WW": 192.31,
+                    "ST_BS": 194.94
+                }
+            },
+            {
+                "weapon": "Skeleton Knife",
+                "name": "Fade",
+                "image": "skeletonknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1261.47,
+                    "MW": 1241.77,
+                    "ST_FN": 1182.07,
+                    "ST_MW": 1323.96
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Slaughter",
+                "image": "nomadknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 469.00,
+                    "MW": 429.67,
+                    "FT": 415.95,
+                    "ST_FN": 459.66,
+                    "ST_MW": 414.86,
+                    "ST_FT": 410.52
+                }
+            },
+            {
+                "weapon": "Nomad Knife",
+                "name": "Fade",
+                "image": "nomadknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 815.00,
+                    "MW": 818.95,
+                    "ST_FN": 774.86,
+                    "ST_MW": 811.72
+                }
+            },
+            {
+                "weapon": "Paracord Knife",
+                "name": "Slaughter",
+                "image": "paracordknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 239.20,
+                    "MW": 218.38,
+                    "FT": 213.74,
+                    "ST_FN": 286.63,
+                    "ST_MW": 233.12,
+                    "ST_FT": 275.52
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Allure",
+                "image": "mac10_allure.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.38,
+                    "MW": 0.63,
+                    "FT": 0.31,
+                    "WW": 0.25,
+                    "BS": 0.23,
+                    "ST_FN": 3.12,
+                    "ST_MW": 1.19,
+                    "ST_FT": 0.49,
+                    "ST_WW": 0.41,
+                    "ST_BS": 0.38
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Brother",
+                "image": "tec9_brother.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.42,
+                    "MW": 0.59,
+                    "FT": 0.31,
+                    "WW": 0.26,
+                    "BS": 0.25,
+                    "ST_FN": 3.23,
+                    "ST_MW": 1.14,
+                    "ST_FT": 0.50,
+                    "ST_WW": 0.39,
+                    "ST_BS": 0.40
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "Desert Eagle",
+                "name": "Printstream",
+                "image": "deserteagle_printstream.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 84.75,
+                    "MW": 42.67,
+                    "FT": 28.21,
+                    "WW": 26.66,
+                    "BS": 22.17,
+                    "ST_FN": 139.66,
+                    "ST_MW": 83.35,
+                    "ST_FT": 52.11,
+                    "ST_WW": 52.18,
+                    "ST_BS": 49.87
+                }
+            },
+            {
+                "weapon": "AK-47",
+                "name": "Legion of Anubis",
+                "image": "ak47_legion_of_anubis.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11.98,
+                    "MW": 6.73,
+                    "FT": 4.64,
+                    "WW": 5.50,
+                    "BS": 4.15,
+                    "ST_FN": 41.35,
+                    "ST_MW": 21.77,
+                    "ST_FT": 13.37,
+                    "ST_WW": 17.57,
+                    "ST_BS": 12.92
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "Glock-18",
+                "name": "Vogue",
+                "image": "glock18_vogue.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.62,
+                    "MW": 4.38,
+                    "FT": 2.35,
+                    "WW": 2.70,
+                    "BS": 2.16,
+                    "ST_FN": 17.48,
+                    "ST_MW": 8.51,
+                    "ST_FT": 4.38,
+                    "ST_WW": 5.51,
+                    "ST_BS": 4.09
+                }
+            },
+            {
+                "weapon": "M4A4",
+                "name": "Tooth Fairy",
+                "image": "m4a4_tooth_fairy.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.12,
+                    "MW": 4.05,
+                    "FT": 2.40,
+                    "WW": 2.37,
+                    "BS": 2.12,
+                    "ST_FN": 13.48,
+                    "ST_MW": 6.98,
+                    "ST_FT": 4.22,
+                    "ST_WW": 4.09,
+                    "ST_BS": 3.54
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Entombed",
+                "image": "xm1014_entombed.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.00,
+                    "MW": 3.96,
+                    "FT": 2.46,
+                    "WW": 2.14,
+                    "BS": 1.83,
+                    "ST_FN": 13.14,
+                    "ST_MW": 6.70,
+                    "ST_FT": 3.98,
+                    "ST_WW": 3.63,
+                    "ST_BS": 3.37
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "MAG-7",
+                "name": "Monster Call",
+                "image": "mag7_monster_call.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.44,
+                    "MW": 0.61,
+                    "FT": 0.32,
+                    "WW": 0.26,
+                    "BS": 0.25,
+                    "ST_FN": 3.53,
+                    "ST_MW": 1.19,
+                    "ST_FT": 0.48,
+                    "ST_WW": 0.39,
+                    "ST_BS": 0.40
+                }
+            },
+            {
+                "weapon": "Galil",
+                "name": "Connexion",
+                "image": "galil_connexion.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.26,
+                    "MW": 0.65,
+                    "FT": 0.30,
+                    "WW": 0.30,
+                    "BS": 0.23,
+                    "ST_FN": 2.76,
+                    "ST_MW": 1.22,
+                    "ST_FT": 0.51,
+                    "ST_WW": 0.60,
+                    "ST_BS": 0.46
+                }
+            },
+            {
+                "weapon": "MP5",
+                "name": "Kitbash",
+                "image": "mp5_kitbash.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.18,
+                    "MW": 0.66,
+                    "FT": 0.31,
+                    "WW": 0.28,
+                    "BS": 0.22,
+                    "ST_FN": 2.92,
+                    "ST_MW": 1.12,
+                    "ST_FT": 0.47,
+                    "ST_WW": 0.46,
+                    "ST_BS": 0.41
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Allure",
+                "image": "mac10_allure.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.38,
+                    "MW": 0.63,
+                    "FT": 0.31,
+                    "WW": 0.25,
+                    "BS": 0.23,
+                    "ST_FN": 3.12,
+                    "ST_MW": 1.19,
+                    "ST_FT": 0.49,
+                    "ST_WW": 0.41,
+                    "ST_BS": 0.38
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Brother",
+                "image": "tec9_brother.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.42,
+                    "MW": 0.59,
+                    "FT": 0.31,
+                    "WW": 0.26,
+                    "BS": 0.25,
+                    "ST_FN": 3.23,
+                    "ST_MW": 1.14,
+                    "ST_FT": 0.50,
+                    "ST_WW": 0.39,
+                    "ST_BS": 0.40
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "SSG 08",
+                "name": "Mainframe 001",
+                "image": "ssg08_mainframe_001.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.22,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 1.10,
+                    "ST_MW": 0.20,
+                    "ST_FT": 0.09,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Cassette",
+                "image": "p250_cassette.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.16,
+                    "MW": 0.07,
+                    "FT": 0.03,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.50,
+                    "ST_MW": 0.18,
+                    "ST_FT": 0.07,
+                    "ST_WW": 0.11,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Freight",
+                "image": "p90_freight.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.19,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.62,
+                    "ST_MW": 0.16,
+                    "ST_FT": 0.07,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Gnarled",
+                "image": "p2000_gnarled.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.21,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.03,
+                    "ST_FN": 0.75,
+                    "ST_MW": 0.18,
+                    "ST_FT": 0.06,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.06
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Runic",
+                "image": "ppbizon_runic.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.22,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.03,
+                    "BS": 0.04,
+                    "ST_FN": 0.97,
+                    "ST_MW": 0.15,
+                    "ST_FT": 0.07,
+                    "ST_WW": 0.07,
+                    "ST_BS": 0.07
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Ol Rusty",
+                "image": "sg553_ol_rusty.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.15,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "ST_FN": 0.49,
+                    "ST_MW": 0.17,
+                    "ST_FT": 0.08,
+                    "ST_WW": 0.09,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "Negev",
+                "name": "Ultralight",
+                "image": "negev_ultralight.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.17,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.04,
+                    "BS": 0.03,
+                    "ST_FN": 0.48,
+                    "ST_MW": 0.16,
+                    "ST_FT": 0.06,
+                    "ST_WW": 0.08,
+                    "ST_BS": 0.07
+                }
+            }
+        ]
+    }
+}

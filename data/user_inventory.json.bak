@@ -1,6 +1,136 @@
 {
-  "balance": 19475.337499999998,
+  "balance": 18956.537499999962,
   "inventory": [
+    {
+      "weapon": "SCAR-20",
+      "name": "Poultrygeist",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.07,
+      "timestamp": 1736354048.4862475,
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.07522293,
+      "is_case": false,
+      "base_price": 0.07
+    },
+    {
+      "weapon": "MAG-7",
+      "name": "Foresight",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.03,
+      "timestamp": 1736354048.4852467,
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.69268178,
+      "is_case": false,
+      "base_price": 0.03
+    },
+    {
+      "weapon": "Sawed-Off",
+      "name": "Spirit Board",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.07,
+      "timestamp": 1736354048.4852467,
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.13114771,
+      "is_case": false,
+      "base_price": 0.07
+    },
+    {
+      "weapon": "SCAR-20",
+      "name": "Poultrygeist",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736354048.4852467,
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.29275913,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "MP5",
+      "name": "Necro Jr",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736354048.4842474,
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.34685221,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "Dual Berettas",
+      "name": "Tread",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.74,
+      "timestamp": 1736352171.6101553,
+      "case_type": "riptide",
+      "float_value": 0.07615239,
+      "is_case": false,
+      "base_price": 0.74
+    },
+    {
+      "weapon": "MP7",
+      "name": "Guerrilla",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 1.31,
+      "timestamp": 1736352171.6101553,
+      "case_type": "riptide",
+      "float_value": 0.03269452,
+      "is_case": false,
+      "base_price": 1.31
+    },
+    {
+      "weapon": "G3SG1",
+      "name": "Keeping Tabs",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.53,
+      "timestamp": 1736352171.6101553,
+      "case_type": "riptide",
+      "float_value": 0.33238923,
+      "is_case": false,
+      "base_price": 0.53
+    },
+    {
+      "weapon": "G3SG1",
+      "name": "Keeping Tabs",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.98,
+      "timestamp": 1736352171.6101553,
+      "case_type": "riptide",
+      "float_value": 0.06096858,
+      "is_case": false,
+      "base_price": 0.98
+    },
+    {
+      "weapon": "G3SG1",
+      "name": "Keeping Tabs",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 1.78,
+      "timestamp": 1736352171.6101553,
+      "case_type": "riptide",
+      "float_value": 0.13502857,
+      "is_case": false,
+      "base_price": 1.78
+    },
     {
       "weapon": "G3SG1",
       "name": "High Seas",
@@ -20,7 +150,7 @@
       "rarity": "BLUE",
       "wear": "BS",
       "stattrak": false,
-      "price": 0.05879999999999999,
+      "price": 0.08399999999999999,
       "timestamp": 1736317945.7040215,
       "case_type": "horizon",
       "float_value": 0.94761445,
@@ -844,7 +974,7 @@
       "image": "operation_bravo_case.png",
       "is_case": true,
       "type": "bravo",
-      "quantity": 15
+      "quantity": 22
     },
     {
       "name": "Revolution Case",
@@ -901,9 +1031,97 @@
       "is_case": true,
       "type": "horizon",
       "quantity": 10
+    },
+    {
+      "name": "Operation Riptide Case",
+      "image": "operation_riptide_case.png",
+      "is_case": true,
+      "type": "riptide",
+      "quantity": 10
+    },
+    {
+      "name": "Dreams & Nightmares Case",
+      "image": "dreams_&_nightmares_case.png",
+      "is_case": true,
+      "type": "dreams_&_nightmares",
+      "quantity": 49
+    },
+    {
+      "name": "Shattered Web Case",
+      "image": "shattered_web_case.png",
+      "is_case": true,
+      "type": "shattered_web",
+      "quantity": 3
+    },
+    {
+      "name": "Fracture Case",
+      "image": "fracture_case.png",
+      "is_case": true,
+      "type": "fracture",
+      "quantity": 1
+    },
+    {
+      "weapon": "P90",
+      "name": "Freight",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.03,
+      "timestamp": 1736354547.2102149,
+      "case_type": "fracture",
+      "float_value": 0.73395964,
+      "is_case": false
+    },
+    {
+      "weapon": "P90",
+      "name": "Freight",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.19,
+      "timestamp": 1736354547.211214,
+      "case_type": "fracture",
+      "float_value": 0.03842937,
+      "is_case": false
+    },
+    {
+      "weapon": "P2000",
+      "name": "Gnarled",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.21,
+      "timestamp": 1736354547.211214,
+      "case_type": "fracture",
+      "float_value": 0.0536715,
+      "is_case": false
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Brother",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 1.42,
+      "timestamp": 1736354547.211214,
+      "case_type": "fracture",
+      "float_value": 0.06936368,
+      "is_case": false
+    },
+    {
+      "weapon": "SG 553",
+      "name": "Ol Rusty",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736354547.2122104,
+      "case_type": "fracture",
+      "float_value": 0.44528672,
+      "is_case": false
     }
   ],
-  "exp": 1934.3200000000004,
+  "exp": 1950.8200000000004,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -956,15 +1174,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 130,
+        "current_value": 145,
         "category": "cases",
-        "progress": 13.0
+        "progress": 14.499999999999998
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 130,
+    "total_cases_opened": 145,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,
