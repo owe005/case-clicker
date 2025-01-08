@@ -14,11 +14,42 @@
 }
 
 .item-details {
-    background: linear-gradient(145deg, #1a1a1a, #222);
+    background: linear-gradient(145deg, 
+        {% if auction_item.rarity == 'CONTRABAND' %}
+            #4b1e06, #2d1204
+        {% elif auction_item.rarity == 'GOLD' %}
+            #423012, #2a1f0c
+        {% elif auction_item.rarity == 'RED' %}
+            #3d1515, #2a0f0f
+        {% elif auction_item.rarity == 'PINK' %}
+            #3d1537, #2a0f26
+        {% elif auction_item.rarity == 'PURPLE' %}
+            #2a1f3d, #1a1426
+        {% elif auction_item.rarity == 'BLUE' %}
+            #1a2940, #111c2d
+        {% else %}
+            #1a1a1a, #222
+        {% endif %}
+    );
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    border: 2px solid #2a2a2a;
+    border: 2px solid 
+        {% if auction_item.rarity == 'CONTRABAND' %}
+            #e4ae39
+        {% elif auction_item.rarity == 'GOLD' %}
+            #d4af37
+        {% elif auction_item.rarity == 'RED' %}
+            #eb4b4b
+        {% elif auction_item.rarity == 'PINK' %}
+            #eb4b82
+        {% elif auction_item.rarity == 'PURPLE' %}
+            #8847ff
+        {% elif auction_item.rarity == 'BLUE' %}
+            #4b69ff
+        {% else %}
+            #2a2a2a
+        {% endif %};
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -237,7 +268,22 @@
 /* Hover effects */
 .item-details:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 25px 
+        {% if auction_item.rarity == 'CONTRABAND' %}
+            rgba(228, 174, 57, 0.3)
+        {% elif auction_item.rarity == 'GOLD' %}
+            rgba(212, 175, 55, 0.3)
+        {% elif auction_item.rarity == 'RED' %}
+            rgba(235, 75, 75, 0.3)
+        {% elif auction_item.rarity == 'PINK' %}
+            rgba(235, 75, 130, 0.3)
+        {% elif auction_item.rarity == 'PURPLE' %}
+            rgba(136, 71, 255, 0.3)
+        {% elif auction_item.rarity == 'BLUE' %}
+            rgba(75, 105, 255, 0.3)
+        {% else %}
+            rgba(0, 0, 0, 0.4)
+        {% endif %};
 }
 
 .item-details:hover::after {

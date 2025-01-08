@@ -115,7 +115,12 @@ CASE_FILE_MAPPING = {
     'riptide': 'operation_riptide_case',
     'shattered_web': 'shattered_web_case',
     'dreams_&_nightmares': 'dreams_&_nightmares_case',
-    'fracture': 'fracture_case'
+    'fracture': 'fracture_case',
+    'gallery': 'gallery_case',
+    'kilowatt': 'kilowatt_case',
+    'recoil': 'recoil_case',
+    'snakebite': 'snakebite_case',
+    'broken_fang': 'operation_broken_fang_case'
 }
 
 CASE_TYPES = [
@@ -152,7 +157,12 @@ CASE_TYPES = [
     'riptide',
     'shattered_web',
     'dreams_&_nightmares',
-    'fracture'
+    'fracture',
+    'gallery',
+    'kilowatt',
+    'recoil',
+    'snakebite',
+    'broken_fang'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -189,7 +199,12 @@ CASE_SKINS_FOLDER_NAMES = {
     'riptide': 'operation_riptide_case',
     'shattered_web': 'shattered_web_case',
     'dreams_&_nightmares': 'dreams_&_nightmares_case',
-    'fracture': 'fracture_case'
+    'fracture': 'fracture_case',
+    'gallery': 'gallery_case',
+    'kilowatt': 'kilowatt_case',
+    'recoil': 'recoil_case',
+    'snakebite': 'snakebite_case',
+    'broken_fang': 'operation_broken_fang_case'
 }
 
 CASE_DATA = {
@@ -396,6 +411,36 @@ CASE_DATA = {
         'image': 'fracture_case.png',
         'is_case': True,
         'type': 'fracture'
+    },
+    'gallery': {
+        'name': 'Gallery Case',
+        'image': 'gallery_case.png',
+        'is_case': True,
+        'type': 'gallery'
+    },
+    'kilowatt': {
+        'name': 'Kilowatt Case',
+        'image': 'kilowatt_case.png',
+        'is_case': True,
+        'type': 'kilowatt'
+    },
+    'recoil': {
+        'name': 'Recoil Case',
+        'image': 'recoil_case.png',
+        'is_case': True,
+        'type': 'recoil'
+    },
+    'snakebite': {
+        'name': 'Snakebite Case',
+        'image': 'snakebite_case.png',
+        'is_case': True,
+        'type': 'snakebite'
+    },
+    'broken_fang': {
+        'name': 'Operation Broken Fang Case',
+        'image': 'operation_broken_fang_case.png',
+        'is_case': True,
+        'type': 'broken_fang'
     }
 }
 

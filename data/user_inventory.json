@@ -1,6 +1,292 @@
 {
-  "balance": 18956.537499999962,
+  "balance": 4756.585499999963,
   "inventory": [
+    {
+      "weapon": "UMP-45",
+      "name": "Roadblock",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.19,
+      "timestamp": 1736377026.1596851,
+      "case_type": "recoil",
+      "float_value": 0.04654017,
+      "is_case": false,
+      "base_price": 0.19
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Monkeyflage",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736377026.1596851,
+      "case_type": "recoil",
+      "float_value": 0.17897733,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "Galil",
+      "name": "Destroyer",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.09,
+      "timestamp": 1736376993.592815,
+      "case_type": "recoil",
+      "float_value": 0.10619618,
+      "is_case": false,
+      "base_price": 0.09
+    },
+    {
+      "weapon": "SG553",
+      "name": "Dragon Tech",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.28,
+      "timestamp": 1736376993.5913098,
+      "case_type": "recoil",
+      "float_value": 0.66120923,
+      "is_case": false,
+      "base_price": 0.28
+    },
+    {
+      "weapon": "P90",
+      "name": "Vent Rush",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 0.46,
+      "timestamp": 1736376993.5913098,
+      "case_type": "recoil",
+      "float_value": 0.882731,
+      "is_case": false,
+      "base_price": 0.46
+    },
+    {
+      "weapon": "M249",
+      "name": "OSIPR",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.1,
+      "timestamp": 1736376984.7399576,
+      "case_type": "snakebite",
+      "float_value": 0.45149931,
+      "is_case": false,
+      "base_price": 0.1
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Circaetus",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.12,
+      "timestamp": 1736376984.738958,
+      "case_type": "snakebite",
+      "float_value": 0.19040497,
+      "is_case": false,
+      "base_price": 0.12
+    },
+    {
+      "weapon": "UMP-45",
+      "name": "Oscillator",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.11,
+      "timestamp": 1736376984.738958,
+      "case_type": "snakebite",
+      "float_value": 0.60472184,
+      "is_case": false,
+      "base_price": 0.11
+    },
+    {
+      "weapon": "SG553",
+      "name": "Heavy Metal",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.12,
+      "timestamp": 1736376984.738958,
+      "case_type": "snakebite",
+      "float_value": 0.25098049,
+      "is_case": false,
+      "base_price": 0.12
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Circaetus",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.48400000000000004,
+      "timestamp": 1736376984.738958,
+      "case_type": "snakebite",
+      "float_value": 0.00669595,
+      "is_case": false,
+      "base_price": 0.48400000000000004
+    },
+    {
+      "weapon": "M249",
+      "name": "Deep Relief",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.56,
+      "timestamp": 1736376972.2264714,
+      "case_type": "broken_fang",
+      "float_value": 0.10725488,
+      "is_case": false,
+      "base_price": 0.56
+    },
+    {
+      "weapon": "Galil",
+      "name": "Vandal",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 1.17,
+      "timestamp": 1736376972.225469,
+      "case_type": "broken_fang",
+      "float_value": 0.07670673,
+      "is_case": false,
+      "base_price": 1.17
+    },
+    {
+      "weapon": "Dual Berettas",
+      "name": "Dezastre",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 2.35,
+      "timestamp": 1736376972.225469,
+      "case_type": "broken_fang",
+      "float_value": 0.68571366,
+      "is_case": false,
+      "base_price": 2.35
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Slag",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": true,
+      "price": 0.95,
+      "timestamp": 1736371571.3535357,
+      "case_type": "kilowatt",
+      "float_value": 0.06156475,
+      "is_case": false,
+      "base_price": 0.95
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Slag",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.06,
+      "timestamp": 1736371571.3535357,
+      "case_type": "kilowatt",
+      "float_value": 0.47566586,
+      "is_case": false,
+      "base_price": 0.06
+    },
+    {
+      "weapon": "MP7",
+      "name": "Just Smile",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.67,
+      "timestamp": 1736371571.3525286,
+      "case_type": "kilowatt",
+      "float_value": 0.42179695,
+      "is_case": false,
+      "base_price": 0.67
+    },
+    {
+      "weapon": "Dual Berettas",
+      "name": "Hideout",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 0.37,
+      "timestamp": 1736371571.3525286,
+      "case_type": "kilowatt",
+      "float_value": 0.12869495,
+      "is_case": false,
+      "base_price": 0.37
+    },
+    {
+      "weapon": "R8 Revolver",
+      "name": "Tango",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 0.66,
+      "timestamp": 1736370539.6476448,
+      "case_type": "gallery",
+      "float_value": 0.09810757,
+      "is_case": false,
+      "base_price": 0.66
+    },
+    {
+      "weapon": "M249",
+      "name": "Hypnosis",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.14,
+      "timestamp": 1736370539.6476448,
+      "case_type": "gallery",
+      "float_value": 0.15034891,
+      "is_case": false,
+      "base_price": 0.14
+    },
+    {
+      "weapon": "AUG",
+      "name": "Luxe Trim",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.14,
+      "timestamp": 1736370539.6476448,
+      "case_type": "gallery",
+      "float_value": 0.19852843,
+      "is_case": false,
+      "base_price": 0.14
+    },
+    {
+      "weapon": "AUG",
+      "name": "Luxe Trim",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.08,
+      "timestamp": 1736370539.6466396,
+      "case_type": "gallery",
+      "float_value": 0.44163248,
+      "is_case": false,
+      "base_price": 0.08
+    },
+    {
+      "weapon": "R8 Revolver",
+      "name": "Tango",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 0.66,
+      "timestamp": 1736370539.6466396,
+      "case_type": "gallery",
+      "float_value": 0.13866408,
+      "is_case": false,
+      "base_price": 0.66
+    },
     {
       "weapon": "SG 553",
       "name": "Ol Rusty",
@@ -11,7 +297,8 @@
       "timestamp": 1736354547.2122104,
       "case_type": "fracture",
       "float_value": 0.44528672,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.04
     },
     {
       "weapon": "P90",
@@ -23,7 +310,8 @@
       "timestamp": 1736354547.211214,
       "case_type": "fracture",
       "float_value": 0.03842937,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.19
     },
     {
       "weapon": "P2000",
@@ -35,7 +323,8 @@
       "timestamp": 1736354547.211214,
       "case_type": "fracture",
       "float_value": 0.0536715,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.21
     },
     {
       "weapon": "Tec-9",
@@ -47,19 +336,8 @@
       "timestamp": 1736354547.211214,
       "case_type": "fracture",
       "float_value": 0.06936368,
-      "is_case": false
-    },
-    {
-      "weapon": "P90",
-      "name": "Freight",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.03,
-      "timestamp": 1736354547.2102149,
-      "case_type": "fracture",
-      "float_value": 0.73395964,
-      "is_case": false
+      "is_case": false,
+      "base_price": 1.42
     },
     {
       "weapon": "SCAR-20",
@@ -73,19 +351,6 @@
       "float_value": 0.07522293,
       "is_case": false,
       "base_price": 0.07
-    },
-    {
-      "weapon": "MAG-7",
-      "name": "Foresight",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.03,
-      "timestamp": 1736354048.4852467,
-      "case_type": "dreams_&_nightmares",
-      "float_value": 0.69268178,
-      "is_case": false,
-      "base_price": 0.03
     },
     {
       "weapon": "Sawed-Off",
@@ -110,19 +375,6 @@
       "timestamp": 1736354048.4852467,
       "case_type": "dreams_&_nightmares",
       "float_value": 0.29275913,
-      "is_case": false,
-      "base_price": 0.04
-    },
-    {
-      "weapon": "MP5",
-      "name": "Necro Jr",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736354048.4842474,
-      "case_type": "dreams_&_nightmares",
-      "float_value": 0.34685221,
       "is_case": false,
       "base_price": 0.04
     },
@@ -190,19 +442,6 @@
       "float_value": 0.13502857,
       "is_case": false,
       "base_price": 1.78
-    },
-    {
-      "weapon": "G3SG1",
-      "name": "High Seas",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.71,
-      "timestamp": 1736317945.7040215,
-      "case_type": "horizon",
-      "float_value": 0.06153638,
-      "is_case": false,
-      "base_price": 2.71
     },
     {
       "weapon": "Tec-9",
@@ -281,19 +520,6 @@
       "float_value": 0.74843892,
       "is_case": false,
       "base_price": 0.07
-    },
-    {
-      "weapon": "Sawed-Off",
-      "name": "Black Sand",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736317425.6650045,
-      "case_type": "danger_zone",
-      "float_value": 0.63234639,
-      "is_case": false,
-      "base_price": 0.04
     },
     {
       "weapon": "Tec-9",
@@ -426,19 +652,6 @@
       "base_price": 0.19
     },
     {
-      "weapon": "MP9",
-      "name": "Black Sand",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.03,
-      "timestamp": 1736229217.4141645,
-      "case_type": "clutch",
-      "float_value": 0.69284768,
-      "is_case": false,
-      "base_price": 0.03
-    },
-    {
       "weapon": "PP-Bizon",
       "name": "Night Riot",
       "rarity": "BLUE",
@@ -556,19 +769,6 @@
       "base_price": 0.21
     },
     {
-      "weapon": "UMP-45",
-      "name": "Scaffold",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 3.03,
-      "timestamp": 1736201809.6937494,
-      "case_type": "spectrum",
-      "float_value": 0.055702,
-      "is_case": false,
-      "base_price": 3.03
-    },
-    {
       "weapon": "MP7",
       "name": "Akoben",
       "rarity": "BLUE",
@@ -582,58 +782,6 @@
       "base_price": 0.15
     },
     {
-      "weapon": "USP-S",
-      "name": "Blueprint",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 2.87,
-      "timestamp": 1736200299.5815372,
-      "case_type": "hydra",
-      "float_value": 0.73631741,
-      "is_case": false,
-      "base_price": 2.87
-    },
-    {
-      "weapon": "UMP-45",
-      "name": "Metal Flowers",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": true,
-      "price": 3.07,
-      "timestamp": 1736200299.5815372,
-      "case_type": "hydra",
-      "float_value": 0.72016311,
-      "is_case": false,
-      "base_price": 3.07
-    },
-    {
-      "weapon": "USP-S",
-      "name": "Blueprint",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 3.37,
-      "timestamp": 1736200299.5815372,
-      "case_type": "hydra",
-      "float_value": 0.35346225,
-      "is_case": false,
-      "base_price": 3.37
-    },
-    {
-      "weapon": "P2000",
-      "name": "Woodsman",
-      "rarity": "PURPLE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 8.96,
-      "timestamp": 1736200299.580538,
-      "case_type": "hydra",
-      "float_value": 0.04966853,
-      "is_case": false,
-      "base_price": 8.96
-    },
-    {
       "weapon": "MAG-7",
       "name": "Hard Water",
       "rarity": "BLUE",
@@ -645,45 +793,6 @@
       "float_value": 0.20409554,
       "is_case": false,
       "base_price": 2.06
-    },
-    {
-      "weapon": "UMP-45",
-      "name": "Metal Flowers",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 2.79,
-      "timestamp": 1736200253.465126,
-      "case_type": "hydra",
-      "float_value": 0.01525723,
-      "is_case": false,
-      "base_price": 2.79
-    },
-    {
-      "weapon": "Galil AR",
-      "name": "Sugar Rush",
-      "rarity": "PINK",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 0,
-      "timestamp": 1736200253.464126,
-      "case_type": "hydra",
-      "float_value": 0.01618644,
-      "is_case": false,
-      "base_price": 0
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Briefing",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 3.63,
-      "timestamp": 1736200253.464126,
-      "case_type": "hydra",
-      "float_value": 0.40787039,
-      "is_case": false,
-      "base_price": 3.63
     },
     {
       "weapon": "MAG-7",
@@ -829,70 +938,6 @@
       "base_price": 119.91
     },
     {
-      "weapon": "USP-S",
-      "name": "Dark Water",
-      "rarity": "PURPLE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 99.05,
-      "timestamp": 1736113409.7585404,
-      "case_type": "csgo",
-      "float_value": 0.31790355,
-      "is_case": false,
-      "base_price": 99.05
-    },
-    {
-      "weapon": "AUG",
-      "name": "Wings",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 32.34,
-      "timestamp": 1736113409.7585404,
-      "case_type": "csgo",
-      "float_value": 0.01746079,
-      "is_case": false,
-      "base_price": 32.34
-    },
-    {
-      "weapon": "SG 553",
-      "name": "Ultraviolet",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 33.17,
-      "timestamp": 1736113409.7580323,
-      "case_type": "csgo",
-      "float_value": 0.39126628,
-      "is_case": false,
-      "base_price": 33.17
-    },
-    {
-      "weapon": "SG 553",
-      "name": "Ultraviolet",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 33.17,
-      "timestamp": 1736113409.7570302,
-      "case_type": "csgo",
-      "float_value": 0.43166734,
-      "is_case": false,
-      "base_price": 33.17
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Hyper Beast",
-      "wear": "WW",
-      "price": 13.05,
-      "base_price": 13.05,
-      "rarity": "RED",
-      "case_type": "chroma_2",
-      "stattrak": false,
-      "timestamp": 1736112516.6702394,
-      "float_value": 0.38812102
-    },
-    {
       "weapon": "XM1014",
       "name": "Scumbria",
       "rarity": "BLUE",
@@ -984,32 +1029,6 @@
       "base_price": 0.09
     },
     {
-      "weapon": "Tec-9",
-      "name": "Rebel",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.03,
-      "timestamp": 1736112138.7201953,
-      "case_type": "revolution",
-      "float_value": 0.73092868,
-      "is_case": false,
-      "base_price": 0.03
-    },
-    {
-      "weapon": "Tec-9",
-      "name": "Rebel",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736112083.0971084,
-      "case_type": "revolution",
-      "float_value": 0.36090732,
-      "is_case": false,
-      "base_price": 0.04
-    },
-    {
       "weapon": "Glock-18",
       "name": "Wraiths",
       "rarity": "BLUE",
@@ -1027,7 +1046,7 @@
       "image": "shadow_case.png",
       "is_case": true,
       "type": "shadow",
-      "quantity": 10
+      "quantity": 11
     },
     {
       "name": "Operation Bravo Case",
@@ -1041,7 +1060,7 @@
       "image": "revolution_case.png",
       "is_case": true,
       "type": "revolution",
-      "quantity": 14
+      "quantity": 15
     },
     {
       "name": "Revolver Case",
@@ -1104,7 +1123,7 @@
       "image": "dreams_&_nightmares_case.png",
       "is_case": true,
       "type": "dreams_&_nightmares",
-      "quantity": 49
+      "quantity": 54
     },
     {
       "name": "Shattered Web Case",
@@ -1119,9 +1138,936 @@
       "is_case": true,
       "type": "fracture",
       "quantity": 1
+    },
+    {
+      "name": "Gallery Case",
+      "image": "gallery_case.png",
+      "is_case": true,
+      "type": "gallery",
+      "quantity": 3
+    },
+    {
+      "name": "Kilowatt Case",
+      "image": "kilowatt_case.png",
+      "is_case": true,
+      "type": "kilowatt",
+      "quantity": 1
+    },
+    {
+      "name": "Snakebite Case",
+      "image": "snakebite_case.png",
+      "is_case": true,
+      "type": "snakebite",
+      "quantity": 3
+    },
+    {
+      "name": "Operation Broken Fang Case",
+      "image": "operation_broken_fang_case.png",
+      "is_case": true,
+      "type": "broken_fang",
+      "quantity": 2
+    },
+    {
+      "name": "Falchion Case",
+      "image": "falchion_case.png",
+      "is_case": true,
+      "type": "falchion",
+      "quantity": 1
+    },
+    {
+      "name": "Danger Zone Case",
+      "image": "danger_zone_case.png",
+      "is_case": true,
+      "type": "danger_zone",
+      "quantity": 1
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Leet Museo",
+      "wear": "FT",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 17.06,
+      "case_type": "riptide"
+    },
+    {
+      "weapon": "Sawed-Off",
+      "name": "Orange DDPAT",
+      "wear": "WW",
+      "rarity": "PURPLE",
+      "stattrak": false,
+      "price": 13.54,
+      "case_type": "esports"
+    },
+    {
+      "weapon": "AWP",
+      "name": "Elite Build",
+      "wear": "WW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 13.49,
+      "case_type": "wildfire"
+    },
+    {
+      "weapon": "Five-SeveN",
+      "name": "Hyper Beast",
+      "wear": "BS",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 20.57,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Printstream",
+      "wear": "WW",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 26.66,
+      "case_type": "fracture"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377455.8739479,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.0368388,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.1977549,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.3642428,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.5319598,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.6940548,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.863247,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.0254238,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.1901417,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.3837473,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.7127955,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.0419421,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.3770635,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.7002466,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.0348754,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.3341038,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.4966457,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.6596231,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Overgrowth",
+      "wear": "WW",
+      "rarity": "PURPLE",
+      "stattrak": false,
+      "price": 20.75,
+      "case_type": "bravo"
+    },
+    {
+      "weapon": "Navaja Knife",
+      "name": "Night Stripe",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 92.4,
+      "case_type": "danger_zone"
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Kumicho Dragon",
+      "wear": "FN",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 27.22,
+      "case_type": "wildfire"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Monster Mashup",
+      "wear": "MW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 26.69,
+      "case_type": "broken_fang"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Stained",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 95.76,
+      "case_type": "esports_winter"
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Cyrex",
+      "wear": "BS",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 17.39,
+      "case_type": "breakout"
+    },
+    {
+      "weapon": "Nova",
+      "name": "Hyper Beast",
+      "wear": "WW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 13.38,
+      "case_type": "wildfire"
+    },
+    {
+      "weapon": "Nova",
+      "name": "Hyper Beast",
+      "wear": "FT",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 14.77,
+      "case_type": "wildfire"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "The Traitor",
+      "wear": "MW",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 15.8,
+      "case_type": "snakebite"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 91.98,
+      "case_type": "esports_summer"
+    },
+    {
+      "weapon": "Falchion Knife",
+      "name": "Safari Mesh",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 98.45,
+      "case_type": "falchion"
+    },
+    {
+      "weapon": "Huntsman Knife",
+      "name": "Safari Mesh",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 95.48,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Night",
+      "wear": "MW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 93.92,
+      "case_type": "phoenix"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Urban Masked",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.0,
+      "case_type": "esports_winter"
+    },
+    {
+      "weapon": "Moto Gloves",
+      "name": "3rd Commando Company",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 78.27,
+      "case_type": "broken_fang"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Safari Mesh",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 90.57,
+      "case_type": "esports"
+    },
+    {
+      "weapon": "Survival Knife",
+      "name": "Urban Masked",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 95.54,
+      "case_type": "fracture"
+    },
+    {
+      "weapon": "Navaja Knife",
+      "name": "Safari Mesh",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 91.39,
+      "case_type": "danger_zone"
+    },
+    {
+      "weapon": "Driver Gloves",
+      "name": "Overtake",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 85.6,
+      "case_type": "clutch"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Wings",
+      "wear": "FN",
+      "rarity": "BLUE",
+      "stattrak": false,
+      "price": 32.34,
+      "case_type": "csgo"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Inheritance",
+      "wear": "WW",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 82.29,
+      "case_type": "kilowatt"
+    },
+    {
+      "weapon": "Navaja Knife",
+      "name": "Urban Masked",
+      "wear": "MW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 96.95,
+      "case_type": "horizon"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Frontside Misty",
+      "wear": "FN",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 67.0,
+      "case_type": "shadow"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 93.84,
+      "case_type": "winter_offensive"
+    },
+    {
+      "weapon": "Broken Fang Gloves",
+      "name": "Yellow-banded",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 73.0,
+      "case_type": "recoil"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Freehand",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.59,
+      "case_type": "gamma"
+    },
+    {
+      "weapon": "Broken Fang Gloves",
+      "name": "Yellow-banded",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 79.09,
+      "case_type": "snakebite"
+    },
+    {
+      "weapon": "Shadow Daggers",
+      "name": "Bright Water",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 90.71,
+      "case_type": "riptide"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Monster Mashup",
+      "wear": "FT",
+      "rarity": "PINK",
+      "stattrak": true,
+      "price": 27.53,
+      "case_type": "broken_fang"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 90.56,
+      "case_type": "esports"
+    },
+    {
+      "weapon": "Navaja Knife",
+      "name": "Stained",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 92.58,
+      "case_type": "danger_zone"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Night",
+      "wear": "BS",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 91.59,
+      "case_type": "phoenix"
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Cyrex",
+      "wear": "FT",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 17.0,
+      "case_type": "breakout"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Caiman",
+      "wear": "WW",
+      "rarity": "PINK",
+      "stattrak": true,
+      "price": 58.88,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "SG 553",
+      "name": "Colony IV",
+      "wear": "MW",
+      "rarity": "PINK",
+      "stattrak": true,
+      "price": 36.42,
+      "case_type": "shattered_web"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Nightwish",
+      "wear": "MW",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 13.86,
+      "case_type": "dreams_&_nightmares"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Caiman",
+      "wear": "FT",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 41.87,
+      "case_type": "huntsman"
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Guardian",
+      "wear": "WW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 15.93,
+      "case_type": "winter_offensive"
+    },
+    {
+      "weapon": "CZ75-Auto",
+      "name": "Victoria",
+      "wear": "FT",
+      "rarity": "RED",
+      "stattrak": true,
+      "price": 19.88,
+      "case_type": "csgo3"
+    },
+    {
+      "weapon": "Hand Wraps",
+      "name": "Desert Shamagh",
+      "wear": "MW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 98.26,
+      "case_type": "recoil"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Neo-Noir",
+      "wear": "FN",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 28.63,
+      "case_type": "spectrum"
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Chatterbox",
+      "wear": "WW",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 12.29,
+      "case_type": "chroma"
+    },
+    {
+      "weapon": "Dual Berettas",
+      "name": "Cobra Strike",
+      "wear": "FN",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 43.03,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Night",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 97.08,
+      "case_type": "bravo"
+    },
+    {
+      "weapon": "Bloodhound Gloves",
+      "name": "Snakebite",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 80.69,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "Shadow Daggers",
+      "name": "Black Laminate",
+      "wear": "MW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.45,
+      "case_type": "riptide"
+    },
+    {
+      "weapon": "Bloodhound Gloves",
+      "name": "Snakebite",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 80.69,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Urban Masked",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.0,
+      "case_type": "esports_summer"
+    },
+    {
+      "weapon": "Navaja Knife",
+      "name": "Blue Steel",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.39,
+      "case_type": "horizon"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Scorched",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.38,
+      "case_type": "vanguard"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "The Traitor",
+      "wear": "WW",
+      "rarity": "RED",
+      "stattrak": true,
+      "price": 24.28,
+      "case_type": "snakebite"
+    },
+    {
+      "weapon": "Zeus",
+      "name": "Olympus",
+      "wear": "MW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 10.0,
+      "case_type": "kilowatt"
+    },
+    {
+      "weapon": "Five-SeveN",
+      "name": "Hyper Beast",
+      "wear": "FT",
+      "rarity": "RED",
+      "stattrak": false,
+      "price": 22.85,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Point Disarray",
+      "wear": "FN",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 28.23,
+      "case_type": "revolver"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Night",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 97.08,
+      "case_type": "esports_winter"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Forest DDPAT",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.53,
+      "case_type": "winter_offensive"
+    },
+    {
+      "weapon": "Bloodhound Gloves",
+      "name": "Snakebite",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 80.69,
+      "case_type": "glove"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Forest DDPAT",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.0,
+      "case_type": "esports_summer"
+    },
+    {
+      "weapon": "Falchion Knife",
+      "name": "Safari Mesh",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 95.59,
+      "case_type": "falchion"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Redline",
+      "wear": "BS",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 16.79,
+      "case_type": "phoenix"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Night",
+      "wear": "FT",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 93.65,
+      "case_type": "csgo"
+    },
+    {
+      "weapon": "Galil",
+      "name": "Sugar Rush",
+      "wear": "MW",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 39.56,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Overgrowth",
+      "wear": "FT",
+      "rarity": "PURPLE",
+      "stattrak": false,
+      "price": 22.18,
+      "case_type": "bravo"
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Scorched",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 94.35,
+      "case_type": "phoenix"
+    },
+    {
+      "weapon": "Paracord Knife",
+      "name": "Urban Masked",
+      "wear": "WW",
+      "rarity": "GOLD",
+      "stattrak": false,
+      "price": 96.22,
+      "case_type": "shattered_web"
+    },
+    {
+      "weapon": "Galil",
+      "name": "Sugar Rush",
+      "wear": "BS",
+      "rarity": "PINK",
+      "stattrak": false,
+      "price": 31.15,
+      "case_type": "hydra"
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Cobalt Halftone",
+      "wear": "FT",
+      "price": 0.62,
+      "base_price": 0.62,
+      "rarity": "BLUE",
+      "case_type": "winter_offensive",
+      "stattrak": false,
+      "timestamp": 1736377537.7736554,
+      "float_value": 0.25034863
     }
   ],
-  "exp": 1950.8200000000004,
+  "exp": 1992.7200000000005,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -1129,7 +2075,7 @@
     "auto_clicker": 0,
     "combo_speed": 1,
     "critical_strike": 0,
-    "progress_per_click": 1,
+    "progress_per_click": 7,
     "case_quality": 1,
     "multi_open": 5
   },
@@ -1174,15 +2120,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 145,
+        "current_value": 172,
         "category": "cases",
-        "progress": 14.499999999999998
+        "progress": 17.2
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 145,
+    "total_cases_opened": 172,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,

@@ -812,68 +812,108 @@
                     let itemsToShow = items;
                     
                     // Special handling for glove cases
-                    if (grade === 'gold' && (caseType === 'hydra' || caseType === 'glove')) {
-                        const gloveImages = [
-                            'sportgloves_pandoras_box.png',
-                            'specialistgloves_emerald_web.png',
-                            'motogloves_spearmint.png',
-                            'handwraps_slaughter.png',
-                            'drivergloves_crimson_weave.png',
-                            'bloodhoundgloves_charred.png'
-                        ];
-                        
-                        const gloveNameMapping = {
-                            'sportgloves': 'Sport Gloves',
-                            'specialistgloves': 'Specialist Gloves',
-                            'motogloves': 'Moto Gloves',
-                            'handwraps': 'Hand Wraps',
-                            'drivergloves': 'Driver Gloves',
-                            'bloodhoundgloves': 'Bloodhound Gloves'
-                        };
-                        
-                        itemsToShow = gloveImages.map(image => {
-                            const gloveType = image.split('_')[0];
-                            const skinName = image.split('_')
-                                .slice(1)
-                                .join(' ')
-                                .replace('.png', '')
-                                .split(' ')
-                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(' ');
-                                
-                            return {
-                                weapon: gloveNameMapping[gloveType],
-                                name: skinName,
-                                image: image
+                    if (grade === 'gold') {
+                        // Special handling for glove cases
+                        if (caseType === 'hydra' || caseType === 'glove') {
+                            const gloveImages = [
+                                'sportgloves_pandoras_box.png',
+                                'specialistgloves_emerald_web.png',
+                                'motogloves_spearmint.png',
+                                'handwraps_slaughter.png',
+                                'drivergloves_crimson_weave.png',
+                                'bloodhoundgloves_charred.png'
+                            ];
+                            
+                            const gloveNameMapping = {
+                                'sportgloves': 'Sport Gloves',
+                                'specialistgloves': 'Specialist Gloves',
+                                'motogloves': 'Moto Gloves',
+                                'handwraps': 'Hand Wraps',
+                                'drivergloves': 'Driver Gloves',
+                                'bloodhoundgloves': 'Bloodhound Gloves'
                             };
-                        });
-                    }
-                    // Special handling for Revolution Case gloves
-                    else if (grade === 'gold' && (caseType === 'revolution' || caseType === 'clutch')) {
-                        // Get one of each glove type
-                        const gloveTypes = new Set();
-                        const uniqueGloves = [];
-                        
-                        items.forEach(item => {
-                            const gloveType = item.weapon;
-                            if (!gloveTypes.has(gloveType)) {
-                                gloveTypes.add(gloveType);
-                                uniqueGloves.push(item);
+                            
+                            itemsToShow = gloveImages.map(image => {
+                                const gloveType = image.split('_')[0];
+                                const skinName = image.split('_')
+                                    .slice(1)
+                                    .join(' ')
+                                    .replace('.png', '')
+                                    .split(' ')
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(' ');
+                                    
+                                return {
+                                    weapon: gloveNameMapping[gloveType],
+                                    name: skinName,
+                                    image: image
+                                };
+                            });
+                        }
+                        // Add new handling for Snakebite, Broken Fang and Recoil cases
+                        else if (caseType === 'snakebite' || caseType === 'broken_fang' || caseType === 'recoil') {
+                            const gloveImages = [
+                                'sportgloves_slingshot.png',
+                                'drivergloves_snow_leopard.png', 
+                                'brokenfanggloves_jade.png',
+                                'handwraps_caution.png',
+                                'specialistgloves_tiger_strike.png',
+                                'motogloves_finish_line.png'
+                            ];
+
+                            const gloveNameMapping = {
+                                'sportgloves': 'Sport Gloves',
+                                'drivergloves': 'Driver Gloves',
+                                'brokenfanggloves': 'Broken Fang Gloves',
+                                'handwraps': 'Hand Wraps',
+                                'specialistgloves': 'Specialist Gloves',
+                                'motogloves': 'Moto Gloves'
+                            };
+
+                            itemsToShow = gloveImages.map(image => {
+                                const gloveType = image.split('_')[0];
+                                const skinName = image.split('_')
+                                    .slice(1)
+                                    .join(' ')
+                                    .replace('.png', '')
+                                    .split(' ')
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(' ');
+                                    
+                                return {
+                                    weapon: gloveNameMapping[gloveType],
+                                    name: skinName,
+                                    image: image
+                                };
+                            });
+                        }
+                        // Special handling for Revolution Case gloves
+                        else if (caseType === 'revolution' || caseType === 'clutch') {
+                            // Get one of each glove type
+                            const gloveTypes = new Set();
+                            const uniqueGloves = [];
+                            
+                            items.forEach(item => {
+                                const gloveType = item.weapon;
+                                if (!gloveTypes.has(gloveType)) {
+                                    gloveTypes.add(gloveType);
+                                    uniqueGloves.push(item);
+                                }
+                            });
+                            
+                            itemsToShow = uniqueGloves;
+                        }
+                        // For gold rarity in other cases (knives), filter based on case type
+                        else {
+                            if (caseType === 'chroma' || caseType === 'chroma_2' || caseType === 'chroma_3') {
+                                itemsToShow = items.filter(item => item.name === 'Doppler');
+                            } else if (caseType === 'gamma' || caseType === 'gamma_2' || caseType === 'riptide' || caseType === 'dreams_&_nightmares') {
+                                itemsToShow = items.filter(item => item.name === 'Gamma Doppler');
+                            } else if (caseType === 'spectrum' || caseType === 'spectrum_2') {
+                                itemsToShow = items.filter(item => item.name === 'Doppler');
+                            } else {
+                                itemsToShow = items.filter(item => item.name === 'Vanilla');
                             }
-                        });
-                        
-                        itemsToShow = uniqueGloves;
-                    }
-                    // For gold rarity in other cases (knives), filter based on case type
-                    else if (grade === 'gold') {
-                        if (caseType === 'chroma' || caseType === 'chroma_2' || caseType === 'chroma_3') {
-                            itemsToShow = items.filter(item => item.name === 'Doppler');
-                        } else if (caseType === 'gamma' || caseType === 'gamma_2' || caseType === 'riptide' || caseType === 'dreams_&_nightmares') {
-                            itemsToShow = items.filter(item => item.name === 'Gamma Doppler');
-                        } else if (caseType === 'spectrum' || caseType === 'spectrum_2') {
-                            itemsToShow = items.filter(item => item.name === 'Doppler');
-                        } else {
-                            itemsToShow = items.filter(item => item.name === 'Vanilla');
                         }
                     }
                     

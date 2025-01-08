@@ -173,13 +173,19 @@ document.addEventListener('DOMContentLoaded', () => {
         div.dataset.itemData = JSON.stringify(item);
         
         const weaponName = item.weapon.toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .replace('galil ar', 'galil')
-            .replace('galilar', 'galil');
+            .replace(/-/g, '')
+            .replace(/broken fang gloves/i, 'brokenfanggloves')
+            .replace(/driver gloves/i, 'drivergloves')
+            .replace(/specialist gloves/i, 'specialistgloves')
+            .replace(/sport gloves/i, 'sportgloves')
+            .replace(/moto gloves/i, 'motogloves')
+            .replace(/hand wraps/i, 'handwraps')
+            .replace(/galil ar/, 'galil')
+            .replace(/galilar/, 'galil')
+            .replace(/ /g, '');
         const skinName = item.name.toLowerCase().replace(/ /g, '_');
         
-        const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1';
+        const casePath = CASE_SKINS_FOLDER_NAMES[item.case_type] || item.case_type;
         
         div.innerHTML = `
             <img class="item-image" src="/static/media/skins/${casePath}/${weaponName}_${skinName}.png" 

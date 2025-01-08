@@ -2947,10 +2947,14 @@ def auction():
                          debug=app.debug)
 
 def generate_auction_item():
-    """Generate a rare/valuable item for auction"""
+    """Generate a rare/valuable item for auction with balanced distribution"""
     try:
         # Load all case data
-        all_valuable_skins = []
+        weapon_skins = []  # Regular weapons (AK-47, M4A4, etc.)
+        knife_skins = []   # All knife skins
+        glove_skins = []   # All glove skins
+        
+        print("\nGenerating auction item...")
         
         # Get wear ranges from cases_prices_and_floats
         wear_ranges = {
@@ -2981,7 +2985,29 @@ def generate_auction_item():
                             if wear != 'NO' and not wear.startswith('ST_'):
                                 try:
                                     price_value = float(price)
-                                    if price_value >= 1000:  # Only include $1000+ skins
+                                    
+                                    # Categorize items by their rarity grade
+                                    is_knife = grade.upper() in ['GOLD', 'GOLD_KNIFE']
+                                    is_glove = grade.upper() == 'GOLD_GLOVE'
+                                    
+                                    # Only allow specific wear conditions and price thresholds
+                                    if is_knife:
+                                        # Knives: Only FN/ST FN over $1000
+                                        if wear != 'FN':
+                                            continue
+                                        threshold = 1000
+                                    elif is_glove:
+                                        # Gloves: Only MW/FN over $800
+                                        if wear not in ['FN', 'MW']:
+                                            continue
+                                        threshold = 800
+                                    else:
+                                        # Regular weapons: Only FN/ST FN over $250
+                                        if wear != 'FN':
+                                            continue
+                                        threshold = 250
+                                    
+                                    if price_value >= threshold:                                        
                                         # Generate float based on wear range
                                         wear_range = wear_ranges.get(wear)
                                         if not wear_range:
@@ -2989,7 +3015,6 @@ def generate_auction_item():
                                         
                                         # Generate a very good float for the wear range
                                         min_float, max_float = wear_range
-                                        # Use first 20% of the wear range for auction items
                                         float_range = max_float - min_float
                                         max_special = min_float + (float_range * 0.2)
                                         float_value = random.uniform(min_float, max_special)
@@ -3001,7 +3026,7 @@ def generate_auction_item():
                                             float_value
                                         )
                                         
-                                        all_valuable_skins.append({
+                                        item_data = {
                                             'weapon': skin['weapon'],
                                             'name': skin['name'],
                                             'wear': wear,
@@ -3012,13 +3037,22 @@ def generate_auction_item():
                                             'adjusted_price': adjusted_price,
                                             'stattrak': False,
                                             'image': image_path
-                                        })
+                                        }
                                         
-                                        # Also add StatTrak version if available
+                                        # Categorize the item based on rarity grade
+                                        if is_knife:
+                                            knife_skins.append(item_data)
+                                        elif is_glove:
+                                            glove_skins.append(item_data)
+                                        else:
+                                            weapon_skins.append(item_data)
+                                        
+                                        # Also add StatTrak version if available (only for weapons and knives)
                                         st_key = f'ST_{wear}'
-                                        if st_key in skin['prices']:
+                                        if st_key in skin['prices'] and not is_glove:
                                             st_price = float(skin['prices'][st_key])
-                                            if st_price >= 1000:
+                                            if st_price >= threshold:  # Use same threshold for StatTrak
+                                                print(f"Found StatTrak version: {skin['weapon']} | {skin['name']} ({wear}) - ${st_price}")
                                                 # Calculate StatTrak adjusted price
                                                 st_adjusted_price = adjust_price_by_float(
                                                     st_price,
@@ -3026,7 +3060,7 @@ def generate_auction_item():
                                                     float_value
                                                 )
                                                 
-                                                all_valuable_skins.append({
+                                                st_item_data = {
                                                     'weapon': skin['weapon'],
                                                     'name': skin['name'],
                                                     'wear': wear,
@@ -3037,19 +3071,58 @@ def generate_auction_item():
                                                     'adjusted_price': st_adjusted_price,
                                                     'stattrak': True,
                                                     'image': image_path
-                                                })
+                                                }
+                                                
+                                                if is_knife:
+                                                    knife_skins.append(st_item_data)
+                                                else:
+                                                    weapon_skins.append(st_item_data)
                                 except Exception as e:
                                     print(f"Error processing price: {e}")
                                     continue
         
-        if not all_valuable_skins:
+        # Ensure we have at least some items
+        if not any([weapon_skins, knife_skins, glove_skins]):
             raise ValueError("No valuable skins found")
             
-        # Select random valuable skin
-        return random.choice(all_valuable_skins)
+        # Select item type with balanced probability
+        available_types = []
+        if weapon_skins:
+            available_types.append(('weapon', weapon_skins))
+        if knife_skins:
+            available_types.append(('knife', knife_skins))
+        if glove_skins:
+            available_types.append(('glove', glove_skins))
+            
+        # Higher chance for weapons (60%) than knives (20%) or gloves (20%)
+        weights = []
+        for item_type, items in available_types:
+            if item_type == 'weapon':
+                weights.append(60)  # Increased from 40 to 60
+            else:
+                weights.append(20)  # Decreased from 30 to 20
+                
+        # Normalize weights if not all types are available
+        if weights:
+            total = sum(weights)
+            weights = [w/total for w in weights]
+            
+        # If weapons are available, force weapon selection 75% of the time
+        if any(t[0] == 'weapon' for t in available_types):
+            force_weapon = random.random() < 0.75
+            if force_weapon:
+                weapon_pool = next(pool for type_name, pool in available_types if type_name == 'weapon')
+                selected_item = random.choice(weapon_pool)
+                return selected_item
+            
+        # Otherwise use weighted selection
+        chosen_type, chosen_pool = random.choices(available_types, weights=weights)[0]
+        selected_item = random.choice(chosen_pool)
+        return selected_item
         
     except Exception as e:
         print(f"Error generating auction item: {e}")
+        traceback.print_exc()  # Add full traceback
         # Return a fallback item if something goes wrong
         return {
             'weapon': 'Karambit',

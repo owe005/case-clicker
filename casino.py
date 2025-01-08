@@ -1,7 +1,6 @@
 import json
 from config import CASE_FILE_MAPPING
 
-
 def find_best_skin_combination(available_skins, target_value, max_skins=10):
     """
     Find the best combination of skins closest to the target value.
