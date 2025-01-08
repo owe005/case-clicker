@@ -1,0 +1,1252 @@
+{
+    "name": "Danger Zone Case",
+    "image": "danger_zone_case.png",
+    "price": 1.10,
+    "skins": {
+        "gold": [
+            {
+                "weapon": "Talon Knife",
+                "name": "Fade",
+                "image": "talonknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 1140.00,
+                    "MW": 1137.61,
+                    "ST_FN": 1119.49,
+                    "ST_MW": 1124.43
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Safari Mesh",
+                "image": "talonknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 343.00,
+                    "MW": 261.51,
+                    "FT": 251.04,
+                    "WW": 251.54,
+                    "BS": 248.53,
+                    "ST_FN": 3755.10,
+                    "ST_MW": 272.98,
+                    "ST_FT": 245.73,
+                    "ST_WW": 328.78,
+                    "ST_BS": 273.11
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Fade",
+                "image": "stilettoknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 759.58,
+                    "MW": 788.90,
+                    "ST_FN": 707.37,
+                    "ST_MW": 705.46
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Vanilla",
+                "image": "stilettoknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 371.16,
+                    "ST_FN": 347.10
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Vanilla",
+                "image": "talonknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 462.93,
+                    "ST_FN": 454.74
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Crimson Web",
+                "image": "talonknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2184.82,
+                    "MW": 628.17,
+                    "FT": 426.74,
+                    "WW": 399.27,
+                    "BS": 354.37,
+                    "ST_FN": 17000.00,
+                    "ST_MW": 682.79,
+                    "ST_FT": 455.56,
+                    "ST_WW": 352.00,
+                    "ST_BS": 353.68
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Vanilla",
+                "image": "ursusknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 218.76,
+                    "ST_FN": 193.86
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Boreal Forest",
+                "image": "stilettoknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 242.73,
+                    "MW": 193.84,
+                    "FT": 174.13,
+                    "WW": 176.84,
+                    "BS": 172.75,
+                    "ST_FN": 500.00,
+                    "ST_MW": 196.09,
+                    "ST_FT": 173.33,
+                    "ST_WW": 174.31,
+                    "ST_BS": 175.47
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Stained",
+                "image": "talonknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 471.13,
+                    "MW": 399.43,
+                    "FT": 361.95,
+                    "WW": 337.98,
+                    "BS": 322.18,
+                    "ST_FN": 430.16,
+                    "ST_MW": 391.85,
+                    "ST_FT": 371.44,
+                    "ST_WW": 348.15,
+                    "ST_BS": 354.99
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Night Stripe",
+                "image": "talonknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 610.00,
+                    "MW": 344.86,
+                    "FT": 301.00,
+                    "WW": 285.27,
+                    "BS": 270.37,
+                    "ST_FN": 576.00,
+                    "ST_MW": 339.76,
+                    "ST_FT": 311.63,
+                    "ST_WW": 300.43,
+                    "ST_BS": 270.22
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Boreal Forest",
+                "image": "talonknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 381.27,
+                    "MW": 296.33,
+                    "FT": 255.76,
+                    "WW": 252.43,
+                    "BS": 241.14,
+                    "ST_FN": 550.00,
+                    "ST_MW": 320.91,
+                    "ST_FT": 258.09,
+                    "ST_WW": 286.38,
+                    "ST_BS": 250.00
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Vanilla",
+                "image": "navajaknife_vanilla.png",
+                "grade": "gold",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 132.41,
+                    "ST_FN": 108.00
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Night Stripe",
+                "image": "navajaknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 129.41,
+                    "MW": 93.29,
+                    "FT": 92.40,
+                    "WW": 91.58,
+                    "BS": 92.00,
+                    "ST_FN": 217.12,
+                    "ST_MW": 95.25,
+                    "ST_FT": 93.00,
+                    "ST_WW": 109.24,
+                    "ST_BS": 110.03
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Case Hardened",
+                "image": "navajaknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 180.68,
+                    "MW": 139.63,
+                    "FT": 111.71,
+                    "WW": 107.34,
+                    "BS": 103.72,
+                    "ST_FN": 273.11,
+                    "ST_MW": 156.83,
+                    "ST_FT": 131.84,
+                    "ST_WW": 128.16,
+                    "ST_BS": 121.52
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Blue Steel",
+                "image": "talonknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 580.37,
+                    "MW": 490.00,
+                    "FT": 453.76,
+                    "WW": 421.96,
+                    "BS": 423.33,
+                    "ST_FN": 699.00,
+                    "ST_MW": 477.89,
+                    "ST_FT": 474.00,
+                    "ST_WW": 443.21,
+                    "ST_BS": 422.09
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Crimson Web",
+                "image": "stilettoknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1351.66,
+                    "MW": 464.43,
+                    "FT": 345.00,
+                    "WW": 305.00,
+                    "BS": 260.14,
+                    "ST_FN": 4750.00,
+                    "ST_MW": 443.68,
+                    "ST_FT": 339.69,
+                    "ST_WW": 297.77,
+                    "ST_BS": 279.26
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Case Hardened",
+                "image": "stilettoknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 524.93,
+                    "MW": 390.60,
+                    "FT": 344.35,
+                    "WW": 296.03,
+                    "BS": 277.35,
+                    "ST_FN": 515.78,
+                    "ST_MW": 378.74,
+                    "ST_FT": 333.91,
+                    "ST_WW": 300.43,
+                    "ST_BS": 339.34
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Forest DDPAT",
+                "image": "ursusknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 160.24,
+                    "MW": 113.48,
+                    "FT": 108.97,
+                    "WW": 106.67,
+                    "BS": 103.78,
+                    "ST_FN": 5000.00,
+                    "ST_MW": 119.25,
+                    "ST_FT": 109.24,
+                    "ST_WW": 122.90,
+                    "ST_BS": 107.13
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Slaughter",
+                "image": "ursusknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 307.05,
+                    "MW": 275.50,
+                    "FT": 269.56,
+                    "ST_FN": 350.98,
+                    "ST_MW": 273.05,
+                    "ST_FT": 286.77
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Crimson Web",
+                "image": "navajaknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 353.41,
+                    "MW": 118.37,
+                    "FT": 98.32,
+                    "WW": 101.93,
+                    "BS": 96.26,
+                    "ST_FN": 3500.00,
+                    "ST_MW": 144.11,
+                    "ST_FT": 108.49,
+                    "ST_WW": 224.89,
+                    "ST_BS": 99.68
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Stained",
+                "image": "navajaknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 124.72,
+                    "MW": 95.43,
+                    "FT": 93.50,
+                    "WW": 92.58,
+                    "BS": 92.28,
+                    "ST_FN": 172.88,
+                    "ST_MW": 95.59,
+                    "ST_FT": 110.41,
+                    "ST_WW": 115.80,
+                    "ST_BS": 106.03
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Blue Steel",
+                "image": "navajaknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 111.70,
+                    "MW": 96.54,
+                    "FT": 95.27,
+                    "WW": 94.39,
+                    "BS": 92.23,
+                    "ST_FN": 230.51,
+                    "ST_MW": 101.73,
+                    "ST_FT": 102.41,
+                    "ST_WW": 99.40,
+                    "ST_BS": 95.31
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Forest DDPAT",
+                "image": "navajaknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 111.00,
+                    "MW": 92.99,
+                    "FT": 91.49,
+                    "WW": 93.06,
+                    "BS": 93.06,
+                    "ST_FN": 649.00,
+                    "ST_MW": 95.59,
+                    "ST_FT": 92.58,
+                    "ST_WW": 96.28,
+                    "ST_BS": 95.15
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Blue Steel",
+                "image": "ursusknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 223.95,
+                    "MW": 167.55,
+                    "FT": 147.28,
+                    "WW": 136.55,
+                    "BS": 138.33,
+                    "ST_FN": 245.80,
+                    "ST_MW": 165.23,
+                    "ST_FT": 144.55,
+                    "ST_WW": 131.83,
+                    "ST_BS": 139.29
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Scorched",
+                "image": "navajaknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 121.75,
+                    "MW": 93.37,
+                    "FT": 91.39,
+                    "WW": 90.72,
+                    "BS": 90.13,
+                    "ST_FN": 465.00,
+                    "ST_MW": 95.45,
+                    "ST_FT": 93.33,
+                    "ST_WW": 224.20,
+                    "ST_BS": 97.45
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Slaughter",
+                "image": "navajaknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 138.02,
+                    "MW": 127.28,
+                    "FT": 125.63,
+                    "ST_FN": 155.98,
+                    "ST_MW": 141.88,
+                    "ST_FT": 125.99
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Safari Mesh",
+                "image": "navajaknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 130.95,
+                    "MW": 92.19,
+                    "FT": 91.30,
+                    "WW": 91.78,
+                    "BS": 91.39,
+                    "ST_FN": 571.78,
+                    "ST_MW": 95.83,
+                    "ST_FT": 92.88,
+                    "ST_WW": 100.00,
+                    "ST_BS": 96.00
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Urban Masked",
+                "image": "navajaknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 154.03,
+                    "MW": 96.95,
+                    "FT": 91.00,
+                    "WW": 94.18,
+                    "BS": 93.20,
+                    "ST_FN": 507.32,
+                    "ST_MW": 99.46,
+                    "ST_FT": 95.59,
+                    "ST_WW": 112.50,
+                    "ST_BS": 93.14
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Scorched",
+                "image": "talonknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 368.57,
+                    "MW": 298.57,
+                    "FT": 264.92,
+                    "WW": 256.73,
+                    "BS": 252.43,
+                    "ST_FN": 899.00,
+                    "ST_MW": 314.08,
+                    "ST_FT": 265.33,
+                    "ST_WW": 437.00,
+                    "ST_BS": 273.11
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Urban Masked",
+                "image": "ursusknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 275.00,
+                    "MW": 121.53,
+                    "FT": 111.96,
+                    "WW": 110.20,
+                    "BS": 102.05,
+                    "ST_FN": 360.00,
+                    "ST_MW": 129.73,
+                    "ST_FT": 111.97,
+                    "ST_WW": 114.71,
+                    "ST_BS": 109.93
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Night Stripe",
+                "image": "ursusknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 256.27,
+                    "MW": 126.04,
+                    "FT": 117.23,
+                    "WW": 112.32,
+                    "BS": 109.24,
+                    "ST_FN": 267.00,
+                    "ST_MW": 139.29,
+                    "ST_FT": 120.00,
+                    "ST_WW": 116.07,
+                    "ST_BS": 110.61
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Stained",
+                "image": "stilettoknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 340.12,
+                    "MW": 288.36,
+                    "FT": 268.33,
+                    "WW": 234.88,
+                    "BS": 226.14,
+                    "ST_FN": 361.74,
+                    "ST_MW": 286.77,
+                    "ST_FT": 252.63,
+                    "ST_WW": 234.17,
+                    "ST_BS": 218.49
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Scorched",
+                "image": "ursusknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 162.23,
+                    "MW": 113.33,
+                    "FT": 109.11,
+                    "WW": 103.03,
+                    "BS": 104.46,
+                    "ST_FN": 1000.00,
+                    "ST_MW": 136.55,
+                    "ST_FT": 110.61,
+                    "ST_WW": 116.07,
+                    "ST_BS": 100.00
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Fade",
+                "image": "navajaknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 189.92,
+                    "MW": 199.90,
+                    "ST_FN": 204.83,
+                    "ST_MW": 217.13
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Scorched",
+                "image": "stilettoknife_scorched.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 300.29,
+                    "MW": 215.67,
+                    "FT": 193.15,
+                    "WW": 191.18,
+                    "BS": 186.86,
+                    "ST_FN": 447.07,
+                    "ST_MW": 246.21,
+                    "ST_FT": 202.85,
+                    "ST_WW": 259.58,
+                    "ST_BS": 188.45
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Stained",
+                "image": "ursusknife_stained.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 180.61,
+                    "MW": 133.00,
+                    "FT": 127.87,
+                    "WW": 119.21,
+                    "BS": 115.39,
+                    "ST_FN": 218.35,
+                    "ST_MW": 137.47,
+                    "ST_FT": 129.04,
+                    "ST_WW": 117.44,
+                    "ST_BS": 123.15
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Safari Mesh",
+                "image": "ursusknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 252.30,
+                    "MW": 111.70,
+                    "FT": 107.60,
+                    "WW": 104.46,
+                    "BS": 105.08,
+                    "ST_FN": 622.34,
+                    "ST_MW": 116.07,
+                    "ST_FT": 98.48,
+                    "ST_WW": 105.76,
+                    "ST_BS": 97.97
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Boreal Forest",
+                "image": "ursusknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 197.62,
+                    "MW": 114.29,
+                    "FT": 108.72,
+                    "WW": 101.62,
+                    "BS": 102.00,
+                    "ST_FN": 443.00,
+                    "ST_MW": 113.43,
+                    "ST_FT": 106.51,
+                    "ST_WW": 116.07,
+                    "ST_BS": 111.95
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Urban Masked",
+                "image": "talonknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 409.67,
+                    "MW": 310.00,
+                    "FT": 277.00,
+                    "WW": 263.56,
+                    "BS": 252.63,
+                    "ST_FN": 550.00,
+                    "ST_MW": 291.98,
+                    "ST_FT": 278.98,
+                    "ST_WW": 270.00,
+                    "ST_BS": 260.82
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Forest DDPAT",
+                "image": "talonknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 440.00,
+                    "MW": 298.38,
+                    "FT": 261.24,
+                    "WW": 252.56,
+                    "BS": 246.04,
+                    "ST_FN": 3208.08,
+                    "ST_MW": 286.77,
+                    "ST_FT": 259.25,
+                    "ST_WW": 257.41,
+                    "ST_BS": 253.32
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Case Hardened",
+                "image": "talonknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 826.05,
+                    "MW": 564.78,
+                    "FT": 498.44,
+                    "WW": 421.36,
+                    "BS": 411.09,
+                    "ST_FN": 1252.25,
+                    "ST_MW": 573.41,
+                    "ST_FT": 504.99,
+                    "ST_WW": 450.30,
+                    "ST_BS": 399.37
+                }
+            },
+            {
+                "weapon": "Talon Knife",
+                "name": "Slaughter",
+                "image": "talonknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 798.87,
+                    "MW": 665.00,
+                    "FT": 593.83,
+                    "ST_FN": 790.40,
+                    "ST_MW": 682.66,
+                    "ST_FT": 614.45
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Crimson Web",
+                "image": "ursusknife_crimson_web.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1207.00,
+                    "MW": 303.16,
+                    "FT": 218.29,
+                    "WW": 196.64,
+                    "BS": 169.19,
+                    "ST_FN": 8500.00,
+                    "ST_MW": 320.91,
+                    "ST_FT": 209.45,
+                    "ST_WW": 197.31,
+                    "ST_BS": 187.63
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Case Hardened",
+                "image": "ursusknife_case_hardened.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 324.50,
+                    "MW": 207.48,
+                    "FT": 174.46,
+                    "WW": 158.85,
+                    "BS": 151.73,
+                    "ST_FN": 725.00,
+                    "ST_MW": 225.49,
+                    "ST_FT": 189.34,
+                    "ST_WW": 180.39,
+                    "ST_BS": 179.99
+                }
+            },
+            {
+                "weapon": "Ursus Knife",
+                "name": "Fade",
+                "image": "ursusknife_fade.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 454.83,
+                    "MW": 484.10,
+                    "ST_FN": 457.47,
+                    "ST_MW": 494.45
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Urban Masked",
+                "image": "stilettoknife_urban_masked.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 300.43,
+                    "MW": 219.99,
+                    "FT": 204.83,
+                    "WW": 191.11,
+                    "BS": 182.76,
+                    "ST_FN": 3000.00,
+                    "ST_MW": 237.61,
+                    "ST_FT": 198.01,
+                    "ST_WW": 189.35,
+                    "ST_BS": 188.45
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Night Stripe",
+                "image": "stilettoknife_night_stripe.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 375.53,
+                    "MW": 231.80,
+                    "FT": 210.58,
+                    "WW": 196.99,
+                    "BS": 192.54,
+                    "ST_FN": 1500.00,
+                    "ST_MW": 229.83,
+                    "ST_FT": 208.93,
+                    "ST_WW": 204.77,
+                    "ST_BS": 196.64
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Safari Mesh",
+                "image": "stilettoknife_safari_mesh.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 309.57,
+                    "MW": 183.99,
+                    "FT": 176.73,
+                    "WW": 172.06,
+                    "BS": 165.57,
+                    "ST_FN": 299.99,
+                    "ST_MW": 218.49,
+                    "ST_FT": 173.45,
+                    "ST_WW": 220.29,
+                    "ST_BS": 164.78
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Forest DDPAT",
+                "image": "stilettoknife_forest_ddpat.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 257.82,
+                    "MW": 197.19,
+                    "FT": 177.09,
+                    "WW": 177.52,
+                    "BS": 172.06,
+                    "ST_FN": 500.00,
+                    "ST_MW": 195.99,
+                    "ST_FT": 181.62,
+                    "ST_WW": 201.59,
+                    "ST_BS": 177.32
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Blue Steel",
+                "image": "stilettoknife_blue_steel.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 389.19,
+                    "MW": 323.44,
+                    "FT": 306.30,
+                    "WW": 275.16,
+                    "BS": 277.21,
+                    "ST_FN": 382.36,
+                    "ST_MW": 306.44,
+                    "ST_FT": 290.18,
+                    "ST_WW": 270.31,
+                    "ST_BS": 270.32
+                }
+            },
+            {
+                "weapon": "Stiletto Knife",
+                "name": "Slaughter",
+                "image": "stilettoknife_slaughter.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 559.21,
+                    "MW": 499.79,
+                    "FT": 488.47,
+                    "ST_FN": 539.95,
+                    "ST_MW": 505.27,
+                    "ST_FT": 477.89
+                }
+            },
+            {
+                "weapon": "Navaja Knife",
+                "name": "Boreal Forest",
+                "image": "navajaknife_boreal_forest.png",
+                "grade": "gold",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 129.73,
+                    "MW": 94.77,
+                    "FT": 92.74,
+                    "WW": 92.87,
+                    "BS": 90.73,
+                    "ST_FN": 240.00,
+                    "ST_MW": 97.87,
+                    "ST_FT": 92.99,
+                    "ST_WW": 109.15,
+                    "ST_BS": 92.56
+                }
+            }
+        ],
+        "red": [
+            {
+                "weapon": "AK-47",
+                "name": "Asiimov",
+                "image": "ak47_asiimov.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 162.54,
+                    "MW": 57.37,
+                    "FT": 25.82,
+                    "WW": 26.69,
+                    "BS": 23.11,
+                    "ST_FN": 372.00,
+                    "ST_MW": 98.68,
+                    "ST_FT": 50.14,
+                    "ST_WW": 59.90,
+                    "ST_BS": 50.74
+                }
+            },
+            {
+                "weapon": "AWP",
+                "name": "Neo-Noir",
+                "image": "awp_neo-noir.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 27.05,
+                    "MW": 22.64,
+                    "FT": 19.11,
+                    "WW": 19.09,
+                    "BS": 20.18,
+                    "ST_FN": 74.99,
+                    "ST_MW": 57.59,
+                    "ST_FT": 43.20,
+                    "ST_WW": 43.68,
+                    "ST_BS": 43.80
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "Desert Eagle",
+                "name": "Mecha Industries",
+                "image": "deserteagle_mecha_industries.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 8.15,
+                    "MW": 5.47,
+                    "FT": 3.58,
+                    "WW": 3.64,
+                    "BS": 3.40,
+                    "ST_FN": 18.44,
+                    "ST_MW": 11.84,
+                    "ST_FT": 8.19,
+                    "ST_WW": 8.97,
+                    "ST_BS": 7.40
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Momentum",
+                "image": "ump45_momentum.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 8.02,
+                    "MW": 5.06,
+                    "FT": 3.28,
+                    "WW": 2.95,
+                    "BS": 2.99,
+                    "ST_FN": 16.16,
+                    "ST_MW": 9.02,
+                    "ST_FT": 5.98,
+                    "ST_WW": 5.64,
+                    "ST_BS": 6.69
+                }
+            },
+            {
+                "weapon": "MP5",
+                "name": "Phosphor",
+                "image": "mp5_phosphor.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 8.00,
+                    "MW": 5.13,
+                    "FT": 2.08,
+                    "WW": 3.07,
+                    "BS": 2.74,
+                    "ST_FN": 15.13,
+                    "ST_MW": 9.19,
+                    "ST_FT": 5.70,
+                    "ST_WW": 6.32,
+                    "ST_BS": 4.55
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "USP-S",
+                "name": "Flashback",
+                "image": "usps_flashback.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.17,
+                    "MW": 0.72,
+                    "FT": 0.48,
+                    "WW": 0.53,
+                    "BS": 0.59,
+                    "ST_FN": 2.88,
+                    "ST_MW": 1.59,
+                    "ST_FT": 1.12,
+                    "ST_WW": 1.33,
+                    "ST_BS": 2.05
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Nevermore",
+                "image": "p250_nevermore.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 1.37,
+                    "MW": 0.79,
+                    "FT": 0.61,
+                    "WW": 0.93,
+                    "ST_FN": 3.24,
+                    "ST_MW": 1.55,
+                    "ST_FT": 1.12,
+                    "ST_WW": 2.04
+                }
+            },
+            {
+                "weapon": "Galil",
+                "name": "Signal",
+                "image": "galil_signal.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.24,
+                    "MW": 0.72,
+                    "FT": 0.48,
+                    "WW": 0.51,
+                    "BS": 0.44,
+                    "ST_FN": 3.18,
+                    "ST_MW": 1.66,
+                    "ST_FT": 0.95,
+                    "ST_WW": 1.27,
+                    "ST_BS": 1.03
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Pipe Down",
+                "image": "mac10_pipe_down.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.69,
+                    "MW": 0.75,
+                    "FT": 0.38,
+                    "WW": 0.33,
+                    "BS": 0.32,
+                    "ST_FN": 4.77,
+                    "ST_MW": 1.49,
+                    "ST_FT": 0.69,
+                    "ST_WW": 0.60,
+                    "ST_BS": 0.57
+                }
+            },
+            {
+                "weapon": "G3SG1",
+                "name": "Scavenger",
+                "image": "g3sg1_scavenger.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.29,
+                    "MW": 0.72,
+                    "FT": 0.42,
+                    "WW": 0.38,
+                    "BS": 0.31,
+                    "ST_FN": 2.52,
+                    "ST_MW": 1.22,
+                    "ST_FT": 0.78,
+                    "ST_WW": 0.71,
+                    "ST_BS": 0.56
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "M4A4",
+                "name": "Magnesium",
+                "image": "m4a4_magnesium.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.93,
+                    "MW": 0.48,
+                    "FT": 0.17,
+                    "WW": 0.07,
+                    "BS": 0.07,
+                    "ST_FN": 6.81,
+                    "ST_MW": 1.74,
+                    "ST_FT": 0.78,
+                    "ST_WW": 0.49,
+                    "ST_BS": 0.45
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Oxide Blaze",
+                "image": "glock18_oxide_blaze.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.31,
+                    "MW": 0.11,
+                    "FT": 0.07,
+                    "WW": 0.09,
+                    "BS": 0.05,
+                    "ST_FN": 1.35,
+                    "ST_MW": 0.34,
+                    "ST_FT": 0.15,
+                    "ST_WW": 0.25,
+                    "ST_BS": 0.15
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Modest Threat",
+                "image": "mp9_modest_threat.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.23,
+                    "MW": 0.11,
+                    "FT": 0.07,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "ST_FN": 0.92,
+                    "ST_MW": 0.39,
+                    "ST_FT": 0.14,
+                    "ST_WW": 0.27,
+                    "ST_BS": 0.12
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Danger Close",
+                "image": "sg553_danger_close.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.22,
+                    "MW": 0.09,
+                    "FT": 0.06,
+                    "WW": 0.06,
+                    "BS": 0.04,
+                    "ST_FN": 0.72,
+                    "ST_MW": 0.26,
+                    "ST_FT": 0.12,
+                    "ST_WW": 0.11,
+                    "ST_BS": 0.09
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Wood Fired",
+                "image": "nova_wood_fired.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.22,
+                    "MW": 0.09,
+                    "FT": 0.05,
+                    "WW": 0.06,
+                    "BS": 0.04,
+                    "ST_FN": 0.62,
+                    "ST_MW": 0.31,
+                    "ST_FT": 0.11,
+                    "ST_WW": 0.13,
+                    "ST_BS": 0.09
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Fubar",
+                "image": "tec9_fubar.png",
+                "grade": "blue",
+                "valid_wears": ["MW", "FT", "WW", "BS"],
+                "prices": {
+                    "MW": 0.67,
+                    "FT": 0.06,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "ST_MW": 2.03,
+                    "ST_FT": 0.12,
+                    "ST_WW": 0.09,
+                    "ST_BS": 0.08
+                }
+            },
+            {
+                "weapon": "Sawed-Off",
+                "name": "Black Sand",
+                "image": "sawedoff_black_sand.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.21,
+                    "MW": 0.11,
+                    "FT": 0.06,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "ST_FN": 0.66,
+                    "ST_MW": 0.24,
+                    "ST_FT": 0.11,
+                    "ST_WW": 0.08,
+                    "ST_BS": 0.08
+                }
+            }
+        ]
+    }
+}

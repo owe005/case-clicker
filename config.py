@@ -108,7 +108,10 @@ CASE_FILE_MAPPING = {
     'glove': 'glove_case',
     'spectrum': 'spectrum_case',
     'spectrum_2': 'spectrum_2_case',
-    'clutch': 'clutch_case'
+    'clutch': 'clutch_case',
+    'cs20': 'cs20_case',
+    'danger_zone': 'danger_zone_case',
+    'horizon': 'horizon_case'
 }
 
 CASE_TYPES = [
@@ -138,7 +141,10 @@ CASE_TYPES = [
     'glove',
     'spectrum',
     'spectrum_2',
-    'clutch'
+    'clutch',
+    'cs20',
+    'danger_zone',
+    'horizon'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -168,7 +174,10 @@ CASE_SKINS_FOLDER_NAMES = {
     'glove': 'glove_case',
     'spectrum': 'spectrum_case',
     'spectrum_2': 'spectrum_2_case',
-    'clutch': 'clutch_case'
+    'clutch': 'clutch_case',
+    'cs20': 'cs20_case',
+    'danger_zone': 'danger_zone_case',
+    'horizon': 'horizon_case'
 }
 
 CASE_DATA = {
@@ -333,6 +342,24 @@ CASE_DATA = {
         'image': 'clutch_case.png',
         'is_case': True,
         'type': 'clutch'
+    },
+    'cs20': {
+        'name': 'CS20 Case',
+        'image': 'cs20_case.png',
+        'is_case': True,
+        'type': 'cs20'
+    },
+    'danger_zone': {
+        'name': 'Danger Zone Case',
+        'image': 'danger_zone_case.png',
+        'is_case': True,
+        'type': 'danger_zone'
+    },
+    'horizon': {
+        'name': 'Horizon Case',
+        'image': 'horizon_case.png',
+        'is_case': True,
+        'type': 'horizon'
     }
 }
 

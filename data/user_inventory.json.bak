@@ -1,6 +1,201 @@
 {
-  "balance": 19507.837499999998,
+  "balance": 19475.337499999998,
   "inventory": [
+    {
+      "weapon": "G3SG1",
+      "name": "High Seas",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.71,
+      "timestamp": 1736317945.7040215,
+      "case_type": "horizon",
+      "float_value": 0.06153638,
+      "is_case": false,
+      "base_price": 2.71
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Snek-9",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.05879999999999999,
+      "timestamp": 1736317945.7040215,
+      "case_type": "horizon",
+      "float_value": 0.94761445,
+      "is_case": false,
+      "base_price": 0.08399999999999999
+    },
+    {
+      "weapon": "Nova",
+      "name": "Toy Soldier",
+      "rarity": "PURPLE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 2.69,
+      "timestamp": 1736317945.7040215,
+      "case_type": "horizon",
+      "float_value": 0.02917408,
+      "is_case": false,
+      "base_price": 2.69
+    },
+    {
+      "weapon": "AUG",
+      "name": "Amber Slipstream",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.32,
+      "timestamp": 1736317945.703021,
+      "case_type": "horizon",
+      "float_value": 0.02418048,
+      "is_case": false,
+      "base_price": 0.32
+    },
+    {
+      "weapon": "MP9",
+      "name": "Capillary",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": true,
+      "price": 0.39,
+      "timestamp": 1736317945.703021,
+      "case_type": "horizon",
+      "float_value": 0.35710456,
+      "is_case": false,
+      "base_price": 0.39
+    },
+    {
+      "weapon": "G3SG1",
+      "name": "Scavenger",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.38,
+      "timestamp": 1736317425.6670132,
+      "case_type": "danger_zone",
+      "float_value": 0.43476057,
+      "is_case": false,
+      "base_price": 0.38
+    },
+    {
+      "weapon": "M4A4",
+      "name": "Magnesium",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.07,
+      "timestamp": 1736317425.6670132,
+      "case_type": "danger_zone",
+      "float_value": 0.74843892,
+      "is_case": false,
+      "base_price": 0.07
+    },
+    {
+      "weapon": "Sawed-Off",
+      "name": "Black Sand",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736317425.6650045,
+      "case_type": "danger_zone",
+      "float_value": 0.63234639,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Fubar",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.67,
+      "timestamp": 1736317425.6650045,
+      "case_type": "danger_zone",
+      "float_value": 0.10283633,
+      "is_case": false,
+      "base_price": 0.67
+    },
+    {
+      "weapon": "Nova",
+      "name": "Wood Fired",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.264,
+      "timestamp": 1736317425.664005,
+      "case_type": "danger_zone",
+      "float_value": 0.00141321,
+      "is_case": false,
+      "base_price": 0.264
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Flash Out",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.06999999999999999,
+      "timestamp": 1736315678.8684525,
+      "case_type": "cs20",
+      "float_value": 0.95199665,
+      "is_case": false,
+      "base_price": 0.06999999999999999
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Flash Out",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.25,
+      "timestamp": 1736315678.8674524,
+      "case_type": "cs20",
+      "float_value": 0.05448785,
+      "is_case": false,
+      "base_price": 0.25
+    },
+    {
+      "weapon": "SCAR-20",
+      "name": "Assault",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.2,
+      "timestamp": 1736315678.8674524,
+      "case_type": "cs20",
+      "float_value": 0.05811715,
+      "is_case": false,
+      "base_price": 0.2
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Flash Out",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.1,
+      "timestamp": 1736315678.8674524,
+      "case_type": "cs20",
+      "float_value": 0.46861639,
+      "is_case": false,
+      "base_price": 0.1
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Flash Out",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": true,
+      "price": 0.16,
+      "timestamp": 1736315678.8674524,
+      "case_type": "cs20",
+      "float_value": 0.32372905,
+      "is_case": false,
+      "base_price": 0.16
+    },
     {
       "weapon": "Five-SeveN",
       "name": "Flame Test",
@@ -11,7 +206,8 @@
       "timestamp": 1736229217.4151647,
       "case_type": "clutch",
       "float_value": 0.43850029,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.2
     },
     {
       "weapon": "UMP-45",
@@ -23,7 +219,8 @@
       "timestamp": 1736229217.4141645,
       "case_type": "clutch",
       "float_value": 0.94289923,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.161
     },
     {
       "weapon": "P2000",
@@ -35,7 +232,8 @@
       "timestamp": 1736229217.4141645,
       "case_type": "clutch",
       "float_value": 0.0448562,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.19
     },
     {
       "weapon": "MP9",
@@ -47,7 +245,8 @@
       "timestamp": 1736229217.4141645,
       "case_type": "clutch",
       "float_value": 0.69284768,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.03
     },
     {
       "weapon": "PP-Bizon",
@@ -59,7 +258,8 @@
       "timestamp": 1736229217.4131644,
       "case_type": "clutch",
       "float_value": 0.13723567,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.2
     },
     {
       "weapon": "G3SG1",
@@ -694,9 +894,16 @@
       "is_case": true,
       "type": "clutch",
       "quantity": 4
+    },
+    {
+      "name": "Horizon Case",
+      "image": "horizon_case.png",
+      "is_case": true,
+      "type": "horizon",
+      "quantity": 10
     }
   ],
-  "exp": 1916.8200000000004,
+  "exp": 1934.3200000000004,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -749,15 +956,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 115,
+        "current_value": 130,
         "category": "cases",
-        "progress": 11.5
+        "progress": 13.0
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 115,
+    "total_cases_opened": 130,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,
