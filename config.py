@@ -120,7 +120,9 @@ CASE_FILE_MAPPING = {
     'kilowatt': 'kilowatt_case',
     'recoil': 'recoil_case',
     'snakebite': 'snakebite_case',
-    'broken_fang': 'operation_broken_fang_case'
+    'broken_fang': 'operation_broken_fang_case',
+    'prisma': 'prisma_case',
+    'prisma_2': 'prisma_2_case'
 }
 
 CASE_TYPES = [
@@ -162,7 +164,9 @@ CASE_TYPES = [
     'kilowatt',
     'recoil',
     'snakebite',
-    'broken_fang'
+    'broken_fang',
+    'prisma',
+    'prisma_2'
 ]
 
 CASE_SKINS_FOLDER_NAMES = {
@@ -204,7 +208,9 @@ CASE_SKINS_FOLDER_NAMES = {
     'kilowatt': 'kilowatt_case',
     'recoil': 'recoil_case',
     'snakebite': 'snakebite_case',
-    'broken_fang': 'operation_broken_fang_case'
+    'broken_fang': 'operation_broken_fang_case',
+    'prisma': 'prisma_case',
+    'prisma_2': 'prisma_2_case'
 }
 
 CASE_DATA = {
@@ -441,6 +447,18 @@ CASE_DATA = {
         'image': 'operation_broken_fang_case.png',
         'is_case': True,
         'type': 'broken_fang'
+    },
+    'prisma': {
+        'name': 'Prisma Case',
+        'image': 'prisma_case.png',
+        'is_case': True,
+        'type': 'prisma'
+    },
+    'prisma_2': {
+        'name': 'Prisma 2 Case',
+        'image': 'prisma_2_case.png',
+        'is_case': True,
+        'type': 'prisma_2'
     }
 }
 

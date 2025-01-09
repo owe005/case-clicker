@@ -1,6 +1,312 @@
 {
-  "balance": 4756.585499999963,
+  "balance": 4731.585499999963,
   "inventory": [
+    {
+      "weapon": "FAMAS",
+      "name": "Crypsis",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.12,
+      "timestamp": 1736404716.893998,
+      "case_type": "prisma",
+      "float_value": 0.21882157,
+      "is_case": false
+    },
+    {
+      "weapon": "Galil AR",
+      "name": "Akoben",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.12,
+      "timestamp": 1736404716.893998,
+      "case_type": "prisma",
+      "float_value": 0.37648718,
+      "is_case": false
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Uncharted",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": true,
+      "price": 2.35,
+      "timestamp": 1736404716.893998,
+      "case_type": "prisma",
+      "float_value": 0.38396864,
+      "is_case": false
+    },
+    {
+      "weapon": "P250",
+      "name": "Verdigris",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.22,
+      "timestamp": 1736404716.8930423,
+      "case_type": "prisma",
+      "float_value": 0.12919485,
+      "is_case": false
+    },
+    {
+      "weapon": "P90",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.13,
+      "timestamp": 1736404716.8930423,
+      "case_type": "prisma",
+      "float_value": 0.38873469,
+      "is_case": false
+    },
+    {
+      "weapon": "PP-Bizon",
+      "name": "Cobalt Halftone",
+      "wear": "FT",
+      "price": 0.62,
+      "base_price": 0.62,
+      "rarity": "BLUE",
+      "case_type": "winter_offensive",
+      "stattrak": false,
+      "timestamp": 1736377537.7736554,
+      "float_value": 0.25034863
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.6596231,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.4966457,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.3341038,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377459.0348754,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.7002466,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.3770635,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377458.0419421,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.7127955,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.3837473,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.1901417,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377457.0254238,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.863247,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.6940548,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.5319598,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.3642428,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.1977549,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377456.0368388,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
+    {
+      "weapon": "Gut Knife",
+      "name": "Boreal Forest",
+      "rarity": "GOLD",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 90.56,
+      "float_value": 0.60601878,
+      "timestamp": 1736377455.8739479,
+      "case_type": "esports_winter",
+      "is_case": false,
+      "base_price": 90.56
+    },
     {
       "weapon": "UMP-45",
       "name": "Roadblock",
@@ -1188,7 +1494,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 17.06,
-      "case_type": "riptide"
+      "case_type": "riptide",
+      "float_value": 0.31891601,
+      "base_price": 17.06
     },
     {
       "weapon": "Sawed-Off",
@@ -1197,7 +1505,9 @@
       "rarity": "PURPLE",
       "stattrak": false,
       "price": 13.54,
-      "case_type": "esports"
+      "case_type": "esports",
+      "float_value": 0.39824825,
+      "base_price": 13.54
     },
     {
       "weapon": "AWP",
@@ -1206,7 +1516,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 13.49,
-      "case_type": "wildfire"
+      "case_type": "wildfire",
+      "float_value": 0.41062798,
+      "base_price": 13.49
     },
     {
       "weapon": "Five-SeveN",
@@ -1215,7 +1527,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 20.57,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.61810646,
+      "base_price": 20.57
     },
     {
       "weapon": "Desert Eagle",
@@ -1224,241 +1538,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 26.66,
-      "case_type": "fracture"
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377455.8739479,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.0368388,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.1977549,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.3642428,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.5319598,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.6940548,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377456.863247,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377457.0254238,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377457.1901417,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377457.3837473,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377457.7127955,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377458.0419421,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377458.3770635,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377458.7002466,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377459.0348754,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377459.3341038,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377459.4966457,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Boreal Forest",
-      "rarity": "GOLD",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 90.56,
-      "float_value": 0.60601878,
-      "timestamp": 1736377459.6596231,
-      "case_type": "esports_winter",
-      "is_case": false,
-      "base_price": 90.56
+      "case_type": "fracture",
+      "float_value": 0.41975031,
+      "base_price": 26.66
     },
     {
       "weapon": "USP-S",
@@ -1467,7 +1549,9 @@
       "rarity": "PURPLE",
       "stattrak": false,
       "price": 20.75,
-      "case_type": "bravo"
+      "case_type": "bravo",
+      "float_value": 0.41732253,
+      "base_price": 20.75
     },
     {
       "weapon": "Navaja Knife",
@@ -1476,7 +1560,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 92.4,
-      "case_type": "danger_zone"
+      "case_type": "danger_zone",
+      "float_value": 0.19119499,
+      "base_price": 92.4
     },
     {
       "weapon": "Desert Eagle",
@@ -1484,8 +1570,10 @@
       "wear": "FN",
       "rarity": "PINK",
       "stattrak": false,
-      "price": 27.22,
-      "case_type": "wildfire"
+      "price": 32.663999999999994,
+      "case_type": "wildfire",
+      "float_value": 0.00481903,
+      "base_price": 32.663999999999994
     },
     {
       "weapon": "USP-S",
@@ -1494,7 +1582,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 26.69,
-      "case_type": "broken_fang"
+      "case_type": "broken_fang",
+      "float_value": 0.14437998,
+      "base_price": 26.69
     },
     {
       "weapon": "Gut Knife",
@@ -1503,7 +1593,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 95.76,
-      "case_type": "esports_winter"
+      "case_type": "esports_winter",
+      "float_value": 0.68376322,
+      "base_price": 95.76
     },
     {
       "weapon": "M4A1-S",
@@ -1512,7 +1604,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 17.39,
-      "case_type": "breakout"
+      "case_type": "breakout",
+      "float_value": 0.58511382,
+      "base_price": 17.39
     },
     {
       "weapon": "Nova",
@@ -1521,7 +1615,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 13.38,
-      "case_type": "wildfire"
+      "case_type": "wildfire",
+      "float_value": 0.40141347,
+      "base_price": 13.38
     },
     {
       "weapon": "Nova",
@@ -1530,7 +1626,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 14.77,
-      "case_type": "wildfire"
+      "case_type": "wildfire",
+      "float_value": 0.26152828,
+      "base_price": 14.77
     },
     {
       "weapon": "USP-S",
@@ -1539,7 +1637,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 15.8,
-      "case_type": "snakebite"
+      "case_type": "snakebite",
+      "float_value": 0.14075681,
+      "base_price": 15.8
     },
     {
       "weapon": "Gut Knife",
@@ -1548,7 +1648,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 91.98,
-      "case_type": "esports_summer"
+      "case_type": "esports_summer",
+      "float_value": 0.1558574,
+      "base_price": 91.98
     },
     {
       "weapon": "Falchion Knife",
@@ -1557,7 +1659,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 98.45,
-      "case_type": "falchion"
+      "case_type": "falchion",
+      "float_value": 0.20701754,
+      "base_price": 98.45
     },
     {
       "weapon": "Huntsman Knife",
@@ -1566,7 +1670,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 95.48,
-      "case_type": "huntsman"
+      "case_type": "huntsman",
+      "float_value": 0.39540745,
+      "base_price": 95.48
     },
     {
       "weapon": "Gut Knife",
@@ -1575,7 +1681,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 93.92,
-      "case_type": "phoenix"
+      "case_type": "phoenix",
+      "float_value": 0.12532144,
+      "base_price": 93.92
     },
     {
       "weapon": "Gut Knife",
@@ -1584,7 +1692,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.0,
-      "case_type": "esports_winter"
+      "case_type": "esports_winter",
+      "float_value": 0.19157348,
+      "base_price": 94.0
     },
     {
       "weapon": "Moto Gloves",
@@ -1593,7 +1703,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 78.27,
-      "case_type": "broken_fang"
+      "case_type": "broken_fang",
+      "float_value": 0.43980206,
+      "base_price": 78.27
     },
     {
       "weapon": "Gut Knife",
@@ -1602,7 +1714,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 90.57,
-      "case_type": "esports"
+      "case_type": "esports",
+      "float_value": 0.74766419,
+      "base_price": 90.57
     },
     {
       "weapon": "Survival Knife",
@@ -1611,7 +1725,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 95.54,
-      "case_type": "fracture"
+      "case_type": "fracture",
+      "float_value": 0.39800556,
+      "base_price": 95.54
     },
     {
       "weapon": "Navaja Knife",
@@ -1620,7 +1736,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 91.39,
-      "case_type": "danger_zone"
+      "case_type": "danger_zone",
+      "float_value": 0.78988928,
+      "base_price": 91.39
     },
     {
       "weapon": "Driver Gloves",
@@ -1629,7 +1747,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 85.6,
-      "case_type": "clutch"
+      "case_type": "clutch",
+      "float_value": 0.38322612,
+      "base_price": 85.6
     },
     {
       "weapon": "AUG",
@@ -1638,7 +1758,9 @@
       "rarity": "BLUE",
       "stattrak": false,
       "price": 32.34,
-      "case_type": "csgo"
+      "case_type": "csgo",
+      "float_value": 0.06387591,
+      "base_price": 32.34
     },
     {
       "weapon": "AK-47",
@@ -1647,7 +1769,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 82.29,
-      "case_type": "kilowatt"
+      "case_type": "kilowatt",
+      "float_value": 0.43080563,
+      "base_price": 82.29
     },
     {
       "weapon": "Navaja Knife",
@@ -1656,7 +1780,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 96.95,
-      "case_type": "horizon"
+      "case_type": "horizon",
+      "float_value": 0.1306798,
+      "base_price": 96.95
     },
     {
       "weapon": "AK-47",
@@ -1664,8 +1790,10 @@
       "wear": "FN",
       "rarity": "PINK",
       "stattrak": false,
-      "price": 67.0,
-      "case_type": "shadow"
+      "price": 73.7,
+      "case_type": "shadow",
+      "float_value": 0.00821364,
+      "base_price": 73.7
     },
     {
       "weapon": "Gut Knife",
@@ -1674,7 +1802,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 93.84,
-      "case_type": "winter_offensive"
+      "case_type": "winter_offensive",
+      "float_value": 0.40988644,
+      "base_price": 93.84
     },
     {
       "weapon": "Broken Fang Gloves",
@@ -1682,8 +1812,10 @@
       "wear": "BS",
       "rarity": "GOLD",
       "stattrak": false,
-      "price": 73.0,
-      "case_type": "recoil"
+      "price": 36.5,
+      "case_type": "recoil",
+      "float_value": 0.9773305,
+      "base_price": 36.5
     },
     {
       "weapon": "Gut Knife",
@@ -1692,7 +1824,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.59,
-      "case_type": "gamma"
+      "case_type": "gamma",
+      "float_value": 0.40243878,
+      "base_price": 94.59
     },
     {
       "weapon": "Broken Fang Gloves",
@@ -1701,7 +1835,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 79.09,
-      "case_type": "snakebite"
+      "case_type": "snakebite",
+      "float_value": 0.3838925,
+      "base_price": 79.09
     },
     {
       "weapon": "Shadow Daggers",
@@ -1710,7 +1846,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 90.71,
-      "case_type": "riptide"
+      "case_type": "riptide",
+      "float_value": 0.3062974,
+      "base_price": 90.71
     },
     {
       "weapon": "USP-S",
@@ -1719,7 +1857,9 @@
       "rarity": "PINK",
       "stattrak": true,
       "price": 27.53,
-      "case_type": "broken_fang"
+      "case_type": "broken_fang",
+      "float_value": 0.18413152,
+      "base_price": 27.53
     },
     {
       "weapon": "Gut Knife",
@@ -1728,7 +1868,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 90.56,
-      "case_type": "esports"
+      "case_type": "esports",
+      "float_value": 0.61228704,
+      "base_price": 90.56
     },
     {
       "weapon": "Navaja Knife",
@@ -1737,7 +1879,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 92.58,
-      "case_type": "danger_zone"
+      "case_type": "danger_zone",
+      "float_value": 0.41821458,
+      "base_price": 92.58
     },
     {
       "weapon": "Gut Knife",
@@ -1746,7 +1890,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 91.59,
-      "case_type": "phoenix"
+      "case_type": "phoenix",
+      "float_value": 0.81400354,
+      "base_price": 91.59
     },
     {
       "weapon": "M4A1-S",
@@ -1755,7 +1901,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 17.0,
-      "case_type": "breakout"
+      "case_type": "breakout",
+      "float_value": 0.27220746,
+      "base_price": 17.0
     },
     {
       "weapon": "USP-S",
@@ -1764,7 +1912,9 @@
       "rarity": "PINK",
       "stattrak": true,
       "price": 58.88,
-      "case_type": "huntsman"
+      "case_type": "huntsman",
+      "float_value": 0.44615293,
+      "base_price": 58.88
     },
     {
       "weapon": "SG 553",
@@ -1773,7 +1923,9 @@
       "rarity": "PINK",
       "stattrak": true,
       "price": 36.42,
-      "case_type": "shattered_web"
+      "case_type": "shattered_web",
+      "float_value": 0.14026383,
+      "base_price": 36.42
     },
     {
       "weapon": "AK-47",
@@ -1782,7 +1934,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 13.86,
-      "case_type": "dreams_&_nightmares"
+      "case_type": "dreams_&_nightmares",
+      "float_value": 0.11110775,
+      "base_price": 13.86
     },
     {
       "weapon": "USP-S",
@@ -1791,7 +1945,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 41.87,
-      "case_type": "huntsman"
+      "case_type": "huntsman",
+      "float_value": 0.31987724,
+      "base_price": 41.87
     },
     {
       "weapon": "M4A1-S",
@@ -1800,7 +1956,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 15.93,
-      "case_type": "winter_offensive"
+      "case_type": "winter_offensive",
+      "float_value": 0.4283575,
+      "base_price": 15.93
     },
     {
       "weapon": "CZ75-Auto",
@@ -1809,7 +1967,9 @@
       "rarity": "RED",
       "stattrak": true,
       "price": 19.88,
-      "case_type": "csgo3"
+      "case_type": "csgo3",
+      "float_value": 0.18877992,
+      "base_price": 19.88
     },
     {
       "weapon": "Hand Wraps",
@@ -1818,7 +1978,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 98.26,
-      "case_type": "recoil"
+      "case_type": "recoil",
+      "float_value": 0.1058487,
+      "base_price": 98.26
     },
     {
       "weapon": "USP-S",
@@ -1826,8 +1988,10 @@
       "wear": "FN",
       "rarity": "RED",
       "stattrak": false,
-      "price": 28.63,
-      "case_type": "spectrum"
+      "price": 34.355999999999995,
+      "case_type": "spectrum",
+      "float_value": 0.00481272,
+      "base_price": 34.355999999999995
     },
     {
       "weapon": "Galil AR",
@@ -1836,7 +2000,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 12.29,
-      "case_type": "chroma"
+      "case_type": "chroma",
+      "float_value": 0.42943564,
+      "base_price": 12.29
     },
     {
       "weapon": "Dual Berettas",
@@ -1845,7 +2011,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 43.03,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.04484391,
+      "base_price": 43.03
     },
     {
       "weapon": "Gut Knife",
@@ -1854,7 +2022,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 97.08,
-      "case_type": "bravo"
+      "case_type": "bravo",
+      "float_value": 0.42204257,
+      "base_price": 97.08
     },
     {
       "weapon": "Bloodhound Gloves",
@@ -1863,7 +2033,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 80.69,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.29576643,
+      "base_price": 80.69
     },
     {
       "weapon": "Shadow Daggers",
@@ -1872,7 +2044,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.45,
-      "case_type": "riptide"
+      "case_type": "riptide",
+      "float_value": 0.10837325,
+      "base_price": 94.45
     },
     {
       "weapon": "Bloodhound Gloves",
@@ -1881,7 +2055,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 80.69,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.27160537,
+      "base_price": 80.69
     },
     {
       "weapon": "Gut Knife",
@@ -1890,7 +2066,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.0,
-      "case_type": "esports_summer"
+      "case_type": "esports_summer",
+      "float_value": 0.34379303,
+      "base_price": 94.0
     },
     {
       "weapon": "Navaja Knife",
@@ -1899,7 +2077,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.39,
-      "case_type": "horizon"
+      "case_type": "horizon",
+      "float_value": 0.41744136,
+      "base_price": 94.39
     },
     {
       "weapon": "Gut Knife",
@@ -1908,7 +2088,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.38,
-      "case_type": "vanguard"
+      "case_type": "vanguard",
+      "float_value": 0.28957517,
+      "base_price": 94.38
     },
     {
       "weapon": "USP-S",
@@ -1917,7 +2099,9 @@
       "rarity": "RED",
       "stattrak": true,
       "price": 24.28,
-      "case_type": "snakebite"
+      "case_type": "snakebite",
+      "float_value": 0.43155174,
+      "base_price": 24.28
     },
     {
       "weapon": "Zeus",
@@ -1926,7 +2110,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 10.0,
-      "case_type": "kilowatt"
+      "case_type": "kilowatt",
+      "float_value": 0.0840097,
+      "base_price": 10.0
     },
     {
       "weapon": "Five-SeveN",
@@ -1935,7 +2121,9 @@
       "rarity": "RED",
       "stattrak": false,
       "price": 22.85,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.25165096,
+      "base_price": 22.85
     },
     {
       "weapon": "AK-47",
@@ -1944,7 +2132,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 28.23,
-      "case_type": "revolver"
+      "case_type": "revolver",
+      "float_value": 0.04672796,
+      "base_price": 28.23
     },
     {
       "weapon": "Gut Knife",
@@ -1953,7 +2143,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 97.08,
-      "case_type": "esports_winter"
+      "case_type": "esports_winter",
+      "float_value": 0.3941135,
+      "base_price": 97.08
     },
     {
       "weapon": "Gut Knife",
@@ -1962,7 +2154,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.53,
-      "case_type": "winter_offensive"
+      "case_type": "winter_offensive",
+      "float_value": 0.27313422,
+      "base_price": 94.53
     },
     {
       "weapon": "Bloodhound Gloves",
@@ -1971,7 +2165,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 80.69,
-      "case_type": "glove"
+      "case_type": "glove",
+      "float_value": 0.15676622,
+      "base_price": 80.69
     },
     {
       "weapon": "Gut Knife",
@@ -1980,7 +2176,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.0,
-      "case_type": "esports_summer"
+      "case_type": "esports_summer",
+      "float_value": 0.40579899,
+      "base_price": 94.0
     },
     {
       "weapon": "Falchion Knife",
@@ -1989,7 +2187,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 95.59,
-      "case_type": "falchion"
+      "case_type": "falchion",
+      "float_value": 0.41299195,
+      "base_price": 95.59
     },
     {
       "weapon": "AK-47",
@@ -1998,7 +2198,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 16.79,
-      "case_type": "phoenix"
+      "case_type": "phoenix",
+      "float_value": 0.82361244,
+      "base_price": 16.79
     },
     {
       "weapon": "Gut Knife",
@@ -2007,7 +2209,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 93.65,
-      "case_type": "csgo"
+      "case_type": "csgo",
+      "float_value": 0.15271919,
+      "base_price": 93.65
     },
     {
       "weapon": "Galil",
@@ -2016,7 +2220,9 @@
       "rarity": "PINK",
       "stattrak": false,
       "price": 39.56,
-      "case_type": "hydra"
+      "case_type": "hydra",
+      "float_value": 0.10836061,
+      "base_price": 39.56
     },
     {
       "weapon": "USP-S",
@@ -2025,7 +2231,9 @@
       "rarity": "PURPLE",
       "stattrak": false,
       "price": 22.18,
-      "case_type": "bravo"
+      "case_type": "bravo",
+      "float_value": 0.30977567,
+      "base_price": 22.18
     },
     {
       "weapon": "Gut Knife",
@@ -2034,7 +2242,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 94.35,
-      "case_type": "phoenix"
+      "case_type": "phoenix",
+      "float_value": 0.42249876,
+      "base_price": 94.35
     },
     {
       "weapon": "Paracord Knife",
@@ -2043,7 +2253,9 @@
       "rarity": "GOLD",
       "stattrak": false,
       "price": 96.22,
-      "case_type": "shattered_web"
+      "case_type": "shattered_web",
+      "float_value": 0.38710144,
+      "base_price": 96.22
     },
     {
       "weapon": "Galil",
@@ -2051,23 +2263,87 @@
       "wear": "BS",
       "rarity": "PINK",
       "stattrak": false,
-      "price": 31.15,
-      "case_type": "hydra"
+      "price": 26.4775,
+      "case_type": "hydra",
+      "float_value": 0.92218009,
+      "base_price": 26.4775
     },
     {
-      "weapon": "PP-Bizon",
-      "name": "Cobalt Halftone",
-      "wear": "FT",
-      "price": 0.62,
-      "base_price": 0.62,
+      "name": "Prisma Case",
+      "image": "prisma_case.png",
+      "is_case": true,
+      "type": "prisma",
+      "quantity": 6
+    },
+    {
+      "name": "Prisma 2 Case",
+      "image": "prisma_2_case.png",
+      "is_case": true,
+      "type": "prisma_2",
+      "quantity": 9
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Blue Ply",
       "rarity": "BLUE",
-      "case_type": "winter_offensive",
+      "wear": "FT",
       "stattrak": false,
-      "timestamp": 1736377537.7736554,
-      "float_value": 0.25034863
+      "price": 0.15,
+      "timestamp": 1736404736.2033415,
+      "case_type": "prisma_2",
+      "float_value": 0.29463325,
+      "is_case": false
+    },
+    {
+      "weapon": "MP5",
+      "name": "Desert Strike",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2033415,
+      "case_type": "prisma_2",
+      "float_value": 0.3869182,
+      "is_case": false
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Blue Ply",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 0.5,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.66418837,
+      "is_case": false
+    },
+    {
+      "weapon": "MP5",
+      "name": "Desert Strike",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.76201365,
+      "is_case": false
+    },
+    {
+      "weapon": "Negev",
+      "name": "Prototype",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.60414244,
+      "is_case": false
     }
   ],
-  "exp": 1992.7200000000005,
+  "exp": 2002.7200000000005,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -2120,15 +2396,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 172,
+        "current_value": 177,
         "category": "cases",
-        "progress": 17.2
+        "progress": 17.7
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 172,
+    "total_cases_opened": 177,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,
