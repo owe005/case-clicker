@@ -1,6 +1,191 @@
 {
-  "balance": 4731.585499999963,
+  "balance": 4615.585499999963,
   "inventory": [
+    {
+      "weapon": "Desert Eagle",
+      "name": "Blue Ply",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": true,
+      "price": 0.68,
+      "timestamp": 1736464839.5292225,
+      "case_type": "prisma_2",
+      "float_value": 0.34624214,
+      "is_case": false
+    },
+    {
+      "weapon": "SG 553",
+      "name": "Darkwing",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.1955,
+      "timestamp": 1736464839.5292225,
+      "case_type": "prisma_2",
+      "float_value": 0.92382022,
+      "is_case": false
+    },
+    {
+      "weapon": "AUG",
+      "name": "Tom Cat",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.08,
+      "timestamp": 1736464839.5282242,
+      "case_type": "prisma_2",
+      "float_value": 0.44275139,
+      "is_case": false
+    },
+    {
+      "weapon": "R8 Revolver",
+      "name": "Bone Forged",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736464839.5282242,
+      "case_type": "prisma_2",
+      "float_value": 0.61545065,
+      "is_case": false
+    },
+    {
+      "weapon": "AWP",
+      "name": "Capillary",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.4,
+      "timestamp": 1736464839.5282242,
+      "case_type": "prisma_2",
+      "float_value": 0.08082859,
+      "is_case": false
+    },
+    {
+      "weapon": "M4A4",
+      "name": "The Emperor",
+      "rarity": "RED",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 10.0,
+      "timestamp": 1736464827.290358,
+      "case_type": "prisma",
+      "float_value": 0.26195738,
+      "is_case": false
+    },
+    {
+      "weapon": "P90",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.13,
+      "timestamp": 1736464827.290358,
+      "case_type": "prisma",
+      "float_value": 0.3974612,
+      "is_case": false
+    },
+    {
+      "weapon": "MP5",
+      "name": "Gauss",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.154,
+      "timestamp": 1736464827.290358,
+      "case_type": "prisma",
+      "float_value": 0.94571861,
+      "is_case": false
+    },
+    {
+      "weapon": "P90",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.09,
+      "timestamp": 1736464827.290358,
+      "case_type": "prisma",
+      "float_value": 0.75693391,
+      "is_case": false
+    },
+    {
+      "weapon": "P90",
+      "name": "Off World",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.12,
+      "timestamp": 1736464827.289352,
+      "case_type": "prisma",
+      "float_value": 0.37947123,
+      "is_case": false
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Blue Ply",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": true,
+      "price": 0.5,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.66418837,
+      "is_case": false,
+      "base_price": 0.5
+    },
+    {
+      "weapon": "MP5",
+      "name": "Desert Strike",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.76201365,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "Negev",
+      "name": "Prototype",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2043412,
+      "case_type": "prisma_2",
+      "float_value": 0.60414244,
+      "is_case": false,
+      "base_price": 0.04
+    },
+    {
+      "weapon": "Desert Eagle",
+      "name": "Blue Ply",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 0.15,
+      "timestamp": 1736404736.2033415,
+      "case_type": "prisma_2",
+      "float_value": 0.29463325,
+      "is_case": false,
+      "base_price": 0.15
+    },
+    {
+      "weapon": "MP5",
+      "name": "Desert Strike",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.04,
+      "timestamp": 1736404736.2033415,
+      "case_type": "prisma_2",
+      "float_value": 0.3869182,
+      "is_case": false,
+      "base_price": 0.04
+    },
     {
       "weapon": "FAMAS",
       "name": "Crypsis",
@@ -11,7 +196,8 @@
       "timestamp": 1736404716.893998,
       "case_type": "prisma",
       "float_value": 0.21882157,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.12
     },
     {
       "weapon": "Galil AR",
@@ -19,11 +205,12 @@
       "rarity": "BLUE",
       "wear": "FT",
       "stattrak": false,
-      "price": 0.12,
+      "price": 0,
       "timestamp": 1736404716.893998,
       "case_type": "prisma",
       "float_value": 0.37648718,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0
     },
     {
       "weapon": "AK-47",
@@ -35,7 +222,8 @@
       "timestamp": 1736404716.893998,
       "case_type": "prisma",
       "float_value": 0.38396864,
-      "is_case": false
+      "is_case": false,
+      "base_price": 2.35
     },
     {
       "weapon": "P250",
@@ -47,7 +235,8 @@
       "timestamp": 1736404716.8930423,
       "case_type": "prisma",
       "float_value": 0.12919485,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.22
     },
     {
       "weapon": "P90",
@@ -59,7 +248,8 @@
       "timestamp": 1736404716.8930423,
       "case_type": "prisma",
       "float_value": 0.38873469,
-      "is_case": false
+      "is_case": false,
+      "base_price": 0.13
     },
     {
       "weapon": "PP-Bizon",
@@ -1380,7 +1570,7 @@
       "image": "glove_case.png",
       "is_case": true,
       "type": "glove",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "name": "Operation Hydra Case",
@@ -1394,7 +1584,7 @@
       "image": "spectrum_case.png",
       "is_case": true,
       "type": "spectrum",
-      "quantity": 9
+      "quantity": 10
     },
     {
       "name": "Spectrum 2 Case",
@@ -2273,77 +2463,17 @@
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 6
+      "quantity": 1
     },
     {
       "name": "Prisma 2 Case",
       "image": "prisma_2_case.png",
       "is_case": true,
       "type": "prisma_2",
-      "quantity": 9
-    },
-    {
-      "weapon": "Desert Eagle",
-      "name": "Blue Ply",
-      "rarity": "BLUE",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 0.15,
-      "timestamp": 1736404736.2033415,
-      "case_type": "prisma_2",
-      "float_value": 0.29463325,
-      "is_case": false
-    },
-    {
-      "weapon": "MP5",
-      "name": "Desert Strike",
-      "rarity": "BLUE",
-      "wear": "WW",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736404736.2033415,
-      "case_type": "prisma_2",
-      "float_value": 0.3869182,
-      "is_case": false
-    },
-    {
-      "weapon": "Desert Eagle",
-      "name": "Blue Ply",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": true,
-      "price": 0.5,
-      "timestamp": 1736404736.2043412,
-      "case_type": "prisma_2",
-      "float_value": 0.66418837,
-      "is_case": false
-    },
-    {
-      "weapon": "MP5",
-      "name": "Desert Strike",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736404736.2043412,
-      "case_type": "prisma_2",
-      "float_value": 0.76201365,
-      "is_case": false
-    },
-    {
-      "weapon": "Negev",
-      "name": "Prototype",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.04,
-      "timestamp": 1736404736.2043412,
-      "case_type": "prisma_2",
-      "float_value": 0.60414244,
-      "is_case": false
+      "quantity": 5
     }
   ],
-  "exp": 2002.7200000000005,
+  "exp": 2012.7200000000005,
   "rank": 9,
   "upgrades": {
     "click_value": 1,
@@ -2396,15 +2526,15 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 182,
+        "current_value": 192,
         "category": "cases",
-        "progress": 18.2
+        "progress": 19.2
       }
     }
   },
   "stats": {
     "total_earnings": 67291.68549999999,
-    "total_cases_opened": 182,
+    "total_cases_opened": 192,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 0,
