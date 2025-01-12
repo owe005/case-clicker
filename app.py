@@ -10,6 +10,7 @@ from functools import wraps
 from typing import List, Optional
 from threading import Thread, Lock, Timer
 import atexit
+from werkzeug.utils import safe_join
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -33,9 +34,15 @@ from user_data import create_user_from_dict, load_user_data, save_user_data
 # Load environment variables
 load_dotenv('config.env')
 
-app = Flask(__name__)
+# Initialize Flask app
+app = Flask(__name__, 
+    static_folder='frontend/dist',  # Point to the Vue build directory
+    static_url_path='',            # Serve static files from root URL
+    template_folder='frontend/dist'
+)
+
 app.secret_key = 'your-secret-key-here'
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)  # Cache static files for 7 days to reduce server load
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)
 
 FEATURED_SKINS = None
 LAST_REFRESH_TIME = None
@@ -70,72 +77,32 @@ def login_required(f):
 def inject_ranks():
     return {'RANKS': RANKS}
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    user_data = load_user_data()
-    return render_template('home.html',
-                           balance=user_data['balance'],
-                           rank=user_data['rank'],
-                           exp=user_data['exp'],
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+# Serve Vue App
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_vue_app(path):
+    if path.startswith('api/'):
+        return {'error': 'Not Found'}, 404
+        
+    # First try to serve as a static file
+    static_file = safe_join(app.static_folder, path)
+    if os.path.isfile(static_file):
+        return send_from_directory(app.static_folder, path)
+        
+    # Otherwise return index.html
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/shop')
 @login_required
 def shop():
-    cases = load_case('all')  # Get all case data for shop display
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('shop.html',
-                           cases=cases,
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    # Since we're using Vue, we'll serve the main app template
+    return serve_vue_app('')
 
 @app.route('/inventory')
 def inventory():
-    user_data = load_user_data()
-    inventory_items = user_data.get('inventory', [])
-    
-    # Only update prices for items that don't have a base_price set
-    # (this preserves prices from upgrade game)
-    for item in inventory_items:
-        if not item.get('is_case'):
-            # Ensure float_value exists
-            if 'float_value' not in item:
-                item['float_value'] = item.get('float', generate_float_for_wear(item['wear']))
-                if 'float' in item:
-                    del item['float']
-            
-            if 'base_price' not in item:
-                # Get the base price and adjust it
-                base_price = load_skin_price(
-                    f"{item['weapon']} | {item['name']}", 
-                    item['case_type'],
-                    item['wear'],
-                    item['float_value'],
-                    item.get('stattrak', False)  # Pass StatTrak status
-                )
-                item['base_price'] = base_price
-                item['price'] = adjust_price_by_float(base_price, item['wear'], item['float_value'])
-    
-    # Save any price updates
-    user_data['inventory'] = inventory_items
-    save_user_data(user_data)
-    
-    return render_template('inventory.html', 
-                         balance=user_data['balance'], 
-                         inventory=inventory_items,
-                         rank=user_data['rank'],
-                         exp=user_data['exp'],
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS,
-                         upgrades=user_data.get('upgrades', {}),
-                         initial_view=request.args.get('view', 'skins'),
-                         CASE_MAPPING=CASE_FILE_MAPPING,
-                         CASE_SKINS_FOLDER_NAMES=CASE_SKINS_FOLDER_NAMES)
+    # Since we're using Vue, we'll serve the main app template
+    # All data will be fetched through the /get_inventory API endpoint
+    return serve_vue_app('inventory')
 
 @app.route('/open/<case_type>')
 def open_case(case_type):
@@ -651,14 +618,8 @@ def update_session():
 
 @app.route('/upgrades')
 def upgrades():
-    user_data = load_user_data()
-    return render_template('upgrades.html', 
-                         balance=user_data['balance'],
-                         upgrades=user_data['upgrades'],  # Pass the upgrades dict directly
-                         rank=user_data['rank'],
-                         exp=user_data['exp'],
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+    # For Vue routes, we need to serve the main Vue app
+    return send_from_directory('frontend/dist', 'index.html')
 
 @app.route('/purchase_upgrade', methods=['POST'])
 def purchase_upgrade():
@@ -728,7 +689,7 @@ def get_upgrades():
 def cheat():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
-    user.balance += 10000.0
+    user.balance += 10000000000.0
     
     user_data['balance'] = user.balance
     save_user_data(user_data)
@@ -864,10 +825,13 @@ def get_inventory():
         'inventory': inventory_items,
         'balance': user_data['balance'],
         'rank': user_data['rank'],
-        'exp': user_data['exp']
+        'exp': user_data['exp'],
+        'upgrades': user_data.get('upgrades', {}),  # Add upgrades for multi-open functionality
+        'CASE_MAPPING': CASE_FILE_MAPPING,  # Add case mapping for image paths
+        'CASE_SKINS_FOLDER_NAMES': CASE_SKINS_FOLDER_NAMES  # Add folder names for skin images
     })
 
-@app.route('/get_user_data')
+@app.route('/api/get_user_data')
 def get_user_data():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
@@ -875,10 +839,14 @@ def get_user_data():
         'exp': int(user.exp),
         'rank': user.rank,
         'rankName': RANKS[user.rank],
-        'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None
+        'nextRankExp': RANK_EXP[user.rank] if user.rank < len(RANK_EXP) else None,
+        'balance': user.balance,
+        'inventory': user.inventory,
+        'upgrades': user_data.get('upgrades', {}),  # Add upgrades to response
+        'case_progress': user_data.get('case_progress', 0)  # Add case progress too
     })
 
-@app.route('/data/case_contents/<case_type>')
+@app.route('/api/data/case_contents/<case_type>')
 def get_case_contents(case_type):
     # Use CASE_FILE_MAPPING from config.py
     if case_type not in CASE_FILE_MAPPING:
@@ -913,75 +881,76 @@ def custom_static(filename):
 @app.route('/casino')
 @login_required
 def casino():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('casino.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    return serve_vue_app('casino')
 
 @app.route('/coinflip')
 @login_required
 def coinflip():
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('')
+
+@app.route('/api/coinflip/data')
+@login_required
+def get_coinflip_data():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
-    return render_template('coinflip.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    return jsonify({
+        'balance': user.balance,
+        'rank': user.rank,
+        'exp': user.exp,
+        'ranks': RANKS,
+        'rank_exp': RANK_EXP
+    })
 
 @app.route('/play_coinflip', methods=['POST'])
 @login_required
 def play_coinflip():
     try:
         data = request.get_json()
-        bet_amount = float(data.get('amount', 0))
-        chosen_side = data.get('side')
-        
-        if not chosen_side or chosen_side not in ['ct', 't']:
+        amount = float(data.get('amount', 0))
+        side = data.get('side')
+
+        if not side or side not in ['ct', 't']:
             return jsonify({'error': 'Invalid side selection'})
-        
-        if bet_amount <= 0:
-            return jsonify({'error': 'Invalid bet amount'})
-        
-        # Load current user data
+
         user_data = load_user_data()
         current_balance = float(user_data['balance'])
-        
-        if bet_amount > current_balance:
+
+        if amount <= 0:
+            return jsonify({'error': 'Invalid bet amount'})
+
+        if amount > current_balance:
             return jsonify({'error': 'Insufficient funds'})
-        
-        # Determine result (50/50 chance)
+
+        # Immediately deduct the bet amount
+        user_data['balance'] = current_balance - amount
+        save_user_data(user_data)
+
+        # Determine game result
         result = random.choice(['ct', 't'])
-        won = result == chosen_side
-        
-        # Calculate new balance but don't save yet
-        new_balance = current_balance - bet_amount
+        won = result == side
+
+        # Calculate final balance but don't save it yet
+        final_balance = user_data['balance']
         if won:
-            winnings = bet_amount * 2
-            new_balance += winnings
-            # Track earnings (winnings minus original bet)
-            update_earnings_achievements(user_data, winnings - bet_amount)
-        
-        # Store the bet info in session
-        session['coinflip_bet'] = {
-            'amount': bet_amount,
+            final_balance += (amount * 2)
+
+        # Store the result in session
+        session['coinflip_result'] = {
+            'result': result,
             'won': won,
-            'new_balance': new_balance
+            'amount': amount,
+            'current_balance': user_data['balance'],
+            'final_balance': final_balance
         }
-        
+
         return jsonify({
             'success': True,
-            'won': won,
             'result': result,
-            'current_balance': current_balance,
-            'final_balance': new_balance
+            'won': won,
+            'current_balance': user_data['balance']
         })
-        
+
     except Exception as e:
         print(f"Error in play_coinflip: {e}")
         return jsonify({'error': 'Failed to play coinflip'})
@@ -990,20 +959,23 @@ def play_coinflip():
 @login_required
 def update_coinflip_balance():
     try:
-        # Get stored bet info
-        bet_info = session.get('coinflip_bet')
-        if not bet_info:
-            return jsonify({'error': 'No active bet found'})
-        
-        # Load and update user data
-        user_data = load_user_data()
-        user_data['balance'] = bet_info['new_balance']
-        save_user_data(user_data)
-        
-        # Clear the stored bet
-        session.pop('coinflip_bet', None)
-        
-        return jsonify({'success': True, 'balance': user_data['balance']})
+        # Get stored game result
+        result = session.get('coinflip_result')
+        if not result:
+            return jsonify({'error': 'No active game found'})
+
+        # If player won, update their balance with winnings now
+        if result['won']:
+            user_data = load_user_data()
+            user_data['balance'] = result['final_balance']
+            save_user_data(user_data)
+
+        # Return the final balance
+        return jsonify({
+            'success': True,
+            'balance': result['final_balance']
+        })
+
     except Exception as e:
         print(f"Error updating balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
@@ -1011,21 +983,8 @@ def update_coinflip_balance():
 @app.route('/roulette')
 @login_required
 def roulette():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    
-    # Check if there is an in-progress bet
-    roulette_bet = session.get('roulette_bet')
-    if roulette_bet and roulette_bet.get('in_progress'):
-        # Only clear the session, money was already deducted
-        session.pop('roulette_bet', None)  # Clear the bet state
-    
-    return render_template('roulette.html',
-                         balance=user.balance,
-                         rank=user.rank,
-                         exp=user.exp,
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+    # Since we're using Vue, we'll serve the main app template
+    return serve_vue_app('')
 
 @app.route('/play_roulette', methods=['POST'])
 @login_required
@@ -1033,6 +992,7 @@ def play_roulette():
     try:
         data = request.get_json()
         lightning_numbers = set(data.get('lightningNumbers', []))
+        clear_previous_bets = data.get('clearPreviousBets', False)
         
         # Load current user data
         user_data = load_user_data()
@@ -1040,6 +1000,16 @@ def play_roulette():
         
         # Determine result
         result = random.randint(0, 36)
+        
+        # Clear previous bets if requested or if no bets are sent
+        if clear_previous_bets or data.get('bets') is None:
+            session.pop('roulette_bet', None)
+            session.pop('roulette_result', None)
+            return jsonify({
+                'success': True,
+                'result': result,
+                'balance': current_balance
+            })
         
         # Get the stored bet info from session
         bet_info = session.get('roulette_bet')
@@ -1049,9 +1019,7 @@ def play_roulette():
             return jsonify({
                 'success': True,
                 'result': result,
-                'winnings': 0,
-                'balance': current_balance,
-                'total_bet': 0
+                'balance': current_balance
             })
             
         # Verify bet was properly closed
@@ -1103,22 +1071,15 @@ def play_roulette():
         user_data['balance'] = final_balance
         save_user_data(user_data)
         
-        # Store the game result in session
-        session['roulette_result'] = {
-            'result': result,
-            'winnings': winnings,
-            'new_balance': final_balance,
-            'total_bet': total_bet
-        }
-        
-        # Mark the bet as completed
-        session['roulette_bet']['in_progress'] = False
+        # Clear the bet info from session after processing
+        session.pop('roulette_bet', None)
+        session.pop('roulette_result', None)
         
         return jsonify({
             'success': True,
             'result': result,
             'winnings': winnings,
-            'balance': current_balance,
+            'balance': final_balance,
             'total_bet': total_bet
         })
         
@@ -1162,8 +1123,9 @@ class BlackjackGame:
         self.current_hand = 0     # Index of the current hand being played
         self.bet_amount = 0
         self.split_bet_amount = 0  # Additional bet for split hand
-        self.insurance_bet = 0  # Add this line
+        self.insurance_bet = 0
         self.game_over = False
+        self.dealer_actions = []  # Track dealer's actions
         self._create_deck()
         self._shuffle()
     
@@ -1199,6 +1161,9 @@ class BlackjackGame:
             self.game_over = True
     
     def hit(self):
+        if self.current_hand >= len(self.player_hands):
+            raise ValueError("Invalid hand index")
+            
         current_hand = self.player_hands[self.current_hand]
         current_hand.append(self.deck.pop())
         
@@ -1207,23 +1172,61 @@ class BlackjackGame:
                 # Move to next split hand if available
                 self.current_hand += 1
             else:
+                # All hands are bust, dealer's turn
                 self.game_over = True
+                # Just show dealer's cards, no need to draw
+                self.dealer_actions = [{
+                    'cards': list(self.dealer_cards),
+                    'score': self.get_score(self.dealer_cards)
+                }]
     
     def stand(self):
         if self.current_hand < len(self.player_hands) - 1:
             # Move to next split hand
             self.current_hand += 1
-        else:
-            # All hands complete, dealer's turn
-            while self.get_score(self.dealer_cards) < 17:
-                self.dealer_cards.append(self.deck.pop())
-            self.game_over = True
+            return
+            
+        # All hands complete, dealer's turn
+        # First action is just the current dealer cards
+        self.dealer_actions = [{
+            'cards': list(self.dealer_cards),
+            'score': self.get_score(self.dealer_cards)
+        }]
+        
+        # Then each hit action
+        while self.get_score(self.dealer_cards) < 17:
+            self.dealer_cards.append(self.deck.pop())
+            self.dealer_actions.append({
+                'cards': list(self.dealer_cards),
+                'score': self.get_score(self.dealer_cards)
+            })
+        self.game_over = True
     
     def double_down(self):
+        if self.current_hand >= len(self.player_hands):
+            raise ValueError("Invalid hand index")
+            
         self.bet_amount *= 2
         self.player_hands[self.current_hand].append(self.deck.pop())
-        self.game_over = True
-        self.stand()
+        
+        if self.current_hand < len(self.player_hands) - 1:
+            # Move to next split hand if available
+            self.current_hand += 1
+        else:
+            # All hands complete, dealer's turn
+            self.game_over = True
+            # First action is just the current dealer cards
+            self.dealer_actions = [{
+                'cards': list(self.dealer_cards),
+                'score': self.get_score(self.dealer_cards)
+            }]
+            # Then each hit action
+            while self.get_score(self.dealer_cards) < 17:
+                self.dealer_cards.append(self.deck.pop())
+                self.dealer_actions.append({
+                    'cards': list(self.dealer_cards),
+                    'score': self.get_score(self.dealer_cards)
+                })
     
     def can_split(self) -> bool:
         current_hand = self.player_hands[self.current_hand]
@@ -1262,12 +1265,15 @@ class BlackjackGame:
     def get_game_state(self) -> dict:
         dealer_score = self.get_score(self.dealer_cards)
         player_scores = [self.get_score(hand) for hand in self.player_hands]
-        current_hand_score = player_scores[self.current_hand]
+        current_hand_score = player_scores[self.current_hand] if self.current_hand < len(player_scores) else 0
+        
+        # Only show game over state when all hands are complete
+        is_game_complete = self.game_over and (self.current_hand >= len(self.player_hands) - 1)
         
         # Determine winner if game is over
         message = ""
         won = [False] * len(self.player_hands)
-        if self.game_over:
+        if is_game_complete:
             dealer_blackjack = dealer_score == 21 and len(self.dealer_cards) == 2
             
             for i, score in enumerate(player_scores):
@@ -1313,10 +1319,10 @@ class BlackjackGame:
                     else:
                         message = "Dealer wins!"
         
-        return {
+        state = {
             'dealer': {
                 'cards': [{'rank': c.rank, 'suit': c.suit} for c in self.dealer_cards],
-                'score': dealer_score
+                'score': dealer_score if is_game_complete else None
             },
             'player': {
                 'hands': [[{'rank': c.rank, 'suit': c.suit} for c in hand] 
@@ -1324,22 +1330,34 @@ class BlackjackGame:
                 'scores': player_scores,
                 'currentHand': self.current_hand
             },
-            'gameOver': self.game_over,
+            'gameOver': is_game_complete,
             'message': message,
             'won': won,
             'betAmount': self.bet_amount,
             'splitBetAmount': self.split_bet_amount,
             'insuranceBet': self.insurance_bet,
             'canInsure': self.can_offer_insurance(),
-            'canHit': not self.game_over and current_hand_score < 21,
-            'canStand': not self.game_over and current_hand_score <= 21,
-            'canDouble': not self.game_over and len(self.player_hands[self.current_hand]) == 2,
-            'canSplit': not self.game_over and self.can_split()
+            'canHit': not is_game_complete and current_hand_score < 21,
+            'canStand': not is_game_complete and current_hand_score <= 21,
+            'canDouble': not is_game_complete and len(self.player_hands[self.current_hand]) == 2,
+            'canSplit': not is_game_complete and self.can_split()
         }
+
+        # Add dealer actions if game is over
+        if is_game_complete and self.dealer_actions:
+            state['dealerActions'] = [
+                {
+                    'cards': [{'rank': c.rank, 'suit': c.suit} for c in action['cards']],
+                    'score': action['score']
+                }
+                for action in self.dealer_actions
+            ]
+
+        return state
     
     def serialize(self) -> dict:
         """Convert game state to a dictionary for session storage"""
-        return {
+        data = {
             'deck': [{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in self.deck],
             'dealer_cards': [{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in self.dealer_cards],
             'player_hands': [[{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in hand] 
@@ -1350,6 +1368,18 @@ class BlackjackGame:
             'insurance_bet': self.insurance_bet,
             'game_over': self.game_over
         }
+        
+        # Add dealer actions
+        if self.dealer_actions:
+            data['dealer_actions'] = [
+                {
+                    'cards': [{'rank': c.rank, 'suit': c.suit, 'value': c.value} for c in action['cards']],
+                    'score': action['score']
+                }
+                for action in self.dealer_actions
+            ]
+        
+        return data
     
     @classmethod
     def deserialize(cls, data: dict) -> 'BlackjackGame':
@@ -1365,6 +1395,16 @@ class BlackjackGame:
             game.split_bet_amount = data['split_bet_amount']
             game.insurance_bet = data.get('insurance_bet', 0)
             game.game_over = data['game_over']
+            
+            # Restore dealer actions
+            if 'dealer_actions' in data:
+                game.dealer_actions = [
+                    {
+                        'cards': [Card(**card) for card in action['cards']],
+                        'score': action['score']
+                    }
+                    for action in data['dealer_actions']
+                ]
         return game
 
     def can_offer_insurance(self) -> bool:
@@ -1383,14 +1423,8 @@ class BlackjackGame:
 @app.route('/blackjack')
 @login_required
 def blackjack():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('blackjack.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('blackjack')
 
 @app.route('/play_blackjack', methods=['POST'])
 @login_required
@@ -1406,120 +1440,212 @@ def play_blackjack():
         # Initialize game if not exists
         if 'blackjack_game' not in session:
             session['blackjack_game'] = None
+            session.modified = True
+            session.permanent = True  # Make session permanent
         
-        game = BlackjackGame.deserialize(session.get('blackjack_game')) if session.get('blackjack_game') else None
+        # Add retry logic for potential race conditions
+        max_retries = 3
+        last_error = None
         
-        if not game and action != 'deal':
-            return jsonify({'error': 'No game in progress'})
-        
-        if action == 'deal':
-            bet_amount = round(float(data.get('amount', 0)), 2)
-            
-            if bet_amount <= 0:
-                return jsonify({'error': 'Bet amount must be greater than 0'})
-            if bet_amount > current_balance:
-                return jsonify({'error': f'Insufficient funds (bet: ${bet_amount:.2f}, balance: ${current_balance:.2f})'})
-            
-            # Deduct bet immediately and save
-            user_data['balance'] = round(current_balance - bet_amount, 2)
-            save_user_data(user_data)
-            
-            # Create new game
-            game = BlackjackGame()
-            game.deal(bet_amount)
-            
-        elif action == 'split':
-            if not game:
-                return jsonify({'error': 'No game in progress'})
-            
-            # Check if player can afford split
-            if game.bet_amount > current_balance:
-                return jsonify({'error': 'Insufficient funds to split'})
-            
-            # Deduct split bet amount and save
-            user_data['balance'] = current_balance - game.bet_amount
-            save_user_data(user_data)
-            game.split()
-            
-        elif action == 'hit':
-            if not game:
-                return jsonify({'error': 'No game in progress'})
-            game.hit()
-            
-        elif action == 'stand':
-            if not game:
-                return jsonify({'error': 'No game in progress'})
-            game.stand()
-            
-        elif action == 'double':
-            if game.bet_amount > current_balance:
+        for attempt in range(max_retries):
+            try:
+                # Get current session state
+                session_game = session.get('blackjack_game')
+                
+                # Verify session state integrity
+                if session_game is not None:
+                    try:
+                        game = BlackjackGame.deserialize(session_game)
+                        # Verify game state is valid
+                        state = game.get_game_state()
+                        if state is None:
+                            session['blackjack_game'] = None
+                            session.modified = True
+                            game = None
+                    except Exception as e:
+                        print(f"Error deserializing game state: {e}")
+                        session['blackjack_game'] = None
+                        session.modified = True
+                        game = None
+                else:
+                    game = None
+                
+                # Special handling for check_state and check_blackjack actions
+                if action in ['check_state', 'check_blackjack']:
+                    if not game:
+                        return jsonify({'error': 'No game in progress'})
+                    state = game.get_game_state()
+                    state['balance'] = user_data['balance']
+                    
+                    # For check_blackjack, we need to maintain the game state
+                    if action == 'check_blackjack':
+                        session['blackjack_game'] = game.serialize()
+                        session.modified = True
+                    
+                    return jsonify(state)
+                
+                # Handle other actions
+                if not game and action != 'deal':
+                    return jsonify({'error': 'No game in progress'})
+                
+                if action == 'deal':
+                    # Clear any existing game first
+                    session['blackjack_game'] = None
+                    session.modified = True
+                    
+                    bet_amount = round(float(data.get('amount', 0)), 2)
+                    
+                    if bet_amount <= 0:
+                        return jsonify({'error': 'Bet amount must be greater than 0'})
+                    if bet_amount > current_balance:
+                        return jsonify({'error': f'Insufficient funds (bet: ${bet_amount:.2f}, balance: ${current_balance:.2f})'})
+                    
+                    # Deduct bet immediately and save
+                    user_data['balance'] = round(current_balance - bet_amount, 2)
+                    save_user_data(user_data)
+                    
+                    # Create new game
+                    game = BlackjackGame()
+                    game.deal(bet_amount)
+                    
+                    # Store game state immediately after creation
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                    
+                elif action == 'split':
+                    if not game:
+                        return jsonify({'error': 'No game in progress'})
+                    
+                    # Check if player can afford split
+                    if game.bet_amount > current_balance:
+                        return jsonify({'error': 'Insufficient funds to split'})
+                    
+                    # Deduct split bet amount and save
+                    user_data['balance'] = current_balance - game.bet_amount
+                    save_user_data(user_data)
+                    game.split()
+                    
+                    # Store updated game state immediately
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                
+                elif action == 'hit':
+                    if not game:
+                        return jsonify({'error': 'No game in progress'})
+                    game.hit()
+                    
+                    # Store updated game state immediately
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                    
+                elif action == 'stand':
+                    if not game:
+                        return jsonify({'error': 'No game in progress'})
+                    
+                    # Store game state before standing
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                    
+                    game.stand()
+                    
+                    # Store updated game state immediately after standing
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                    
+                elif action == 'double':
+                    if not game:
+                        return jsonify({'error': 'No game in progress'})
+                        
+                    if game.bet_amount > current_balance:
+                        state = game.get_game_state()
+                        state['error'] = 'Insufficient funds to double down'
+                        return jsonify(state)
+                    
+                    # Deduct double down bet and save
+                    user_data['balance'] = current_balance - game.bet_amount
+                    save_user_data(user_data)
+                    
+                    # Store game state before doubling
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                    
+                    game.double_down()
+                    
+                    # Store updated game state immediately after doubling
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                
+                # Get game state
                 state = game.get_game_state()
-                state['error'] = 'Insufficient funds to double down'
+                
+                # Update balance if game is over
+                if state['gameOver']:
+                    current_balance = float(user_data['balance'])
+                    total_won = 0
+                    
+                    for i, won in enumerate(state['won']):
+                        bet = game.bet_amount if i == 0 else game.split_bet_amount
+                        if won == 'blackjack':
+                            winnings = bet * 2.5  # 3:2 payout for blackjack
+                            total_won += winnings
+                            update_earnings_achievements(user_data, winnings - bet)
+                        elif won is True:
+                            winnings = bet * 2  # 2x payout
+                            total_won += winnings
+                            update_earnings_achievements(user_data, winnings - bet)
+                        elif won is None:  # Push
+                            total_won += bet  # Return original bet
+                    
+                    if total_won > 0:
+                        user_data['balance'] = current_balance + total_won
+                        save_user_data(user_data)
+                    
+                    # Clear game
+                    session['blackjack_game'] = None
+                    session.modified = True
+                else:
+                    # Store serialized game state in session
+                    session['blackjack_game'] = game.serialize()
+                    session.modified = True
+                
+                # Add balance to response
+                state['balance'] = user_data['balance']
+                
+                # Force session to be saved
+                if session.modified:
+                    session.permanent = True
+                    session.modified = True
+                
                 return jsonify(state)
-            
-            # Deduct double down bet and save
-            user_data['balance'] = current_balance - game.bet_amount
-            save_user_data(user_data)
-            game.double_down()
+                
+            except Exception as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    # Wait a short time before retrying
+                    time.sleep(0.1 * (attempt + 1))
+                    continue
+                raise
         
-        # Get game state
-        state = game.get_game_state()
-        
-        # Update balance if game is over
-        if state['gameOver']:
-            current_balance = float(user_data['balance'])
-            total_won = 0
-            
-            for i, won in enumerate(state['won']):
-                bet = game.bet_amount if i == 0 else game.split_bet_amount
-                if won == 'blackjack':
-                    winnings = bet * 2.5  # 3:2 payout for blackjack
-                    total_won += winnings
-                    # Track earnings (winnings minus original bet)
-                    update_earnings_achievements(user_data, winnings - bet)
-                elif won is True:
-                    winnings = bet * 2  # 2x payout
-                    total_won += winnings
-                    # Track earnings (winnings minus original bet)
-                    update_earnings_achievements(user_data, winnings - bet)
-                elif won is None:  # Push
-                    total_won += bet  # Return original bet
-                # If loss (won is False), no need to track as it's a loss
-            
-            if total_won > 0:
-                user_data['balance'] = current_balance + total_won
-                save_user_data(user_data)
-            
-            # Clear game
-            session['blackjack_game'] = None
-        else:
-            # Store serialized game state in session
-            session['blackjack_game'] = game.serialize()
-        
-        # Add balance to response
-        state['balance'] = user_data['balance']
-        
-        return jsonify(state)
+        # If we get here, all retries failed
+        print(f"Error in play_blackjack after {max_retries} retries: {last_error}")
+        return jsonify({'error': 'Failed to process game action'})
         
     except Exception as e:
         print(f"Error in play_blackjack: {e}")
         if game:
-            state = game.get_game_state()
-            state['error'] = 'Failed to process game action'
-            return jsonify(state)
+            try:
+                state = game.get_game_state()
+                state['error'] = 'Failed to process game action'
+                return jsonify(state)
+            except:
+                pass
         return jsonify({'error': 'Failed to process game action'})
 
 @app.route('/crash')
 @login_required
 def crash():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('crash.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    # For Vue routes, we need to serve the main Vue app
+    return send_from_directory('frontend/dist', 'index.html')
 
 @app.route('/play_crash', methods=['POST'])
 @login_required
@@ -1748,14 +1874,8 @@ def sell_all():
 @app.route('/jackpot')
 @login_required
 def jackpot():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('jackpot.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('jackpot')
 
 @app.route('/get_jackpot_inventory')
 @login_required
@@ -1923,24 +2043,36 @@ def buy_skin():
         # Load user data
         user_data = load_user_data()
         current_balance = float(user_data['balance'])
-        shop_price = float(data.get('price', 0))  # This is the marked up price
+        shop_price = float(data.get('price', 0))  # This is the shop price
 
         if shop_price > current_balance:
             return jsonify({'error': 'Insufficient funds'})
 
-        # Create skin item with original adjusted price (not shop price)
+        # Generate float value if not provided
+        if 'float_value' not in data:
+            data['float_value'] = generate_float_for_wear(data['wear'])
+
+        # Calculate the adjusted price using the same logic as inventory
+        adjusted_price = load_skin_price(
+            f"{data['weapon']} | {data['name']}", 
+            data['case_type'],
+            data['wear'],
+            data['float_value'],
+            data.get('stattrak', False)
+        )
+
+        # Create skin item with adjusted price
         skin_item = {
             'weapon': data['weapon'],
             'name': data['name'],
             'rarity': data['rarity'],
             'wear': data['wear'],
             'stattrak': data['stattrak'],
-            'price': data.get('adjusted_price', data.get('price')),  # Use original adjusted price
+            'price': adjusted_price,  # Use adjusted price here
             'float_value': data['float_value'],
             'timestamp': time.time(),
             'case_type': data['case_type'],
-            'is_case': False,
-            'base_price': data.get('base_price', data['price'])
+            'is_case': False
         }
 
         # Update user data using shop price for purchase
@@ -1952,7 +2084,6 @@ def buy_skin():
             'success': True,
             'balance': user_data['balance']
         })
-
     except Exception as e:
         print(f"Error in buy_skin: {e}")
         return jsonify({'error': 'Failed to purchase skin'})
@@ -2035,14 +2166,8 @@ def get_featured_skins():
 @app.route('/upgrade')
 @login_required
 def upgrade_game():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('upgrade.html',
-                           balance=user.balance,
-                           rank=user.rank,
-                           exp=user.exp,
-                           RANKS=RANKS,
-                           RANK_EXP=RANK_EXP)
+    # For Vue routes, we need to serve the main Vue app
+    return send_from_directory('frontend/dist', 'index.html')
 
 @app.route('/play_upgrade', methods=['POST'])
 @login_required
@@ -2063,6 +2188,63 @@ def play_upgrade():
         total_value = sum(float(item['price']) for item in items)
         target_value = total_value * multiplier
         
+        # Load all possible skins first
+        available_skins = []
+        for case_type, file_name in CASE_FILE_MAPPING.items():
+            try:
+                with open(f'cases/{file_name}.json', 'r') as f:
+                    case_data = json.load(f)
+                    for grade, skins in case_data['skins'].items():
+                        for skin in skins:
+                            # First get the base wear prices
+                            for wear, base_price in skin['prices'].items():
+                                if wear != 'NO' and not wear.startswith('ST_'):
+                                    float_value = generate_float_for_wear(wear)
+                                    
+                                    # Handle normal version
+                                    normal_price = float(base_price)
+                                    adjusted_normal_price = adjust_price_by_float(normal_price, wear, float_value)
+                                    
+                                    # Add normal version
+                                    available_skins.append({
+                                        'weapon': skin['weapon'],
+                                        'name': skin['name'],
+                                        'wear': wear,
+                                        'price': adjusted_normal_price,
+                                        'base_price': normal_price,
+                                        'rarity': grade.upper(),
+                                        'case_type': case_type,
+                                        'stattrak': False,
+                                        'timestamp': time.time(),
+                                        'float_value': float_value
+                                    })
+                                    
+                                    # Handle StatTrak version if available
+                                    st_key = f'ST_{wear}'
+                                    if st_key in skin['prices']:
+                                        st_base_price = float(skin['prices'][st_key])
+                                        # Use StatTrak base price for adjustment
+                                        adjusted_st_price = adjust_price_by_float(st_base_price, wear, float_value)
+                                        
+                                        available_skins.append({
+                                            'weapon': skin['weapon'],
+                                            'name': skin['name'],
+                                            'wear': wear,
+                                            'price': adjusted_st_price,
+                                            'base_price': st_base_price,
+                                            'rarity': grade.upper(),
+                                            'case_type': case_type,
+                                            'stattrak': True,
+                                            'timestamp': time.time(),
+                                            'float_value': float_value
+                                        })
+            except Exception as e:
+                print(f"Error loading case {case_type}: {e}")
+                continue
+
+        # Find potential winning skins before determining outcome
+        won_skins = find_best_skin_combination(available_skins, target_value)
+        
         # Success probabilities for each multiplier
         probabilities = {
             2: 46,
@@ -2076,89 +2258,24 @@ def play_upgrade():
         success_probability = probabilities.get(multiplier, 0) / 100
         success = random.random() < success_probability
         
+        # Remove selected items from inventory
+        selected_indices = []
+        for selected_item in items:
+            for i, inv_item in enumerate(inventory):
+                if (i not in selected_indices and
+                    inv_item.get('weapon') == selected_item['weapon'] and
+                    inv_item.get('name') == selected_item['name'] and
+                    inv_item.get('wear') == selected_item['wear'] and
+                    inv_item.get('stattrak') == selected_item['stattrak']):
+                    selected_indices.append(i)
+                    break
+        
+        # Create new inventory without selected items
+        new_inventory = [item for i, item in enumerate(inventory) 
+                       if i not in selected_indices]
+        
         if success:
-            # Load all possible skins
-            available_skins = []
-            for case_type, file_name in CASE_FILE_MAPPING.items():
-                try:
-                    with open(f'cases/{file_name}.json', 'r') as f:
-                        case_data = json.load(f)
-                        for grade, skins in case_data['skins'].items():
-                            for skin in skins:
-                                # First get the base wear prices
-                                for wear, base_price in skin['prices'].items():
-                                    if wear != 'NO' and not wear.startswith('ST_'):
-                                        float_value = generate_float_for_wear(wear)
-                                        
-                                        # Handle normal version
-                                        normal_price = float(base_price)
-                                        adjusted_normal_price = adjust_price_by_float(normal_price, wear, float_value)
-                                        
-                                        # Add normal version
-                                        available_skins.append({
-                                            'weapon': skin['weapon'],
-                                            'name': skin['name'],
-                                            'wear': wear,
-                                            'price': adjusted_normal_price,
-                                            'base_price': normal_price,
-                                            'rarity': grade.upper(),
-                                            'case_type': case_type,
-                                            'stattrak': False,
-                                            'timestamp': time.time(),
-                                            'float_value': float_value
-                                        })
-                                        
-                                        # Handle StatTrak version if available
-                                        st_key = f'ST_{wear}'
-                                        if st_key in skin['prices']:
-                                            st_base_price = float(skin['prices'][st_key])
-                                            # Use StatTrak base price for adjustment
-                                            adjusted_st_price = adjust_price_by_float(st_base_price, wear, float_value)
-                                            
-                                            # For debugging high-value items
-                                            if st_base_price > 1000:
-                                                print(f"\nProcessing high-value StatTrak item:")
-                                                print(f"Item: {skin['weapon']} | {skin['name']} ({wear})")
-                                                print(f"StatTrak base price: ${st_base_price}")
-                                                print(f"Float value: {float_value}")
-                                                print(f"Adjusted price: ${adjusted_st_price}")
-                                            
-                                            available_skins.append({
-                                                'weapon': skin['weapon'],
-                                                'name': skin['name'],
-                                                'wear': wear,
-                                                'price': adjusted_st_price,
-                                                'base_price': st_base_price,  # Store StatTrak base price
-                                                'rarity': grade.upper(),
-                                                'case_type': case_type,
-                                                'stattrak': True,
-                                                'timestamp': time.time(),
-                                                'float_value': float_value
-                                            })
-                except Exception as e:
-                    print(f"Error loading case {case_type}: {e}")
-                    continue
-            
-            # Find best combination of skins
-            won_skins = find_best_skin_combination(available_skins, target_value)
-            
-            # Remove selected items from inventory
-            selected_indices = []
-            for selected_item in items:
-                for i, inv_item in enumerate(inventory):
-                    if (i not in selected_indices and
-                        inv_item.get('weapon') == selected_item['weapon'] and
-                        inv_item.get('name') == selected_item['name'] and
-                        inv_item.get('wear') == selected_item['wear'] and
-                        inv_item.get('stattrak') == selected_item['stattrak']):
-                        selected_indices.append(i)
-                        break
-            
-            # Create new inventory without selected items
-            new_inventory = [item for i, item in enumerate(inventory) 
-                           if i not in selected_indices]
-            
-            # Add won skins to inventory with their adjusted prices
+            # Add won skins to inventory
             new_inventory.extend(won_skins)
             
             # Update user data
@@ -2176,25 +2293,8 @@ def play_upgrade():
                 'total_value': won_value,
                 'target_value': target_value
             })
-            
         else:
-            # Remove selected items from inventory on loss
-            selected_indices = []
-            for selected_item in items:
-                for i, inv_item in enumerate(inventory):
-                    if (i not in selected_indices and
-                        inv_item.get('weapon') == selected_item['weapon'] and
-                        inv_item.get('name') == selected_item['name'] and
-                        inv_item.get('wear') == selected_item['wear'] and
-                        inv_item.get('stattrak') == selected_item['stattrak']):
-                        selected_indices.append(i)
-                        break
-            
-            # Create new inventory without selected items
-            new_inventory = [item for i, item in enumerate(inventory) 
-                           if i not in selected_indices]
-            
-            # Update user data
+            # Update user data with removed items
             user_data['inventory'] = new_inventory
             save_user_data(user_data)
             
@@ -2308,14 +2408,8 @@ def case_click():
 @app.route('/trading')
 @login_required
 def trading():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    return render_template('trading.html',
-                         balance=user.balance,
-                         rank=user.rank,
-                         exp=user.exp,
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP)
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('')
 
 @app.route('/get_trades')
 @login_required
@@ -2717,15 +2811,16 @@ def achievements():
 @app.route('/clicker')
 @login_required
 def clicker():
-    user_data = load_user_data()
-    return render_template('clicker.html', 
-                         balance=user_data['balance'],
-                         rank=user_data['rank'],
-                         exp=user_data['exp'],
-                         upgrades=user_data['upgrades'],
-                         user_data=user_data,
-                         RANK_EXP=RANK_EXP,
-                         RANKS=RANKS)
+    # For Vue routes, we need to serve the main Vue app
+    return send_from_directory('frontend/dist', 'index.html')
+
+# Add a catch-all route for Vue router
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if path and (path.startswith('api/') or path.startswith('static/')):
+        return app.send_static_file('404.html'), 404
+    return send_from_directory('frontend/dist', 'index.html')
 
 # Add this route to handle achievement completion
 @app.route('/complete_achievement', methods=['POST'])
@@ -2899,52 +2994,8 @@ def process_auction_background():
 @app.route('/auction')
 @login_required
 def auction():
-    user_data = load_user_data()
-    user = create_user_from_dict(user_data)
-    
-    global CURRENT_AUCTION, AUCTION_END_TIME, AUCTION_BIDS, AUCTION_BOT_BUDGETS
-    
-    with auction_lock:
-        # Check if current auction has ended
-        if (CURRENT_AUCTION and AUCTION_END_TIME and datetime.now() >= AUCTION_END_TIME):
-            complete_auction()
-            CURRENT_AUCTION = None
-            AUCTION_END_TIME = None
-            AUCTION_BIDS = []
-            AUCTION_BOT_BUDGETS = {}
-            global LAST_BIDDER
-            LAST_BIDDER = None
-        
-        # Initialize new auction if needed
-        if not CURRENT_AUCTION or not AUCTION_END_TIME:
-            CURRENT_AUCTION = generate_auction_item()
-            AUCTION_END_TIME = datetime.now() + timedelta(minutes=30)
-            AUCTION_BIDS = []
-            AUCTION_BOT_BUDGETS = generate_bot_budgets(CURRENT_AUCTION['base_price'])
-            LAST_BIDDER = None
-            start_auction_thread()
-    
-    # Get initial bot statuses with correct online/offline state
-    current_bid = get_current_bid()
-    initial_bot_statuses = []
-    for bot_name, data in AUCTION_BOT_BUDGETS.items():
-        initial_bot_statuses.append({
-            'name': bot_name,
-            'status': data['status']
-        })
-    
-    return render_template('auction.html',
-                         balance=user.balance,
-                         rank=user.rank,
-                         exp=user.exp,
-                         RANKS=RANKS,
-                         RANK_EXP=RANK_EXP,
-                         auction_item=CURRENT_AUCTION,
-                         end_time=AUCTION_END_TIME,
-                         current_bid=get_current_bid(),
-                         bids=AUCTION_BIDS,
-                         active_bots=initial_bot_statuses,  # Pass the full status objects
-                         debug=app.debug)
+    # For Vue routes, we need to serve the main Vue app
+    return render_template('index.html')
 
 def generate_auction_item():
     """Generate a rare/valuable item for auction with balanced distribution"""
@@ -3382,11 +3433,19 @@ def get_auction_status():
                 'status': data['status']  # Include online/offline status
             })
         
+        # Check if auction has ended
+        auction_ended = AUCTION_END_TIME and datetime.now() >= AUCTION_END_TIME
+        winner = 'You' if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You' else None
+        
         return jsonify({
+            'auction_item': CURRENT_AUCTION,
             'current_bid': current_bid,
             'bids': AUCTION_BIDS,
             'end_time': AUCTION_END_TIME.isoformat() if AUCTION_END_TIME else None,
-            'bot_statuses': bot_statuses
+            'bot_statuses': bot_statuses,
+            'ended': auction_ended,
+            'winner': winner,
+            'final_price': current_bid if auction_ended else None
         })
 
 @app.route('/close_roulette_bets', methods=['POST'])
@@ -3489,6 +3548,216 @@ atexit.register(cleanup_auction)
 # Initialize auction system when app starts
 with app.app_context():
     init_auction_system()
+
+@app.route('/api/data/case_contents/all')
+def get_all_case_contents():
+    try:
+        # Use load_case from cases_prices_and_floats.py
+        cases = load_case('all')
+        if not cases:
+            return jsonify({'error': 'Failed to load cases'}), 500
+        return jsonify(cases)
+    except Exception as e:
+        print(f"Error loading all cases: {str(e)}")
+        return jsonify({'error': 'Failed to load cases'}), 500
+
+def calculate_rank(exp):
+    """Calculate rank based on experience points"""
+    for rank, required_exp in RANK_EXP.items():
+        if exp < required_exp:
+            return {
+                'rank': rank,
+                'name': RANKS[rank],
+                'next_rank_exp': required_exp
+            }
+    
+    # If exp is higher than all ranks, return max rank
+    max_rank = max(RANKS.keys())
+    return {
+        'rank': max_rank,
+        'name': RANKS[max_rank],
+        'next_rank_exp': None
+    }
+
+@app.route('/api/batch_click', methods=['POST'])
+@login_required
+def batch_click():
+    try:
+        data = request.get_json()
+        normal_clicks = data.get('normal_clicks', 0)
+        critical_clicks = data.get('critical_clicks', 0)
+        auto_normal_clicks = data.get('auto_normal_clicks', 0)
+        auto_critical_clicks = data.get('auto_critical_clicks', 0)
+        
+        # Load user data from file to ensure we have the latest
+        user_data = load_user_data()
+        current_balance = float(user_data.get('balance', 0))
+        current_exp = int(user_data.get('exp', 0))
+        
+        # Get base click value from upgrades
+        upgrades = user_data.get('upgrades', {})
+        click_value_level = upgrades.get('click_value', 1)
+        base_click_value = 0.01 * (1.5 ** (click_value_level - 1))
+        
+        # Calculate total value from manual clicks
+        manual_normal_value = normal_clicks * base_click_value * user_data.get('clicker', {}).get('currentMultiplier', 1.0)
+        manual_critical_value = critical_clicks * base_click_value * user_data.get('clicker', {}).get('currentMultiplier', 1.0) * 4
+        
+        # Calculate total value from auto clicks (always use base multiplier of 1.0)
+        auto_normal_value = auto_normal_clicks * base_click_value
+        auto_critical_value = auto_critical_clicks * base_click_value * 4
+        
+        # Calculate total value and exp (only manual clicks give exp)
+        total_value = round(manual_normal_value + manual_critical_value + auto_normal_value + auto_critical_value, 3)
+        total_exp = 0  # No exp from clicks anymore
+        
+        # Update user data
+        new_balance = round(current_balance + total_value, 3)  # Round to 3 decimal places
+        new_exp = current_exp + total_exp
+        
+        # Calculate rank
+        rank_data = calculate_rank(new_exp)
+        
+        # Update user data
+        user_data['balance'] = new_balance
+        user_data['exp'] = new_exp
+        user_data['rank'] = rank_data['rank']
+        
+        # Update stats
+        if 'stats' not in user_data:
+            user_data['stats'] = {}
+        if 'total_clicks' not in user_data['stats']:
+            user_data['stats']['total_clicks'] = 0
+        if 'total_earnings' not in user_data['stats']:
+            user_data['stats']['total_earnings'] = 0
+            
+        user_data['stats']['total_clicks'] += normal_clicks + critical_clicks + auto_normal_clicks + auto_critical_clicks
+        user_data['stats']['total_earnings'] = round(user_data['stats'].get('total_earnings', 0) + total_value, 3)
+        
+        # Save to file
+        save_user_data(user_data)
+        
+        # Update session
+        session['user_data'] = user_data
+        session.modified = True
+        
+        return jsonify({
+            'success': True,
+            'balance': new_balance,
+            'exp': new_exp,
+            'rank': rank_data['rank'],
+            'rankName': RANKS[rank_data['rank']],
+            'nextRankExp': RANK_EXP[rank_data['rank']] if rank_data['rank'] < len(RANK_EXP) else None
+        })
+        
+    except Exception as e:
+        print('Error in batch_click:', str(e))
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/batch_case_click', methods=['POST'])
+@login_required
+def batch_case_click():
+    try:
+        data = request.get_json()
+        click_count = data.get('click_count', 0)
+        current_progress = float(data.get('current_progress', 0))
+        
+        user_data = load_user_data()
+        upgrades = user_data.get('upgrades', {})
+        progress_per_click = upgrades.get('progress_per_click', 1)
+        case_quality = upgrades.get('case_quality', 1)
+        
+        # Calculate total progress
+        total_progress = current_progress + (progress_per_click * click_count)
+        earned_cases = []
+        
+        # Process complete cases (100% progress)
+        while total_progress >= 100:
+            # Reset progress
+            total_progress -= 100
+            
+            # Get price range based on case quality level
+            price_ranges = {
+                1: (0, 2),    # Level 1: 0-2 USD
+                2: (0, 5),    # Level 2: 0-5 USD
+                3: (0, 10),   # Level 3: 0-10 USD
+                4: (0, 15),   # Level 4: 0-15 USD
+                5: (0, 20)    # Level 5: 0-20 USD
+            }
+            
+            min_price, max_price = price_ranges.get(case_quality, (0, 2))
+            
+            # Get available cases within price range
+            available_cases = []
+            for case_type, file_name in CASE_FILE_MAPPING.items():
+                try:
+                    with open(f'cases/{file_name}.json', 'r') as f:
+                        case_data = json.load(f)
+                        price = float(case_data.get('price', 0))
+                        if min_price <= price <= max_price:
+                            available_cases.append((case_type, case_data))
+                except Exception as e:
+                    print(f"Error checking case price for {case_type}: {e}")
+                    continue
+            
+            if available_cases:
+                earned_case, case_data = random.choice(available_cases)
+                earned_case_data = {
+                    'name': case_data['name'],
+                    'image': case_data['image'],
+                    'price': case_data['price'],
+                    'type': earned_case
+                }
+                earned_cases.append(earned_case_data)
+                
+                # Add case to inventory
+                inventory = user_data.get('inventory', [])
+                case_found = False
+                
+                for item in inventory:
+                    if item.get('is_case') and item.get('type') == earned_case:
+                        item['quantity'] = item.get('quantity', 0) + 1
+                        case_found = True
+                        break
+                
+                if not case_found:
+                    inventory.append({
+                        'name': case_data['name'],
+                        'image': case_data['image'],
+                        'is_case': True,
+                        'type': earned_case,
+                        'quantity': 1
+                    })
+                
+                # Update inventory in user_data
+                user_data['inventory'] = inventory
+        
+        # Save final progress
+        user_data['case_progress'] = total_progress
+        save_user_data(user_data)
+        
+        return jsonify({
+            'success': True,
+            'progress': total_progress,
+            'earned_cases': earned_cases,
+            'progress_per_click': progress_per_click
+        })
+        
+    except Exception as e:
+        print(f"Error in batch case click: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get_balance')
+@login_required
+def get_balance():
+    try:
+        user_data = load_user_data()
+        return jsonify({
+            'balance': float(user_data['balance'])
+        })
+    except Exception as e:
+        print(f"Error getting balance: {e}")
+        return jsonify({'error': 'Failed to get balance'}), 500
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

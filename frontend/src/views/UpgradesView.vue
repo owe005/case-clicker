@@ -248,7 +248,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 export default {
   name: 'UpgradesView',
@@ -275,7 +275,27 @@ export default {
       multi_open: 5
     }
 
-    const balance = ref(1000)
+    const balance = ref(0)
+
+    const loadUpgrades = async () => {
+      try {
+        const response = await fetch('/get_upgrades')
+        const data = await response.json()
+        upgrades.value = data
+      } catch (error) {
+        console.error('Error loading upgrades:', error)
+      }
+    }
+
+    const loadUserData = async () => {
+      try {
+        const response = await fetch('/api/get_user_data')
+        const data = await response.json()
+        balance.value = data.balance
+      } catch (error) {
+        console.error('Error loading user data:', error)
+      }
+    }
 
     const getCost = (type) => {
       const costs = {
@@ -337,6 +357,12 @@ export default {
         console.error('Error purchasing upgrade:', error)
       }
     }
+
+    // Load initial data
+    onMounted(() => {
+      loadUpgrades()
+      loadUserData()
+    })
 
     return {
       upgrades,

@@ -458,7 +458,7 @@
         "red": [
             {
                 "weapon": "M4A1-S",
-                "name": "Chantico's Fire",
+                "name": "Chanticos Fire",
                 "image": "m4a1s_chanticos_fire.png",
                 "grade": "red",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],

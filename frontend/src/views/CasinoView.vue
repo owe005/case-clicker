@@ -13,141 +13,141 @@
     <div class="max-w-7xl mx-auto px-4 pb-12">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Blackjack -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <!-- Game Preview -->
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/blackjack.png" 
                 alt="Blackjack"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
             <!-- Game Info -->
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Blackjack</h2>
-              <p class="text-white/70 mb-6">Classic casino blackjack - try to beat the dealer to 21!</p>
-              <button 
-                @click="playGame('blackjack')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">Classic casino blackjack - try to beat the dealer to 21!</p>
+              <router-link 
+                to="/blackjack"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
 
         <!-- Jackpot -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/jackpot.png" 
                 alt="Jackpot"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Jackpot</h2>
-              <p class="text-white/70 mb-6">Bet your skins against other players for a chance to win big!</p>
-              <button 
-                @click="playGame('jackpot')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">Bet your skins against other players for a chance to win big!</p>
+              <router-link 
+                to="/jackpot"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
 
         <!-- Crash -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/crash.png" 
                 alt="Crash"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Crash</h2>
-              <p class="text-white/70 mb-6">Cash out before the line crashes! The longer you wait, the more you win.</p>
-              <button 
-                @click="playGame('crash')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">Watch the multiplier grow and cash out before it crashes!</p>
+              <router-link 
+                to="/crash"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
 
         <!-- Upgrade -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/upgrade.png" 
                 alt="Upgrade"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Upgrade</h2>
-              <p class="text-white/70 mb-6">Try to upgrade your skins to more valuable ones!</p>
-              <button 
-                @click="playGame('upgrade')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">Try to upgrade your skins to more valuable ones!</p>
+              <router-link 
+                to="/upgrade"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
 
         <!-- Coinflip -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/coinflip.png" 
                 alt="Coinflip"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Coinflip</h2>
-              <p class="text-white/70 mb-6">50/50 chance to double your bet!</p>
-              <button 
-                @click="playGame('coinflip')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">50/50 chance to double your bet!</p>
+              <router-link 
+                to="/coinflip"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
 
         <!-- Roulette -->
-        <div class="group">
-          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl">
-            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden">
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
                 src="@/assets/casino/roulette.png" 
                 alt="Roulette"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
             </div>
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <h2 class="text-xl font-display text-white mb-2">Roulette</h2>
-              <p class="text-white/70 mb-6">Classic casino roulette with CS:GO skins!</p>
-              <button 
-                @click="playGame('roulette')"
-                class="w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+              <p class="text-white/70 mb-6 flex-grow">Classic casino roulette with CS:GO skins!</p>
+              <router-link 
+                to="/roulette"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
               >
                 Play Now
-              </button>
+              </router-link>
             </div>
           </div>
         </div>

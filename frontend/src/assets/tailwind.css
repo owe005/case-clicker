@@ -46,7 +46,7 @@
   }
 
   .progress-fill {
-    @apply relative bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300;
+    @apply relative bg-gradient-to-r from-yellow to-yellow/80 transition-all duration-300;
   }
 
   .progress-fill::after {

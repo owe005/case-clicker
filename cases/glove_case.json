@@ -230,7 +230,7 @@
             },
             {
                 "weapon": "Sport Gloves",
-                "name": "Pandora's Box",
+                "name": "Pandoras Box",
                 "image": "sportgloves_pandoras_box.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],

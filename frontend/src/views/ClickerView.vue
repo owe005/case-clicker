@@ -1,5 +1,24 @@
 <template>
   <div class="min-h-screen bg-gray-darker">
+    <!-- Floating Text Container -->
+    <div class="fixed inset-0 pointer-events-none z-[100]">
+      <TransitionGroup name="float">
+        <div
+          v-for="text in floatingTexts"
+          :key="text.id"
+          class="floating-money absolute"
+          :class="{ 'critical': text.isCritical }"
+          :style="{
+            left: `${text.x}px`,
+            top: `${text.y}px`,
+            transform: 'translate(-50%, -50%)'
+          }"
+        >
+          {{ text.content }}
+        </div>
+      </TransitionGroup>
+    </div>
+
     <!-- Header -->
     <div class="relative py-12 mb-8">
       <div class="absolute inset-0 bg-gradient-to-b from-yellow/5 to-transparent"></div>
@@ -33,33 +52,37 @@
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-6 w-full max-w-2xl">
           <div class="bg-gray-dark/50 rounded-xl p-4 text-center">
-            <div class="text-white/70 text-sm mb-1">Multiplier</div>
-            <div class="text-yellow text-xl font-medium">{{ currentMultiplier }}x</div>
+            <div class="text-white/70 text-sm mb-1 select-none">Multiplier</div>
+            <div class="text-yellow text-xl font-medium select-none">{{ currentMultiplier }}x</div>
           </div>
           <div class="bg-gray-dark/50 rounded-xl p-4 text-center">
-            <div class="text-white/70 text-sm mb-1">Crit Chance</div>
-            <div class="text-yellow text-xl font-medium">{{ critChance }}%</div>
+            <div class="text-white/70 text-sm mb-1 select-none">Crit Chance</div>
+            <div class="text-yellow text-xl font-medium select-none">{{ critChance }}%</div>
           </div>
           <div class="bg-gray-dark/50 rounded-xl p-4 text-center">
-            <div class="text-white/70 text-sm mb-1">Auto Click</div>
-            <div class="text-yellow text-xl font-medium">{{ autoClickRate }}/s</div>
+            <div class="text-white/70 text-sm mb-1 select-none">Auto Click</div>
+            <div class="text-yellow text-xl font-medium select-none">{{ autoClickRate }}/s</div>
           </div>
         </div>
 
+        <!-- USD per Second Display -->
+        <div class="bg-gray-dark/50 rounded-xl p-4 text-center w-full max-w-2xl">
+          <div class="text-white/70 text-sm mb-1 select-none">Earnings Rate</div>
+          <div class="text-yellow text-xl font-medium select-none">${{ earningsPerSecond }}/s</div>
+        </div>
+
         <!-- Clicker Button -->
-        <div class="relative">
+        <div class="relative" @mouseleave="handleMouseLeave">
           <button 
             @click="handleMoneyClick"
-            class="w-48 h-48 rounded-full bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
-                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group"
+            class="clicker-btn w-32 h-32 rounded-full bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
+                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group overflow-hidden relative z-10"
           >
             <div class="absolute inset-0 rounded-full bg-gradient-to-r from-yellow/20 via-yellow/10 to-yellow/5 
                         animate-pulse group-hover:animate-none"></div>
-            <div class="relative flex flex-col items-center">
-              <img src="@/assets/coin.png" alt="Coin" class="w-24 h-24 mb-2">
-              <div class="text-yellow font-medium">{{ currentMultiplier }}x</div>
-            </div>
+            <img src="@/assets/coin.png" alt="Coin" class="w-32 h-32 object-contain relative z-10" draggable="false">
           </button>
+          <div class="text-yellow font-medium text-center mt-2 select-none">{{ currentMultiplier }}x</div>
         </div>
       </div>
 
@@ -68,12 +91,12 @@
         <!-- Stats -->
         <div class="grid grid-cols-2 gap-6 w-full max-w-xl">
           <div class="bg-gray-dark/50 rounded-xl p-4 text-center">
-            <div class="text-white/70 text-sm mb-1">Progress per Click</div>
-            <div class="text-yellow text-xl font-medium">{{ progressPerClick }}%</div>
+            <div class="text-white/70 text-sm mb-1 select-none">Progress per Click</div>
+            <div class="text-yellow text-xl font-medium select-none">{{ progressPerClick }}%</div>
           </div>
           <div class="bg-gray-dark/50 rounded-xl p-4 text-center">
-            <div class="text-white/70 text-sm mb-1">Case Quality</div>
-            <div class="text-yellow text-xl font-medium">{{ caseQuality }}</div>
+            <div class="text-white/70 text-sm mb-1 select-none">Case Quality</div>
+            <div class="text-yellow text-xl font-medium select-none">{{ caseQuality }}</div>
           </div>
         </div>
 
@@ -89,12 +112,12 @@
         <div class="relative">
           <button 
             @click="handleCaseClick"
-            class="w-48 h-48 rounded-xl bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
-                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group"
+            class="clicker-btn w-32 h-32 rounded-xl bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
+                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group relative z-10"
           >
             <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow/20 via-yellow/10 to-yellow/5 
                         animate-pulse group-hover:animate-none"></div>
-            <img :src="currentCaseImage" alt="Case" class="w-32 h-32">
+            <img :src="currentCaseImage" alt="Case" class="w-32 h-32 object-contain relative z-10" draggable="false">
           </button>
         </div>
       </div>
@@ -134,39 +157,29 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
+import { useStore } from '@/store'
+import '@/assets/clicker.css'
 
 export default {
   name: 'ClickerView',
   setup() {
+    const store = useStore()
+    
     // State
     const currentTab = ref('money')
-    const currentMultiplier = ref(1.0)
-    const critChance = ref(0)
-    const autoClickRate = ref(0)
-    const progressPerClick = ref(1)
-    const caseQuality = ref(1)
-    const caseProgress = ref(0)
     const showCaseModal = ref(false)
     const showChest = ref(false)
-    const comboClickCount = ref(0)
-    const clicksToCombo = ref(20)
-    const maxMultiplier = ref(2.0)
-    const baseClickValue = ref(0.01)
-    const pendingClicks = ref(0)
-    const isProcessingClick = ref(false)
-    const lastProgress = ref(0)
-
-    const tabs = [
-      { id: 'money', name: 'Money Clicker' },
-      { id: 'case', name: 'Case Clicker' }
-    ]
-
     const earnedCase = ref({
       name: '',
       image: '',
       price: 0
     })
+
+    const tabs = [
+      { id: 'money', name: 'Money Clicker' },
+      { id: 'case', name: 'Case Clicker' }
+    ]
 
     const cases = [
       'weapon_case_1.png',
@@ -177,113 +190,242 @@ export default {
 
     const currentCaseImage = ref(`/static/media/cases/${cases[0]}`)
 
-    // Methods
-    const handleMoneyClick = async () => {
-      if (!isProcessingClick.value) {
-        try {
-          // Increment combo on manual clicks
-          comboClickCount.value++
-          
-          if (comboClickCount.value >= clicksToCombo.value) {
-            comboClickCount.value = 0
-            currentMultiplier.value = Math.min(
-              parseFloat((currentMultiplier.value + 0.1).toFixed(1)),
-              maxMultiplier.value
-            )
-          }
+    // Computed properties from store
+    const currentMultiplier = computed(() => store.state.clicker.currentMultiplier)
+    const critChance = computed(() => store.state.upgrades.critical_strike)
+    const autoClickRate = computed(() => {
+      const level = store.state.upgrades.auto_clicker
+      if (level <= 0) return 0
+      
+      // For levels 1-9: Clicks per second increase from 0.1 to 0.9
+      if (level <= 9) return level * 0.1
+      
+      // For levels 10+: One click per second plus additional clicks based on level
+      return level - 9
+    })
+    const progressPerClick = computed(() => store.state.upgrades.progress_per_click)
+    const caseQuality = computed(() => store.state.upgrades.case_quality)
+    const caseProgress = computed(() => store.state.clicker.caseProgress)
 
-          // Calculate critical strike
-          let isCritical = false
-          const criticalChance = critChance.value / 100
-          
-          if (criticalChance > 0) {
-            const roll = Math.random()
-            if (roll < criticalChance) {
-              isCritical = true
-            }
-          }
+    // Add click tracking state
+    const clickHistory = ref([])
+    const CLICK_HISTORY_WINDOW = 5000 // Track clicks over 5 seconds
+    const manualClicksPerSecond = ref(0)
 
-          // Create floating money text
-          createFloatingMoney(currentMultiplier.value * baseClickValue.value, isCritical)
-
-          // TODO: Send click to backend
-          // const response = await fetch('/click', {...})
-        } catch (error) {
-          console.error('Error processing click:', error)
-        }
-      }
+    // Update clicks per second every 100ms
+    const updateClicksPerSecond = () => {
+      const now = Date.now()
+      clickHistory.value = clickHistory.value.filter(time => now - time < CLICK_HISTORY_WINDOW)
+      manualClicksPerSecond.value = clickHistory.value.length / (CLICK_HISTORY_WINDOW / 1000)
     }
 
-    const handleCaseClick = async () => {
-      pendingClicks.value++
+    // Set up interval to update clicks per second
+    let updateInterval
+    onMounted(() => {
+      updateInterval = setInterval(updateClicksPerSecond, 100)
+    })
+
+    onBeforeUnmount(() => {
+      if (updateInterval) clearInterval(updateInterval)
+    })
+
+    // Add earnings per second computed property
+    const earningsPerSecond = computed(() => {
+      const baseValue = store.state.clicker.baseClickValue || 0.01
+      const autoClicks = parseFloat(autoClickRate.value)
+      const critRate = critChance.value / 100
+      const totalClicksPerSecond = autoClicks + manualClicksPerSecond.value
       
-      if (!isProcessingClick.value) {
+      // Calculate average value per click including crits
+      const avgCritMultiplier = 1 + (critRate * 3) // Crits do 4x damage, so +3x extra
+      const valuePerClick = baseValue * avgCritMultiplier
+      
+      // Calculate earnings per second from all clicks
+      return (valuePerClick * totalClicksPerSecond).toFixed(3)
+    })
+
+    // Update handleMoneyClick to handle auto clicks
+    const handleMoneyClick = async (event, isAutoClick = false) => {
+      // Only add to click history for manual clicks
+      if (!isAutoClick) {
+        clickHistory.value.push(Date.now())
+      }
+
+      // Calculate critical strike
+      let isCritical = false
+      const criticalChance = critChance.value / 100
+      
+      if (criticalChance > 0) {
+        const roll = Math.random()
+        if (roll < criticalChance) {
+          isCritical = true
+        }
+      }
+
+      // Get click position for floating text
+      let x, y
+      const clickerBtn = document.querySelector('.clicker-btn')
+      if (clickerBtn) {
+        const rect = clickerBtn.getBoundingClientRect()
+        x = rect.left + rect.width / 2
+        y = rect.top + rect.height / 2
+
+        // Add randomness to position for auto clicks
+        if (isAutoClick) {
+          x += (Math.random() - 0.5) * rect.width * 0.5
+          y += (Math.random() - 0.5) * rect.height * 0.5
+        }
+
+        // Add floating text immediately
+        addFloatingText(
+          x, 
+          y, 
+          `+$${(currentMultiplier.value * store.state.clicker.baseClickValue).toFixed(3)}`,
+          isCritical
+        )
+      }
+
+      // Only update multiplier for manual clicks
+      if (!isAutoClick) {
+        store.updateClickerMultiplier()
+      }
+
+      // Add click to pending queue
+      pendingClicks.value.push({ isCritical, isAutoClick })
+
+      // Process clicks if we have enough in the queue or not currently processing
+      if (pendingClicks.value.length >= 10 || !isProcessingClick.value) {
         await processClicks()
       }
     }
 
+    // Update processClicks to handle auto clicks
     const processClicks = async () => {
+      if (isProcessingClick.value || pendingClicks.value.length === 0) return
+
       isProcessingClick.value = true
-      
-      while (pendingClicks.value > 0) {
-        try {
-          // TODO: Replace with actual API call
-          // const response = await fetch('/case_click', {...})
-          
-          // Simulate progress
-          lastProgress.value = Math.min(lastProgress.value + progressPerClick.value, 100)
-          caseProgress.value = lastProgress.value
-          
-          if (caseProgress.value >= 100) {
-            // Case earned
-            earnedCase.value = {
-              name: 'CS2 Case',
-              image: '/static/media/cases/cs2_case.png',
-              price: 2.99
-            }
-            showCaseModal.value = true
-            lastProgress.value = 0
-            caseProgress.value = 0
-            pendingClicks.value = 0
-            break
+
+      try {
+        // Process all pending clicks in one batch
+        const clicks = [...pendingClicks.value]
+        pendingClicks.value = [] // Clear the queue immediately
+
+        // Count critical and normal clicks, separating auto and manual
+        const criticalClicks = clicks.filter(click => click.isCritical && !click.isAutoClick).length
+        const normalClicks = clicks.filter(click => !click.isCritical && !click.isAutoClick).length
+        const autoCriticalClicks = clicks.filter(click => click.isCritical && click.isAutoClick).length
+        const autoNormalClicks = clicks.filter(click => !click.isCritical && click.isAutoClick).length
+
+        // Send one request with the total clicks
+        if (normalClicks > 0 || criticalClicks > 0 || autoNormalClicks > 0 || autoCriticalClicks > 0) {
+          const data = await store.handleBatchMoneyClicks(normalClicks, criticalClicks, autoNormalClicks, autoCriticalClicks)
+          if (!data) {
+            // If there's an error, add the clicks back to the queue
+            pendingClicks.value.push(...clicks)
           }
-          
-          pendingClicks.value--
-        } catch (error) {
-          console.error('Error processing case click:', error)
-          break
         }
-      }
-      
-      isProcessingClick.value = false
-      
-      if (pendingClicks.value > 0) {
-        processClicks()
+      } catch (error) {
+        console.error('Error processing clicks:', error)
+      } finally {
+        isProcessingClick.value = false
+        
+        // If there are more clicks in the queue, process them
+        if (pendingClicks.value.length > 0) {
+          await processClicks()
+        }
       }
     }
 
-    const createFloatingMoney = (amount, isCritical) => {
-      const moneyText = document.createElement('div')
-      moneyText.className = `fixed text-yellow font-medium transition-all duration-1000 pointer-events-none
-                            ${isCritical ? 'text-pink-500 font-bold text-xl' : ''}`
-      moneyText.textContent = `+$${amount.toFixed(3)}`
+    // Watch for changes in auto clicker level
+    watch(() => store.state.upgrades.auto_clicker, () => {
+      // Auto clicker is now handled by the store
+    })
+
+    // Add floating text state
+    const floatingTexts = ref([])
+    let textId = 0
+
+    const addFloatingText = (x, y, content, isCritical = false) => {
+      const id = textId++
+      floatingTexts.value.push({ id, x, y, content, isCritical })
       
-      // Position near the clicker button
-      const button = document.querySelector('.clicker-btn')
-      if (button) {
-        const rect = button.getBoundingClientRect()
-        moneyText.style.left = `${rect.left + rect.width/2}px`
-        moneyText.style.top = `${rect.top + rect.height/2}px`
-        moneyText.style.transform = 'translate(-50%, -50%)'
+      // Start animation in next frame
+      requestAnimationFrame(() => {
+        const text = floatingTexts.value.find(t => t.id === id)
+        if (text) {
+          text.y -= 50 // Move up by 50px
+          text.opacity = 0
+        }
+      })
+
+      // Remove after animation
+      setTimeout(() => {
+        floatingTexts.value = floatingTexts.value.filter(t => t.id !== id)
+      }, 1000)
+    }
+
+    // Methods
+    const isProcessingClick = ref(false)
+    const pendingClicks = ref([])
+
+    const handleCaseClick = async () => {
+      if (isProcessingClick.value) return // Skip if already processing
+
+      // Get click position from case clicker button
+      const caseClickerBtn = document.querySelector('.case-clicker-btn')
+      if (!caseClickerBtn) return
+
+      const rect = caseClickerBtn.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+
+      // Add floating text
+      addFloatingText(x, y, `+${progressPerClick.value}%`, false)
+
+      // Add click to pending queue
+      pendingClicks.value.push({ type: 'case' })
+
+      // Process clicks if we have enough in the queue or not currently processing
+      if (pendingClicks.value.length >= 10 || !isProcessingClick.value) {
+        await processCaseClicks()
+      }
+    }
+
+    const processCaseClicks = async () => {
+      if (isProcessingClick.value || pendingClicks.value.length === 0) return
+
+      isProcessingClick.value = true
+
+      try {
+        // Process all pending clicks in one batch
+        const clicks = pendingClicks.value.filter(click => click.type === 'case')
+        pendingClicks.value = pendingClicks.value.filter(click => click.type !== 'case') // Remove case clicks
+
+        if (clicks.length > 0) {
+          const data = await store.handleBatchCaseClicks(clicks.length)
+          if (!data) {
+            // If there's an error, add the clicks back to the queue
+            pendingClicks.value.push(...clicks)
+          } else if (data.earned_cases && data.earned_cases.length > 0) {
+            // Show modal for the last earned case
+            const lastCase = data.earned_cases[data.earned_cases.length - 1]
+            earnedCase.value = {
+              name: lastCase.name,
+              image: `/static/media/cases/${lastCase.image}`,
+              price: lastCase.price
+            }
+            showCaseModal.value = true
+          }
+        }
+      } catch (error) {
+        console.error('Error processing case clicks:', error)
+      } finally {
+        isProcessingClick.value = false
         
-        // Animate
-        requestAnimationFrame(() => {
-          moneyText.style.transform = 'translate(-50%, -100px)'
-          moneyText.style.opacity = '0'
-        })
-        
-        document.body.appendChild(moneyText)
-        setTimeout(() => moneyText.remove(), 1000)
+        // If there are more clicks in the queue, process them
+        if (pendingClicks.value.some(click => click.type === 'case')) {
+          await processCaseClicks()
+        }
       }
     }
 
@@ -296,7 +438,7 @@ export default {
         
         // Create floating reward text
         const rewardText = document.createElement('div')
-        rewardText.className = 'fixed text-yellow text-xl font-bold transition-all duration-1000 pointer-events-none'
+        rewardText.className = 'floating-reward'
         rewardText.textContent = `+$${reward.toFixed(2)}`
         
         const chest = document.querySelector('.floating-chest')
@@ -316,8 +458,8 @@ export default {
           setTimeout(() => rewardText.remove(), 1000)
         }
         
-        // TODO: Send reward to backend
-        // await fetch('/chest_reward', {...})
+        // Send reward to backend
+        await store.handleChestReward(reward)
       }
     }
 
@@ -358,19 +500,56 @@ export default {
       spawnWithRandomDelay()
     }
 
+    // Reset multiplier when mouse leaves clicker area
+    const handleMouseLeave = () => {
+      store.resetClickerMultiplier()
+    }
+
+    // Watch for tab changes
+    watch(currentTab, () => {
+      // Tab change handling if needed in the future
+    })
+
     // Lifecycle hooks
-    onMounted(() => {
+    onMounted(async () => {
+      // Fetch initial user data first
+      await store.fetchUserData()
+      
       scheduleNextChest()
       
       // Initialize with random case image
       const randomCase = cases[Math.floor(Math.random() * cases.length)]
       currentCaseImage.value = `/static/media/cases/${randomCase}`
+
+      // Add listener for auto clicker text
+      window.addEventListener('autoClickerText', handleAutoClickText)
     })
 
     onBeforeUnmount(() => {
       if (chestTimeout) clearTimeout(chestTimeout)
       if (chestInterval) clearTimeout(chestInterval)
+      if (updateInterval) clearInterval(updateInterval)
+      window.removeEventListener('autoClickerText', handleAutoClickText)
     })
+
+    // Handle auto clicker floating text
+    const handleAutoClickText = (event) => {
+      const { value, isCritical } = event.detail
+      const clickerBtn = document.querySelector('.clicker-btn')
+      
+      if (clickerBtn && currentTab.value === 'money') {
+        const rect = clickerBtn.getBoundingClientRect()
+        const x = rect.left + rect.width / 2 + ((Math.random() - 0.5) * rect.width * 0.5)
+        const y = rect.top + rect.height / 2 + ((Math.random() - 0.5) * rect.height * 0.5)
+
+        addFloatingText(
+          x,
+          y,
+          `+$${value.toFixed(3)}`,
+          isCritical
+        )
+      }
+    }
 
     return {
       currentTab,
@@ -387,28 +566,30 @@ export default {
       currentCaseImage,
       handleMoneyClick,
       handleCaseClick,
-      handleChestClick
+      handleChestClick,
+      handleMouseLeave,
+      floatingTexts,
+      isProcessingClick,
+      pendingClicks,
+      earningsPerSecond,
     }
   }
 }
 </script>
 
-<style scoped>
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+<style>
+.float-enter-active,
+.float-leave-active {
+  transition: all 1s ease;
 }
 
-.animate-bounce {
-  animation: bounce 2s infinite;
+.float-enter-from {
+  opacity: 1;
+  transform: translate(-50%, -50%);
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.float-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -100px);
 }
 </style> 

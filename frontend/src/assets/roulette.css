@@ -1,0 +1,428 @@
+/* Chip styles */
+.chip {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1000;
+    pointer-events: none;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Add specific chip styles */
+  .chip-1 { background-image: url('@/assets/casino/chip_1.png'); }
+  .chip-5 { background-image: url('@/assets/casino/chip_5.png'); }
+  .chip-10 { background-image: url('@/assets/casino/chip_10.png'); }
+  .chip-50 { background-image: url('@/assets/casino/chip_50.png'); }
+  .chip-100 { background-image: url('@/assets/casino/chip_100.png'); }
+  .chip-500 { background-image: url('@/assets/casino/chip_500.png'); }
+  .chip-1000 { background-image: url('@/assets/casino/chip_1000.png'); }
+  
+  /* Update number position to relative for chip positioning */
+  .number:not(.zero), .special-bet, [data-bet-type]:not([data-bet-type="0"]) {
+    position: relative !important;
+    overflow: visible !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Add hover effect to the content inside the tile, not the tile itself */
+  .number > span, .special-bet > span, [data-bet-type] > span {
+    transition: transform 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Ensure chips are positioned correctly on all betting tiles */
+  [data-bet-type] .chip {
+    position: absolute;
+    left: 50% !important;
+    top: 50% !important;
+    transform-origin: center center;
+  }
+  
+  /* Zero tile specific styles */
+  .zero-tile {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 48px !important;
+    height: 100% !important;
+    background-color: rgb(34 197 94) !important;
+    border-radius: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 5 !important;
+  }
+  
+  .zero-tile.lightning {
+    box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+    border: 2px solid #4ff3ff !important;
+    animation: zeroLightningPulse 2s infinite;
+  }
+  
+  .zero-tile.lightning::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle at center, rgba(79, 243, 255, 0.3) 0%, transparent 70%);
+    z-index: -1;
+    border-radius: 0.5rem;
+    animation: glowPulse 2s infinite;
+  }
+  
+  .zero-tile.lightning::after {
+    content: attr(data-multiplier);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    color: #4ff3ff;
+    white-space: nowrap;
+    text-shadow: 0 0 3px #4ff3ff;
+    box-shadow: 0 0 5px rgba(79, 243, 255, 0.3);
+    z-index: 2;
+    font-weight: bold;
+    min-width: 0;
+  }
+  
+  .zero-tile.lightning .bolt {
+    position: absolute;
+    inset: -8px;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 0.5rem;
+  }
+  
+  /* Remove the old zero styles */
+  .number.zero {
+    display: none;
+  }
+  
+  .number.zero.lightning {
+    display: none;
+  }
+  
+  /* Update the selected state to not interfere with chips */
+  .number.selected, .special-bet.selected {
+    border: 2px solid #4CAF50;
+    z-index: 1;
+  }
+  
+  /* Remove the after pseudo-element since we're using direct border */
+  .number.selected::after {
+    display: none;
+  }
+  
+  /* Ensure betting areas have proper stacking context */
+  .betting-board {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Ensure number tiles are above the board but below chips */
+  .number:not(.zero), .special-bet {
+    z-index: 2;
+  }
+  
+  /* Add lightning styles */
+  [data-bet-type].lightning {
+    position: relative;
+    overflow: visible !important;
+    border: 2px solid #4ff3ff;
+    box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+  }
+  
+  /* Lightning multiplier label */
+  [data-bet-type].lightning::after {
+    content: attr(data-multiplier);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    color: #4ff3ff;
+    white-space: nowrap;
+    text-shadow: 0 0 3px #4ff3ff;
+    box-shadow: 0 0 5px rgba(79, 243, 255, 0.3);
+    z-index: 2;
+    font-weight: bold;
+    min-width: 0;
+  }
+  
+  /* Zero tile specific lightning styles */
+  .zero-tile.lightning {
+    border: 2px solid #4ff3ff !important;
+    box-shadow: 0 0 15px rgba(79, 243, 255, 0.5);
+  }
+  
+  .zero-tile.lightning::after {
+    content: attr(data-multiplier);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    color: #4ff3ff;
+    white-space: nowrap;
+    text-shadow: 0 0 3px #4ff3ff;
+    box-shadow: 0 0 5px rgba(79, 243, 255, 0.3);
+    z-index: 2;
+    font-weight: bold;
+    min-width: 0;
+  }
+  
+  /* Ensure the lightning effects don't interfere with other elements */
+  .number.lightning > span {
+    position: relative;
+    z-index: 3;
+  }
+  
+  /* Make sure chips stay on top */
+  .chip {
+    z-index: 4;
+  }
+  
+  /* Lightning popup */
+  .lightning-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid #4ff3ff;
+    box-shadow: 0 0 30px rgba(79, 243, 255, 0.3);
+    text-align: center;
+    min-width: 300px;
+  }
+  
+  .lightning-popup.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .lightning-popup h2 {
+    color: #4ff3ff;
+    margin: 0 0 15px;
+    font-size: 24px;
+    text-shadow: 0 0 10px rgba(79, 243, 255, 0.5);
+    font-weight: bold;
+  }
+  
+  .lightning-numbers-grid {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .lightning-number-item {
+    background: rgba(79, 243, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid rgba(79, 243, 255, 0.3);
+    box-shadow: 0 0 15px rgba(79, 243, 255, 0.3);
+    min-width: 80px;
+  }
+  
+  .lightning-number-value {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .lightning-multiplier-value {
+    font-size: 18px;
+    color: #4ff3ff;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(79, 243, 255, 0.5);
+  }
+  
+  /* Lightning win notification */
+  .lightning-win-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 2px solid #4ff3ff;
+    color: #4ff3ff;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(79, 243, 255, 0.3);
+    pointer-events: none;
+  }
+  
+  .lightning-win-notification.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Result notification */
+  .result-notification {
+    position: fixed;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(-20px) translateX(-50%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+  }
+  
+  .result-notification.visible {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+  
+  /* Timer styles */
+  .timer-container {
+    position: relative;
+    background: rgba(26, 26, 26, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+  
+  .timer-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: #4CAF50;
+    transition: width 1s linear;
+  }
+  
+  .timer-bar.warning {
+    background: #ff4444;
+  }
+  
+  .timer-text {
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+  
+  .timer-text.warning {
+    color: #ff4444;
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  /* Wheel styles */
+  .wheel-container {
+    perspective: 1000px;
+    margin: 50px auto;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    background: #1a1a1a;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .wheel {
+    display: flex;
+    height: 100%;
+    position: relative;
+    left: 0;
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  .wheel-selector {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 100%;
+    background: #fff;
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  
+  .wheel-item {
+    height: 80px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    flex-shrink: 0;
+    color: white;
+    border-radius: 5px;
+    margin: 10px 5px;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  /* Add gradient overlays to fade edges */
+  .wheel-container::before,
+  .wheel-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  .wheel-container::before {
+    left: 0;
+    background: linear-gradient(to right, #1a1a1a, transparent);
+  }
+  
+  .wheel-container::after {
+    right: 0;
+    background: linear-gradient(to left, #1a1a1a, transparent);
+  }

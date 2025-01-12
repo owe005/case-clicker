@@ -146,7 +146,7 @@
             },
             {
                 "weapon": "Moto Gloves",
-                "name": "POW!",
+                "name": "POW",
                 "image": "motogloves_pow.png",
                 "grade": "gold",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
