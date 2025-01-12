@@ -1,160 +1,119 @@
 <template>
-  <div class="min-h-screen bg-gray-darker">
+  <div class="blackjack-container">
     <!-- Header -->
-    <div class="relative py-12 mb-8">
-      <div class="absolute inset-0 bg-gradient-to-b from-yellow/5 to-transparent"></div>
-      <div class="relative max-w-7xl mx-auto px-4">
-        <h1 class="text-4xl font-display font-bold text-white mb-2">Blackjack</h1>
-        <p class="text-white/70">Try to beat the dealer to 21!</p>
-      </div>
+    <div class="header">
+      <h1>Blackjack</h1>
+      <p>Try to beat the dealer to 21!</p>
     </div>
 
     <!-- Game Area -->
-    <div class="max-w-7xl mx-auto px-4 pb-12">
-      <div class="bg-gray-dark/50 rounded-xl p-6 md:p-8">
-        <!-- Notification Area -->
-        <div v-if="gameOver" class="text-center mb-8">
-          <div class="text-3xl font-bold text-white bg-black/50 p-4 rounded-lg" :class="getResultClass(finalResult)">
-            {{ finalResult }}
-          </div>
-          <div class="mt-4">
-            <button 
-              @click="resetGame"
-              class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+    <div class="game-area">
+      <!-- Dealer's Hand -->
+      <div class="dealer-area">
+        <h2>Dealer's Hand <span>{{ animatedDealerValue ? `(${animatedDealerValue})` : '' }}</span></h2>
+        <div class="dealer-cards">
+          <template v-for="(card, index) in dealerCards" :key="index">
+            <div 
+              class="card"
+              :class="[
+                getCardClass(card), 
+                { 
+                  'hidden-card': index === 1 && !showHoleCard,
+                  'revealed': index === 1 && showHoleCard,
+                  'drawing': index > 1
+                }
+              ]"
+              :style="{ '--card-index': index }"
             >
-              Play Again
-            </button>
-            <button 
-              @click="returnToCasino"
-              class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 ml-4"
-            >
-              Return to Casino
-            </button>
-          </div>
+              <div v-if="index !== 1 || showHoleCard" class="card-content">
+                {{ card.rank }}{{ card.suit }}
+              </div>
+              <div v-else class="card-back">
+                <div class="card-pattern"></div>
+              </div>
+            </div>
+          </template>
         </div>
+      </div>
 
-        <!-- Balance Display -->
-        <div class="flex justify-between items-center mb-8">
-          <div class="text-white">
-            <span class="text-white/70">Balance:</span>
-            <span class="ml-2 text-xl font-medium">${{ formatNumber(balance) }}</span>
-          </div>
-          <div v-if="!gameActive && !gameOver" class="flex items-center space-x-4">
-            <input 
-              type="number" 
-              v-model="betAmount"
-              class="bg-gray-darker px-4 py-2 rounded-lg text-white w-32"
-              placeholder="Bet amount"
-              min="0.01"
-              step="0.01"
-            >
-            <button 
-              @click="startGame"
-              class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-              :disabled="!canBet"
-            >
-              Place Bet
-            </button>
-          </div>
-        </div>
-
-        <!-- Game Table -->
-        <div class="relative min-h-[500px] bg-green-800/20 rounded-xl p-6 md:p-8">
-          <!-- Dealer's Hand -->
-          <div class="mb-16">
-            <h3 class="text-white/70 mb-4">Dealer's Hand {{ dealerValue ? `(${dealerValue})` : '' }}</h3>
-            <div class="flex space-x-4">
-              <template v-for="(card, index) in dealerCards" :key="index">
+      <!-- Player's Hands -->
+      <div class="player-area">
+        <template v-for="(hand, handIndex) in playerHands" :key="handIndex">
+          <div class="hand" :class="{ active: hand.is_current }">
+            <h2>Your Hand {{ playerHands.length > 1 ? (handIndex + 1) : '' }} ({{ hand.value }})</h2>
+            <div class="player-cards">
+              <template v-for="(card, cardIndex) in hand.cards" :key="cardIndex">
                 <div 
-                  class="w-24 h-36 rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2"
-                  :class="[index === 1 && !showHoleCard ? 'bg-gray-dark' : getCardClass(card)]"
+                  class="card" 
+                  :class="[
+                    getCardClass(card),
+                    { 'drawing': cardIndex >= hand.cards.length - 1 }
+                  ]"
                 >
-                  <div v-if="index !== 1 || showHoleCard" class="h-full flex items-center justify-center text-2xl font-bold">
+                  <div class="card-content">
                     {{ card.rank }}{{ card.suit }}
                   </div>
                 </div>
               </template>
             </div>
+            <div class="hand-score">Bet: ${{ formatNumber(hand.bet) }}</div>
           </div>
+        </template>
+      </div>
 
-          <!-- Player's Hands -->
-          <div>
-            <div v-for="(hand, handIndex) in playerHands" :key="handIndex" class="mb-8">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-white/70">
-                  Player's Hand {{ playerHands.length > 1 ? (handIndex + 1) : '' }} 
-                  ({{ hand.value }})
-                </h3>
-                <div class="text-white/70">
-                  Bet: ${{ formatNumber(hand.bet) }}
-                </div>
-              </div>
-              
-              <!-- Cards -->
-              <div class="flex space-x-4 mb-4">
-                <div 
-                  v-for="(card, cardIndex) in hand.cards" 
-                  :key="cardIndex"
-                  class="w-24 h-36 rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2"
-                  :class="getCardClass(card)"
-                >
-                  <div class="h-full flex items-center justify-center text-2xl font-bold">
-                    {{ card.rank }}{{ card.suit }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Action Buttons -->
-              <div v-if="gameActive && hand.is_current" class="flex space-x-4">
-                <button 
-                  @click="hit"
-                  class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  :disabled="!hand.is_current"
-                >
-                  Hit
-                </button>
-                <button 
-                  @click="stand"
-                  class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  :disabled="!hand.is_current"
-                >
-                  Stand
-                </button>
-                <button 
-                  v-if="hand.can_double"
-                  @click="doubleDown"
-                  class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  :disabled="!hand.is_current || balance < hand.bet"
-                >
-                  Double Down
-                </button>
-                <button 
-                  v-if="hand.can_split"
-                  @click="split"
-                  class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  :disabled="!hand.is_current || balance < hand.bet"
-                >
-                  Split
-                </button>
-                <button 
-                  v-if="insuranceAvailable && !hand.insurance"
-                  @click="takeInsurance"
-                  class="px-6 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  :disabled="!hand.is_current || balance < (hand.bet / 2)"
-                >
-                  Insurance
-                </button>
-              </div>
-            </div>
+      <!-- Betting Controls -->
+      <div class="betting-controls">
+        <div class="quick-bet-buttons">
+          <button class="quick-bet" @click="adjustBet(1)" :disabled="gameActive">+$1</button>
+          <button class="quick-bet" @click="adjustBet(10)" :disabled="gameActive">+$10</button>
+          <button class="quick-bet" @click="adjustBet(100)" :disabled="gameActive">+$100</button>
+          <button class="quick-bet" @click="adjustBet(1000)" :disabled="gameActive">+$1000</button>
+          <button class="quick-bet" @click="doubleBet" :disabled="gameActive">x2</button>
+          <button class="quick-bet" @click="halfBalance" :disabled="gameActive">1/2</button>
+          <button class="quick-bet" @click="maxBalance" :disabled="gameActive">Max</button>
+          <button class="quick-bet" @click="repeatBet" :disabled="gameActive">Repeat</button>
+        </div>
+        <div class="bet-input">
+          <div class="bet-controls">
+            <button class="bet-adjust" @click="decreaseBet" :disabled="gameActive">-</button>
+            <input type="number" v-model="betAmount" min="0.01" step="0.01" class="bet-amount" :disabled="gameActive">
+            <button class="bet-adjust" @click="increaseBet" :disabled="gameActive">+</button>
           </div>
         </div>
+      </div>
+
+      <!-- Game Controls -->
+      <div class="game-controls">
+        <button class="action-btn deal-btn" @click="startGame" :disabled="!canBet || gameActive">Deal</button>
+        <button class="action-btn hit-btn" @click="hit" :disabled="!gameActive || dealerDrawing">Hit</button>
+        <button class="action-btn stand-btn" @click="stand" :disabled="!gameActive || dealerDrawing">Stand</button>
+        <button class="action-btn double-btn" @click="doubleDown" :disabled="!gameActive || dealerDrawing || !canDouble">Double Down</button>
+        <button class="action-btn split-btn" @click="split" :disabled="!gameActive || dealerDrawing || !canSplit">Split</button>
+      </div>
+
+      <!-- Insurance Prompt -->
+      <div class="insurance-prompt" v-if="insuranceAvailable && !insuranceTaken">
+        <h3>Insurance?</h3>
+        <p>Dealer is showing an Ace. Would you like to take insurance?</p>
+        <div class="insurance-controls">
+          <button class="insurance-btn accept" @click="takeInsurance">Yes</button>
+          <button class="insurance-btn decline" @click="declineInsurance">No</button>
+        </div>
+      </div>
+
+      <!-- Game Result -->
+      <div class="result-display" v-if="gameOver">
+        <h2 class="result-text">{{ finalResult }}</h2>
+        <div class="result-amount">{{ netResult }}</div>
+        <button class="play-again-btn" @click="resetGame">Play Again</button>
+        <button class="return-btn" @click="returnToCasino">Return</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import axios from 'axios'
 
 export default {
@@ -170,6 +129,14 @@ export default {
     const insuranceAvailable = ref(false)
     const gameOver = ref(false)
     const finalResult = ref('')
+    const insuranceAmount = ref(0)
+    const lastBetAmount = ref(1)
+    const insuranceTaken = ref(false)
+    const netResult = ref('')
+    const animationTimer = ref(null)
+    const animationStartTime = ref(null)
+    const forceUpdate = ref(0)
+    const dealerDrawing = ref(false)
 
     // Load initial balance
     const loadBalance = async () => {
@@ -186,6 +153,15 @@ export default {
       return betAmount.value > 0 && betAmount.value <= balance.value
     })
 
+    const canSplit = computed(() => {
+      return playerHands.value[0]?.can_split || false
+    })
+
+    const canDouble = computed(() => {
+      const currentHand = playerHands.value.find(hand => hand.is_current)
+      return currentHand && currentHand.cards.length === 2 && !currentHand.doubled
+    })
+
     const startGame = async () => {
       try {
         const response = await axios.post('/api/blackjack/start', {
@@ -198,6 +174,7 @@ export default {
           gameActive.value = true
           gameOver.value = false
           finalResult.value = ''
+          lastBetAmount.value = betAmount.value
         }
       } catch (error) {
         console.error('Error starting game:', error)
@@ -205,53 +182,105 @@ export default {
     }
 
     const updateGameState = (state) => {
-      console.log('Updating game state...', state)
       dealerCards.value = state.dealer_hand.cards
       dealerValue.value = state.dealer_hand.value
       playerHands.value = state.player_hands
-      showHoleCard.value = state.game_over || state.dealer_hand.show_hole_card
-      insuranceAvailable.value = state.insurance_available || (dealerCards.value[0]?.rank === 'A')
       
-      if (state.game_over) {
-        gameActive.value = false
-        gameOver.value = true
-        finalResult.value = calculateFinalResult(state.player_hands)
+      const wasHoleCardHidden = !showHoleCard.value
+      showHoleCard.value = state.game_over || state.dealer_hand.show_hole_card
+      
+      // Start animation timer when hole card is revealed
+      if (wasHoleCardHidden && showHoleCard.value) {
+        // Set dealer drawing state
+        dealerDrawing.value = true
+        
+        // Clear any existing timer
+        if (animationTimer.value) {
+          clearInterval(animationTimer.value)
+        }
+        
+        // Start new animation sequence
+        animationStartTime.value = Date.now()
+        
+        // Create interval to update computed value
+        animationTimer.value = setInterval(() => {
+          // Force update by incrementing counter
+          forceUpdate.value++
+          
+          // Calculate total animation time needed
+          const totalAnimationTime = 1500 + (Math.max(0, dealerCards.value.length - 2) * 1000)
+          
+          // If animation is complete, show game over state
+          if (Date.now() - animationStartTime.value >= totalAnimationTime) {
+            clearInterval(animationTimer.value)
+            animationTimer.value = null
+            dealerDrawing.value = false
+            
+            // Only now show game over state
+            gameOver.value = state.game_over
+            if (gameOver.value) {
+              finalResult.value = calculateFinalResult(state.player_hands)
+            }
+          }
+        }, 100) // Update every 100ms
       }
-      console.log('Game state updated:', {
-        dealerCards: dealerCards.value,
-        dealerValue: dealerValue.value,
-        playerHands: playerHands.value,
-        showHoleCard: showHoleCard.value,
-        insuranceAvailable: insuranceAvailable.value,
-        gameActive: gameActive.value,
-        gameOver: gameOver.value
-      })
+      
+      // If not revealing hole card, update game state immediately
+      if (!wasHoleCardHidden) {
+        gameOver.value = state.game_over
+        if (gameOver.value) {
+          finalResult.value = calculateFinalResult(state.player_hands)
+        }
+      }
+      
+      insuranceAvailable.value = state.insurance_available && dealerCards.value[0]?.rank === 'A'
     }
 
     const calculateFinalResult = (hands) => {
-      let win = false
-      let lose = false
+      let win = false;
+      let lose = false;
+      let totalWon = 0;
+      let totalBet = 0;
 
-      console.log('Calculating final result...')
       hands.forEach(hand => {
-        console.log('Hand result:', hand.result)
-        if (hand.result === 'WIN' || hand.result === 'BLACKJACK') {
-          win = true
-        } else if (hand.result === 'LOSE' || hand.result === 'BUST') {
-          lose = true
+        totalBet += hand.bet;
+        
+        // Handle different win conditions
+        switch(hand.result) {
+          case 'BLACKJACK':
+            win = true;
+            totalWon += hand.bet * 2.5; // Blackjack pays 3:2
+            break;
+          case 'WIN':
+          case 'DEALER BUST':
+            win = true;
+            totalWon += hand.bet * 2; // Regular win pays 1:1 (return bet + win equal amount)
+            break;
+          case 'PUSH':
+            totalWon += hand.bet; // Push returns original bet
+            break;
+          case 'LOSE':
+          case 'BUST':
+            lose = true;
+            break;
         }
-      })
+      });
 
-      console.log('Win:', win, 'Lose:', lose)
+      const netAmount = totalWon - totalBet;
+      netResult.value = netAmount >= 0 ? 
+        `+$${netAmount.toFixed(2)}` : 
+        `-$${Math.abs(netAmount).toFixed(2)}`;
 
       if (win && !lose) {
-        return 'You Win!'
+        return 'You Win!';
       } else if (lose && !win) {
-        return 'You Lose!'
+        return 'You Lose!';
       } else if (win && lose) {
-        return 'Mixed Results'
+        return 'Mixed Results';
+      } else if (totalWon === totalBet) {
+        return 'Push';
       }
-      return 'Game Over'  // Default message if no specific result
+      return 'Game Over';
     }
 
     const hit = async () => {
@@ -295,15 +324,11 @@ export default {
     }
 
     const split = async () => {
-      console.log('Attempting to split...')
       try {
         const response = await axios.post('/api/blackjack/split')
         if (response.data.success) {
-          console.log('Split successful, updating game state...')
           updateGameState(response.data.state)
           balance.value = response.data.balance
-        } else {
-          console.log('Split failed:', response.data)
         }
       } catch (error) {
         console.error('Error splitting:', error)
@@ -312,14 +337,23 @@ export default {
 
     const takeInsurance = async () => {
       try {
-        const response = await axios.post('/api/blackjack/insurance')
+        const response = await axios.post('/api/blackjack/insurance', {
+          amount: playerHands.value[0].bet / 2 // Insurance is always half the original bet
+        })
         if (response.data.success) {
           updateGameState(response.data.state)
           balance.value = response.data.balance
+          insuranceTaken.value = true
+          insuranceAvailable.value = false
         }
       } catch (error) {
         console.error('Error taking insurance:', error)
       }
+    }
+
+    const declineInsurance = () => {
+      insuranceAvailable.value = false
+      insuranceTaken.value = true
     }
 
     const resetGame = () => {
@@ -329,11 +363,20 @@ export default {
       playerHands.value = []
       dealerCards.value = []
       dealerValue.value = null
+      insuranceTaken.value = false
+      insuranceAvailable.value = false
+      dealerDrawing.value = false
+      
+      // Clear animation state
+      if (animationTimer.value) {
+        clearInterval(animationTimer.value)
+      }
+      animationTimer.value = null
+      animationStartTime.value = null
     }
 
     const returnToCasino = () => {
       // Logic to return to the casino view
-      console.log('Returning to casino...')
     }
 
     const getCardClass = (card) => {
@@ -346,22 +389,91 @@ export default {
       return suitColors[card.suit] || 'bg-gray-800 text-white'
     }
 
-    const getResultClass = (result) => {
-      const resultColors = {
-        'BLACKJACK': 'text-yellow',
-        'WIN': 'text-green-500',
-        'PUSH': 'text-white',
-        'LOSE': 'text-red-500',
-        'BUST': 'text-red-500',
-        'DEALER BUST': 'text-green-500',
-        'DEALER BLACKJACK': 'text-red-500'
-      }
-      return resultColors[result] || 'text-white'
-    }
-
     const formatNumber = (num) => {
       return Number(num).toFixed(2)
     }
+
+    const adjustBet = (amount) => {
+      const newBet = Math.min(balance.value, Math.max(0.01, betAmount.value + amount));
+      betAmount.value = parseFloat(newBet.toFixed(2));
+    }
+
+    const increaseBet = () => {
+      adjustBet(1);
+    }
+
+    const decreaseBet = () => {
+      adjustBet(-1);
+    }
+
+    const doubleBet = () => {
+      adjustBet(betAmount.value);
+    }
+
+    const halfBalance = () => {
+      betAmount.value = parseFloat((balance.value / 2).toFixed(2));
+    }
+
+    const maxBalance = () => {
+      betAmount.value = parseFloat(balance.value.toFixed(2));
+    }
+
+    const repeatBet = () => {
+      adjustBet(lastBetAmount.value);
+    }
+
+    // Add new computed property for animated dealer value
+    const animatedDealerValue = computed(() => {
+      // Include forceUpdate in computation to ensure reactivity
+      forceUpdate.value
+      
+      if (!showHoleCard.value) {
+        // Before hole card is revealed, only show first card value
+        return dealerCards.value[0]?.value || null
+      }
+      
+      if (!animationStartTime.value) {
+        return dealerCards.value[0]?.value || null
+      }
+
+      // After hole card is revealed, calculate value based on animation timing
+      const elapsed = Date.now() - animationStartTime.value
+      let visibleCards = dealerCards.value.slice(0, 2) // First two cards
+
+      // Add additional cards based on animation timing
+      for (let i = 2; i < dealerCards.value.length; i++) {
+        const cardDelay = 1500 + (i - 2) * 1000 // 1.5s initial delay + 1s per card
+        if (elapsed >= cardDelay) {
+          visibleCards.push(dealerCards.value[i])
+        }
+      }
+
+      // Calculate total value of visible cards
+      let total = 0
+      let aces = 0
+      
+      for (const card of visibleCards) {
+        if (card.is_ace) {
+          aces++
+        }
+        total += card.value
+      }
+      
+      // Handle aces
+      while (total > 21 && aces > 0) {
+        total -= 10
+        aces--
+      }
+      
+      return total || null
+    })
+
+    // Clean up interval on component unmount
+    onUnmounted(() => {
+      if (animationTimer.value) {
+        clearInterval(animationTimer.value);
+      }
+    });
 
     return {
       balance,
@@ -374,6 +486,7 @@ export default {
       insuranceAvailable,
       gameOver,
       finalResult,
+      insuranceAmount,
       canBet,
       startGame,
       hit,
@@ -384,15 +497,436 @@ export default {
       resetGame,
       returnToCasino,
       getCardClass,
-      getResultClass,
-      formatNumber
+      formatNumber,
+      adjustBet,
+      increaseBet,
+      decreaseBet,
+      doubleBet,
+      halfBalance,
+      maxBalance,
+      repeatBet,
+      insuranceTaken,
+      declineInsurance,
+      netResult,
+      animatedDealerValue,
+      dealerDrawing,
+      canSplit,
+      canDouble
     }
   }
 }
 </script>
 
 <style scoped>
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+.blackjack-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #e4e4e4;
+}
+
+.game-area {
+  background: #2a2a2a;
+  padding: 30px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.dealer-area, .player-area {
+  margin-bottom: 30px;
+}
+
+.dealer-cards, .player-cards {
+  display: flex;
+  gap: 10px;
+  min-height: 150px;
+  padding: 10px;
+  background: #1a1a1a;
+  border-radius: 10px;
+}
+
+.card {
+  width: 100px;
+  height: 140px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: black;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card.red {
+  color: #d63031;
+}
+
+.card.hidden {
+  background: transparent;
+  color: white;
+}
+
+.betting-controls {
+  margin-bottom: 20px;
+}
+
+.quick-bet-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quick-bet {
+  background: #3a3a3a;
+  border: none;
+  padding: 10px;
+  color: #e4e4e4;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.quick-bet:hover {
+  background: #4a4a4a;
+}
+
+.bet-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bet-adjust {
+  background: #4CAF50;
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.bet-amount {
+  padding: 10px;
+  width: 150px;
+  border: 2px solid #3a3a3a;
+  background: #1a1a1a;
+  color: #e4e4e4;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.game-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-btn {
+  padding: 10px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #666 !important;
+  color: #999 !important;
+}
+
+.deal-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.hit-btn {
+  background: #2196F3;
+  color: white;
+}
+
+.stand-btn {
+  background: #f44336;
+  color: white;
+}
+
+.double-btn {
+  background: #9c27b0;
+  color: white;
+}
+
+.result-display {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.result-display.win {
+  background: linear-gradient(135deg, #2a2a2a, #1a472a);
+}
+
+.result-display.lose {
+  background: linear-gradient(135deg, #2a2a2a, #4a1a1a);
+}
+
+.result-text {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.result-amount {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.result-amount.win {
+  color: #4CAF50;
+}
+
+.result-amount.lose {
+  color: #f44336;
+}
+
+.hidden {
+  display: none;
+}
+
+.play-again-btn, .return-btn {
+  padding: 10px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: all 0.2s;
+}
+
+.play-again-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.return-btn {
+  background: #f44336;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.player-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.player-hands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.hand {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  min-width: 300px;
+}
+
+.hand.active {
+  border: 2px solid #4CAF50;
+}
+
+.hand-cards {
+  display: flex;
+  gap: 10px;
+  min-height: 150px;
+}
+
+.hand-score {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #888;
+}
+
+.split-btn {
+  background: #FF9800;
+  color: white;
+}
+
+.dealer-cards {
+  min-width: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.insurance-prompt {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.insurance-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.insurance-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.insurance-btn.accept {
+  background: #4CAF50;
+  color: white;
+}
+
+.insurance-btn.decline {
+  background: #f44336;
+  color: white;
+}
+
+.card-back {
+  width: 100%;
+  height: 100%;
+  background: #2d3436;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #2d3436 0px,
+    #2d3436 10px,
+    #34495e 10px,
+    #34495e 20px
+  );
+  opacity: 0.8;
+}
+
+.hidden-card {
+  background: #2d3436 !important;
+  color: white !important;
+}
+
+.card.hidden {
+  display: none;
+}
+
+.quick-bet:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #2a2a2a;
+}
+
+.bet-adjust:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #2a2a2a;
+}
+
+.bet-amount:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #2a2a2a;
+}
+
+/* Card animations */
+@keyframes cardFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes cardDraw {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card {
+  width: 100px;
+  height: 140px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: black;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card.drawing {
+  animation: cardDraw 0.4s ease-out forwards;
+  animation-delay: calc(1.5s + (var(--card-index) - 2) * 1s);
+  opacity: 0;
+}
+
+.card.flipping {
+  animation: cardFlip 0.6s ease-in-out forwards;
+}
+
+.card-content {
+  backface-visibility: hidden;
+}
+
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.hidden-card {
+  transform: rotateY(180deg);
+  transition: transform 0.6s ease-in-out;
+}
+
+.hidden-card.revealed {
+  transform: rotateY(0deg);
 }
 </style>

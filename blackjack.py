@@ -84,11 +84,11 @@ class Hand:
         
     def add_card(self, card: Card):
         self.cards.append(card)
-        if len(self.cards) == 2:
-            self.can_split = (
-                self.cards[0].rank == self.cards[1].rank or 
-                (self.cards[0].value == 10 and self.cards[1].value == 10)
-            )
+        # Check if we can split whenever we have exactly 2 cards
+        self.can_split = len(self.cards) == 2 and (
+            self.cards[0].rank == self.cards[1].rank or 
+            (self.cards[0].value == 10 and self.cards[1].value == 10)
+        )
 
 class BlackjackGame:
     def __init__(self):
@@ -159,7 +159,7 @@ class BlackjackGame:
         self.dealer_hand.add_card(self.deck.pop())
         
         # Check for dealer blackjack possibility
-        insurance_available = self.dealer_hand.cards[1].rank == 'A'
+        insurance_available = self.dealer_hand.cards[0].rank == 'A'
         
         # Return both display state and internal state
         return {
