@@ -80,7 +80,7 @@
           >
             <div class="absolute inset-0 rounded-full bg-gradient-to-r from-yellow/20 via-yellow/10 to-yellow/5 
                         animate-pulse group-hover:animate-none"></div>
-            <img src="@/assets/coin.png" alt="Coin" class="w-32 h-32 object-contain relative z-10" draggable="false">
+            <img src="/img/coin.png" alt="Coin" class="w-32 h-32 object-contain relative z-10" draggable="false">
           </button>
           <div class="text-yellow font-medium text-center mt-2 select-none">{{ currentMultiplier }}x</div>
         </div>
@@ -223,10 +223,20 @@ export default {
     let updateInterval
     onMounted(() => {
       updateInterval = setInterval(updateClicksPerSecond, 100)
+
+      // Start auto clicker if level > 0
+      if (store.state.upgrades.auto_clicker > 0) {
+        store.startAutoClicker(store.state.upgrades.auto_clicker)
+      }
+
+      // Add listener for auto clicker text
+      window.addEventListener('autoClickerText', handleAutoClickText)
     })
 
     onBeforeUnmount(() => {
       if (updateInterval) clearInterval(updateInterval)
+      window.removeEventListener('autoClickerText', handleAutoClickText)
+      store.stopAutoClicker()
     })
 
     // Add earnings per second computed property
@@ -337,8 +347,12 @@ export default {
     }
 
     // Watch for changes in auto clicker level
-    watch(() => store.state.upgrades.auto_clicker, () => {
-      // Auto clicker is now handled by the store
+    watch(() => store.state.upgrades.auto_clicker, (newLevel) => {
+      if (newLevel > 0) {
+        store.autoClicker.startAutoClicker(store, newLevel)
+      } else {
+        store.autoClicker.stopAutoClicker()
+      }
     })
 
     // Add floating text state
@@ -506,31 +520,16 @@ export default {
     }
 
     // Watch for tab changes
-    watch(currentTab, () => {
-      // Tab change handling if needed in the future
-    })
-
-    // Lifecycle hooks
-    onMounted(async () => {
-      // Fetch initial user data first
-      await store.fetchUserData()
-      
-      scheduleNextChest()
-      
-      // Initialize with random case image
-      const randomCase = cases[Math.floor(Math.random() * cases.length)]
-      currentCaseImage.value = `/static/media/cases/${randomCase}`
-
-      // Add listener for auto clicker text
-      window.addEventListener('autoClickerText', handleAutoClickText)
-    })
-
-    onBeforeUnmount(() => {
-      if (chestTimeout) clearTimeout(chestTimeout)
-      if (chestInterval) clearTimeout(chestInterval)
-      if (updateInterval) clearInterval(updateInterval)
-      window.removeEventListener('autoClickerText', handleAutoClickText)
-    })
+    watch(currentTab, (newTab) => {
+      const autoClickerLevel = store.state.upgrades.auto_clicker
+      if (newTab === 'money' && autoClickerLevel > 0) {
+        // Start the auto clicker only when on money tab
+        store.startAutoClicker(autoClickerLevel)
+      } else {
+        // Stop the auto clicker when not on money tab
+        store.stopAutoClicker()
+      }
+    }, { immediate: true })
 
     // Handle auto clicker floating text
     const handleAutoClickText = (event) => {
@@ -550,6 +549,42 @@ export default {
         )
       }
     }
+
+    // Lifecycle hooks
+    onMounted(async () => {
+      // Fetch initial user data first
+      await store.fetchUserData()
+      
+      scheduleNextChest()
+      
+      // Initialize with random case image
+      const randomCase = cases[Math.floor(Math.random() * cases.length)]
+      currentCaseImage.value = `/static/media/cases/${randomCase}`
+
+      // Add listener for auto clicker text
+      window.addEventListener('autoClickerText', handleAutoClickText)
+
+      // Add route change listener
+      const handleRouteChange = () => {
+        store.autoClicker.stopAutoClicker()
+      }
+      window.addEventListener('popstate', handleRouteChange)
+
+      // Clean up route change listener on unmount
+      onBeforeUnmount(() => {
+        window.removeEventListener('popstate', handleRouteChange)
+      })
+    })
+
+    onBeforeUnmount(() => {
+      if (chestTimeout) clearTimeout(chestTimeout)
+      if (chestInterval) clearTimeout(chestInterval)
+      if (updateInterval) clearInterval(updateInterval)
+      window.removeEventListener('autoClickerText', handleAutoClickText)
+
+      // Make absolutely sure auto clicker is stopped
+      store.autoClicker.stopAutoClicker()
+    })
 
     return {
       currentTab,

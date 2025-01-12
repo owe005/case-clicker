@@ -1,5 +1,4 @@
 import { reactive, readonly } from 'vue'
-import { autoClicker } from './modules/autoClicker'
 
 // Case mappings from base.html
 export const CASE_MAPPING = {
@@ -116,9 +115,9 @@ const state = reactive({
         caseProgress: 0,
         lastProgress: 0,
         pendingClicks: 0,
-        isProcessingClick: false
-    },
-    autoClicker: autoClicker.state
+        isProcessingClick: false,
+        autoClickerInterval: null
+    }
 })
 
 // Methods to update state
@@ -147,9 +146,8 @@ const methods = {
 
             // Update auto clicker if level changed
             if (data.upgrades.auto_clicker !== undefined) {
-                autoClicker.startAutoClicker(this, data.upgrades.auto_clicker)
+                this.startAutoClicker(data.upgrades.auto_clicker)
             }
-
         }
 
         // Update case progress if provided
@@ -359,24 +357,63 @@ const methods = {
             console.error('Error in handleBatchMoneyClicks:', error)
             return null
         }
-    }
-}
+    },
 
-// Add cleanup method for auto clicker
-const cleanup = () => {
-    autoClicker.stopAutoClicker()
+    startAutoClicker(level) {
+        this.stopAutoClicker() // Clear any existing interval
+
+        if (level <= 0) return
+
+        // Calculate clicks per second
+        let clicksPerSecond
+        if (level <= 9) {
+            clicksPerSecond = level * 0.1 // 0.1 to 0.9 clicks per second for levels 1-9
+        } else {
+            clicksPerSecond = level - 9 // 1+ clicks per second for level 10+
+        }
+
+        // Convert clicks per second to interval in milliseconds
+        const interval = Math.floor(1000 / clicksPerSecond)
+
+        state.clicker.autoClickerInterval = setInterval(async () => {
+            // Only auto click if we're on the money tab
+            if (document.querySelector('.clicker-btn')) {
+                // Calculate if this click is critical
+                const criticalChance = state.upgrades.critical_strike / 100
+                const isCritical = Math.random() < criticalChance
+
+                // Dispatch auto clicker text event
+                window.dispatchEvent(new CustomEvent('autoClickerText', {
+                    detail: {
+                        value: state.clicker.baseClickValue,
+                        isCritical
+                    }
+                }))
+
+                // Handle the click
+                await this.handleMoneyClick(isCritical)
+            }
+        }, interval)
+    },
+
+    stopAutoClicker() {
+        if (state.clicker.autoClickerInterval) {
+            clearInterval(state.clicker.autoClickerInterval)
+            state.clicker.autoClickerInterval = null
+        }
+    }
 }
 
 // Export store with cleanup method
 export const useStore = () => ({
     state: readonly(state),
     ...methods,
-    cleanup
+    cleanup: () => methods.stopAutoClicker()
 })
 
 // Initialize auto clicker when store is created
 methods.fetchUserData().then(() => {
     if (state.upgrades.auto_clicker > 0) {
-        autoClicker.startAutoClicker(methods, state.upgrades.auto_clicker)
+        methods.startAutoClicker(state.upgrades.auto_clicker)
     }
 }) 
