@@ -1,6 +1,6 @@
 # CS:GO Case Clicker
 
-A web-based CS:GO case clicker game with various gambling features and trading mechanics.
+A modern web-based CS:GO case clicker game with various gambling features, trading mechanics, and a responsive UI built with Vue.js.
 
 ## Features
 
@@ -10,6 +10,7 @@ A web-based CS:GO case clicker game with various gambling features and trading m
   - Jackpot
   - Coinflip
   - Crash Game
+  - Blackjack
   - Trading System
   - Inventory Management
   - Shop System
@@ -17,32 +18,57 @@ A web-based CS:GO case clicker game with various gambling features and trading m
 
 - 💰 **Economy System**
   - Virtual Currency
-  - Item Trading
-  - Daily Trades
+  - Item Trading with Bots
+  - Daily Trading Opportunities
   - Achievement System
+  - Case Price & Float System
 
 ## Tech Stack
 
-- Backend: Python/Flask
-- Frontend: HTML, CSS, JavaScript
-- Database: SQLite (via SQLAlchemy)
+- **Frontend**:
+  - Vue.js 3
+  - Vuex for state management
+  - Vue Router
+  - Tailwind CSS
+  - Modern ES6+ JavaScript
+
+- **Backend**:
+  - Python/Flask
+  - RESTful API architecture
+  - JSON-based data storage
+
+- **Data Storage**:
+  - Local JSON files for persistence
+  - In-memory caching for performance
 
 ## Project Structure
 
 ```
 case-clicker/
-├── app.py              # Main Flask application
-├── config.py           # Configuration settings
-├── models.py           # Database models
-├── bots.py            # Trading bot logic
-├── casino.py          # Gambling game logic
-├── user_data.py       # User management
-├── achievements.py    # Achievement system
-├── daily_trades.py    # Trading system
-├── templates/         # HTML templates
-├── static/            # CSS, JS, and assets
-├── data/             # Game data
-└── cases/            # Case definitions
+├── frontend/                # Vue.js frontend application
+│   ├── src/                # Source files
+│   │   ├── components/     # Vue components
+│   │   ├── views/          # Vue views/pages
+│   │   ├── store/          # Vuex store
+│   │   └── router/         # Vue router
+│   ├── public/             # Static assets
+│   └── dist/               # Production build
+│
+├── Backend/
+│   ├── app.py             # Main Flask application
+│   ├── config.py          # Configuration settings
+│   ├── models.py          # Database models
+│   ├── bots.py           # Trading bot logic
+│   ├── casino.py         # Gambling game logic
+│   ├── blackjack.py      # Blackjack game logic
+│   ├── user_data.py      # User management
+│   ├── achievements.py   # Achievement system
+│   ├── daily_trades.py   # Trading system
+│   └── crash_simulation.py # Crash game logic
+│
+├── data/                  # Game data
+├── cases/                 # Case definitions
+└── static/               # Static assets for backend
 ```
 
 ## Setup Instructions
@@ -53,30 +79,42 @@ git clone https://github.com/yourusername/case-clicker.git
 cd case-clicker
 ```
 
-2. Create and activate a virtual environment:
+2. Backend Setup:
 ```bash
+# Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. Install dependencies:
-```bash
+# Install Python dependencies
 pip install -r requirements.txt
+
+# Set up environment variables
+# Create .env file with necessary configurations
 ```
 
-4. Set up environment variables:
-Create a `.env` file with necessary configurations.
-
-5. Initialize the database:
+3. Frontend Setup:
 ```bash
-flask db init
-flask db migrate
-flask db upgrade
+cd frontend
+npm install
 ```
 
-6. Run the application:
+4. Running the Application:
+
+Development mode:
 ```bash
+# Terminal 1 - Backend
 flask run
+
+# Terminal 2 - Frontend
+cd frontend
+npm run serve
+```
+
+Production mode:
+```bash
+cd frontend
+npm run build
+# Then serve the backend with your preferred production server
 ```
 
 ## Game Features Details
@@ -84,23 +122,27 @@ flask run
 ### Case Opening
 - Open various CS:GO-style cases
 - Different rarity levels for items
-- Float value system for skins
+- Advanced float value system for skins
+- Real-time price updates
 
 ### Trading System
-- Trade items with bots
+- Advanced bot trading system
+- Market-based pricing algorithm
 - Daily trading opportunities
-- Market value based pricing
+- Trade-up contracts
 
 ### Gambling Games
 - **Roulette**: Classic CS:GO roulette with multiple betting options
 - **Jackpot**: Pool betting system with multiple players
 - **Coinflip**: 50/50 chance gambling
 - **Crash**: Multiplier-based gambling game
+- **Blackjack**: Classic card game implementation
 
 ### Progression System
-- Achievement system for rewards
+- Comprehensive achievement system
 - Upgrade system for better odds
 - Daily rewards and bonuses
+- User statistics tracking
 
 ## Contributing
 
