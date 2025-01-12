@@ -254,96 +254,97 @@ export default {
       return (valuePerClick * totalClicksPerSecond).toFixed(3)
     })
 
-    // Update handleMoneyClick to handle auto clicks
+    // Add to the setup() data section
+    const manualClickQueue = ref({
+        normal: 0,
+        critical: 0
+    })
+    const isProcessingManualClicks = ref(false)
+    const lastManualClickProcess = ref(Date.now())
+
+    // Update handleMoneyClick
     const handleMoneyClick = async (event, isAutoClick = false) => {
-      // Only add to click history for manual clicks
-      if (!isAutoClick) {
-        clickHistory.value.push(Date.now())
-      }
+        // Only add to click history for manual clicks
+        if (!isAutoClick) {
+            clickHistory.value.push(Date.now())
 
-      // Calculate critical strike
-      let isCritical = false
-      const criticalChance = critChance.value / 100
-      
-      if (criticalChance > 0) {
-        const roll = Math.random()
-        if (roll < criticalChance) {
-          isCritical = true
+            // Calculate critical strike
+            let isCritical = false
+            const criticalChance = critChance.value / 100
+            
+            if (criticalChance > 0) {
+                const roll = Math.random()
+                if (roll < criticalChance) {
+                    isCritical = true
+                }
+            }
+
+            // Get click position for floating text
+            let x, y
+            const clickerBtn = document.querySelector('.clicker-btn')
+            if (clickerBtn) {
+                const rect = clickerBtn.getBoundingClientRect()
+                x = rect.left + rect.width / 2
+                y = rect.top + rect.height / 2
+
+                // Add floating text immediately
+                addFloatingText(
+                    x, 
+                    y, 
+                    `+$${(currentMultiplier.value * store.state.clicker.baseClickValue).toFixed(3)}`,
+                    isCritical
+                )
+            }
+
+            // Update multiplier
+            store.updateClickerMultiplier()
+
+            // Add to manual click queue
+            if (isCritical) {
+                manualClickQueue.value.critical++
+            } else {
+                manualClickQueue.value.normal++
+            }
+
+            // Process clicks if we have enough in the queue or enough time has passed
+            const now = Date.now()
+            const timeSinceLastProcess = now - lastManualClickProcess.value
+            const totalQueuedClicks = manualClickQueue.value.normal + manualClickQueue.value.critical
+
+            if (totalQueuedClicks >= 10 || timeSinceLastProcess >= 1000) {
+                await processManualClicks()
+            }
         }
-      }
-
-      // Get click position for floating text
-      let x, y
-      const clickerBtn = document.querySelector('.clicker-btn')
-      if (clickerBtn) {
-        const rect = clickerBtn.getBoundingClientRect()
-        x = rect.left + rect.width / 2
-        y = rect.top + rect.height / 2
-
-        // Add randomness to position for auto clicks
-        if (isAutoClick) {
-          x += (Math.random() - 0.5) * rect.width * 0.5
-          y += (Math.random() - 0.5) * rect.height * 0.5
-        }
-
-        // Add floating text immediately
-        addFloatingText(
-          x, 
-          y, 
-          `+$${(currentMultiplier.value * store.state.clicker.baseClickValue).toFixed(3)}`,
-          isCritical
-        )
-      }
-
-      // Only update multiplier for manual clicks
-      if (!isAutoClick) {
-        store.updateClickerMultiplier()
-      }
-
-      // Add click to pending queue
-      pendingClicks.value.push({ isCritical, isAutoClick })
-
-      // Process clicks if we have enough in the queue or not currently processing
-      if (pendingClicks.value.length >= 10 || !isProcessingClick.value) {
-        await processClicks()
-      }
     }
 
-    // Update processClicks to handle auto clicks
-    const processClicks = async () => {
-      if (isProcessingClick.value || pendingClicks.value.length === 0) return
-
-      isProcessingClick.value = true
-
-      try {
-        // Process all pending clicks in one batch
-        const clicks = [...pendingClicks.value]
-        pendingClicks.value = [] // Clear the queue immediately
-
-        // Count critical and normal clicks, separating auto and manual
-        const criticalClicks = clicks.filter(click => click.isCritical && !click.isAutoClick).length
-        const normalClicks = clicks.filter(click => !click.isCritical && !click.isAutoClick).length
-        const autoCriticalClicks = clicks.filter(click => click.isCritical && click.isAutoClick).length
-        const autoNormalClicks = clicks.filter(click => !click.isCritical && click.isAutoClick).length
-
-        // Send one request with the total clicks
-        if (normalClicks > 0 || criticalClicks > 0 || autoNormalClicks > 0 || autoCriticalClicks > 0) {
-          const data = await store.handleBatchMoneyClicks(normalClicks, criticalClicks, autoNormalClicks, autoCriticalClicks)
-          if (!data) {
-            // If there's an error, add the clicks back to the queue
-            pendingClicks.value.push(...clicks)
-          }
+    // Add processManualClicks function
+    const processManualClicks = async () => {
+        if (isProcessingManualClicks.value || 
+            (manualClickQueue.value.normal === 0 && manualClickQueue.value.critical === 0)) {
+            return
         }
-      } catch (error) {
-        console.error('Error processing clicks:', error)
-      } finally {
-        isProcessingClick.value = false
-        
-        // If there are more clicks in the queue, process them
-        if (pendingClicks.value.length > 0) {
-          await processClicks()
+
+        isProcessingManualClicks.value = true
+
+        try {
+            const data = await store.handleBatchMoneyClicks(
+                manualClickQueue.value.normal,
+                manualClickQueue.value.critical,
+                0,
+                0
+            )
+
+            if (data) {
+                // Clear queues
+                manualClickQueue.value.normal = 0
+                manualClickQueue.value.critical = 0
+                lastManualClickProcess.value = Date.now()
+            }
+        } catch (error) {
+            console.error('Error processing manual clicks:', error)
+        } finally {
+            isProcessingManualClicks.value = false
         }
-      }
     }
 
     // Watch for changes in auto clicker level
@@ -607,6 +608,10 @@ export default {
       isProcessingClick,
       pendingClicks,
       earningsPerSecond,
+      manualClickQueue,
+      isProcessingManualClicks,
+      lastManualClickProcess,
+      processManualClicks
     }
   }
 }

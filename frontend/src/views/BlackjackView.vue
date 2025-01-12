@@ -115,10 +115,12 @@
 <script>
 import { ref, computed, onUnmounted } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'BlackjackView',
   setup() {
+    const router = useRouter()
     const balance = ref(0)
     const betAmount = ref(1)
     const gameActive = ref(false)
@@ -376,7 +378,7 @@ export default {
     }
 
     const returnToCasino = () => {
-      // Logic to return to the casino view
+      router.push('/casino')
     }
 
     const getCardClass = (card) => {

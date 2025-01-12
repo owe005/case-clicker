@@ -3012,40 +3012,37 @@ def batch_click():
         critical_clicks = data.get('critical_clicks', 0)
         auto_normal_clicks = data.get('auto_normal_clicks', 0)
         auto_critical_clicks = data.get('auto_critical_clicks', 0)
-        
-        # Load user data from file to ensure we have the latest
+
+        total_clicks = normal_clicks + critical_clicks + auto_normal_clicks + auto_critical_clicks
+        if total_clicks <= 0:
+            return jsonify({'error': 'No clicks provided'}), 400
+
+        # Load user data from file
         user_data = load_user_data()
         current_balance = float(user_data.get('balance', 0))
-        current_exp = int(user_data.get('exp', 0))
         
         # Get base click value from upgrades
         upgrades = user_data.get('upgrades', {})
         click_value_level = upgrades.get('click_value', 1)
         base_click_value = 0.01 * (1.5 ** (click_value_level - 1))
         
-        # Calculate total value from manual clicks
-        manual_normal_value = normal_clicks * base_click_value * user_data.get('clicker', {}).get('currentMultiplier', 1.0)
-        manual_critical_value = critical_clicks * base_click_value * user_data.get('clicker', {}).get('currentMultiplier', 1.0) * 4
+        # Get current multiplier from session or default to 1
+        current_multiplier = session.get('multiplier', 1.0)
         
-        # Calculate total value from auto clicks (always use base multiplier of 1.0)
-        auto_normal_value = auto_normal_clicks * base_click_value
-        auto_critical_value = auto_critical_clicks * base_click_value * 4
-        
-        # Calculate total value and exp (only manual clicks give exp)
-        total_value = round(manual_normal_value + manual_critical_value + auto_normal_value + auto_critical_value, 3)
-        total_exp = 0  # No exp from clicks anymore
-        
-        # Update user data
-        new_balance = round(current_balance + total_value, 3)  # Round to 3 decimal places
-        new_exp = current_exp + total_exp
-        
-        # Calculate rank
-        rank_data = calculate_rank(new_exp)
+        # Calculate values for different click types
+        normal_value = base_click_value * current_multiplier * normal_clicks
+        critical_value = base_click_value * current_multiplier * 4 * critical_clicks  # 4x for critical hits
+        auto_normal_value = base_click_value * auto_normal_clicks  # Auto clicks don't use multiplier
+        auto_critical_value = base_click_value * 4 * auto_critical_clicks  # 4x for critical auto hits
+
+        # Calculate total value
+        total_value = round(normal_value + critical_value + auto_normal_value + auto_critical_value, 3)
+
+        # Update balance
+        new_balance = round(current_balance + total_value, 3)
         
         # Update user data
         user_data['balance'] = new_balance
-        user_data['exp'] = new_exp
-        user_data['rank'] = rank_data['rank']
         
         # Update stats
         if 'stats' not in user_data:
@@ -3055,7 +3052,7 @@ def batch_click():
         if 'total_earnings' not in user_data['stats']:
             user_data['stats']['total_earnings'] = 0
             
-        user_data['stats']['total_clicks'] += normal_clicks + critical_clicks + auto_normal_clicks + auto_critical_clicks
+        user_data['stats']['total_clicks'] += total_clicks
         user_data['stats']['total_earnings'] = round(user_data['stats'].get('total_earnings', 0) + total_value, 3)
         
         # Save to file
@@ -3064,16 +3061,11 @@ def batch_click():
         # Update session
         session['user_data'] = user_data
         session.modified = True
-        
+
         return jsonify({
-            'success': True,
             'balance': new_balance,
-            'exp': new_exp,
-            'rank': rank_data['rank'],
-            'rankName': RANKS[rank_data['rank']],
-            'nextRankExp': RANK_EXP[rank_data['rank']] if rank_data['rank'] < len(RANK_EXP) else None
+            'value_earned': total_value
         })
-        
     except Exception as e:
         print('Error in batch_click:', str(e))
         return jsonify({'error': str(e)}), 500

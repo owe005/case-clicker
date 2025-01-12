@@ -114,10 +114,14 @@ const state = reactive({
         baseClickValue: 0.01,
         caseProgress: 0,
         lastProgress: 0,
-        pendingClicks: 0,
-        isProcessingClick: false,
         autoClickerInterval: null
-    }
+    },
+    autoClickQueue: {
+        normal: 0,
+        critical: 0
+    },
+    isProcessingAutoClicks: false,
+    lastAutoClickProcess: 0
 })
 
 // Methods to update state
@@ -347,10 +351,8 @@ const methods = {
                 return null
             }
             
-            // Update store state with new values
+            // Update store state with new balance
             state.balance = parseFloat(data.balance)
-            state.exp = parseInt(data.exp)
-            state.rank = parseInt(data.rank)
             
             return data
         } catch (error) {
@@ -359,47 +361,95 @@ const methods = {
         }
     },
 
+    // Auto clicker methods
     startAutoClicker(level) {
-        this.stopAutoClicker() // Clear any existing interval
-
-        if (level <= 0) return
-
-        // Calculate clicks per second
-        let clicksPerSecond
-        if (level <= 9) {
-            clicksPerSecond = level * 0.1 // 0.1 to 0.9 clicks per second for levels 1-9
-        } else {
-            clicksPerSecond = level - 9 // 1+ clicks per second for level 10+
+        if (state.autoClickerInterval) {
+            clearInterval(state.autoClickerInterval)
         }
 
-        // Convert clicks per second to interval in milliseconds
+        const clicksPerSecond = level <= 9 ? level * 0.1 : level - 9
         const interval = Math.floor(1000 / clicksPerSecond)
 
-        state.clicker.autoClickerInterval = setInterval(async () => {
-            // Only auto click if we're on the money tab
-            if (document.querySelector('.clicker-btn')) {
-                // Calculate if this click is critical
-                const criticalChance = state.upgrades.critical_strike / 100
-                const isCritical = Math.random() < criticalChance
+        state.autoClickerInterval = setInterval(() => {
+            // Calculate critical strike
+            const criticalChance = state.upgrades.critical_strike / 100
+            const isCritical = Math.random() < criticalChance
 
-                // Dispatch auto clicker text event
-                window.dispatchEvent(new CustomEvent('autoClickerText', {
-                    detail: {
-                        value: state.clicker.baseClickValue,
-                        isCritical
-                    }
-                }))
+            // Queue the auto click
+            this.queueAutoClick(isCritical)
 
-                // Handle the click
-                await this.handleMoneyClick(isCritical)
-            }
+            // Dispatch event for floating text
+            const baseClickValue = 0.01
+            window.dispatchEvent(new CustomEvent('autoClickerText', {
+                detail: {
+                    value: baseClickValue * (isCritical ? 4 : 1),
+                    isCritical
+                }
+            }))
         }, interval)
     },
 
     stopAutoClicker() {
-        if (state.clicker.autoClickerInterval) {
-            clearInterval(state.clicker.autoClickerInterval)
-            state.clicker.autoClickerInterval = null
+        if (state.autoClickerInterval) {
+            clearInterval(state.autoClickerInterval)
+            state.autoClickerInterval = null
+        }
+    },
+
+    queueAutoClick(isCritical) {
+        // Add to queue
+        if (isCritical) {
+            state.autoClickQueue.critical++
+        } else {
+            state.autoClickQueue.normal++
+        }
+
+        // Process clicks if we have enough queued or enough time has passed
+        const now = Date.now()
+        const timeSinceLastProcess = now - state.lastAutoClickProcess
+        const totalQueuedClicks = state.autoClickQueue.normal + state.autoClickQueue.critical
+
+        if (totalQueuedClicks >= 10 || timeSinceLastProcess >= 1000) {
+            this.processAutoClicks()
+        }
+    },
+
+    async processAutoClicks() {
+        if (state.isProcessingAutoClicks || 
+            (state.autoClickQueue.normal === 0 && state.autoClickQueue.critical === 0)) {
+            return
+        }
+
+        state.isProcessingAutoClicks = true
+        
+        try {
+            const response = await fetch('/api/batch_click', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    normal_clicks: 0,
+                    critical_clicks: 0,
+                    auto_normal_clicks: state.autoClickQueue.normal,
+                    auto_critical_clicks: state.autoClickQueue.critical
+                })
+            })
+
+            const data = await response.json()
+            if (data.error) throw new Error(data.error)
+
+            // Update balance only
+            state.balance = parseFloat(data.balance)
+            
+            // Clear queues
+            state.autoClickQueue.normal = 0
+            state.autoClickQueue.critical = 0
+            state.lastAutoClickProcess = Date.now()
+        } catch (error) {
+            console.error('Error processing auto clicks:', error)
+        } finally {
+            state.isProcessingAutoClicks = false
         }
     }
 }

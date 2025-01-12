@@ -1,8 +1,8 @@
 {
-  "balance": 9999999388.5,
+  "balance": 22.035,
   "inventory": [],
-  "exp": 0,
-  "rank": 0,
+  "exp": 519,
+  "rank": 5,
   "upgrades": {
     "click_value": 1,
     "max_multiplier": 1,
@@ -24,18 +24,18 @@
         "reward": 100,
         "exp_reward": 50,
         "icon": "\ud83d\uddb1\ufe0f",
-        "current_value": 124,
+        "current_value": 681,
         "category": "clicks",
-        "progress": 12.4
+        "progress": 68.10000000000001
       }
     }
   },
   "stats": {
-    "total_earnings": 0.76,
+    "total_earnings": 17.43,
     "total_cases_opened": 0,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 124,
+    "total_clicks": 2323,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

@@ -37,3 +37,6 @@ config.env
 data/user_inventory.json
 data/user_inventory.json.bak
 data/daily_trades.json 
+
+# Legacy
+legacy/
