@@ -1,5 +1,5 @@
 {
-  "balance": 22.035,
+  "balance": 8.635,
   "inventory": [],
   "exp": 519,
   "rank": 5,
@@ -31,11 +31,11 @@
     }
   },
   "stats": {
-    "total_earnings": 17.43,
+    "total_earnings": 27.92,
     "total_cases_opened": 0,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 2323,
+    "total_clicks": 3372,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

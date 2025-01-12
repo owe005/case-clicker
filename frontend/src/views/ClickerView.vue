@@ -522,22 +522,18 @@ export default {
 
     // Watch for tab changes
     watch(currentTab, (newTab) => {
-      const autoClickerLevel = store.state.upgrades.auto_clicker
-      if (newTab === 'money' && autoClickerLevel > 0) {
-        // Start the auto clicker only when on money tab
-        store.startAutoClicker(autoClickerLevel)
-      } else {
-        // Stop the auto clicker when not on money tab
-        store.stopAutoClicker()
-      }
+      store.updateCurrentTab(newTab)
     }, { immediate: true })
 
     // Handle auto clicker floating text
     const handleAutoClickText = (event) => {
+      // Only show auto clicker text if we're on the money tab
+      if (currentTab.value !== 'money') return
+
       const { value, isCritical } = event.detail
       const clickerBtn = document.querySelector('.clicker-btn')
       
-      if (clickerBtn && currentTab.value === 'money') {
+      if (clickerBtn) {
         const rect = clickerBtn.getBoundingClientRect()
         const x = rect.left + rect.width / 2 + ((Math.random() - 0.5) * rect.width * 0.5)
         const y = rect.top + rect.height / 2 + ((Math.random() - 0.5) * rect.height * 0.5)
@@ -565,9 +561,14 @@ export default {
       // Add listener for auto clicker text
       window.addEventListener('autoClickerText', handleAutoClickText)
 
+      // Start auto clicker if level > 0 and we're on money tab
+      if (store.state.upgrades.auto_clicker > 0 && currentTab.value === 'money') {
+        store.startAutoClicker(store.state.upgrades.auto_clicker)
+      }
+
       // Add route change listener
       const handleRouteChange = () => {
-        store.autoClicker.stopAutoClicker()
+        store.stopAutoClicker()
       }
       window.addEventListener('popstate', handleRouteChange)
 
@@ -584,7 +585,7 @@ export default {
       window.removeEventListener('autoClickerText', handleAutoClickText)
 
       // Make absolutely sure auto clicker is stopped
-      store.autoClicker.stopAutoClicker()
+      store.stopAutoClicker()
     })
 
     return {

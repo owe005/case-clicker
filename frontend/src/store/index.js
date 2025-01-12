@@ -95,6 +95,8 @@ const state = reactive({
     lastUpdate: Date.now(),
     isLoading: false,
     error: null,
+    currentTab: 'money',
+    currentView: 'clicker',
     upgrades: {
         click_value: 1,
         max_multiplier: 1,
@@ -362,41 +364,10 @@ const methods = {
     },
 
     // Auto clicker methods
-    startAutoClicker(level) {
-        if (state.autoClickerInterval) {
-            clearInterval(state.autoClickerInterval)
-        }
-
-        const clicksPerSecond = level <= 9 ? level * 0.1 : level - 9
-        const interval = Math.floor(1000 / clicksPerSecond)
-
-        state.autoClickerInterval = setInterval(() => {
-            // Calculate critical strike
-            const criticalChance = state.upgrades.critical_strike / 100
-            const isCritical = Math.random() < criticalChance
-
-            // Queue the auto click
-            this.queueAutoClick(isCritical)
-
-            // Dispatch event for floating text
-            const baseClickValue = 0.01
-            window.dispatchEvent(new CustomEvent('autoClickerText', {
-                detail: {
-                    value: baseClickValue * (isCritical ? 4 : 1),
-                    isCritical
-                }
-            }))
-        }, interval)
-    },
-
-    stopAutoClicker() {
-        if (state.autoClickerInterval) {
-            clearInterval(state.autoClickerInterval)
-            state.autoClickerInterval = null
-        }
-    },
-
     queueAutoClick(isCritical) {
+        // Don't queue clicks if we're not on the money tab or not in clicker view
+        if (state.currentTab !== 'money' || state.currentView !== 'clicker') return
+
         // Add to queue
         if (isCritical) {
             state.autoClickQueue.critical++
@@ -411,6 +382,42 @@ const methods = {
 
         if (totalQueuedClicks >= 10 || timeSinceLastProcess >= 1000) {
             this.processAutoClicks()
+        }
+    },
+
+    startAutoClicker(level) {
+        // Clear any existing interval
+        this.stopAutoClicker()
+
+        // Only start if we're on the money tab and in clicker view
+        if (state.currentTab !== 'money' || state.currentView !== 'clicker') return
+
+        const clicksPerSecond = level <= 9 ? level * 0.1 : level - 9
+        const interval = Math.floor(1000 / clicksPerSecond)
+
+        state.autoClickerInterval = setInterval(() => {
+            // Double check we're still on money tab and in clicker view
+            if (state.currentTab === 'money' && state.currentView === 'clicker') {
+                const criticalChance = state.upgrades.critical_strike / 100
+                const isCritical = Math.random() < criticalChance
+
+                this.queueAutoClick(isCritical)
+
+                // Dispatch event for floating text
+                window.dispatchEvent(new CustomEvent('autoClickerText', {
+                    detail: {
+                        value: state.clicker.baseClickValue * (isCritical ? 4 : 1),
+                        isCritical
+                    }
+                }))
+            }
+        }, interval)
+    },
+
+    stopAutoClicker() {
+        if (state.autoClickerInterval) {
+            clearInterval(state.autoClickerInterval)
+            state.autoClickerInterval = null
         }
     },
 
@@ -450,6 +457,28 @@ const methods = {
             console.error('Error processing auto clicks:', error)
         } finally {
             state.isProcessingAutoClicks = false
+        }
+    },
+
+    updateCurrentTab(tab) {
+        state.currentTab = tab
+        // Restart auto clicker if needed
+        if (tab === 'money' && state.upgrades.auto_clicker > 0) {
+            this.startAutoClicker(state.upgrades.auto_clicker)
+        } else {
+            this.stopAutoClicker()
+        }
+    },
+
+    // Add method to handle view changes
+    updateCurrentView(view) {
+        state.currentView = view
+        // Stop auto clicker if we leave the clicker view
+        if (view !== 'clicker') {
+            this.stopAutoClicker()
+        } else if (state.currentTab === 'money' && state.upgrades.auto_clicker > 0) {
+            // Restart auto clicker if we return to clicker view on money tab
+            this.startAutoClicker(state.upgrades.auto_clicker)
         }
     }
 }

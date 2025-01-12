@@ -4,6 +4,7 @@ import CoinflipView from '../views/CoinflipView.vue'
 import RouletteView from '../views/RouletteView.vue'
 import TradingView from '../views/TradingView.vue'
 import BlackjackView from '../views/BlackjackView.vue'
+import { useStore } from '../store'
 
 const routes = [
   {
@@ -86,6 +87,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+// Add navigation guard to handle view changes
+router.beforeEach((to, from, next) => {
+  const store = useStore()
+  store.updateCurrentView(to.name.toLowerCase())
+  next()
 })
 
 export default router 
