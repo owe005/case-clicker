@@ -29,38 +29,83 @@
       </div>
 
       <!-- Cases Grid -->
-      <div v-if="currentCategory === 'cases'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <div v-for="(case_data, case_type) in cases" :key="case_type" class="group">
-          <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70">
-            <!-- Hover Glow Effect -->
-            <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            
-            <!-- Content -->
-            <div class="relative">
-              <!-- Image and Name (Clickable for contents) -->
-              <div @click="viewCaseContents(case_type)" class="cursor-pointer">
-              <div class="aspect-square mb-4 p-4">
-                  <img :src="getCaseImagePath(case_data)" :alt="case_data.name" class="w-full h-full object-contain">
+      <div v-if="currentCategory === 'cases'" class="space-y-8">
+        <div v-for="[rank, group] in sortedRankGroups" :key="rank" class="space-y-4">
+          <!-- Rank Group Header -->
+          <div class="flex items-center gap-4">
+            <h2 class="text-xl font-display font-medium" 
+                :class="Number(rank) <= store.state.rank ? 'text-yellow' : 'text-white/50'">
+              {{ RANKS[rank] }}
+            </h2>
+            <div class="flex-1 h-px bg-yellow/10"></div>
+            <span class="text-sm text-white/50">
+              {{ Number(rank) <= store.state.rank ? 'Unlocked' : 'Locked' }}
+            </span>
+          </div>
+
+          <!-- Cases Grid for this Rank -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div v-for="case_item in group" :key="case_item.case_type" class="group">
+              <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70"
+                   :class="{ 'opacity-75': isCaseLocked(case_item.name) }">
+                <!-- Hover Glow Effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                
+                <!-- Lock Overlay for Locked Cases -->
+                <div v-if="isCaseLocked(case_item.name)" 
+                     class="absolute inset-0 backdrop-blur-[1px] rounded-xl flex items-center justify-center z-10">
+                  <div class="bg-black/80 px-4 py-2 rounded-lg backdrop-blur-sm">
+                    <div class="flex items-center gap-2 text-red-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="font-display">Unlocks at {{ RANKS[CASE_RANK_REQUIREMENTS[case_item.name]] }}</span>
+                    </div>
+                  </div>
                 </div>
-                <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 mb-2">{{ case_data.name }}</h3>
-              </div>
-              
-              <!-- Buy Section -->
-                <div class="flex items-center justify-between">
-                <span class="text-yellow font-medium">${{ case_data.price.toFixed(2) }}</span>
-                <div class="flex items-center gap-2">
-                  <input 
-                    type="number" 
-                    min="1" 
-                    v-model="case_data.quantity" 
-                    class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
-                  >
-                  <button 
-                    @click.stop="buyCase(case_type)"
-                    class="px-4 py-1.5 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  >
-                    Buy
-                  </button>
+                
+                <!-- Content -->
+                <div class="relative">
+                  <!-- Image and Name (Clickable for contents) -->
+                  <div @click="viewCaseContents(case_item.case_type)" 
+                       class="cursor-pointer relative"
+                       :class="{ 'pointer-events-none': isCaseLocked(case_item.name) }">
+                    <div class="aspect-square mb-4 p-4">
+                      <img :src="getCaseImagePath(case_item)" 
+                           :alt="case_item.name" 
+                           class="w-full h-full object-contain transition-all duration-300"
+                           :class="{ 'grayscale': isCaseLocked(case_item.name) }">
+                    </div>
+                    <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 mb-2">
+                      {{ case_item.name }}
+                    </h3>
+                  </div>
+                  
+                  <!-- Buy Section -->
+                  <div class="flex items-center justify-between">
+                    <span class="text-yellow font-medium">${{ case_item.price.toFixed(2) }}</span>
+                    <div class="flex items-center gap-2">
+                      <input 
+                        type="number" 
+                        min="1" 
+                        v-model="case_item.quantity" 
+                        :disabled="isCaseLocked(case_item.name)"
+                        class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center disabled:opacity-50"
+                      >
+                      <button 
+                        @click.stop="buyCase(case_item.case_type)"
+                        :disabled="isCaseLocked(case_item.name)"
+                        class="px-4 py-1.5 rounded-lg transition-all duration-200"
+                        :class="[
+                          isCaseLocked(case_item.name)
+                            ? 'bg-gray-dark/50 text-white/30 cursor-not-allowed'
+                            : 'bg-yellow/10 hover:bg-yellow/20 text-yellow'
+                        ]"
+                      >
+                        {{ isCaseLocked(case_item.name) ? 'Locked' : 'Buy' }}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -243,7 +288,7 @@
 
 <script>
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-import { useStore, CASE_MAPPING } from '../store'
+import { useStore, CASE_MAPPING, RANKS, CASE_RANK_REQUIREMENTS } from '../store'
 
 export default {
   name: 'ShopView',
@@ -273,6 +318,12 @@ export default {
       { id: 'collections', name: 'Collections' },
       { id: 'souvenir', name: 'Souvenir Packages' }
     ]
+
+    // Add computed property to check if a case is locked
+    const isCaseLocked = (caseName) => {
+      const requiredRank = CASE_RANK_REQUIREMENTS[caseName] || 0;
+      return store.state.rank < requiredRank;
+    };
 
     // Load cases from backend
     async function loadCases() {
@@ -547,6 +598,40 @@ export default {
       )
     })
 
+    // Add computed property for grouped cases
+    const groupedCases = computed(() => {
+      const casesArray = Object.entries(cases.value).map(([case_type, case_data]) => ({
+        case_type,
+        ...case_data
+      }));
+
+      // Group cases by rank requirement using CASE_RANK_REQUIREMENTS
+      const groups = {};
+      casesArray.forEach(case_item => {
+        const requiredRank = CASE_RANK_REQUIREMENTS[case_item.name] || 0;
+        if (!groups[requiredRank]) {
+          groups[requiredRank] = [];
+        }
+        groups[requiredRank].push(case_item);
+      });
+
+      // Log cases grouped under Silver I
+      console.log('Cases under Silver I:', groups[0]);
+
+      // Sort cases within each group by price
+      Object.values(groups).forEach(group => {
+        group.sort((a, b) => a.price - b.price);
+      });
+
+      return groups;
+    });
+
+    // Add computed property for sorted rank groups
+    const sortedRankGroups = computed(() => {
+      return Object.entries(groupedCases.value)
+        .sort(([rankA], [rankB]) => Number(rankA) - Number(rankB));
+    });
+
     onMounted(() => {
       loadCases()
       if (currentCategory.value === 'skins') {
@@ -582,7 +667,13 @@ export default {
       viewCaseContents,
       getCaseImagePath,
       getSkinImagePath,
-      purchaseSkin
+      purchaseSkin,
+      isCaseLocked,
+      RANKS,
+      CASE_RANK_REQUIREMENTS,
+      groupedCases,
+      sortedRankGroups,
+      store,
     }
   }
 }
@@ -600,5 +691,10 @@ export default {
 
 .animate-bounce {
   animation: bounce 0.2s ease-in-out;
+}
+
+/* Add transition for grayscale effect */
+.grayscale {
+  filter: grayscale(100%);
 }
 </style> 

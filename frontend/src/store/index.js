@@ -45,6 +45,51 @@ export const CASE_MAPPING = {
     'prisma_2': 'prisma_2_case'
 };
 
+// Case rank requirements
+export const CASE_RANK_REQUIREMENTS = {
+    'CS:GO Weapon Case': 17,
+    'eSports 2013 Case': 17,
+    'Operation Bravo Case': 16,
+    'CS:GO Weapon Case 2': 16,
+    'eSports 2013 Winter Case': 15,
+    'Winter Offensive Case': 15,
+    'CS:GO Weapon Case 3': 15,
+    'Operation Phoenix Case': 14,
+    'Huntsman Case': 14,
+    'Operation Breakout Case': 13,
+    'eSports 2014 Summer Case': 13,
+    'Operation Vanguard Case': 12,
+    'Chroma Case': 12,
+    'Chroma 2 Case': 11,
+    'Falchion Case': 11,
+    'Shadow Case': 11,
+    'Revolution Case': 10,
+    'Operation Wildfire Case': 10,
+    'Dreams & Nightmares Case': 10,
+    'Revolver Case': 9,
+    'Gamma Case': 9,
+    'Gamma 2 Case': 8,
+    'Kilowatt Case': 8,
+    'Horizon Case': 8,
+    'Chroma 3 Case': 8,
+    'Operation Hydra Case': 7,
+    'Glove Case': 7,
+    'Spectrum Case': 6,
+    'Spectrum 2 Case': 6,
+    'Clutch Case': 5,
+    'CS20 Case': 5,
+    'Danger Zone Case': 4,
+    'Operation Riptide Case': 4,
+    'Gallery Case': 3,
+    'Snakebite Case': 3,
+    'Fracture Case': 2,
+    'Recoil Case': 1,
+    'Shattered Web Case': 1,
+    'Operation Broken Fang Case': 0,
+    'Prisma Case': 0,
+    'Prisma 2 Case': 0
+}
+
 export const RANKS = {
     0: "Silver I",
     1: "Silver II", 
