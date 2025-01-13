@@ -2896,6 +2896,29 @@ def complete_auction():
     winning_bid = AUCTION_BIDS[-1]
     print(f"\nAuction completed! Winner: {winning_bid['bidder']} with ${winning_bid['amount']:,.2f}")
     
+    # Load current auction data
+    auction_data = load_auction_data()
+    
+    # Create history entry
+    history_entry = {
+        "weapon": CURRENT_AUCTION['weapon'],
+        "name": CURRENT_AUCTION['name'],
+        "wear": CURRENT_AUCTION['wear'],
+        "rarity": CURRENT_AUCTION['rarity'],
+        "stattrak": CURRENT_AUCTION.get('stattrak', False),
+        "image": CURRENT_AUCTION.get('image', ''),
+        "case_type": CURRENT_AUCTION.get('case_type', ''),
+        "final_price": winning_bid['amount'],
+        "winner": winning_bid['bidder'],
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    # Add to history, keeping only last 10 entries
+    if 'history' not in auction_data:
+        auction_data['history'] = []
+    auction_data['history'].insert(0, history_entry)  # Insert at beginning
+    auction_data['history'] = auction_data['history'][:10]  # Keep only last 10
+    
     # If player won
     if winning_bid['bidder'] == 'You':
         try:
@@ -2912,21 +2935,19 @@ def complete_auction():
             user_data['inventory'].append(won_item)
             save_user_data(user_data)
             
-            print(f"Item added to player inventory: {won_item['weapon']} | {won_item['name']}")
-            
         except Exception as e:
             print(f"Error completing auction: {e}")
             traceback.print_exc()
-    
+            
     # Generate and save new auction data
     new_auction = generate_auction_item()
-    auction_data = {
+    auction_data.update({
         'item': new_auction,
         'end_time': (datetime.now() + timedelta(minutes=30)).isoformat(),
         'current_bid': float(new_auction['base_price']) * 0.1,
         'bids': [],
         'bot_budgets': generate_bot_budgets(new_auction['base_price'])
-    }
+    })
     save_auction_data(auction_data)
     
     # Update current auction state
@@ -2943,7 +2964,7 @@ def get_auction_status():
         # Load auction data from file
         auction_data = load_auction_data()
         
-        # If no auction data, start new one
+        # If no auction data exists at all, start new one
         if not auction_data:
             complete_auction()
             auction_data = load_auction_data()
@@ -2953,11 +2974,11 @@ def get_auction_status():
         # Update global state from file
         global CURRENT_AUCTION, AUCTION_BIDS, AUCTION_END_TIME, AUCTION_BOT_BUDGETS
         CURRENT_AUCTION = auction_data['item']
-        AUCTION_BIDS = auction_data['bids']
+        AUCTION_BIDS = auction_data.get('bids', [])
         AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
-        AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
+        AUCTION_BOT_BUDGETS = auction_data.get('bot_budgets', {})
         
-        current_bid = auction_data['current_bid']
+        current_bid = auction_data.get('current_bid', 0)
         
         # Get active/inactive status for each bot
         bot_statuses = []
@@ -2977,29 +2998,32 @@ def get_auction_status():
         if auction_ended and AUCTION_BIDS:
             winner = 'You' if AUCTION_BIDS[-1]['bidder'] == 'You' else AUCTION_BIDS[-1]['bidder']
             if winner == 'You':
-                # Store the won item before completing auction
                 won_item = CURRENT_AUCTION
-                final_price = current_bid
-                # Complete auction to start new one
-                complete_auction()
-                # Reload auction data after completion
-                auction_data = load_auction_data()
-                # Update globals with new auction data
-                CURRENT_AUCTION = auction_data['item']
-                AUCTION_BIDS = auction_data['bids']
-                AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
-                AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
+                final_price = AUCTION_BIDS[-1]['amount']
+                
+            # Start new auction if current one ended
+            complete_auction()
+            auction_data = load_auction_data()
+            CURRENT_AUCTION = auction_data['item']
+            AUCTION_BIDS = auction_data['bids']
+            AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+            AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
+            current_bid = auction_data['current_bid']
+        
+        # Include history in response
+        history = auction_data.get('history', [])
         
         return jsonify({
             'auction_item': CURRENT_AUCTION,
             'current_bid': current_bid,
-            'bids': AUCTION_BIDS,
             'end_time': AUCTION_END_TIME.isoformat(),
+            'bids': AUCTION_BIDS,
             'bot_statuses': bot_statuses,
             'ended': auction_ended,
             'winner': winner,
-            'won_item': won_item,  # Add the won item to the response
-            'final_price': final_price
+            'won_item': won_item,
+            'final_price': final_price,
+            'history': history
         })
 
 @app.route('/close_roulette_bets', methods=['POST'])
@@ -3093,18 +3117,27 @@ def cleanup_auction():
 def init_auction_system():
     global CURRENT_AUCTION, last_auction_check
     
-    # If there's no auction running, start one
-    if not CURRENT_AUCTION:
-        start_new_auction()
+    # Load existing auction data if available
+    auction_data = load_auction_data()
+    
+    if auction_data:
+        # Update global state from existing data
+        global AUCTION_BIDS, AUCTION_END_TIME, AUCTION_BOT_BUDGETS
+        CURRENT_AUCTION = auction_data['item']
+        AUCTION_BIDS = auction_data.get('bids', [])
+        AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+        AUCTION_BOT_BUDGETS = auction_data.get('bot_budgets', {})
+        
+        # Check if the existing auction has ended
+        if datetime.now() >= AUCTION_END_TIME:
+            start_new_auction()
+        else:
+            # Existing auction is still valid, just schedule the next one
+            schedule_next_auction()
+            start_auction_thread()
     else:
-        # If there is an auction, make sure it's still valid
-        with auction_lock:
-            if datetime.now() >= AUCTION_END_TIME:
-                start_new_auction()
-            else:
-                # Existing auction is still valid, just schedule the next one
-                schedule_next_auction()
-                start_auction_thread()
+        # No existing auction, start a new one
+        start_new_auction()
 
 # Register the cleanup function
 atexit.register(cleanup_auction)

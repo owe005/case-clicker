@@ -1,7 +1,33 @@
 <template>
   <div class="auction-container">
+    <!-- Auction History Section -->
+    <div class="auction-history-section main-card">
+      <h3>Recent Auctions</h3>
+      <div class="history-items">
+        <div v-for="item in auctionHistory" 
+             :key="item.timestamp" 
+             class="history-item"
+             :class="getItemRarityClass(item.rarity)">
+          <div class="history-item-image">
+            <img :src="getSkinImagePath(item)" :alt="`${item.weapon} | ${item.name}`">
+          </div>
+          <div class="history-item-details">
+            <div class="history-item-name">
+              {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }} ({{ item.wear }})
+            </div>
+            <div class="history-item-price">
+              ${{ item.final_price.toFixed(2) }}
+            </div>
+            <div class="history-item-winner">
+              Won by: {{ item.winner }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Item Details Section -->
-    <div class="item-details" :style="getItemDetailsStyle(auctionItem.rarity)">
+    <div class="item-details main-card" :style="getItemDetailsStyle(auctionItem.rarity)">
       <div class="item-header">
         <div class="item-image">
           <img :src="getSkinImagePath(auctionItem)" :alt="`${auctionItem.weapon} | ${auctionItem.name}`">
@@ -31,7 +57,7 @@
     </div>
     
     <!-- Bidding Section -->
-    <div class="bidding-section">
+    <div class="bidding-section main-card">
       <div class="timer" id="timer">{{ formattedTimeLeft }}</div>
       <button class="debug-button" @click="decreaseTimer(1)">-1m</button>
       <div class="current-bid">
@@ -66,7 +92,7 @@
     </div>
 
     <!-- Active Bots Section -->
-    <div class="active-bots">
+    <div class="active-bots main-card">
       <h3>Bidders <span id="activeCount">
         ({{ activeBotCount }} active / {{ onlineBotCount }} online)
       </span></h3>
@@ -143,6 +169,7 @@ export default {
     const winScreenInterval = ref(null)
     const wonItem = ref(null)
     const finalPrice = ref(0)
+    const auctionHistory = ref([])
 
     // Computed
     const reversedBids = computed(() => [...bids.value].reverse())
@@ -242,6 +269,10 @@ export default {
           setTimeout(() => {
             window.location.reload()
           }, 2000)
+        }
+
+        if (data.history) {
+          auctionHistory.value = data.history
         }
       } catch (error) {
         console.error('Error fetching auction status:', error)
@@ -382,9 +413,27 @@ export default {
       
       // Extract just the filename from the full path
       const filename = item.image.split('/').pop()
-      const casePath = CASE_MAPPING[item.case_type] || item.case_file
+      
+      // For history items, try to use case_type, fallback to case_file, or use a default
+      let casePath = 'default'
+      if (item.case_type) {
+        casePath = CASE_MAPPING[item.case_type] || item.case_type
+      } else if (item.case_file) {
+        casePath = item.case_file
+      }
       
       return `/skins/${casePath}/${filename}`
+    }
+
+    const getItemRarityClass = (rarity) => {
+      return {
+        'rarity-contraband': rarity === 'CONTRABAND',
+        'rarity-gold': rarity === 'GOLD',
+        'rarity-red': rarity === 'RED',
+        'rarity-pink': rarity === 'PINK',
+        'rarity-purple': rarity === 'PURPLE',
+        'rarity-blue': rarity === 'BLUE'
+      }
     }
 
     // Lifecycle hooks
@@ -430,13 +479,183 @@ export default {
       winScreenTimer,
       wonItem,
       finalPrice,
+      auctionHistory,
+      getItemRarityClass
     }
   }
 }
 </script>
 
 <style scoped>
-/* All the styles from auction.html are already in casino-games.css */
+.auction-container {
+  display: grid;
+  grid-template-columns: repeat(4, 400px);
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1700px;
+}
+
+.main-card {
+  background: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 2px solid #2a2a2a;
+  padding: 20px;
+  width: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  overflow: hidden;
+}
+
+.auction-history-section {
+  margin: 0;
+}
+
+.auction-history-section h3,
+.active-bots h3 {
+  margin: 0 0 10px 0;
+  padding: 0;
+  font-size: 1.2em;
+  color: #fff;
+}
+
+.history-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 10px;
+  margin: 0;
+}
+
+.history-item {
+  flex-shrink: 0;
+  min-height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  width: 100%;
+  max-width: 360px;
+  transition: transform 0.2s;
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+}
+
+.history-item-image {
+  width: 120px;
+  height: 90px;
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.history-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.history-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px 0;
+  min-width: 0; /* Allow text to wrap properly */
+  width: 100%;
+}
+
+.history-item-name {
+  font-size: 0.9em;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  color: #fff;
+  /* Handle text wrapping properly */
+  white-space: pre-wrap; /* Preserve spaces and allow wrapping */
+  word-wrap: break-word; /* Break words that are too long */
+  overflow-wrap: break-word;
+  hyphens: auto;
+  width: 100%;
+  max-width: 210px; /* Account for image width and padding */
+}
+
+.history-item-price {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #4CAF50;
+  margin: 2px 0;
+}
+
+.history-item-winner {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Adjust item details card */
+.item-details {
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Adjust bidding section */
+.bidding-section {
+  margin: 0;
+}
+
+.bid-history {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+/* Adjust active bots section */
+.active-bots {
+  margin: 0;
+}
+
+#biddersList {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+/* Make scrollbars look nice */
+.main-card ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-card ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.main-card ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.main-card ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .debug-button {
   position: fixed;
   bottom: 10px;
@@ -547,5 +766,55 @@ export default {
   height: 100%;
   pointer-events: none;
   z-index: 1000;
+}
+
+/* Rarity colors */
+.rarity-contraband {
+  border: 1px solid #e4ae39;
+  background: linear-gradient(135deg, rgba(75, 30, 6, 0.3), rgba(45, 18, 4, 0.3));
+}
+
+.rarity-gold {
+  border: 1px solid #d4af37;
+  background: linear-gradient(135deg, rgba(66, 48, 18, 0.3), rgba(42, 31, 12, 0.3));
+}
+
+.rarity-red {
+  border: 1px solid #eb4b4b;
+  background: linear-gradient(135deg, rgba(61, 21, 21, 0.3), rgba(42, 15, 15, 0.3));
+}
+
+.rarity-pink {
+  border: 1px solid #eb4b82;
+  background: linear-gradient(135deg, rgba(61, 21, 55, 0.3), rgba(42, 15, 38, 0.3));
+}
+
+.rarity-purple {
+  border: 1px solid #8847ff;
+  background: linear-gradient(135deg, rgba(42, 31, 61, 0.3), rgba(26, 20, 38, 0.3));
+}
+
+.rarity-blue {
+  border: 1px solid #4b69ff;
+  background: linear-gradient(135deg, rgba(26, 41, 64, 0.3), rgba(17, 28, 45, 0.3));
+}
+
+/* Ensure content areas are scrollable */
+.history-items,
+.bid-history,
+#biddersList {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 10px;
+  height: 0; /* Force content to respect flex container */
+}
+
+/* Ensure images don't break layout */
+.item-image img,
+.history-item-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 </style> 
