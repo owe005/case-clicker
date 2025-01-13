@@ -1,213 +1,85 @@
 {
   "item": {
-    "weapon": "Sport Gloves",
-    "name": "Slingshot",
+    "weapon": "AWP",
+    "name": "Oni Taiji",
     "wear": "FN",
-    "float_value": 0.004905857621990143,
-    "rarity": "GOLD",
-    "case_type": "recoil",
-    "base_price": 5185.13,
-    "adjusted_price": 6222.156,
-    "stattrak": false,
-    "image": "sportgloves_slingshot.png"
+    "float_value": 0.012870056519417616,
+    "rarity": "RED",
+    "case_type": "hydra",
+    "base_price": 709.99,
+    "adjusted_price": 780.989,
+    "stattrak": true,
+    "image": "awp_oni_taiji.png"
   },
-  "end_time": "2025-01-13T23:16:33.806535",
-  "current_bid": 826.524306572366,
-  "bids": [
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 533.4412206137498,
-      "timestamp": "2025-01-13T22:47:14.533231"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 543.9031476981979,
-      "timestamp": "2025-01-13T22:48:00.215080"
-    },
-    {
-      "bidder": "Kai.Jayden_02",
-      "amount": 558.0124676343451,
-      "timestamp": "2025-01-13T22:48:42.107984"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 571.1759394697908,
-      "timestamp": "2025-01-13T22:48:42.115501"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 586.6539065767922,
-      "timestamp": "2025-01-13T22:49:08.096052"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 601.6085724260136,
-      "timestamp": "2025-01-13T22:49:28.306499"
-    },
-    {
-      "bidder": "Aria.Stella85",
-      "amount": 614.576448379272,
-      "timestamp": "2025-01-13T22:49:37.875920"
-    },
-    {
-      "bidder": "_Astrid47",
-      "amount": 627.3301409875587,
-      "timestamp": "2025-01-13T22:50:11.101617"
-    },
-    {
-      "bidder": "Theo.91",
-      "amount": 638.9640391080464,
-      "timestamp": "2025-01-13T22:50:32.633620"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 649.914237604171,
-      "timestamp": "2025-01-13T22:50:42.694364"
-    },
-    {
-      "bidder": "Theo.91",
-      "amount": 663.6569875883552,
-      "timestamp": "2025-01-13T22:51:20.958179"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 679.6534328686267,
-      "timestamp": "2025-01-13T22:51:20.965349"
-    },
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 692.3963754923834,
-      "timestamp": "2025-01-13T22:51:20.974138"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 706.8672254654776,
-      "timestamp": "2025-01-13T22:51:20.982212"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 720.1693133492533,
-      "timestamp": "2025-01-13T22:51:51.996270"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 731.8212562985836,
-      "timestamp": "2025-01-13T22:52:00.183637"
-    },
-    {
-      "bidder": "Theo.91",
-      "amount": 748.2723237681771,
-      "timestamp": "2025-01-13T22:52:13.213906"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 764.2817359456974,
-      "timestamp": "2025-01-13T22:52:27.760797"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 776.1720585137091,
-      "timestamp": "2025-01-13T22:52:39.357177"
-    },
-    {
-      "bidder": "Kai.Jayden_02",
-      "amount": 789.1777646612543,
-      "timestamp": "2025-01-13T22:53:35.947025"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 800.1925203105324,
-      "timestamp": "2025-01-13T22:53:44.270373"
-    },
-    {
-      "bidder": "Aria.Stella85",
-      "amount": 811.3365725611802,
-      "timestamp": "2025-01-13T22:53:44.277380"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 826.524306572366,
-      "timestamp": "2025-01-13T22:53:44.285255"
-    }
-  ],
+  "end_time": "2025-01-13T23:55:05.602411",
+  "current_bid": 70.99900000000001,
+  "bids": [],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 5245.648307426274,
+      "budget": 720.1740260238415,
       "status": "online"
     },
     "Kai.Jayden_02": {
-      "budget": 5635.00565670036,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Orion_Phoenix98": {
-      "budget": 4952.373050020217,
+      "budget": 765.6891150136535,
       "status": "online"
     },
     "ElaraB_23": {
-      "budget": 5266.542510281207,
+      "budget": 745.9257952461479,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 5486.043980568812,
+      "budget": 707.2845338399088,
       "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 5174.153509787348,
+      "budget": 698.8437376682034,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 5004.656664648764,
+      "budget": 641.2606074801723,
       "status": "online"
     },
     "Aria.Stella85": {
-      "budget": 4920.933298648291,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Lucien_Kai": {
-      "budget": 4981.41923361687,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Mira-Eclipse": {
-      "budget": 4936.455259629559,
+      "budget": 741.1566930820594,
       "status": "online"
     }
   },
   "history": [
     {
       "weapon": "AWP",
-      "name": "Containment Breach",
+      "name": "Lightning Strike",
       "wear": "FN",
       "rarity": "RED",
       "stattrak": false,
-      "image": "awp_containment_breach.png",
-      "case_type": "shattered_web",
-      "final_price": 547.73,
+      "image": "awp_lightning_strike.png",
+      "case_type": "csgo",
+      "final_price": 1098.22,
       "winner": "You",
-      "timestamp": "2025-01-13T22:46:33.603443"
+      "timestamp": "2025-01-13T23:25:05.421760"
     },
     {
-      "weapon": "P90",
-      "name": "Emerald Dragon",
-      "wear": "FN",
-      "rarity": "PINK",
-      "stattrak": false,
-      "image": "p90_emerald_dragon.png",
-      "case_type": "bravo",
-      "final_price": 641.2,
-      "winner": "You",
-      "timestamp": "2025-01-13T22:45:02.812495"
-    },
-    {
-      "weapon": "AWP",
-      "name": "Containment Breach",
+      "weapon": "M4A1-S",
+      "name": "Printstream",
       "wear": "FN",
       "rarity": "RED",
       "stattrak": true,
-      "image": "awp_containment_breach.png",
-      "case_type": "shattered_web",
-      "final_price": 1046.82,
+      "image": "m4a1s_printstream.png",
+      "case_type": "broken_fang",
+      "final_price": 1029.61,
       "winner": "You",
-      "timestamp": "2025-01-13T22:42:17.089804"
+      "timestamp": "2025-01-13T23:23:05.097639"
     }
   ]
 }

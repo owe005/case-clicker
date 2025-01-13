@@ -318,24 +318,6 @@ export default {
     // Add this to the setup() function after other refs
     const expandedStacks = ref(new Set())
 
-    // Add helper function for price adjustment
-    function getAdjustedPrice(item) {
-      let price = item.price;
-      if (item.wear === 'FN') {
-        const float = parseFloat(item.float_value);
-        if (float < 0.0009) price *= 4.0;
-        else if (float < 0.001) price *= 1.5;
-        else if (float < 0.006) price *= 1.2;
-        else if (float < 0.015) price *= 1.1;
-      } else if (item.wear === 'BS') {
-        const float = parseFloat(item.float_value);
-        if (float > 0.97) price *= 0.5;
-        else if (float > 0.93) price *= 0.7;
-        else if (float > 0.90) price *= 0.85;
-      }
-      return price;
-    }
-
     const sortedSkins = computed(() => {
       const items = [...skins.value]
       const stackedItems = {}
@@ -361,32 +343,25 @@ export default {
             result.push(...stack.items.map(item => ({
               ...item,
               stackKey: key,
-              isExpanded: true,
-              displayPrice: getAdjustedPrice(item)
+              isExpanded: true
             })))
           } else {
-            // Calculate total price for stacked items
+            // If stack is collapsed, add as a stack
             const stackPrice = stack.items.reduce((total, item) => total + item.price, 0);
-            const adjustedStackPrice = stack.items.reduce((total, item) => total + getAdjustedPrice(item), 0);
-
-            // If stack is collapsed, add as a stack with both prices
             result.push({
               ...stack.displayItem,
               isStack: true,
               stackKey: key,
               stackedItems: stack.items,
               quantity: stack.items.length,
-              price: stackPrice,
-              displayPrice: adjustedStackPrice
+              price: stackPrice
             })
           }
         } else {
           // Single items are added as is
-          const item = stack.items[0];
           result.push({
-            ...item,
-            stackKey: key,
-            displayPrice: getAdjustedPrice(item)
+            ...stack.items[0],
+            stackKey: key
           })
         }
       })
@@ -404,14 +379,14 @@ export default {
       if (currentSort.value === 'rarity') {
         return result.sort((a, b) => rarityOrder[b.rarity] - rarityOrder[a.rarity])
       } else if (currentSort.value === 'price') {
-        return result.sort((a, b) => (b.displayPrice || b.price) - (a.displayPrice || a.price))
+        return result.sort((a, b) => b.price - a.price)
       }
       return result
     })
 
     const totalValue = computed(() => {
-      // Calculate value for all items using the helper function
-      return skins.value.reduce((total, item) => total + getAdjustedPrice(item), 0);
+      // Calculate total value using the backend-provided prices
+      return skins.value.reduce((total, item) => total + item.price, 0);
     });
 
     // Update the total value display

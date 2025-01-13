@@ -51,7 +51,7 @@
         <div class="info-label">Base Price:</div>
         <div class="info-value">${{ auctionItem.base_price.toFixed(2) }}</div>
         
-        <div class="info-label">Estimated Value:</div>
+        <div class="info-label">Current Price:</div>
         <div class="info-value">${{ auctionItem.adjusted_price.toFixed(2) }}</div>
       </div>
     </div>
@@ -153,7 +153,7 @@ export default {
       base_price: 0,
       adjusted_price: 0,
       image: '',
-      case_type: ''  // Add case_type to track which case the skin is from
+      case_type: ''
     })
     const currentBid = ref(0)
     const bidAmount = ref('')
@@ -382,12 +382,36 @@ export default {
         }
       }, 1000)
 
-      // Trigger confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      })
+      // Trigger multiple confetti bursts for a more celebratory effect
+      const duration = 3000
+      const animationEnd = Date.now() + duration
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1001 }
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min
+      }
+
+      const interval = setInterval(() => {
+        const timeLeft = animationEnd - Date.now()
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval)
+        }
+
+        const particleCount = 50 * (timeLeft / duration)
+        
+        // Trigger confetti from multiple angles
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        })
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        })
+      }, 250)
     }
 
     // Add debug timer decrease function if in debug mode
