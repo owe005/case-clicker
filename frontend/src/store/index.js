@@ -152,7 +152,6 @@ const state = reactive({
         case_quality: 1,
         multi_open: 1
     },
-    // Add clicker state
     clicker: {
         currentMultiplier: 1.0,
         comboClickCount: 0,
@@ -161,14 +160,20 @@ const state = reactive({
         baseClickValue: 0.01,
         caseProgress: 0,
         lastProgress: 0,
-        autoClickerInterval: null
+        autoClickerInterval: null,
+        multiplier: 1,
+        isProcessingClick: false,
+        pendingClicks: 0
     },
     autoClickQueue: {
         normal: 0,
         critical: 0
     },
     isProcessingAutoClicks: false,
-    lastAutoClickProcess: 0
+    lastAutoClickProcess: 0,
+    autoClickerWorker: null,
+    autoClickerTabId: null,
+    pingInterval: null
 })
 
 // Methods to update state
@@ -431,39 +436,84 @@ const methods = {
     },
 
     startAutoClicker(level) {
-        // Clear any existing interval
+        // Clear any existing worker
         this.stopAutoClicker()
 
         // Only start if we're on the money tab and in clicker view
         if (state.currentTab !== 'money' || state.currentView !== 'clicker') return
 
-        const clicksPerSecond = level <= 9 ? level * 0.1 : level - 9
-        const interval = Math.floor(1000 / clicksPerSecond)
+        // Check if another tab is already running the auto clicker
+        const now = Date.now()
+        const lastPing = parseInt(localStorage.getItem('autoClickerLastPing') || '0')
+        const currentTab = localStorage.getItem('autoClickerTab')
+        
+        // If last ping is more than 2 seconds old or no tab is registered,
+        // we can take over
+        if (now - lastPing > 2000 || !currentTab) {
+            // Register this tab as the auto clicker owner
+            const tabId = Math.random().toString(36).substring(7)
+            localStorage.setItem('autoClickerTab', tabId)
+            localStorage.setItem('autoClickerLastPing', now.toString())
+            state.autoClickerTabId = tabId
 
-        state.autoClickerInterval = setInterval(() => {
-            // Double check we're still on money tab and in clicker view
-            if (state.currentTab === 'money' && state.currentView === 'clicker') {
-                const criticalChance = state.upgrades.critical_strike / 100
-                const isCritical = Math.random() < criticalChance
+            // Start ping interval to maintain ownership
+            if (state.pingInterval) clearInterval(state.pingInterval)
+            state.pingInterval = setInterval(() => {
+                if (state.autoClickerTabId === localStorage.getItem('autoClickerTab')) {
+                    localStorage.setItem('autoClickerLastPing', Date.now().toString())
+                } else {
+                    // Another tab took over, stop our worker
+                    this.stopAutoClicker()
+                }
+            }, 1000)
 
-                this.queueAutoClick(isCritical)
+            // Create new worker
+            state.autoClickerWorker = new Worker(new URL('../workers/autoClicker.js', import.meta.url))
 
-                // Dispatch event for floating text
-                window.dispatchEvent(new CustomEvent('autoClickerText', {
-                    detail: {
-                        value: state.clicker.baseClickValue * (isCritical ? 4 : 1),
-                        isCritical
+            // Set up message handler
+            state.autoClickerWorker.onmessage = (e) => {
+                if (e.data.type === 'click') {
+                    // Double check we're still on money tab and in clicker view
+                    // and we still own the auto clicker
+                    if (state.currentTab === 'money' && 
+                        state.currentView === 'clicker' && 
+                        state.autoClickerTabId === localStorage.getItem('autoClickerTab')) {
+                        const criticalChance = state.upgrades.critical_strike / 100
+                        const isCritical = Math.random() < criticalChance
+
+                        this.queueAutoClick(isCritical)
+
+                        // Dispatch event for floating text
+                        window.dispatchEvent(new CustomEvent('autoClickerText', {
+                            detail: {
+                                value: state.clicker.baseClickValue * (isCritical ? 4 : 1),
+                                isCritical
+                            }
+                        }))
                     }
-                }))
+                }
             }
-        }, interval)
+
+            // Start the worker
+            state.autoClickerWorker.postMessage({ type: 'start', level })
+        }
     },
 
     stopAutoClicker() {
-        if (state.autoClickerInterval) {
-            clearInterval(state.autoClickerInterval)
-            state.autoClickerInterval = null
+        if (state.autoClickerWorker) {
+            state.autoClickerWorker.postMessage({ type: 'stop' })
+            state.autoClickerWorker.terminate()
+            state.autoClickerWorker = null
         }
+        if (state.pingInterval) {
+            clearInterval(state.pingInterval)
+            state.pingInterval = null
+        }
+        if (state.autoClickerTabId === localStorage.getItem('autoClickerTab')) {
+            localStorage.removeItem('autoClickerTab')
+            localStorage.removeItem('autoClickerLastPing')
+        }
+        state.autoClickerTabId = null
     },
 
     async processAutoClicks() {

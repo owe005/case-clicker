@@ -11,6 +11,7 @@ from typing import List, Optional
 from threading import Thread, Lock, Timer
 import atexit
 from werkzeug.utils import safe_join
+from pathlib import Path
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -65,6 +66,28 @@ LAST_BIDDER = None
 # Add these global variables near the other globals
 auction_timer = None
 last_auction_check = None
+
+# Add these globals
+AUCTION_FILE = 'data/auction.json'
+
+def save_auction_data(auction_data):
+    """Save auction data to JSON file"""
+    try:
+        with open(AUCTION_FILE, 'w') as f:
+            json.dump(auction_data, f, indent=2, default=str)
+    except Exception as e:
+        print(f"Error saving auction data: {e}")
+
+def load_auction_data():
+    """Load auction data from JSON file"""
+    try:
+        if not Path(AUCTION_FILE).exists():
+            return None
+        with open(AUCTION_FILE, 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error loading auction data: {e}")
+        return None
 
 def login_required(f):
     @wraps(f)
@@ -695,7 +718,7 @@ def get_upgrades():
 def cheat():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
-    user.balance += 10000000000.0
+    user.balance += 1000.0
     
     user_data['balance'] = user.balance
     save_user_data(user_data)
@@ -2458,8 +2481,8 @@ def generate_auction_item():
                 # Look through all skins
                 for grade, skins in case_data['skins'].items():
                     for skin in skins:
-                        # Use the image path from the JSON file
-                        image_path = f"media/skins/{folder_name}/{skin['image']}"
+                        # Just use the image filename without the path
+                        image_path = skin['image']
                         
                         # Check prices for valuable items
                         for wear, price in skin['prices'].items():
@@ -2618,53 +2641,50 @@ def generate_auction_item():
         }
 
 def generate_bot_budgets(base_price):
-    """Generate random budgets for bots based on item base price"""
+    """Generate random budgets for bots based on item value"""
     budgets = {}
-    print("\nBot Budgets for Current Auction:")
-    print("-" * 40)
-    print(f"Item Base Price: ${base_price:,.2f}")
-    print("-" * 40)
     
-    # Calculate estimated market value (adjusted price)
-    estimated_value = CURRENT_AUCTION['adjusted_price']
-    print(f"Estimated Value: ${estimated_value:,.2f}")
-    print("-" * 40)
+    # List of all possible bot names
+    all_bot_names = [
+        "_Astrid47", "Kai.Jayden_02", "Orion_Phoenix98", "ElaraB_23",
+        "Theo.91", "Nova-Lyn", "FelixHaven19", "Aria.Stella85",
+        "Lucien_Kai", "Mira-Eclipse"
+    ]
     
     # Randomly select 3-10 bots to participate
-    all_bots = list(BOT_PERSONALITIES.keys())
-    num_active_bots = random.randint(3, 10)
-    active_bots = random.sample(all_bots, num_active_bots)
+    num_bots = random.randint(3, 10)
+    active_bots = random.sample(all_bot_names, num_bots)
     
-    # Generate budgets for all bots (active ones get real budgets, inactive ones get 0)
-    for bot_name in all_bots:
-        if bot_name in active_bots:
-            # Determine bot's budget strategy
-            strategy = random.choices(['low', 'normal', 'high', 'whale'], 
-                                   weights=[0.2, 0.6, 0.15, 0.05])[0]
-            
-            if strategy == 'low':
-                # Low budget: 30-70% of base price
-                max_budget = base_price * random.uniform(0.3, 0.7)
-            elif strategy == 'normal':
-                # Normal budget: 80-120% of estimated value
-                max_budget = estimated_value * random.uniform(0.8, 1.2)
-            elif strategy == 'high':
-                # High budget: 130-150% of estimated value
-                max_budget = estimated_value * random.uniform(1.3, 1.5)
-            else:  # whale
-                # Whale budget: 160-200% of estimated value
-                max_budget = estimated_value * random.uniform(1.6, 2.0)
-            
-            status = 'online'
-            print(f"{bot_name}: ${max_budget:,.2f} ({strategy})")
-        else:
-            max_budget = 0
-            status = 'offline'
-            print(f"{bot_name}: Offline")
+    # Set all bots as offline initially
+    for bot_name in all_bot_names:
+        budgets[bot_name] = {
+            "budget": 0,
+            "status": "offline"
+        }
+    
+    # Set budgets for active bots
+    for bot_name in active_bots:
+        # Determine budget strategy (5% chance for high/low, 90% for normal)
+        strategy = random.choices(
+            ['normal', 'high', 'low'],
+            weights=[90, 5, 5]
+        )[0]
         
-        budgets[bot_name] = {'budget': max_budget, 'status': status}
+        if strategy == 'normal':
+            # Normal budget: ±10% of base price
+            budget = base_price * random.uniform(0.9, 1.1)
+        elif strategy == 'high':
+            # High budget: +10% to +100% of base price
+            budget = base_price * random.uniform(1.1, 2.0)
+        else:  # low
+            # Low budget: 50% to 90% of base price
+            budget = base_price * random.uniform(0.5, 0.9)
+        
+        budgets[bot_name] = {
+            "budget": budget,
+            "status": "online"
+        }
     
-    print("-" * 40)
     return budgets
 
 def get_current_bid():
@@ -2686,15 +2706,19 @@ def place_bid():
         if bid_amount > current_balance:
             return jsonify({'error': 'Insufficient funds'})
         
-        global LAST_BIDDER, AUCTION_END_TIME
         with auction_lock:
-            current_bid = get_current_bid()
+            # Load current auction state from file
+            auction_data = load_auction_data()
+            if not auction_data:
+                return jsonify({'error': 'No active auction'})
+            
+            current_bid = auction_data.get('current_bid', 0)
             if bid_amount <= current_bid:
                 return jsonify({'error': f'Bid must be higher than ${current_bid:.2f}'})
             
             # If user had a previous bid, refund it
-            if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You':
-                previous_bid = AUCTION_BIDS[-1]['amount']
+            if auction_data['bids'] and auction_data['bids'][-1]['bidder'] == 'You':
+                previous_bid = auction_data['bids'][-1]['amount']
                 current_balance += previous_bid
             
             # Deduct new bid amount
@@ -2704,25 +2728,37 @@ def place_bid():
             user_data['balance'] = current_balance
             save_user_data(user_data)
             
-            # Add bid to list
-            AUCTION_BIDS.append({
+            # Add bid to auction data
+            new_bid = {
                 'bidder': 'You',
                 'amount': bid_amount,
-                'timestamp': datetime.now()
-            })
-            LAST_BIDDER = 'You'  # Update last bidder
+                'timestamp': datetime.now().isoformat()
+            }
+            auction_data['bids'].append(new_bid)
+            auction_data['current_bid'] = bid_amount
             
-            # Extend timer if less than 1 minute remaining
-            time_remaining = AUCTION_END_TIME - datetime.now()
-            if time_remaining.total_seconds() < 60:  # 1 minute
-                AUCTION_END_TIME += timedelta(seconds=15)
-                print(f"Timer extended by 15s. New end time: {AUCTION_END_TIME}")
+            # Extend timer by 15 seconds only if time remaining is less than 1 minute
+            current_end_time = datetime.fromisoformat(auction_data['end_time'])
+            time_remaining = (current_end_time - datetime.now()).total_seconds()
+            if time_remaining < 60:
+                new_end_time = current_end_time + timedelta(seconds=15)
+                auction_data['end_time'] = new_end_time.isoformat()
+                print(f"Timer extended by 15s. New end time: {new_end_time}")
+            
+            # Save updated auction data
+            save_auction_data(auction_data)
+            
+            # Update global state to match file
+            global CURRENT_AUCTION, AUCTION_BIDS, AUCTION_END_TIME, LAST_BIDDER
+            AUCTION_BIDS = auction_data['bids']
+            AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+            LAST_BIDDER = 'You'
         
         return jsonify({
             'success': True,
-            'current_bid': get_current_bid(),
-            'end_time': AUCTION_END_TIME.isoformat(),
-            'bids': AUCTION_BIDS,
+            'current_bid': bid_amount,
+            'end_time': auction_data['end_time'],
+            'bids': auction_data['bids'],
             'balance': current_balance
         })
         
@@ -2733,7 +2769,13 @@ def place_bid():
 def process_bot_bids(trigger_bid=None):
     """Process automatic bot bidding responses"""
     global LAST_BIDDER, AUCTION_END_TIME
-    time_remaining = (AUCTION_END_TIME - datetime.now()).total_seconds()
+    
+    # Load current auction state from file
+    auction_data = load_auction_data()
+    if not auction_data:
+        return
+        
+    time_remaining = (datetime.fromisoformat(auction_data['end_time']) - datetime.now()).total_seconds()
     
     # Calculate base response chance based on time remaining
     if time_remaining < 60:  # Last minute
@@ -2751,14 +2793,14 @@ def process_bot_bids(trigger_bid=None):
     
     # Process bot responses - only consider online bots with budgets
     active_bots = [(name, data['budget']) 
-                   for name, data in AUCTION_BOT_BUDGETS.items() 
+                   for name, data in auction_data['bot_budgets'].items() 
                    if data['status'] == 'online' and name != LAST_BIDDER]
     
     random.shuffle(active_bots)  # Randomize bot order
     
     for bot_name, max_budget in active_bots:
         if random.random() < base_chance:
-            current_bid = get_current_bid()
+            current_bid = auction_data['current_bid']
             if current_bid < max_budget:
                 # Calculate bid increment (larger near end)
                 if time_remaining < 600:
@@ -2772,25 +2814,37 @@ def process_bot_bids(trigger_bid=None):
                 new_bid = min(current_bid + increment, max_budget)
                 if new_bid > current_bid:
                     # If player was outbid, refund their bid
-                    if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You':
+                    if auction_data['bids'] and auction_data['bids'][-1]['bidder'] == 'You':
                         try:
                             user_data = load_user_data()
-                            user_data['balance'] += AUCTION_BIDS[-1]['amount']
+                            user_data['balance'] += auction_data['bids'][-1]['amount']
                             save_user_data(user_data)
                         except Exception as e:
                             print(f"Error refunding outbid: {e}")
                     
-                    AUCTION_BIDS.append({
+                    # Update auction data
+                    auction_data['bids'].append({
                         'bidder': bot_name,
                         'amount': new_bid,
-                        'timestamp': datetime.now()
+                        'timestamp': datetime.now().isoformat()
                     })
-                    LAST_BIDDER = bot_name  # Update last bidder
+                    auction_data['current_bid'] = new_bid
                     
-                    # Extend timer if less than 1 minute remaining
-                    if time_remaining < 60:  # 1 minute
-                        AUCTION_END_TIME += timedelta(seconds=15)
-                        print(f"Timer extended by 15s (bot bid). New end time: {AUCTION_END_TIME}")
+                    # Extend timer by 15 seconds only if time remaining is less than 1 minute
+                    current_end_time = datetime.fromisoformat(auction_data['end_time'])
+                    time_remaining = (current_end_time - datetime.now()).total_seconds()
+                    if time_remaining < 60:
+                        new_end_time = current_end_time + timedelta(seconds=15)
+                        auction_data['end_time'] = new_end_time.isoformat()
+                        print(f"Timer extended by 15s (bot bid). New end time: {new_end_time}")
+                    
+                    # Save updated auction data
+                    save_auction_data(auction_data)
+                    
+                    # Update global state
+                    global AUCTION_BIDS
+                    AUCTION_BIDS = auction_data['bids']
+                    LAST_BIDDER = bot_name
                     
                     # Small chance for immediate response from another bot
                     if random.random() < 0.3:
@@ -2803,21 +2857,37 @@ def process_bot_bids(trigger_bid=None):
 def decrease_timer():
     if not app.debug:
         return jsonify({'error': 'Debug mode not enabled'})
-        
-    global AUCTION_END_TIME
-    data = request.get_json()
-    minutes = int(data.get('minutes', 30))  # Default to 30 if not specified
-    AUCTION_END_TIME = AUCTION_END_TIME - timedelta(minutes=minutes)
     
-    return jsonify({
-        'success': True,
-        'new_end_time': AUCTION_END_TIME.isoformat()
-    })
+    with auction_lock:
+        # Load current auction data
+        auction_data = load_auction_data()
+        if not auction_data:
+            return jsonify({'error': 'No active auction'})
+        
+        data = request.get_json()
+        minutes = int(data.get('minutes', 30))  # Default to 30 if not specified
+        
+        # Update end time in auction data
+        current_end_time = datetime.fromisoformat(auction_data['end_time'])
+        new_end_time = current_end_time - timedelta(minutes=minutes)
+        auction_data['end_time'] = new_end_time.isoformat()
+        
+        # Save updated auction data
+        save_auction_data(auction_data)
+        
+        # Update global state
+        global AUCTION_END_TIME
+        AUCTION_END_TIME = new_end_time
+        
+        return jsonify({
+            'success': True,
+            'new_end_time': new_end_time.isoformat()
+        })
 
 # Add this function to handle auction completion
 def complete_auction():
     """Handle auction completion and award item to winner"""
-    global CURRENT_AUCTION, AUCTION_BIDS
+    global CURRENT_AUCTION, AUCTION_BIDS, AUCTION_END_TIME
     
     if not AUCTION_BIDS:
         return
@@ -2831,14 +2901,13 @@ def complete_auction():
         try:
             user_data = load_user_data()
             
-            # Don't deduct the bid amount again since it was already deducted when placing the bid
-            # user_data['balance'] = float(user_data['balance']) - winning_bid['amount']  # Remove this line
-            
-            # Add item to inventory
+            # Add item to inventory immediately
             won_item = CURRENT_AUCTION.copy()
-            won_item['price'] = won_item['adjusted_price']  # Use adjusted price as item value
+            won_item['price'] = won_item['adjusted_price']
             won_item['timestamp'] = time.time()
             won_item['is_case'] = False
+            if won_item.get('image') and won_item['image'].startswith('media/skins/'):
+                won_item['image'] = won_item['image'].split('/')[-1]
             
             user_data['inventory'].append(won_item)
             save_user_data(user_data)
@@ -2848,34 +2917,89 @@ def complete_auction():
         except Exception as e:
             print(f"Error completing auction: {e}")
             traceback.print_exc()
+    
+    # Generate and save new auction data
+    new_auction = generate_auction_item()
+    auction_data = {
+        'item': new_auction,
+        'end_time': (datetime.now() + timedelta(minutes=30)).isoformat(),
+        'current_bid': float(new_auction['base_price']) * 0.1,
+        'bids': [],
+        'bot_budgets': generate_bot_budgets(new_auction['base_price'])
+    }
+    save_auction_data(auction_data)
+    
+    # Update current auction state
+    CURRENT_AUCTION = new_auction
+    AUCTION_BIDS = []
+    AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+    global AUCTION_BOT_BUDGETS
+    AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
 
 @app.route('/get_auction_status')
 @login_required
 def get_auction_status():
     with auction_lock:
-        current_bid = get_current_bid()
+        # Load auction data from file
+        auction_data = load_auction_data()
+        
+        # If no auction data, start new one
+        if not auction_data:
+            complete_auction()
+            auction_data = load_auction_data()
+            if not auction_data:
+                return jsonify({'error': 'Failed to start auction'})
+        
+        # Update global state from file
+        global CURRENT_AUCTION, AUCTION_BIDS, AUCTION_END_TIME, AUCTION_BOT_BUDGETS
+        CURRENT_AUCTION = auction_data['item']
+        AUCTION_BIDS = auction_data['bids']
+        AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+        AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
+        
+        current_bid = auction_data['current_bid']
+        
         # Get active/inactive status for each bot
         bot_statuses = []
         for bot_name, data in AUCTION_BOT_BUDGETS.items():
             bot_statuses.append({
                 'name': bot_name,
-                'active': data['budget'] > current_bid,  # Bot is active if their budget is higher than current bid
-                'status': data['status']  # Include online/offline status
+                'active': data['budget'] > current_bid,
+                'status': data['status']
             })
         
         # Check if auction has ended
-        auction_ended = AUCTION_END_TIME and datetime.now() >= AUCTION_END_TIME
-        winner = 'You' if AUCTION_BIDS and AUCTION_BIDS[-1]['bidder'] == 'You' else None
+        auction_ended = datetime.now() >= AUCTION_END_TIME
+        winner = None
+        won_item = None
+        final_price = None
+        
+        if auction_ended and AUCTION_BIDS:
+            winner = 'You' if AUCTION_BIDS[-1]['bidder'] == 'You' else AUCTION_BIDS[-1]['bidder']
+            if winner == 'You':
+                # Store the won item before completing auction
+                won_item = CURRENT_AUCTION
+                final_price = current_bid
+                # Complete auction to start new one
+                complete_auction()
+                # Reload auction data after completion
+                auction_data = load_auction_data()
+                # Update globals with new auction data
+                CURRENT_AUCTION = auction_data['item']
+                AUCTION_BIDS = auction_data['bids']
+                AUCTION_END_TIME = datetime.fromisoformat(auction_data['end_time'])
+                AUCTION_BOT_BUDGETS = auction_data['bot_budgets']
         
         return jsonify({
             'auction_item': CURRENT_AUCTION,
             'current_bid': current_bid,
             'bids': AUCTION_BIDS,
-            'end_time': AUCTION_END_TIME.isoformat() if AUCTION_END_TIME else None,
+            'end_time': AUCTION_END_TIME.isoformat(),
             'bot_statuses': bot_statuses,
             'ended': auction_ended,
             'winner': winner,
-            'final_price': current_bid if auction_ended else None
+            'won_item': won_item,  # Add the won item to the response
+            'final_price': final_price
         })
 
 @app.route('/close_roulette_bets', methods=['POST'])
@@ -2929,6 +3053,16 @@ def start_new_auction():
         LAST_BIDDER = None
         last_auction_check = datetime.now()
         
+        # Save the initial auction data
+        auction_data = {
+            'item': CURRENT_AUCTION,
+            'end_time': AUCTION_END_TIME.isoformat(),
+            'current_bid': 0,
+            'bids': [],
+            'bot_budgets': AUCTION_BOT_BUDGETS
+        }
+        save_auction_data(auction_data)
+    
     # Start the auction processing thread
     start_auction_thread()
     

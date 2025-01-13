@@ -33,6 +33,7 @@
     <!-- Bidding Section -->
     <div class="bidding-section">
       <div class="timer" id="timer">{{ formattedTimeLeft }}</div>
+      <button class="debug-button" @click="decreaseTimer(1)">-1m</button>
       <div class="current-bid">
         Current Bid: $<span id="currentBid">{{ currentBid.toFixed(2) }}</span>
       </div>
@@ -85,18 +86,17 @@
     </div>
 
     <!-- Winning Screen -->
-    <div class="winning-screen" v-if="showWinningScreen">
+    <div v-if="showWinningScreen" class="winning-screen">
       <div class="winning-content">
-        <div class="winning-title">Congratulations!</div>
-        <div class="winning-details">
-          You won the auction for:
-          <div class="item-name">
-            {{ auctionItem.stattrak ? 'StatTrak™ ' : '' }}
-            {{ auctionItem.weapon }} | {{ auctionItem.name }}
-          </div>
+        <h2>Congratulations!</h2>
+        <p>You won the auction!</p>
+        <div class="item-image">
+          <img :src="getSkinImagePath(wonItem)" :alt="wonItem.weapon + ' | ' + wonItem.name">
         </div>
-        <div class="winning-amount">Final Price: $<span>{{ winningAmount.toFixed(2) }}</span></div>
-        <button class="close-winning" @click="closeWinningScreen">Awesome!</button>
+        <p>{{ wonItem.weapon }} | {{ wonItem.name }}</p>
+        <p>Final Price: ${{ finalPrice.toFixed(2) }}</p>
+        <p>Countdown: {{ winScreenTimer }}s</p>
+        <button @click="closeWinningScreen">Awesome!</button>
       </div>
     </div>
 
@@ -109,11 +109,13 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { CASE_MAPPING } from '../store'
+import { useStore, CASE_MAPPING } from '../store'
+import confetti from 'canvas-confetti'
 
 export default {
   name: 'AuctionView',
   setup() {
+    const store = useStore()
     // State
     const auctionItem = ref({
       weapon: 'Loading...',
@@ -137,6 +139,10 @@ export default {
     const notification = ref('')
     const timerInterval = ref(null)
     const pollInterval = ref(null)
+    const winScreenTimer = ref(3)
+    const winScreenInterval = ref(null)
+    const wonItem = ref(null)
+    const finalPrice = ref(0)
 
     // Computed
     const reversedBids = computed(() => [...bids.value].reverse())
@@ -163,15 +169,56 @@ export default {
     )
 
     // Methods
+    const resetAuctionState = () => {
+      auctionItem.value = {
+        weapon: 'Loading...',
+        name: '',
+        rarity: '',
+        stattrak: false,
+        wear: '',
+        float_value: 0,
+        base_price: 0,
+        adjusted_price: 0,
+        image: '',
+        case_type: ''
+      }
+      currentBid.value = 0
+      bidAmount.value = ''
+      bids.value = []
+      endTime.value = new Date()
+      showWinningScreen.value = false
+      wonItem.value = null
+      finalPrice.value = 0
+    }
+
     const fetchAuctionStatus = async () => {
       try {
         const response = await fetch('/get_auction_status')
         const data = await response.json()
         
         if (data.auction_item) {
+          // Reset state if a new auction is detected
+          if (auctionItem.value.name !== data.auction_item.name) {
+            resetAuctionState()
+          }
           auctionItem.value = data.auction_item
         }
         if (data.current_bid !== undefined) {
+          // Only show outbid notification if the auction hasn't ended
+          if (data.bids.length > 0 && 
+              bids.value.length > 0 &&
+              data.bids[data.bids.length - 1].bidder !== 'You' &&
+              bids.value[bids.value.length - 1].bidder === 'You' &&
+              data.current_bid !== currentBid.value &&
+              !data.ended) {
+            notification.value = 'You have been outbid!'
+            // Update store balance immediately
+            const balanceResponse = await fetch('/get_balance')
+            const balanceData = await balanceResponse.json()
+            if (balanceData.balance !== undefined) {
+              store.state.balance = balanceData.balance
+            }
+          }
           currentBid.value = data.current_bid
         }
         if (data.end_time) {
@@ -185,9 +232,16 @@ export default {
         }
 
         // Check if auction ended and user won
-        if (data.ended && data.winner === 'You') {
-          showWinningScreen.value = true
-          winningAmount.value = data.final_price || currentBid.value
+        if (data.ended && data.winner === 'You' && !showWinningScreen.value) {
+          wonItem.value = data.won_item
+          finalPrice.value = data.final_price
+          showWinScreen()
+          notification.value = ''
+        } else if (data.ended && !showWinningScreen.value) {
+          // If someone else won, reload after a short delay
+          setTimeout(() => {
+            window.location.reload()
+          }, 2000)
         }
       } catch (error) {
         console.error('Error fetching auction status:', error)
@@ -279,9 +333,30 @@ export default {
       }
     }
 
-    const closeWinningScreen = () => {
-      showWinningScreen.value = false
-      window.location.reload()
+    const showWinScreen = () => {
+      showWinningScreen.value = true
+      winScreenTimer.value = 3
+      
+      // Clear existing intervals
+      if (timerInterval.value) clearInterval(timerInterval.value)
+      if (pollInterval.value) clearInterval(pollInterval.value)
+      if (winScreenInterval.value) clearInterval(winScreenInterval.value)
+      
+      // Start countdown
+      winScreenInterval.value = setInterval(() => {
+        winScreenTimer.value--
+        if (winScreenTimer.value <= 0) {
+          clearInterval(winScreenInterval.value)
+          window.location.reload()
+        }
+      }, 1000)
+
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      })
     }
 
     // Add debug timer decrease function if in debug mode
@@ -303,8 +378,13 @@ export default {
     }
 
     function getSkinImagePath(item) {
-      const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
-      return `/skins/${casePath}/${item.image}`
+      if (!item.image) return ''
+      
+      // Extract just the filename from the full path
+      const filename = item.image.split('/').pop()
+      const casePath = CASE_MAPPING[item.case_type] || item.case_file
+      
+      return `/skins/${casePath}/${filename}`
     }
 
     // Lifecycle hooks
@@ -315,15 +395,17 @@ export default {
         if (new Date() >= endTime.value) {
           clearInterval(timerInterval.value)
           fetchAuctionStatus() // Check final result
+          // Don't automatically reload here - let the fetchAuctionStatus handle it
         }
       }, 1000)
 
-      pollInterval.value = setInterval(fetchAuctionStatus, 2000)
+      pollInterval.value = setInterval(fetchAuctionStatus, 1000) // Increased poll interval to reduce race conditions
     })
 
     onUnmounted(() => {
       if (timerInterval.value) clearInterval(timerInterval.value)
       if (pollInterval.value) clearInterval(pollInterval.value)
+      if (winScreenInterval.value) clearInterval(winScreenInterval.value)
     })
 
     return {
@@ -343,9 +425,11 @@ export default {
       getFloatClass,
       getBotStatus,
       getItemDetailsStyle,
-      closeWinningScreen,
       decreaseTimer,
-      getSkinImagePath
+      getSkinImagePath,
+      winScreenTimer,
+      wonItem,
+      finalPrice,
     }
   }
 }
@@ -353,4 +437,115 @@ export default {
 
 <style scoped>
 /* All the styles from auction.html are already in casino-games.css */
+.debug-button {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.debug-button:hover {
+  background: #444;
+}
+
+.winning-screen .item-image {
+  margin: 20px auto;
+  max-width: 300px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.winning-screen .item-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.winning-screen .countdown {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: #888;
+}
+
+.winning-screen {
+  background: linear-gradient(135deg, #1a1a1a, #222);
+  animation: fadeIn 0.5s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.winning-content {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 500px;
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+.winning-content h2 {
+  font-size: 2em;
+  color: #4CAF50;
+  margin-bottom: 20px;
+  animation: bounce 1s infinite;
+}
+
+.winning-content p {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.winning-content button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+
+.winning-content button:hover {
+  background: #45a049;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
 </style> 

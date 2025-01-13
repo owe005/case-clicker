@@ -18,7 +18,7 @@
             <!-- Game Preview -->
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/blackjack.png" 
+                src="/casino/blackjack.png" 
                 alt="Blackjack"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
@@ -42,7 +42,7 @@
           <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/jackpot.png" 
+                src="/casino/jackpot.png" 
                 alt="Jackpot"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
@@ -65,7 +65,7 @@
           <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/crash.png" 
+                src="/casino/crash.png" 
                 alt="Crash"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
@@ -88,7 +88,7 @@
           <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/upgrade.png" 
+                src="/casino/upgrade.png" 
                 alt="Upgrade"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
@@ -111,7 +111,7 @@
           <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/coinflip.png" 
+                src="/casino/coinflip.png" 
                 alt="Coinflip"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >
@@ -134,7 +134,7 @@
           <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
             <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
               <img 
-                src="@/assets/casino/roulette.png" 
+                src="/casino/roulette.png" 
                 alt="Roulette"
                 class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               >

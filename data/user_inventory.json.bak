@@ -1,31 +1,63 @@
 {
-  "balance": 27.295,
+  "balance": 3.909,
   "inventory": [
     {
-      "weapon": "R8 Revolver",
-      "name": "Skull Crusher",
+      "weapon": "P90",
+      "name": "Emerald Dragon",
+      "wear": "FN",
+      "float_value": 0.012624759887898993,
       "rarity": "PINK",
-      "wear": "BS",
+      "case_type": "bravo",
+      "base_price": 259.35,
+      "adjusted_price": 285.285,
       "stattrak": false,
-      "price": 0.96,
-      "timestamp": 1736750119.410849,
-      "case_type": "prisma",
-      "float_value": 0.66931895,
-      "is_case": false,
-      "image": "r8revolver_skull_crusher.png"
+      "image": "p90_emerald_dragon.png",
+      "price": 285.285,
+      "timestamp": 1736796773.5961237,
+      "is_case": false
+    },
+    {
+      "weapon": "M4A4",
+      "name": "Howl",
+      "wear": "FN",
+      "float_value": 0.01366001632585704,
+      "rarity": "CONTRABAND",
+      "case_type": "huntsman",
+      "base_price": 5631.75,
+      "adjusted_price": 6194.925,
+      "stattrak": false,
+      "image": "m4a4_howl.png",
+      "price": 6194.925,
+      "timestamp": 1736796668.3066044,
+      "is_case": false
     },
     {
       "name": "Prisma Case",
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 1
+      "quantity": 3
+    },
+    {
+      "weapon": "M4A1-S",
+      "name": "Printstream",
+      "wear": "FN",
+      "float_value": 0.00809564916419592,
+      "rarity": "RED",
+      "case_type": "broken_fang",
+      "base_price": 403.93,
+      "adjusted_price": 444.32300000000004,
+      "stattrak": false,
+      "image": "m4a1s_printstream.png",
+      "price": 444.32300000000004,
+      "timestamp": 1736796969.1570802,
+      "is_case": false
     }
   ],
-  "exp": 524.0,
-  "rank": 5,
+  "exp": 8526.0,
+  "rank": 8,
   "upgrades": {
-    "click_value": 1,
+    "click_value": 4,
     "max_multiplier": 1,
     "auto_clicker": 18,
     "combo_speed": 1,
@@ -35,7 +67,11 @@
     "multi_open": 1
   },
   "achievements": {
-    "completed": [],
+    "completed": [
+      "earnings_1",
+      "earnings_2",
+      "earnings_3"
+    ],
     "in_progress": {
       "clicks_1": {
         "id": "clicks_1",
@@ -57,30 +93,30 @@
         "reward": 100,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 5,
+        "current_value": 7,
         "category": "cases",
-        "progress": 50.0
+        "progress": 70.0
       },
-      "earnings_1": {
-        "id": "earnings_1",
-        "title": "Starting Out",
-        "description": "Earn your first $1,000",
-        "target_value": 1000,
-        "reward": 100,
-        "exp_reward": 1000,
-        "icon": "\ud83d\udcb5",
-        "current_value": 54.57,
+      "earnings_4": {
+        "id": "earnings_4",
+        "title": "Expert Trader",
+        "description": "Earn your first $100,000",
+        "target_value": 100000,
+        "reward": 10000,
+        "exp_reward": 20000,
+        "icon": "\ud83d\udc8e",
+        "current_value": 68899.38,
         "category": "special",
-        "progress": 5.457
+        "progress": 68.89938000000001
       }
     }
   },
   "stats": {
-    "total_earnings": 54.58,
-    "total_cases_opened": 5,
+    "total_earnings": 68899.684,
+    "total_cases_opened": 7,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 5969,
+    "total_clicks": 9737,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

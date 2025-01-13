@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore, RANKS, RANK_EXP } from './store'
 
@@ -127,11 +127,31 @@ export default {
     ]
 
     const currentRoute = computed(() => route.path)
+    const currentPageName = computed(() => {
+      const currentRoute = routes.find(r => r.path === route.path)
+      return currentRoute ? currentRoute.name : 'Home'
+    })
 
     // Computed values from store
     const rank = computed(() => store.state.rank)
     const exp = computed(() => store.state.exp)
     const balance = computed(() => store.state.balance)
+
+    // Utility function for formatting numbers
+    const formatNumber = (num) => {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(2) + 'M'
+      } else if (num >= 1000) {
+        return (num / 1000).toFixed(2) + 'K'
+      } else {
+        return num.toFixed(2)
+      }
+    }
+
+    // Update title whenever route or balance changes
+    watch([currentPageName, balance], () => {
+      document.title = `$${formatNumber(balance.value)} | ${currentPageName.value} | Case Clicker`
+    }, { immediate: true })
 
     // Close menu when clicking outside
     const handleClickOutside = (event) => {
@@ -149,7 +169,7 @@ export default {
       // Set up polling every 2 seconds
       pollInterval = setInterval(() => {
         store.fetchUserData()
-      }, 2000)
+      }, 1000)
 
       // Add click outside listener
       document.addEventListener('click', handleClickOutside)
@@ -235,17 +255,6 @@ export default {
       if (data.levelUp) {
         createConfetti()
         showLevelUpBanner(RANKS[store.state.rank])
-      }
-    }
-
-    // Utility function for formatting numbers
-    const formatNumber = (num) => {
-      if (num >= 1000000) {
-        return (num / 1000000).toFixed(2) + 'M'
-      } else if (num >= 1000) {
-        return (num / 1000).toFixed(2) + 'K'
-      } else {
-        return num.toFixed(2)
       }
     }
 

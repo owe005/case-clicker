@@ -1,0 +1,75 @@
+{
+  "item": {
+    "weapon": "AK-47",
+    "name": "Vulcan",
+    "wear": "FN",
+    "float_value": 0.004658287170864887,
+    "rarity": "RED",
+    "case_type": "huntsman",
+    "base_price": 1188.17,
+    "adjusted_price": 1425.804,
+    "stattrak": true,
+    "image": "ak47_vulcan.png"
+  },
+  "end_time": "2025-01-13T21:06:24.329029",
+  "current_bid": 155.863806148645,
+  "bids": [
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 133.39677276634183,
+      "timestamp": "2025-01-13T20:36:10.282575"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 144.6045254881952,
+      "timestamp": "2025-01-13T20:36:18.369951"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 155.863806148645,
+      "timestamp": "2025-01-13T20:36:34.767451"
+    }
+  ],
+  "bot_budgets": {
+    "_Astrid47": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Kai.Jayden_02": {
+      "budget": 1170.88870078445,
+      "status": "online"
+    },
+    "Orion_Phoenix98": {
+      "budget": 1165.8942615602882,
+      "status": "online"
+    },
+    "ElaraB_23": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Theo.91": {
+      "budget": 1155.0549640841261,
+      "status": "online"
+    },
+    "Nova-Lyn": {
+      "budget": 1263.6423699523189,
+      "status": "online"
+    },
+    "FelixHaven19": {
+      "budget": 1202.4682164658614,
+      "status": "online"
+    },
+    "Aria.Stella85": {
+      "budget": 674.5796382004643,
+      "status": "online"
+    },
+    "Lucien_Kai": {
+      "budget": 1260.2419566984397,
+      "status": "online"
+    },
+    "Mira-Eclipse": {
+      "budget": 1109.5398297799352,
+      "status": "online"
+    }
+  }
+}

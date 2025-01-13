@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.7"
   }
 }
