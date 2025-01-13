@@ -43,7 +43,8 @@ def generate_daily_trades():
                                 'prices': item['prices'],
                                 'case_type': case_type,
                                 'case_file': file_name,
-                                'rarity': grade.upper()
+                                'rarity': grade.upper(),
+                                'image': item['image']
                             }
                             all_skins.append(skin_info)
             except Exception as e:
@@ -93,7 +94,8 @@ def generate_daily_trades():
                             'price': price,
                             'case_type': skin['case_type'],
                             'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
+                            'rarity': skin['rarity'],
+                            'image': skin['image']
                         })
                 
                 if not requested_skins:  # Skip if no valid skins were found
@@ -136,7 +138,8 @@ def generate_daily_trades():
                             'price': price,
                             'case_type': skin['case_type'],
                             'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
+                            'rarity': skin['rarity'],
+                            'image': skin['image']
                         })
                 
                 if not offered_skins:  # Skip if no valid skins were found
@@ -180,7 +183,8 @@ def generate_daily_trades():
                             'price': price,
                             'case_type': skin['case_type'],
                             'case_file': skin['case_file'],
-                            'rarity': skin['rarity']
+                            'rarity': skin['rarity'],
+                            'image': skin['image']
                         })
                 
                 if not offered_skins:  # Skip if no valid skins were found
@@ -209,7 +213,8 @@ def generate_daily_trades():
                                 'price': price,
                                 'case_type': skin['case_type'],
                                 'case_file': skin['case_file'],
-                                'rarity': skin['rarity']
+                                'rarity': skin['rarity'],
+                                'image': skin['image']
                             })
                 
                 if not requested_skins:  # Skip if no valid skins were found

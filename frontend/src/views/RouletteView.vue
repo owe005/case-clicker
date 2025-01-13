@@ -324,14 +324,16 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useStore } from '@/store'
 
-// Import chip images
-import chip1 from '@/assets/casino/chip_1.png'
-import chip5 from '@/assets/casino/chip_5.png'
-import chip10 from '@/assets/casino/chip_10.png'
-import chip50 from '@/assets/casino/chip_50.png'
-import chip100 from '@/assets/casino/chip_100.png'
-import chip500 from '@/assets/casino/chip_500.png'
-import chip1000 from '@/assets/casino/chip_1000.png'
+// Create a map of chip images
+const chipImages = {
+  1: '/casino/chip_1.png',
+  5: '/casino/chip_5.png',
+  10: '/casino/chip_10.png',
+  50: '/casino/chip_50.png',
+  100: '/casino/chip_100.png',
+  500: '/casino/chip_500.png',
+  1000: '/casino/chip_1000.png'
+}
 
 // Constants
 const RED_NUMBERS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
@@ -342,17 +344,6 @@ const WHEEL_ORDER = [
 const BETTING_TIME = 25 // Time allowed for betting
 const WARNING_TIME = 5  // Time after betting closes before result
 const ROUND_TIME = BETTING_TIME + WARNING_TIME // Total round time
-
-// Create a map of chip images
-const chipImages = {
-  1: chip1,
-  5: chip5,
-  10: chip10,
-  50: chip50,
-  100: chip100,
-  500: chip500,
-  1000: chip1000
-}
 
 export default {
   name: 'RouletteView',

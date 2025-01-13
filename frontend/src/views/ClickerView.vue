@@ -204,7 +204,7 @@ export default {
       'horizon_case.png'
     ]
 
-    const currentCaseImage = ref(`/static/media/cases/${cases[0]}`)
+    const currentCaseImage = ref(`/cases/${cases[0]}`)
 
     // Computed properties from store
     const currentMultiplier = computed(() => store.state.clicker.currentMultiplier)
@@ -447,7 +447,7 @@ export default {
             const lastCase = data.earned_cases[data.earned_cases.length - 1]
             earnedCase.value = {
               name: lastCase.name,
-              image: `/static/media/cases/${lastCase.image}`,
+              image: `/cases/${lastCase.image}`,
               price: lastCase.price
             }
             showCaseModal.value = true
@@ -577,7 +577,7 @@ export default {
       
       // Initialize with random case image
       const randomCase = cases[Math.floor(Math.random() * cases.length)]
-      currentCaseImage.value = `/static/media/cases/${randomCase}`
+      currentCaseImage.value = `/cases/${randomCase}`
 
       // Add listener for auto clicker text
       window.addEventListener('autoClickerText', handleAutoClickText)

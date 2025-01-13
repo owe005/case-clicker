@@ -1,203 +1,183 @@
 {
-  "date": "2025-01-12",
+  "date": "2025-01-13",
   "trades": [
     {
-      "type": "swap",
+      "type": "buy",
       "botName": "FelixHaven19",
       "botAvatar": "bot7.png",
       "offering": [
         {
+          "type": "money",
+          "amount": 1020.230577814916
+        }
+      ],
+      "requesting": [
+        {
           "type": "skin",
           "weapon": "Bayonet",
-          "name": "Case Hardened",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 359.25,
-          "case_type": "vanguard",
-          "case_file": "operation_vanguard_case",
-          "rarity": "GOLD"
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Scorched",
+          "name": "Stained",
           "wear": "WW",
           "stattrak": false,
-          "price": 94.35,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "GOLD"
+          "price": 209.51,
+          "case_type": "vanguard",
+          "case_file": "operation_vanguard_case",
+          "rarity": "GOLD",
+          "image": "bayonet_stained.png"
         },
         {
           "type": "skin",
-          "weapon": "Stiletto Knife",
-          "name": "Urban Masked",
+          "weapon": "M9 Bayonet",
+          "name": "Black Laminate",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 740.23,
+          "case_type": "gamma",
+          "case_file": "gamma_case",
+          "rarity": "GOLD",
+          "image": "m9bayonet_black_laminate.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "XM1014",
+          "name": "Quicksilver",
           "wear": "BS",
           "stattrak": false,
-          "price": 182.76,
-          "case_type": "horizon",
-          "case_file": "horizon_case",
-          "rarity": "GOLD"
-        },
-        {
-          "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Ultraviolet",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 112.33,
+          "price": 0.16,
           "case_type": "chroma",
           "case_file": "chroma_case",
-          "rarity": "GOLD"
+          "rarity": "BLUE",
+          "image": "xm1014_quicksilver.png"
         }
       ]
     },
     {
-      "type": "sell",
-      "botName": "_Astrid47",
-      "botAvatar": "bot1.png",
+      "type": "buy",
+      "botName": "FelixHaven19",
+      "botAvatar": "bot7.png",
       "offering": [
         {
-          "type": "skin",
-          "weapon": "Ursus Knife",
-          "name": "Ultraviolet",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 155.28,
-          "case_type": "prisma",
-          "case_file": "prisma_case",
-          "rarity": "GOLD"
+          "type": "money",
+          "amount": 302.99813024320036
         }
       ],
       "requesting": [
         {
-          "type": "money",
-          "amount": 183.95621791570727
-        }
-      ]
-    },
-    {
-      "type": "sell",
-      "botName": "Lucien_Kai",
-      "botAvatar": "bot9.png",
-      "offering": [
-        {
           "type": "skin",
-          "weapon": "FAMAS",
-          "name": "Meow 36",
-          "wear": "FN",
+          "weapon": "Navaja Knife",
+          "name": "Scorched",
+          "wear": "BS",
           "stattrak": false,
-          "price": 0.22,
-          "case_type": "recoil",
-          "case_file": "recoil_case",
-          "rarity": "BLUE"
+          "price": 90.13,
+          "case_type": "danger_zone",
+          "case_file": "danger_zone_case",
+          "rarity": "GOLD",
+          "image": "navajaknife_scorched.png"
         },
         {
           "type": "skin",
-          "weapon": "SG 553",
-          "name": "Danger Close",
-          "wear": "BS",
+          "weapon": "Falchion Knife",
+          "name": "Lore",
+          "wear": "MW",
           "stattrak": false,
-          "price": 0.04,
-          "case_type": "danger_zone",
-          "case_file": "danger_zone_case",
-          "rarity": "BLUE"
-        }
-      ],
-      "requesting": [
-        {
-          "type": "money",
-          "amount": 0.3075119394773329
+          "price": 189.51,
+          "case_type": "riptide",
+          "case_file": "operation_riptide_case",
+          "rarity": "GOLD",
+          "image": "falchionknife_lore.png"
         }
       ]
     },
     {
       "type": "swap",
-      "botName": "Kai.Jayden_02",
-      "botAvatar": "bot2.png",
+      "botName": "Aria.Stella85",
+      "botAvatar": "bot8.png",
       "offering": [
         {
           "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Night",
-          "wear": "FT",
+          "weapon": "Huntsman Knife",
+          "name": "Damascus Steel",
+          "wear": "MW",
           "stattrak": false,
-          "price": 93.65,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "GOLD"
+          "price": 156.48,
+          "case_type": "spectrum_2",
+          "case_file": "spectrum_2_case",
+          "rarity": "GOLD",
+          "image": "huntsmanknife_damascus_steel.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "G3SG1",
+          "name": "Dream Glade",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 0.5,
+          "case_type": "dreams_&_nightmares",
+          "case_file": "dreams_&_nightmares_case",
+          "rarity": "PURPLE",
+          "image": "g3sg1_dream_glade.png"
         }
       ],
       "requesting": [
         {
           "type": "skin",
-          "weapon": "Galil AR",
-          "name": "Sandstorm",
-          "wear": "WW",
+          "weapon": "Nova",
+          "name": "Tempest",
+          "wear": "MW",
           "stattrak": false,
-          "price": 1.23,
-          "case_type": "winter_offensive",
-          "case_file": "winter_offensive_case",
-          "rarity": "BLUE"
+          "price": 6.71,
+          "case_type": "bravo",
+          "case_file": "operation_bravo",
+          "rarity": "BLUE",
+          "image": "nova_tempest.png"
         },
         {
           "type": "skin",
-          "weapon": "XM1014",
-          "name": "Incinegator",
+          "weapon": "G3SG1",
+          "name": "Keeping Tabs",
           "wear": "MW",
           "stattrak": false,
-          "price": 8.67,
-          "case_type": "prisma",
-          "case_file": "prisma_case",
-          "rarity": "PINK"
+          "price": 0.71,
+          "case_type": "riptide",
+          "case_file": "operation_riptide_case",
+          "rarity": "BLUE",
+          "image": "g3sg1_keeping_tabs.png"
         },
         {
           "type": "skin",
-          "weapon": "Gut Knife",
-          "name": "Forest DDPAT",
-          "wear": "MW",
+          "weapon": "Shadow Daggers",
+          "name": "Crimson Web",
+          "wear": "BS",
           "stattrak": false,
-          "price": 93.16,
-          "case_type": "esports",
-          "case_file": "esports_2013",
-          "rarity": "GOLD"
+          "price": 96.98,
+          "case_type": "shadow",
+          "case_file": "shadow_case",
+          "rarity": "GOLD",
+          "image": "shadowdaggers_crimson_web.png"
         }
       ]
     },
     {
-      "type": "sell",
-      "botName": "Theo.91",
-      "botAvatar": "bot5.png",
+      "type": "buy",
+      "botName": "_Astrid47",
+      "botAvatar": "bot1.png",
       "offering": [
         {
-          "type": "skin",
-          "weapon": "Desert Eagle",
-          "name": "Heirloom",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 4.4,
-          "case_type": "csgo3",
-          "case_file": "weapon_case_3",
-          "rarity": "PURPLE"
-        },
-        {
-          "type": "skin",
-          "weapon": "PP-Bizon",
-          "name": "Judgement of Anubis",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 4.34,
-          "case_type": "chroma_3",
-          "case_file": "chroma_3_case",
-          "rarity": "RED"
+          "type": "money",
+          "amount": 136.9077999498589
         }
       ],
       "requesting": [
         {
-          "type": "money",
-          "amount": 10.360506451934018
+          "type": "skin",
+          "weapon": "Specialist Gloves",
+          "name": "Field Agent",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 130.21,
+          "case_type": "broken_fang",
+          "case_file": "operation_broken_fang_case",
+          "rarity": "GOLD",
+          "image": "specialistgloves_field_agent.png"
         }
       ]
     },
@@ -208,55 +188,21 @@
       "offering": [
         {
           "type": "money",
-          "amount": 344.88516367006906
+          "amount": 169.0263669761555
         }
       ],
       "requesting": [
         {
           "type": "skin",
-          "weapon": "USP-S",
-          "name": "Cortex",
-          "wear": "FT",
+          "weapon": "Hydra Gloves",
+          "name": "Case Hardened",
+          "wear": "MW",
           "stattrak": false,
-          "price": 1.85,
-          "case_type": "clutch",
-          "case_file": "clutch_case",
-          "rarity": "PINK"
-        },
-        {
-          "type": "skin",
-          "weapon": "Huntsman Knife",
-          "name": "Marble Fade",
-          "wear": "FN",
-          "stattrak": false,
-          "price": 301.94,
-          "case_type": "spectrum",
-          "case_file": "spectrum_case",
-          "rarity": "GOLD"
-        }
-      ]
-    },
-    {
-      "type": "buy",
-      "botName": "ElaraB_23",
-      "botAvatar": "bot4.png",
-      "offering": [
-        {
-          "type": "money",
-          "amount": 768.7627312023843
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "weapon": "M9 Bayonet",
-          "name": "Blue Steel",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 719.49,
-          "case_type": "phoenix",
-          "case_file": "operation_phoenix_case",
-          "rarity": "GOLD"
+          "price": 148.58,
+          "case_type": "revolution",
+          "case_file": "revolution_case",
+          "rarity": "GOLD",
+          "image": "hydragloves_case_hardened.png"
         }
       ]
     },
@@ -267,97 +213,245 @@
       "offering": [
         {
           "type": "skin",
-          "weapon": "G3SG1",
-          "name": "Dream Glade",
-          "wear": "BS",
+          "weapon": "Hand Wraps",
+          "name": "Spruce DDPAT",
+          "wear": "MW",
           "stattrak": false,
-          "price": 0.19,
-          "case_type": "dreams_&_nightmares",
-          "case_file": "dreams_&_nightmares_case",
-          "rarity": "PURPLE"
+          "price": 160.0,
+          "case_type": "hydra",
+          "case_file": "operation_hydra_case",
+          "rarity": "GOLD",
+          "image": "handwraps_spruce_ddpat.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "Bayonet",
+          "name": "Night",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 199.54,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "GOLD",
+          "image": "bayonet_night.png"
         }
       ],
       "requesting": [
         {
           "type": "skin",
-          "weapon": "Negev",
-          "name": "Desert Strike",
+          "weapon": "Flip Knife",
+          "name": "Safari Mesh",
           "wear": "MW",
           "stattrak": false,
-          "price": 0.12,
-          "case_type": "breakout",
-          "case_file": "operation_breakout_case",
-          "rarity": "BLUE"
+          "price": 142.55,
+          "case_type": "csgo",
+          "case_file": "weapon_case_1",
+          "rarity": "GOLD",
+          "image": "flipknife_safari_mesh.png"
         },
         {
           "type": "skin",
-          "weapon": "Five-SeveN",
-          "name": "Scumbria",
-          "wear": "FT",
+          "weapon": "Desert Eagle",
+          "name": "Printstream",
+          "wear": "MW",
           "stattrak": false,
-          "price": 0.07,
-          "case_type": "gamma_2",
-          "case_file": "gamma_2_case",
-          "rarity": "BLUE"
-        },
-        {
-          "type": "skin",
-          "weapon": "P2000",
-          "name": "Gnarled",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 0.03,
+          "price": 42.67,
           "case_type": "fracture",
           "case_file": "fracture_case",
-          "rarity": "BLUE"
+          "rarity": "RED",
+          "image": "deserteagle_printstream.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "FAMAS",
+          "name": "Macabre",
+          "wear": "FN",
+          "stattrak": false,
+          "price": 2.71,
+          "case_type": "hydra",
+          "case_file": "operation_hydra_case",
+          "rarity": "BLUE",
+          "image": "famas_macabre.png"
         }
       ]
     },
     {
       "type": "sell",
-      "botName": "Kai.Jayden_02",
-      "botAvatar": "bot2.png",
+      "botName": "ElaraB_23",
+      "botAvatar": "bot4.png",
       "offering": [
         {
           "type": "skin",
-          "weapon": "Classic Knife",
-          "name": "Stained",
-          "wear": "FT",
+          "weapon": "CZ75-Auto",
+          "name": "Hexane",
+          "wear": "FN",
           "stattrak": false,
-          "price": 149.3,
-          "case_type": "cs20",
-          "case_file": "cs20_case",
-          "rarity": "GOLD"
+          "price": 5.57,
+          "case_type": "esports_summer",
+          "case_file": "esports_2014_summer",
+          "rarity": "BLUE",
+          "image": "cz75auto_hexane.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "UMP-45",
+          "name": "Moonrise",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 0.52,
+          "case_type": "prisma",
+          "case_file": "prisma_case",
+          "rarity": "PURPLE",
+          "image": "ump45_moonrise.png"
         }
       ],
       "requesting": [
         {
           "type": "money",
-          "amount": 198.0335430717863
+          "amount": 8.150101876684674
         }
       ]
     },
     {
       "type": "buy",
-      "botName": "Nova-Lyn",
-      "botAvatar": "bot6.png",
+      "botName": "Aria.Stella85",
+      "botAvatar": "bot8.png",
       "offering": [
         {
           "type": "money",
-          "amount": 1.3993520326903335
+          "amount": 1011.5444184095393
         }
       ],
       "requesting": [
         {
           "type": "skin",
-          "weapon": "Negev",
-          "name": "Dev Texture",
-          "wear": "FN",
+          "weapon": "Sport Gloves",
+          "name": "Nocts",
+          "wear": "MW",
           "stattrak": false,
-          "price": 1.25,
-          "case_type": "snakebite",
-          "case_file": "snakebite_case",
-          "rarity": "PURPLE"
+          "price": 789.0,
+          "case_type": "recoil",
+          "case_file": "recoil_case",
+          "rarity": "GOLD",
+          "image": "sportgloves_nocts.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "MP7",
+          "name": "Urban Hazard",
+          "wear": "BS",
+          "stattrak": false,
+          "price": 0.09,
+          "case_type": "breakout",
+          "case_file": "operation_breakout_case",
+          "rarity": "BLUE",
+          "image": "mp7_urban_hazard.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "Bayonet",
+          "name": "Scorched",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 174.14,
+          "case_type": "vanguard",
+          "case_file": "operation_vanguard_case",
+          "rarity": "GOLD",
+          "image": "bayonet_scorched.png"
+        }
+      ]
+    },
+    {
+      "type": "swap",
+      "botName": "Aria.Stella85",
+      "botAvatar": "bot8.png",
+      "offering": [
+        {
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "name": "Slaughter",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 376.77,
+          "case_type": "esports_summer",
+          "case_file": "esports_2014_summer",
+          "rarity": "GOLD",
+          "image": "flipknife_slaughter.png"
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "weapon": "Shadow Daggers",
+          "name": "Tiger Tooth",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 131.22,
+          "case_type": "spectrum",
+          "case_file": "spectrum_case",
+          "rarity": "GOLD",
+          "image": "shadowdaggers_tiger_tooth.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "Ursus Knife",
+          "name": "Slaughter",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 275.5,
+          "case_type": "horizon",
+          "case_file": "horizon_case",
+          "rarity": "GOLD",
+          "image": "ursusknife_slaughter.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "AK-47",
+          "name": "Blue Laminate",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 9.95,
+          "case_type": "esports_winter",
+          "case_file": "esports_2013_winter",
+          "rarity": "PURPLE",
+          "image": "ak47_blue_laminate.png"
+        }
+      ]
+    },
+    {
+      "type": "sell",
+      "botName": "Lucien_Kai",
+      "botAvatar": "bot9.png",
+      "offering": [
+        {
+          "type": "skin",
+          "weapon": "AWP",
+          "name": "PAW",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 1.98,
+          "case_type": "horizon",
+          "case_file": "horizon_case",
+          "rarity": "PURPLE",
+          "image": "awp_paw.png"
+        },
+        {
+          "type": "skin",
+          "weapon": "Shadow Daggers",
+          "name": "Rust Coat",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 99.99,
+          "case_type": "spectrum_2",
+          "case_file": "spectrum_2_case",
+          "rarity": "GOLD",
+          "image": "shadowdaggers_rust_coat.png"
+        }
+      ],
+      "requesting": [
+        {
+          "type": "money",
+          "amount": 137.01872723833992
         }
       ]
     }

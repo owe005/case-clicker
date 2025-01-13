@@ -244,7 +244,7 @@
                   <div class="aspect-square mb-4">
                     <img :src="getSkinImagePath(skin)" :alt="`${skin.weapon} | ${skin.name}`" 
                          class="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105"
-                         @error="$event.target.src = '/static/media/skins/weapon_case_1/ak47_case_hardened.png'">
+                         @error="$event.target.src = '/skins/weapon_case_1/ak47_case_hardened.png'">
                   </div>
                   
                   <!-- Info -->
@@ -563,7 +563,7 @@ export default {
     }
 
     function getCaseImagePath(case_data) {
-      return `/static/media/cases/${case_data.image}`
+      return `/cases/${case_data.image}`
     }
 
     function getSkinImagePath(skin, case_image) {
@@ -574,12 +574,12 @@ export default {
           case_image.includes(CASE_MAPPING[key]) || 
           CASE_MAPPING[key].includes(case_image.replace('.png', ''))
         )
-        return `/static/media/skins/${CASE_MAPPING[caseType]}/${skin.image}`
+        return `/skins/${CASE_MAPPING[caseType]}/${skin.image}`
       }
       
       // For featured skins
       const casePath = CASE_MAPPING[skin.case_type] || skin.case_file
-      return `/static/media/skins/${casePath}/${skin.image}`
+      return `/skins/${casePath}/${skin.image}`
     }
 
     // Sort featured skins by rarity

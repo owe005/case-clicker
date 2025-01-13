@@ -303,15 +303,8 @@ export default {
     }
 
     function getSkinImagePath(item) {
-      const weaponName = item.weapon.toLowerCase()
-        .replace(/-/g, '')
-        .replace(/ /g, '')
-        .replace('553', '553')
-        .replace('galil ar', 'galil')
-        .replace('galilar', 'galil')
-      const skinName = item.name.toLowerCase().replace(/ /g, '_')
       const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
-      return `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`
+      return `/skins/${casePath}/${item.image}`
     }
 
     // Lifecycle hooks

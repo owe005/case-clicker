@@ -13,13 +13,13 @@
   }
   
   /* Add specific chip styles */
-  .chip-1 { background-image: url('@/assets/casino/chip_1.png'); }
-  .chip-5 { background-image: url('@/assets/casino/chip_5.png'); }
-  .chip-10 { background-image: url('@/assets/casino/chip_10.png'); }
-  .chip-50 { background-image: url('@/assets/casino/chip_50.png'); }
-  .chip-100 { background-image: url('@/assets/casino/chip_100.png'); }
-  .chip-500 { background-image: url('@/assets/casino/chip_500.png'); }
-  .chip-1000 { background-image: url('@/assets/casino/chip_1000.png'); }
+  .chip-1 { background-image: url('~@/assets/casino/chip_1.png'); }
+  .chip-5 { background-image: url('~@/assets/casino/chip_5.png'); }
+  .chip-10 { background-image: url('~@/assets/casino/chip_10.png'); }
+  .chip-50 { background-image: url('~@/assets/casino/chip_50.png'); }
+  .chip-100 { background-image: url('~@/assets/casino/chip_100.png'); }
+  .chip-500 { background-image: url('~@/assets/casino/chip_500.png'); }
+  .chip-1000 { background-image: url('~@/assets/casino/chip_1000.png'); }
   
   /* Update number position to relative for chip positioning */
   .number:not(.zero), .special-bet, [data-bet-type]:not([data-bet-type="0"]) {

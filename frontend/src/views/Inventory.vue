@@ -872,26 +872,19 @@ export default {
       }
       
       if (!item.weapon || !item.name) {
-        return '/static/media/skins/placeholder.png'
+        return '/skins/placeholder.png'
       }
       return getSkinImagePath(item)
     }
 
     function getSkinImagePath(item) {
-      const weaponName = item.weapon.toLowerCase()
-        .replace(/-/g, '')
-        .replace(/ /g, '')
-        .replace('553', '553')
-        .replace('galil ar', 'galil')
-        .replace('galilar', 'galil')
-      const skinName = item.name.toLowerCase().replace(/ /g, '_')
       const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
-      return `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`
+      return `/skins/${casePath}/${item.image}`
     }
 
     function getCaseImagePath(item) {
       const caseType = item.type || item.case_type
-      return `/static/media/cases/${CASE_MAPPING[caseType] || caseType}.png`
+      return `/cases/${CASE_MAPPING[caseType] || caseType}.png`
     }
 
     // Add this new method in setup()

@@ -320,26 +320,21 @@ export default {
     }
 
     const getItemImage = (item) => {
-      const weaponName = item.weapon.toLowerCase()
-        .replace(/-/g, '')
-        .replace(/broken fang gloves/i, 'brokenfanggloves')
-        .replace(/driver gloves/i, 'drivergloves')
-        .replace(/specialist gloves/i, 'specialistgloves')
-        .replace(/sport gloves/i, 'sportgloves')
-        .replace(/moto gloves/i, 'motogloves')
-        .replace(/hand wraps/i, 'handwraps')
-        .replace(/galil ar/, 'galil')
-        .replace(/galilar/, 'galil')
-        .replace(/ /g, '')
-      const skinName = item.name.toLowerCase().replace(/ /g, '_')
+      if (!item.weapon || !item.name) {
+        return '/skins/placeholder.png'
+      }
+      return getSkinImagePath(item)
+    }
+
+    function getSkinImagePath(item) {
       const casePath = CASE_MAPPING[item.case_type] || item.case_type
-      return `/static/media/skins/${casePath}/${weaponName}_${skinName}.png`
+      return `/skins/${casePath}/${item.image}`
     }
 
     const getPlayerAvatar = (name) => {
       return name === 'You' 
-        ? '/static/media/casino/player_avatar.png'
-        : `/static/media/casino/${BOT_AVATARS[name]}`
+        ? '/casino/player_avatar.png'
+        : `/casino/${BOT_AVATARS[name]}`
     }
 
     const startGame = async () => {

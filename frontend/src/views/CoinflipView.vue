@@ -86,7 +86,7 @@
           >
             <div class="flex flex-col items-center gap-4">
               <img 
-                src="/static/media/casino/ct_side.png" 
+                src="/casino/ct_side.png" 
                 alt="CT Side"
                 class="w-32 h-32 object-contain"
               >
@@ -103,7 +103,7 @@
           >
             <div class="flex flex-col items-center gap-4">
               <img 
-                src="/static/media/casino/t_side.png" 
+                src="/casino/t_side.png" 
                 alt="T Side"
                 class="w-32 h-32 object-contain"
               >
@@ -137,7 +137,7 @@
           <div class="bg-gray-darker rounded-lg p-6">
             <div class="flex items-center gap-4 mb-4">
               <img 
-                src="/static/media/casino/player_avatar.png" 
+                src="/casino/player_avatar.png" 
                 alt="Player"
                 class="w-12 h-12 rounded-full"
               >
@@ -147,7 +147,7 @@
               </div>
             </div>
             <img 
-              :src="`/static/media/casino/${selectedSide}_side.png`"
+              :src="`/casino/${selectedSide}_side.png`"
               :alt="selectedSide"
               class="w-24 h-24 mx-auto"
             >
@@ -165,14 +165,14 @@
               >
                 <div class="coin-side">
                   <img 
-                    src="/static/media/casino/ct_side.png" 
+                    src="/casino/ct_side.png" 
                     alt="CT Side"
                     class="w-full h-full object-contain"
                   >
                 </div>
                 <div class="coin-side back">
                   <img 
-                    src="/static/media/casino/t_side.png" 
+                    src="/casino/t_side.png" 
                     alt="T Side"
                     class="w-full h-full object-contain"
                   >
@@ -189,7 +189,7 @@
           <div class="bg-gray-darker rounded-lg p-6">
             <div class="flex items-center gap-4 mb-4">
               <img 
-                src="/static/media/casino/bot_avatar.png" 
+                src="/casino/bot_avatar.png" 
                 alt="Bot"
                 class="w-12 h-12 rounded-full"
               >
@@ -199,7 +199,7 @@
               </div>
             </div>
             <img 
-              :src="`/static/media/casino/${selectedSide === 'ct' ? 't' : 'ct'}_side.png`"
+              :src="`/casino/${selectedSide === 'ct' ? 't' : 'ct'}_side.png`"
               :alt="selectedSide === 'ct' ? 't' : 'ct'"
               class="w-24 h-24 mx-auto"
             >

@@ -184,18 +184,21 @@ def open_case(case_type):
         try:
             # Find the item's price in the case data
             price = 0
+            image = None
             for grade, skins in case_data['skins'].items():
                 for case_skin in skins:
                     if case_skin['weapon'] == skin.weapon and case_skin['name'] == skin.name:
                         prices = case_skin['prices']
                         wear_key = 'NO' if 'NO' in prices else skin.wear.name
                         price = prices[f"ST_{wear_key}"] if skin.stattrak else prices[wear_key]
+                        image = case_skin['image']
                         break
                 if price > 0:
                     break
         except Exception as e:
             print(f"Error getting price: {e}")
             price = 0
+            image = None
         
         # Generate float value for the new skin
         float_value = generate_float_for_wear(skin.wear.name)
@@ -211,7 +214,8 @@ def open_case(case_type):
             'timestamp': time.time(),
             'case_type': case_type,
             'float_value': float_value,  # Add float_value here
-            'is_case': False
+            'is_case': False,
+            'image': image  # Add image field
         }
         items.append(skin_dict)
         
@@ -1496,7 +1500,8 @@ def buy_skin():
             'float_value': data['float_value'],
             'timestamp': time.time(),
             'case_type': data['case_type'],
-            'is_case': False
+            'is_case': False,
+            'image': data['image']  # Add image field from request data
         }
 
         # Update user data using shop price for purchase
@@ -1660,7 +1665,8 @@ def play_upgrade():
                                             'case_type': case_type,
                                             'stattrak': True,
                                             'timestamp': time.time(),
-                                            'float_value': float_value
+                                            'float_value': float_value,
+                                            'image': skin['image']  # Add image field
                                         })
             except Exception as e:
                 print(f"Error loading case {case_type}: {e}")
@@ -2545,7 +2551,7 @@ def generate_auction_item():
                                                     'base_price': st_price,
                                                     'adjusted_price': st_adjusted_price,
                                                     'stattrak': True,
-                                                    'image': image_path
+                                                    'image': skin['image']  # Use image from case data
                                                 }
                                                 
                                                 if is_knife:

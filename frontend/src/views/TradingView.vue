@@ -45,7 +45,7 @@
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-gray-dark/50 flex items-center justify-center overflow-hidden">
-                <img :src="'/static/media/casino/' + trade.botAvatar" :alt="trade.botName" class="w-full h-full object-cover">
+                <img :src="'/casino/' + trade.botAvatar" :alt="trade.botName" class="w-full h-full object-cover">
               </div>
               <div>
                 <div class="font-display text-yellow">{{ trade.botName }}</div>
@@ -299,18 +299,11 @@ export default {
     // Helper function to get skin image URL
     const getSkinImage = (item) => {
       if (item.type === 'money') return ''
-      
-      const weaponName = item.weapon.toLowerCase()
-        .replace(/ /g, '')
-        .replace('★', '')
-        .replace('-', '')
-        .replace('553', '553')
-        .replace('galil ar', 'galil')
-        .replace('galilar', 'galil')
-      const skinName = item.name.toLowerCase().replace(/ /g, '_')
-      const caseName = CASE_MAPPING[item.case_type] || item.case_type
-      
-      return `/skins/${caseName}/${weaponName}_${skinName}.png`
+      if (!item.image || !item.case_type) {
+        return '/skins/rare_item.png'
+      }
+      const casePath = CASE_MAPPING[item.case_type] || item.case_type
+      return `/skins/${casePath}/${item.image}`
     }
 
     // Handle image loading errors
