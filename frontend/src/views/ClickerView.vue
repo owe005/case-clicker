@@ -100,25 +100,30 @@
           </div>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="w-full max-w-xl bg-gray-dark/50 rounded-full h-4 overflow-hidden">
-          <div 
-            class="h-full bg-gradient-to-r from-yellow via-yellow/80 to-yellow/60 transition-all duration-300"
-            :style="{ width: `${caseProgress}%` }"
-          ></div>
+        <!-- Case Progress Bar -->
+        <div class="w-full max-w-xl bg-gray-dark/50 rounded-xl p-4">
+          <div class="text-white/70 text-sm mb-2 select-none">Case Progress</div>
+          <div class="h-4 bg-gray-dark rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-yellow transition-all duration-200" 
+              :style="{ width: `${caseProgress}%` }"
+            ></div>
+          </div>
+          <div class="text-yellow text-sm mt-1 select-none">{{ caseProgress.toFixed(1) }}%</div>
         </div>
 
-        <!-- Clicker Button -->
-        <div class="relative">
+        <!-- Case Clicker Button -->
+        <div class="relative" @mouseleave="handleMouseLeave">
           <button 
             @click="handleCaseClick"
-            class="clicker-btn w-32 h-32 rounded-xl bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
-                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group relative z-10"
+            class="clicker-btn w-32 h-32 rounded-full bg-gradient-to-br from-yellow/20 to-yellow/10 hover:from-yellow/30 hover:to-yellow/20 
+                   flex items-center justify-center transition-all duration-200 transform active:scale-95 group overflow-hidden relative z-10"
           >
-            <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow/20 via-yellow/10 to-yellow/5 
+            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-yellow/20 via-yellow/10 to-yellow/5 
                         animate-pulse group-hover:animate-none"></div>
             <img :src="currentCaseImage" alt="Case" class="w-32 h-32 object-contain relative z-10" draggable="false">
           </button>
+          <div class="text-yellow font-medium text-center mt-2 select-none">{{ progressPerClick }}%</div>
         </div>
       </div>
     </div>
@@ -182,10 +187,21 @@ export default {
     ]
 
     const cases = [
-      'weapon_case_1.png',
-      'esports_2013_case.png',
-      'operation_bravo_case.png',
-      // ... add more cases
+      'prisma_case.png',
+      'prisma_2_case.png',
+      'fracture_case.png',
+      'shattered_web_case.png',
+      'operation_riptide_case.png',
+      'dreams_&_nightmares_case.png',
+      'huntsman_case.png',
+      'kilowatt_case.png',
+      'recoil_case.png',
+      'danger_zone_case.png',
+      'gallery_case.png',
+      'glove_case.png',
+      'gamma_case.png',
+      'gamma_2_case.png',
+      'horizon_case.png'
     ]
 
     const currentCaseImage = ref(`/static/media/cases/${cases[0]}`)
@@ -350,9 +366,9 @@ export default {
     // Watch for changes in auto clicker level
     watch(() => store.state.upgrades.auto_clicker, (newLevel) => {
       if (newLevel > 0) {
-        store.autoClicker.startAutoClicker(store, newLevel)
+        store.startAutoClicker(newLevel)
       } else {
-        store.autoClicker.stopAutoClicker()
+        store.stopAutoClicker()
       }
     })
 
@@ -386,16 +402,21 @@ export default {
     const handleCaseClick = async () => {
       if (isProcessingClick.value) return // Skip if already processing
 
-      // Get click position from case clicker button
-      const caseClickerBtn = document.querySelector('.case-clicker-btn')
-      if (!caseClickerBtn) return
+      // Get click position for floating text
+      const clickerBtn = document.querySelector('.clicker-btn')
+      if (clickerBtn) {
+        const rect = clickerBtn.getBoundingClientRect()
+        const x = rect.left + rect.width / 2
+        const y = rect.top + rect.height / 2
 
-      const rect = caseClickerBtn.getBoundingClientRect()
-      const x = rect.left + rect.width / 2
-      const y = rect.top + rect.height / 2
-
-      // Add floating text
-      addFloatingText(x, y, `+${progressPerClick.value}%`, false)
+        // Add floating text for progress
+        addFloatingText(
+          x,
+          y,
+          `+${progressPerClick.value}%`,
+          false
+        )
+      }
 
       // Add click to pending queue
       pendingClicks.value.push({ type: 'case' })
