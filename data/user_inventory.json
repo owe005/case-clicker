@@ -2,14 +2,27 @@
   "balance": 27.295,
   "inventory": [
     {
+      "weapon": "R8 Revolver",
+      "name": "Skull Crusher",
+      "rarity": "PINK",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.96,
+      "timestamp": 1736750119.410849,
+      "case_type": "prisma",
+      "float_value": 0.66931895,
+      "is_case": false,
+      "image": "r8revolver_skull_crusher.png"
+    },
+    {
       "name": "Prisma Case",
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 2
+      "quantity": 1
     }
   ],
-  "exp": 523.0,
+  "exp": 524.0,
   "rank": 5,
   "upgrades": {
     "click_value": 1,
@@ -44,9 +57,9 @@
         "reward": 100,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 4,
+        "current_value": 5,
         "category": "cases",
-        "progress": 40.0
+        "progress": 50.0
       },
       "earnings_1": {
         "id": "earnings_1",
@@ -64,7 +77,7 @@
   },
   "stats": {
     "total_earnings": 54.58,
-    "total_cases_opened": 4,
+    "total_cases_opened": 5,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 5969,
