@@ -1,0 +1,98 @@
+{
+    "name": "Katowice 2014 Challengers",
+    "image": "katowice_2014_challengers.png",
+    "price": 21500.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "ESL Wolf (Foil)",
+                "image": "esl_wolf_foil.png",
+                "price": 512.57
+            }
+        ],
+        "purple": [
+            {
+                "name": "Vox Eminor (Holo)",
+                "image": "vox_eminor_holo.png",
+                "price": 26500.00
+            },
+            {
+                "name": "Virtus.Pro (Holo)",
+                "image": "virtus_pro_holo.png",
+                "price": 4760.60
+            },
+            {
+                "name": "Reason Gaming (Holo)",
+                "image": "reason_gaming_holo.png",
+                "price": 34101.75
+            },
+            {
+                "name": "Natus Vincere (Holo)",
+                "image": "natus_vincere_holo.png",
+                "price": 9806.02
+            },
+            {
+                "name": "Clan-Mystik (Holo)",
+                "image": "clan-mystik_holo.png",
+                "price": 5468.84
+            },
+            {
+                "name": "mousesports (Holo)",
+                "image": "mousesports_holo.png",
+                "price": 3400.00
+            },
+            {
+                "name": "iBUYPOWER (Holo)",
+                "image": "ibuypower_holo.png",
+                "price": 67930.70
+            },
+            {
+                "name": "3DMAX (Holo)",
+                "image": "3dmax_holo.png",
+                "price": 3085.39
+            }
+        ],
+        "blue": [
+            {
+                "name": "Vox Eminor",
+                "image": "vox_eminor.png",
+                "price": 613.00
+            },
+            {
+                "name": "Virtus.Pro",
+                "image": "virtus_pro.png",
+                "price": 374.56
+            },
+            {
+                "name": "Reason Gaming",
+                "image": "reason_gaming.png",
+                "price": 2559.81
+            },
+            {
+                "name": "Natus Vincere",
+                "image": "natus_vincere.png",
+                "price": 557.22
+            },
+            {
+                "name": "Clan-Mystik",
+                "image": "clan-mystik.png",
+                "price": 414.67
+            },
+            {
+                "name": "mousesports",
+                "image": "mousesports.png",
+                "price": 434.55
+            },
+            {
+                "name": "iBUYPOWER",
+                "image": "ibuypower.png",
+                "price": 2459.35
+            },
+            {
+                "name": "3DMAX",
+                "image": "3dmax.png",
+                "price": 420.20
+            }
+        ]
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "name": "Cluj-Napoca 2015 Challengers",
+    "image": "cluj_napoca_2015_challengers.png",
+    "price": 33.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "Team Dignitas (Foil)",
+                "image": "team_dignitas_foil.png",
+                "price": 49.39
+            },
+            {
+                "name": "DreamHack (Foil)",
+                "image": "dreamhack_foil.png",
+                "price": 17.52
+            },
+            {
+                "name": "Titan (Foil)",
+                "image": "titan_foil.png",
+                "price": 98.92
+            },
+            {
+                "name": "Cloud9 (Foil)",
+                "image": "cloud9_foil.png",
+                "price": 27.79
+            },
+            {
+                "name": "mousesports (Foil)",
+                "image": "mousesports_foil.png",
+                "price": 26.97
+            },
+            {
+                "name": "Team Liquid (Foil)",
+                "image": "team_liquid_foil.png",
+                "price": 26.00
+            },
+            {
+                "name": "Flipsid3 Tactics (Foil)",
+                "image": "flipsid3_tactics_foil.png",
+                "price": 17.00
+            },
+            {
+                "name": "Vexed Gaming (Foil)",
+                "image": "vexed_gaming_foil.png",
+                "price": 18.63
+            },
+            {
+                "name": "Counter Logic Gaming (Foil)",
+                "image": "counter_logic_gaming_foil.png",
+                "price": 15.74
+            }
+        ]
+    }
+}

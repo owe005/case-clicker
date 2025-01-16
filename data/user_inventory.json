@@ -1,5 +1,5 @@
 {
-  "balance": 1119.8121999999996,
+  "balance": 1121.264,
   "inventory": [
     {
       "name": "Prisma Case",
@@ -82,11 +82,11 @@
     }
   },
   "stats": {
-    "total_earnings": 98577.87219999997,
+    "total_earnings": 98579.324,
     "total_cases_opened": 7,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 9737,
+    "total_clicks": 9780,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

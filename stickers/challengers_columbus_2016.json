@@ -1,0 +1,101 @@
+{
+    "name": "Columbus 2016 Challengers",
+    "image": "columbus_2016_challengers.png",
+    "price": 37.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "MLG (Foil)",
+                "image": "mlg_foil.png",
+                "price": 54.42
+            },
+            {
+                "name": "G2 Esports (Foil)",
+                "image": "g2_esports_foil.png",
+                "price": 34.00
+            },
+            {
+                "name": "Cloud9 (Foil)",
+                "image": "cloud9_foil.png",
+                "price": 37.40
+            },
+            {
+                "name": "mousesports (Foil)",
+                "image": "mousesports_foil.png",
+                "price": 28.13
+            },
+            {
+                "name": "Team Liquid (Foil)",
+                "image": "team_liquid_foil.png",
+                "price": 63.40
+            },
+            {
+                "name": "Flipsid3 Tactics (Foil)",
+                "image": "flipsid3_tactics_foil.png",
+                "price": 33.97
+            },
+            {
+                "name": "Gambit Gaming (Foil)",
+                "image": "gambit_gaming_foil.png",
+                "price": 7.70
+            },
+            {
+                "name": "Counter Logic Gaming (Foil)",
+                "image": "counter_logic_gaming_foil.png",
+                "price": 41.91
+            },
+            {
+                "name": "Splyce (Foil)",
+                "image": "splyce_foil.png",
+                "price": 33.41
+            }
+        ],
+        "purple": [
+            {
+                "name": "Cloud9 (Holo)",
+                "image": "cloud9_holo.png",
+                "price": 33.50
+            },
+            {
+                "name": "MLG (Holo)",
+                "image": "mlg_holo.png",
+                "price": 21.96
+            },
+            {
+                "name": "mousesports (Holo)",
+                "image": "mousesports_holo.png",
+                "price": 35.98
+            },
+            {
+                "name": "Counter Logic Gaming (Holo)",
+                "image": "counter_logic_gaming_holo.png",
+                "price": 34.66
+            },
+            {
+                "name": "Flipsid3 Tactics (Holo)",
+                "image": "flipsid3_tactics_holo.png",
+                "price": 23.09
+            },
+            {
+                "name": "G2 Esports (Holo)",
+                "image": "g2_esports_holo.png",
+                "price": 22.91
+            },
+            {
+                "name": "Team Liquid (Holo)",
+                "image": "team_liquid_holo.png",
+                "price": 37.55
+            },
+            {
+                "name": "Gambit Gaming (Holo)",
+                "image": "gambit_gaming_holo.png",
+                "price": 5.31
+            },
+            {
+                "name": "Splyce (Holo)",
+                "image": "splyce_holo.png",
+                "price": 26.95
+            }
+        ]
+    }
+}
