@@ -1,13 +1,6 @@
 {
-  "balance": 1121.264,
+  "balance": 1051.264,
   "inventory": [
-    {
-      "name": "Prisma Case",
-      "image": "prisma_case.png",
-      "is_case": true,
-      "type": "prisma",
-      "quantity": 3
-    },
     {
       "weapon": "AWP",
       "name": "Lightning Strike",
@@ -22,6 +15,20 @@
       "price": 785.147,
       "timestamp": 1736807105.4247613,
       "is_case": false
+    },
+    {
+      "name": "Prisma Case",
+      "image": "prisma_case.png",
+      "is_case": true,
+      "type": "prisma",
+      "quantity": 3
+    },
+    {
+      "name": "Cluj-Napoca 2015 Challengers",
+      "image": "challengers_cluj_napoca_2015.png",
+      "is_capsule": true,
+      "type": "challengers_cluj_napoca_2015",
+      "quantity": 1
     }
   ],
   "exp": 8526.0,

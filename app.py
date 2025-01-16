@@ -29,10 +29,11 @@ from casino import find_best_skin_combination
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
-                   CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL)
+                   CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA)
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
+from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices
 
 # Load environment variables
 load_dotenv('config.env')
@@ -806,9 +807,9 @@ def get_inventory():
     # Create a dictionary to store already loaded prices to avoid duplicate lookups
     price_cache = {}
     
-    # Update prices and ensure float values for all non-case items
+    # Update prices and ensure float values for all non-case/non-capsule items
     for item in inventory_items:
-        if not item.get('is_case'):
+        if not item.get('is_case') and not item.get('is_capsule'):
             # Handle both float and float_value, standardizing to float_value
             if 'float_value' not in item:
                 item['float_value'] = item.get('float') or generate_float_for_wear(item.get('wear', 'FT'))
@@ -818,7 +819,7 @@ def get_inventory():
             
             # Create a cache key using weapon, name, wear, case type, and stattrak status
             cache_key = (
-                item['weapon'],
+                item.get('weapon', ''),  # Make weapon optional
                 item['name'],
                 item.get('wear'),
                 item['case_type'],
@@ -843,7 +844,7 @@ def get_inventory():
     
     # Sort items so newest appears first
     inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') else 0, 
+                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') and not x.get('is_capsule') else 0, 
                            reverse=True)
     
     # Save the updated inventory with standardized float values and prices
@@ -3595,6 +3596,80 @@ def handle_blackjack_end(game_state):
 def blackjack():
     # For Vue routes, we need to serve the main Vue app
     return serve_vue_app('')
+
+@app.route('/api/data/sticker_capsule_contents/<capsule_type>')
+def get_sticker_capsule_contents(capsule_type):
+    try:
+        capsule_data = load_sticker_capsule(capsule_type)
+        if not capsule_data:
+            return jsonify({'error': 'Invalid capsule type'})
+        return jsonify(capsule_data)
+    except Exception as e:
+        print(f"Error loading sticker capsule {capsule_type}: {e}")
+        return jsonify({'error': 'Failed to load sticker capsule data'})
+
+@app.route('/api/data/sticker_capsule_contents/all')
+def get_all_sticker_capsules():
+    try:
+        capsules = load_sticker_capsule('all')
+        if not capsules:
+            return jsonify({'error': 'Failed to load sticker capsules'})
+        return jsonify(capsules)
+    except Exception as e:
+        print(f"Error loading all sticker capsules: {e}")
+        return jsonify({'error': 'Failed to load sticker capsules'})
+
+@app.route('/buy_sticker_capsule', methods=['POST'])
+@login_required
+def buy_sticker_capsule():
+    try:
+        data = request.get_json()
+        capsule_type = data.get('capsule_type')
+        quantity = int(data.get('quantity', 1))
+
+        # Load user data
+        user_data = load_user_data()
+        current_balance = float(user_data['balance'])
+
+        # Get capsule price
+        capsule_price = get_sticker_capsule_prices(capsule_type)
+        if not capsule_price:
+            return jsonify({'error': 'Invalid capsule type'})
+
+        total_cost = capsule_price * quantity
+        if total_cost > current_balance:
+            return jsonify({'error': 'Insufficient funds'})
+
+        # Update user's balance
+        user_data['balance'] = current_balance - total_cost
+
+        # Add capsule to inventory
+        inventory = user_data.get('inventory', [])
+        capsule_found = False
+
+        for item in inventory:
+            if item.get('is_capsule') and item.get('type') == capsule_type:
+                item['quantity'] = item.get('quantity', 0) + quantity
+                capsule_found = True
+                break
+
+        if not capsule_found:
+            capsule_info = STICKER_CAPSULE_DATA[capsule_type].copy()
+            capsule_info['quantity'] = quantity
+            inventory.append(capsule_info)
+
+        # Save user data
+        user_data['inventory'] = inventory
+        save_user_data(user_data)
+
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance']
+        })
+
+    except Exception as e:
+        print(f"Error buying sticker capsule: {e}")
+        return jsonify({'error': 'Failed to purchase sticker capsule'})
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

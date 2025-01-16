@@ -1,0 +1,101 @@
+{
+    "name": "Columbus 2016 Legends",
+    "image": "columbus_2016_legends.png",
+    "price": 34.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "MLG (Foil)",
+                "image": "mlg_foil.png",
+                "price": 54.42
+            },
+            {
+                "name": "Natus Vincere (Foil)",
+                "image": "natus_vincere_foil.png",
+                "price": 16.74
+            },
+            {
+                "name": "Astralis (Foil)",
+                "image": "astralis_foil.png",
+                "price": 20.39
+            },
+            {
+                "name": "Luminosity Gaming (Foil)",
+                "image": "luminosity_gaming_foil.png",
+                "price": 42.96
+            },
+            {
+                "name": "Fnatic (Foil)",
+                "image": "fnatic_foil.png",
+                "price": 20.62
+            },
+            {
+                "name": "Team EnVyUs (Foil)",
+                "image": "team_envyus_foil.png",
+                "price": 18.64
+            },
+            {
+                "name": "FaZe Clan (Foil)",
+                "image": "faze_clan_foil.png",
+                "price": 22.65
+            },
+            {
+                "name": "Virtus.Pro (Foil)",
+                "image": "virtus_pro_foil.png",
+                "price": 14.86
+            },
+            {
+                "name": "Ninjas in Pyjamas (Foil)",
+                "image": "ninjas_in_pyjamas_foil.png",
+                "price": 14.32
+            }
+        ],
+        "purple": [
+            {
+                "name": "Luminosity Gaming (Holo)",
+                "image": "luminosity_gaming_holo.png",
+                "price": 68.03
+            },
+            {
+                "name": "MLG (Holo)",
+                "image": "mlg_holo.png",
+                "price": 21.96
+            },
+            {
+                "name": "Natus Vincere (Holo)",
+                "image": "natus_vincere_holo.png",
+                "price": 20.39
+            },
+            {
+                "name": "FaZe Clan (Holo)",
+                "image": "faze_clan_holo.png",
+                "price": 13.47
+            },
+            {
+                "name": "Team EnVyUs (Holo)",
+                "image": "team_envyus_holo.png",
+                "price": 17.46
+            },
+            {
+                "name": "Virtus.Pro (Holo)",
+                "image": "virtus_pro_holo.png",
+                "price": 13.69
+            },
+            {
+                "name": "Fnatic (Holo)",
+                "image": "fnatic_holo.png",
+                "price": 12.54
+            },
+            {
+                "name": "Astralis (Holo)",
+                "image": "astralis_holo.png",
+                "price": 11.86
+            },
+            {
+                "name": "Ninjas in Pyjamas (Holo)",
+                "image": "ninjas_in_pyjamas_holo.png",
+                "price": 12.84
+            }
+        ]
+    }
+}

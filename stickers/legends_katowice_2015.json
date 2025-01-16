@@ -1,0 +1,96 @@
+{
+    "name": "Katowice 2015 Legends",
+    "image": "katowice_2015_legends.png",
+    "price": 230.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "Ninjas in Pyjamas (Foil)",
+                "image": "ninjas_in_pyjamas_foil.png",
+                "price": 49.92
+            },
+            {
+                "name": "Virtus.Pro (Foil)",
+                "image": "virtus_pro_foil.png",
+                "price": 60.71
+            },
+            {
+                "name": "TSM Kinguin (Foil)",
+                "image": "tsm_kinguin_foil.png",
+                "price": 47.37
+            },
+            {
+                "name": "Team EnVyUs (Foil)",
+                "image": "team_envyus_foil.png",
+                "price": 63.98
+            },
+            {
+                "name": "PENTA Sports (Foil)",
+                "image": "penta_sports_foil.png",
+                "price": 29.84
+            },
+            {
+                "name": "Natus Vincere (Foil)",
+                "image": "natus_vincere_foil.png",
+                "price": 94.50
+            },
+            {
+                "name": "HellRaisers (Foil)",
+                "image": "hellraisers_foil.png",
+                "price": 155.00
+            },
+            {
+                "name": "Fnatic (Foil)",
+                "image": "fnatic_foil.png",
+                "price": 85.37
+            },
+            {
+                "name": "ESL One (Foil)",
+                "image": "esl_one_foil.png",
+                "price": 23.87
+            }
+        ],
+        "purple": [
+            {
+                "name": "Fnatic (Holo)",
+                "image": "fnatic_holo.png",
+                "price": 115.00
+            },
+            {
+                "name": "Virtus.Pro (Holo)",
+                "image": "virtus_pro_holo.png",
+                "price": 193.95
+            },
+            {
+                "name": "TSM Kinguin (Holo)",
+                "image": "tsm_kinguin_holo.png",
+                "price": 71.13
+            },
+            {
+                "name": "Team EnVyUs (Holo)",
+                "image": "team_envyus_holo.png",
+                "price": 72.79
+            },
+            {
+                "name": "PENTA Sports (Holo)",
+                "image": "penta_sports_holo.png",
+                "price": 44.70
+            },
+            {
+                "name": "Ninjas in Pyjamas (Holo)",
+                "image": "ninjas_in_pyjamas_holo.png",
+                "price": 71.04
+            },
+            {
+                "name": "Natus Vincere (Holo)",
+                "image": "natus_vincere_holo.png",
+                "price": 388.52
+            },
+            {
+                "name": "HellRaisers (Holo)",
+                "image": "hellraisers_holo.png",
+                "price": 181.78
+            }
+        ]
+    }
+}

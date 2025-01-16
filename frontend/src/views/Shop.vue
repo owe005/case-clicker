@@ -83,7 +83,7 @@
                   
                   <!-- Buy Section -->
                   <div class="flex items-center justify-between">
-                    <span class="text-yellow font-medium">${{ case_item.price.toFixed(2) }}</span>
+                    <span class="text-yellow font-medium">${{ formatNumber(case_item.price) }}</span>
                     <div class="flex items-center gap-2">
                       <input 
                         type="number" 
@@ -113,6 +113,107 @@
         </div>
       </div>
 
+      <!-- Sticker Capsules Grid -->
+      <div v-if="currentCategory === 'stickers'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div v-for="capsule in stickerCapsules" :key="capsule.type" class="group">
+          <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70">
+            <!-- Hover Glow Effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            
+            <!-- Content -->
+            <div class="relative">
+              <!-- Image and Name (Clickable for contents) -->
+              <div @click="viewCapsuleContents(capsule.type)" class="cursor-pointer relative">
+                <div class="aspect-square mb-4 p-4">
+                  <img :src="getCapsuleImagePath(capsule)" 
+                       :alt="capsule.name" 
+                       class="w-full h-full object-contain transition-all duration-300">
+                </div>
+                <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 mb-2">
+                  {{ capsule.name }}
+                </h3>
+              </div>
+              
+              <!-- Buy Section -->
+              <div class="flex items-center justify-between">
+                <span class="text-yellow font-medium">${{ formatNumber(capsule.price) }}</span>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="number" 
+                    min="1" 
+                    v-model="capsule.quantity" 
+                    class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
+                  >
+                  <button 
+                    @click.stop="buyCapsule(capsule.type)"
+                    class="px-4 py-1.5 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+                  >
+                    Buy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capsule Contents Overlay -->
+      <div 
+        v-if="showCapsuleContents"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
+        @click.self="showCapsuleContents = false"
+      >
+        <div class="bg-gray-dark rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-display text-white">{{ selectedCapsule?.name }}</h2>
+              <p class="text-sm text-white/50">Sticker Capsule</p>
+            </div>
+            <button 
+              @click="showCapsuleContents = false"
+              class="text-white/50 hover:text-white"
+            >
+              ×
+            </button>
+          </div>
+          
+          <div class="space-y-6">
+            <!-- Pink Items -->
+            <div v-if="selectedCapsule?.stickers?.pink" class="space-y-2">
+              <h3 class="text-lg font-display text-pink-500">Exotic Stickers <span class="text-sm text-white/50">(3.841%)</span></h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div v-for="sticker in selectedCapsule.stickers.pink" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                  <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
+                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Purple Items -->
+            <div v-if="selectedCapsule?.stickers?.purple" class="space-y-2">
+              <h3 class="text-lg font-display text-purple-500">Remarkable Stickers <span class="text-sm text-white/50">(16%)</span></h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div v-for="sticker in selectedCapsule.stickers.purple" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                  <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
+                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Blue Items -->
+            <div v-if="selectedCapsule?.stickers?.blue" class="space-y-2">
+              <h3 class="text-lg font-display text-blue-500">High Grade Stickers <span class="text-sm text-white/50">(80%)</span></h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div v-for="sticker in selectedCapsule.stickers.blue" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                  <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
+                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Case Contents Overlay -->
       <div 
         v-if="showCaseContents"
@@ -130,7 +231,7 @@
               class="text-white/50 hover:text-white"
             >
               ×
-                  </button>
+            </button>
           </div>
           
           <div class="space-y-6">
@@ -256,7 +357,7 @@
                       <span>{{ skin.wear }}</span>
                     </div>
                     <div class="flex items-center justify-between pt-2">
-                      <span class="text-yellow font-medium">${{ skin.price.toFixed(2) }}</span>
+                      <span class="text-yellow font-medium">${{ formatNumber(skin.price) }}</span>
                       <button @click="purchaseSkin(skin)" 
                               class="px-3 py-1 bg-yellow/10 hover:bg-yellow/20 text-yellow text-sm rounded transition-all duration-200">
                         Purchase
@@ -268,8 +369,8 @@
             </div>
           </div>
         </div>
-          </div>
-        </div>
+      </div>
+    </div>
 
     <!-- Notification Overlay -->
     <div 
@@ -310,6 +411,9 @@ export default {
       lastCase: null,
       purchaseCount: 0
     })
+    const stickerCapsules = ref({})
+    const showCapsuleContents = ref(false)
+    const selectedCapsule = ref(null)
     
     const categories = [
       { id: 'cases', name: 'Cases' },
@@ -318,6 +422,19 @@ export default {
       { id: 'collections', name: 'Collections' },
       { id: 'souvenir', name: 'Souvenir Packages' }
     ]
+
+    // Format number function
+    const formatNumber = (num) => {
+      const number = Number(num)
+      if (isNaN(number)) return '0.00'
+      if (number >= 1000000) {
+        return (number / 1000000).toFixed(2) + 'M'
+      } else if (number >= 1000) {
+        return (number / 1000).toFixed(2) + 'K'
+      } else {
+        return number.toFixed(2)
+      }
+    }
 
     // Add computed property to check if a case is locked
     const isCaseLocked = (caseName) => {
@@ -632,10 +749,98 @@ export default {
         .sort(([rankA], [rankB]) => Number(rankA) - Number(rankB));
     });
 
+    // Load sticker capsules from backend
+    async function loadStickerCapsules() {
+      try {
+        const response = await fetch('/api/data/sticker_capsule_contents/all')
+        const data = await response.json()
+        if (data.error) {
+          console.error('Error loading sticker capsules:', data.error)
+          return
+        }
+        // Add quantity field to each capsule
+        Object.values(data).forEach(capsule => {
+          capsule.quantity = 1
+        })
+        stickerCapsules.value = data
+      } catch (error) {
+        console.error('Error loading sticker capsules:', error)
+      }
+    }
+
+    // Buy sticker capsule function
+    async function buyCapsule(capsuleType) {
+      try {
+        const response = await fetch('/buy_sticker_capsule', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            capsule_type: capsuleType,
+            quantity: stickerCapsules.value[capsuleType].quantity
+          })
+        })
+        
+        const data = await response.json()
+        if (data.error) {
+          showNotification(data.error)
+          return
+        }
+
+        // Update store balance
+        store.updateUserData({ balance: data.balance })
+        
+        // Show success notification
+        showNotification(`Purchased ${stickerCapsules.value[capsuleType].quantity}x ${stickerCapsules.value[capsuleType].name}!`)
+      } catch (error) {
+        console.error('Error buying sticker capsule:', error)
+        showNotification('Failed to purchase sticker capsule')
+      }
+    }
+
+    // View capsule contents
+    async function viewCapsuleContents(capsuleType) {
+      try {
+        const response = await fetch(`/api/data/sticker_capsule_contents/${capsuleType}`)
+        const data = await response.json()
+        if (data.error) {
+          console.error('Error loading capsule contents:', data.error)
+          return
+        }
+
+        selectedCapsule.value = data
+        showCapsuleContents.value = true
+      } catch (error) {
+        console.error('Error loading capsule contents:', error)
+      }
+    }
+
+    function getCapsuleImagePath(capsule) {
+      return `/stickers/${capsule.type}.png`
+    }
+
+    function getStickerImagePath(sticker) {
+      // Extract type, place, and year from the capsule type
+      const [type, place, year] = selectedCapsule.value.type.split('_');
+      return `/stickers/${type}_${place}_${year}/${sticker.image}`
+    }
+
+    // Watch for category changes
+    watch(currentCategory, (newCategory) => {
+      if (newCategory === 'skins') {
+        loadFeaturedSkins()
+      } else if (newCategory === 'stickers') {
+        loadStickerCapsules()
+      }
+    })
+
     onMounted(() => {
       loadCases()
       if (currentCategory.value === 'skins') {
         loadFeaturedSkins()
+      } else if (currentCategory.value === 'stickers') {
+        loadStickerCapsules()
       }
     })
 
@@ -643,13 +848,6 @@ export default {
     onUnmounted(() => {
       if (refreshInterval.value) {
         clearInterval(refreshInterval.value)
-      }
-    })
-
-    // Watch for category changes
-    watch(currentCategory, (newCategory) => {
-      if (newCategory === 'skins') {
-        loadFeaturedSkins()
       }
     })
 
@@ -674,6 +872,14 @@ export default {
       groupedCases,
       sortedRankGroups,
       store,
+      stickerCapsules,
+      showCapsuleContents,
+      selectedCapsule,
+      buyCapsule,
+      viewCapsuleContents,
+      getCapsuleImagePath,
+      getStickerImagePath,
+      formatNumber,
     }
   }
 }

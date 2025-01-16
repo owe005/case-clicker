@@ -1,0 +1,98 @@
+{
+    "name": "Katowice 2014 Legends",
+    "image": "katowice_2014_legends.png",
+    "price": 19500.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "ESL Skull (Foil)",
+                "image": "esl_skull_foil.png",
+                "price": 368.80
+            }
+        ],
+        "purple": [
+            {
+                "name": "Titan (Holo)",
+                "image": "titan_holo.png",
+                "price": 54745.52
+            },
+            {
+                "name": "Ninjas in Pyjamas (Holo)",
+                "image": "ninjas_in_pyjamas_holo.png",
+                "price": 3055.51
+            },
+            {
+                "name": "LGB eSports (Holo)",
+                "image": "lgb_esports_holo.png",
+                "price": 5468.84
+            },
+            {
+                "name": "Team LDLC (Holo)",
+                "image": "team_ldlc_holo.png",
+                "price": 19500.00
+            },
+            {
+                "name": "HellRaisers (Holo)",
+                "image": "hellraisers_holo.png",
+                "price": 9995.00
+            },
+            {
+                "name": "Fnatic (Holo)",
+                "image": "fnatic_holo.png",
+                "price": 1034.02
+            },
+            {
+                "name": "Team Dignitas (Holo)",
+                "image": "team_dignitas_holo.png",
+                "price": 18531.59
+            },
+            {
+                "name": "compLexity Gaming (Holo)",
+                "image": "complexity_gaming_holo.png",
+                "price": 1368.96
+            }
+        ],
+        "blue": [
+            {
+                "name": "Titan",
+                "image": "titan.png",
+                "price": 2333.07
+            },
+            {
+                "name": "Ninjas in Pyjamas",
+                "image": "ninjas_in_pyjamas.png",
+                "price": 372.51
+            },
+            {
+                "name": "LGB eSports",
+                "image": "lgb_esports.png",
+                "price": 564.96
+            },
+            {
+                "name": "Team LDLC",
+                "image": "team_ldlc.png",
+                "price": 1178.57
+            },
+            {
+                "name": "HellRaisers",
+                "image": "hellraisers.png",
+                "price": 432.42
+            },
+            {
+                "name": "Fnatic",
+                "image": "fnatic.png",
+                "price": 378.00
+            },
+            {
+                "name": "Team Dignitas",
+                "image": "team_dignitas.png",
+                "price": 698.06
+            },
+            {
+                "name": "compLexity Gaming",
+                "image": "complexity_gaming.png",
+                "price": 402.09
+            }
+        ]
+    }
+}

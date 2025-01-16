@@ -1,0 +1,101 @@
+{
+    "name": "Boston 2018 Legends",
+    "image": "boston_2018_legends.png",
+    "price": 250.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "Virtus.Pro (Foil)",
+                "image": "virtus_pro_foil.png",
+                "price": 24.30
+            },
+            {
+                "name": "ELEAGUE (Foil)",
+                "image": "eleague_foil.png",
+                "price": 4.84
+            },
+            {
+                "name": "North (Foil)",
+                "image": "north_foil.png",
+                "price": 47.57
+            },
+            {
+                "name": "BIG (Foil)",
+                "image": "big_foil.png",
+                "price": 12.93
+            },
+            {
+                "name": "SK Gaming (Foil)",
+                "image": "sk_gaming_foil.png",
+                "price": 26.15
+            },
+            {
+                "name": "Fnatic (Foil)",
+                "image": "fnatic_foil.png",
+                "price": 21.44
+            },
+            {
+                "name": "Astralis (Foil)",
+                "image": "astralis_foil.png",
+                "price": 33.55
+            },
+            {
+                "name": "100 Thieves (Foil)",
+                "image": "100_thieves_foil.png",
+                "price": 470.00
+            },
+            {
+                "name": "Gambit Esports (Foil)",
+                "image": "gambit_esports_foil.png",
+                "price": 11.48
+            }
+        ],
+        "purple": [
+            {
+                "name": "100 Thieves (Holo)",
+                "image": "100_thieves_holo.png",
+                "price": 243.89
+            },
+            {
+                "name": "SK Gaming (Holo)",
+                "image": "sk_gaming_holo.png",
+                "price": 12.26
+            },
+            {
+                "name": "ELEAGUE (Holo)",
+                "image": "eleague_holo.png",
+                "price": 1.15
+            },
+            {
+                "name": "North (Holo)",
+                "image": "north_holo.png",
+                "price": 15.54
+            },
+            {
+                "name": "BIG (Holo)",
+                "image": "big_holo.png",
+                "price": 6.65
+            },
+            {
+                "name": "Fnatic (Holo)",
+                "image": "fnatic_holo.png",
+                "price": 11.49
+            },
+            {
+                "name": "Virtus.Pro (Holo)",
+                "image": "virtus_pro_holo.png",
+                "price": 17.02
+            },
+            {
+                "name": "Astralis (Holo)",
+                "image": "astralis_holo.png",
+                "price": 30.92
+            },
+            {
+                "name": "Gambit Esports (Holo)",
+                "image": "gambit_esports_holo.png",
+                "price": 9.89
+            }
+        ]
+    }
+}

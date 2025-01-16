@@ -1,0 +1,88 @@
+{
+    "name": "Cologne 2014 Legends",
+    "image": "cologne_2014_legends.png",
+    "price": 90.00,
+    "stickers": {
+        "pink": [
+            {
+                "name": "ESL One Cologne 2014 (Foil)",
+                "image": "esl_one_cologne_2014_foil.png",
+                "price": 12.67
+            }
+        ],
+        "purple": [
+            {
+                "name": "Team LDLC (Holo)",
+                "image": "team_ldlc_holo.png",
+                "price": 110.48
+            },
+            {
+                "name": "Virtus.Pro (Holo)",
+                "image": "virtus_pro_holo.png",
+                "price": 24.41
+            },
+            {
+                "name": "Team Dignitas (Holo)",
+                "image": "team_dignitas_holo.png",
+                "price": 752.00
+            },
+            {
+                "name": "Ninjas in Pyjamas (Holo)",
+                "image": "ninjas_in_pyjamas_holo.png",
+                "price": 21.82
+            },
+            {
+                "name": "HellRaisers (Holo)",
+                "image": "hellraisers_holo.png",
+                "price": 36.96
+            },
+            {
+                "name": "Fnatic (Holo)",
+                "image": "fnatic_holo.png",
+                "price": 23.23
+            },
+            {
+                "name": "Cloud9 (Holo)",
+                "image": "cloud9_holo.png",
+                "price": 62.10
+            }
+        ],
+        "blue": [
+            {
+                "name": "Team Dignitas",
+                "image": "team_dignitas.png",
+                "price": 37.04
+            },
+            {
+                "name": "Ninjas in Pyjamas",
+                "image": "ninjas_in_pyjamas.png",
+                "price": 4.33
+            },
+            {
+                "name": "Team LDLC",
+                "image": "team_ldlc.png",
+                "price": 16.63
+            },
+            {
+                "name": "Virtus.Pro",
+                "image": "virtus_pro.png",
+                "price": 4.26
+            },
+            {
+                "name": "Fnatic",
+                "image": "fnatic.png",
+                "price": 4.18
+            },
+            {
+                "name": "Cloud9",
+                "image": "cloud9.png",
+                "price": 8.33
+            },
+            {
+                "name": "HellRaisers",
+                "image": "hellraisers.png",
+                "price": 8.00
+            }
+        ]
+    }
+}

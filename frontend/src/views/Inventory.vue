@@ -110,13 +110,13 @@
                   </h3>
                   <div class="flex items-center gap-2 text-xs text-white/50 mt-1">
                     <span>{{ item.wear }}</span>
-                    <span>•</span>
-                    <span class="font-mono whitespace-nowrap" :class="getFloatClass(item.float_value)">
+                    <span v-if="item.wear">•</span>
+                    <span v-if="item.float_value !== undefined" class="font-mono whitespace-nowrap" :class="getFloatClass(item.float_value)">
                       {{ item.float_value.toFixed(8) }}
                     </span>
                   </div>
                   <div class="flex items-center justify-between mt-2">
-                    <span class="text-yellow font-medium">${{ (item.displayPrice || item.price).toFixed(2) }}</span>
+                    <span class="text-yellow font-medium">${{ formatPrice(item.displayPrice || item.price) }}</span>
                     <button 
                       class="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 text-sm rounded transition-all duration-200"
                       @click.stop="sellItem(item)"
@@ -162,6 +162,41 @@
           <p class="text-white/70 mb-6">You don't have any cases in your inventory.</p>
           <a href="/shop" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
             Buy Cases
+          </a>
+        </div>
+      </div>
+
+      <!-- Sticker Capsules Section -->
+      <div v-else-if="currentCategory === 'capsules'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        <div v-for="item in capsules" :key="item.type" 
+             class="bg-gray-dark rounded-xl p-4 flex flex-col items-center">
+          <img :src="getCapsuleImagePath(item)" :alt="item.name" class="w-48 h-48 object-contain mb-4">
+          <h3 class="text-lg font-display text-white mb-2">{{ item.name }}</h3>
+          <p class="text-white/70 mb-4">Quantity: {{ item.quantity }}</p>
+          <div class="flex flex-wrap gap-2 justify-center">
+            <button 
+              v-for="count in getAvailableOpenCounts(item)" 
+              :key="count"
+              class="case-open-btn"
+              :class="{
+                'primary': count === 1,
+                'opacity-50 cursor-not-allowed': count > item.quantity
+              }"
+              :disabled="count > item.quantity"
+              @click="() => {
+                console.log('Opening capsule:', item.type, 'count:', count);
+                openCapsule(item.type, count);
+              }"
+            >
+              <span class="relative z-10">Open {{ count }}x</span>
+            </button>
+          </div>
+        </div>
+        <div v-if="capsules.length === 0" class="col-span-full text-center py-12">
+          <h2 class="text-2xl font-display text-white mb-4">No Sticker Capsules Found</h2>
+          <p class="text-white/70 mb-6">You don't have any sticker capsules in your inventory.</p>
+          <a href="/shop" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+            Buy Sticker Capsules
           </a>
         </div>
       </div>
@@ -298,7 +333,8 @@ export default {
     
     const categories = [
       { id: 'skins', name: 'Skins' },
-      { id: 'cases', name: 'Cases' }
+      { id: 'cases', name: 'Cases' },
+      { id: 'capsules', name: 'Sticker Capsules' }
     ]
 
     const sortOptions = [
@@ -308,11 +344,15 @@ export default {
 
     // Computed properties
     const skins = computed(() => {
-      return inventory.value.filter(item => !item.is_case)
+      return inventory.value.filter(item => !item.is_case && !item.is_capsule)
     })
 
     const cases = computed(() => {
       return inventory.value.filter(item => item.is_case)
+    })
+
+    const capsules = computed(() => {
+      return inventory.value.filter(item => item.is_capsule)
     })
 
     // Add this to the setup() function after other refs
@@ -862,6 +902,163 @@ export default {
       return `/cases/${CASE_MAPPING[caseType] || caseType}.png`
     }
 
+    function getCapsuleImagePath(item) {
+      const capsuleType = item.type || item.capsule_type
+      return `/stickers/${capsuleType}.png`
+    }
+
+    async function openCapsule(capsuleType, count = 1) {
+      console.log('openCapsule called with:', capsuleType, count)
+      try {
+        spinCount.value = count
+        showCaseOpeningOverlay.value = true
+        spinnerContainers.value = []
+        wonItems.value = []
+
+        // Load capsule contents first
+        console.log('Loading capsule contents...')
+        const capsuleContents = await loadCapsuleContents(capsuleType)
+        if (!capsuleContents) {
+          console.error('Failed to load capsule contents')
+          alert('Failed to load capsule contents')
+          return
+        }
+        console.log('Capsule contents loaded:', capsuleContents)
+
+        // Start spinning sound
+        if (spinningSound.value) {
+          spinningSound.value.currentTime = 0
+          spinningSound.value.volume = 0.5
+          try {
+            await spinningSound.value.play()
+          } catch (error) {
+            console.error('Failed to play spinning sound:', error)
+          }
+        }
+
+        // Call backend to get items
+        console.log('Calling backend to open capsule...')
+        const response = await fetch(`/open_capsule/${capsuleType}?count=${count}`)
+        const data = await response.json()
+        
+        if (data.error) {
+          console.error('Backend error:', data.error)
+          alert(data.error)
+          return
+        }
+        console.log('Received items from backend:', data)
+
+        // Generate random items for each spinner
+        for (let i = 0; i < count; i++) {
+          const { items, winningPosition } = generateRandomItems(data.items[i], capsuleContents)
+          spinnerContainers.value.push({ items, winningPosition })
+        }
+        console.log('Generated spinner items:', spinnerContainers.value)
+
+        // Store won items for showcase
+        wonItems.value = data.items
+
+        // Wait for Vue to update the DOM
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // Calculate final positions for all spinners
+        const spinnerPositions = spinnerContainers.value.map((container, index) => {
+          const spinnerEl = document.getElementById(`spinner-${index}`)
+          if (spinnerEl) {
+            const itemWidth = 200
+            const spacing = 4
+            const containerWidth = spinnerEl.parentElement.offsetWidth
+            const centerOffset = (containerWidth / 2) - (itemWidth / 2)
+            const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2)
+            return (container.winningPosition * (itemWidth + spacing)) - centerOffset + randomOffset
+          }
+          return 0
+        })
+
+        // Reset all spinners to starting position
+        spinnerContainers.value.forEach((_, index) => {
+          const spinnerEl = document.getElementById(`spinner-${index}`)
+          if (spinnerEl) {
+            spinnerEl.style.transition = 'none'
+            spinnerEl.style.transform = 'translateX(0)'
+            spinnerEl.offsetHeight
+          }
+        })
+
+        // Start synchronized spinning animation
+        requestAnimationFrame(() => {
+          spinnerContainers.value.forEach((_, index) => {
+            const spinnerEl = document.getElementById(`spinner-${index}`)
+            if (spinnerEl) {
+              spinnerEl.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)'
+              spinnerEl.style.transform = `translateX(-${spinnerPositions[index]}px)`
+            }
+          })
+        })
+
+        // Wait for animation to complete
+        await new Promise(resolve => setTimeout(resolve, 6800))
+
+        // Stop spinning sound
+        let soundFadeInterval
+        if (spinningSound.value) {
+          soundFadeInterval = setInterval(() => {
+            if (spinningSound.value && spinningSound.value.volume > 0.1) {
+              spinningSound.value.volume -= 0.1
+            } else {
+              if (spinningSound.value) {
+                spinningSound.value.pause()
+              }
+              clearInterval(soundFadeInterval)
+            }
+          }, 100)
+        }
+
+        showCaseOpeningOverlay.value = false
+        showShowcase()
+
+        // Update store with new data
+        store.updateUserData({
+          balance: data.balance,
+          exp: data.exp,
+          rank: data.rank
+        })
+
+        // Handle achievement if present
+        if (data.achievement) {
+          store.showAchievementPopup(data.achievement)
+        }
+
+        // Handle level up
+        if (data.levelUp) {
+          store.showLevelUpAnimation()
+        }
+
+        // Update capsule quantity
+        await fetchInventory()
+
+      } catch (error) {
+        console.error('Error in openCapsule:', error)
+        alert('Failed to open capsule')
+      }
+    }
+
+    async function loadCapsuleContents(capsuleType) {
+      try {
+        const response = await fetch(`/api/data/capsule_contents/${capsuleType}`)
+        const data = await response.json()
+        
+        if (data.error) {
+          console.error('Error loading capsule contents:', data.error)
+          return null
+        }
+        return data
+      } catch (error) {
+        console.error('Error loading capsule contents:', error)
+        return null
+      }
+    }
+
     // Add this new method in setup()
     function toggleStack(stackKey) {
       if (expandedStacks.value.has(stackKey)) {
@@ -869,6 +1066,11 @@ export default {
       } else {
         expandedStacks.value.add(stackKey)
       }
+    }
+
+    // Add this new method in setup()
+    function formatPrice(price) {
+      return (price || 0).toFixed(2)
     }
 
     // Lifecycle hooks
@@ -907,7 +1109,11 @@ export default {
       closeShowcase,
       sellShowcaseItems,
       getSpinnerItemImage,
-      toggleStack
+      toggleStack,
+      formatPrice,
+      capsules,
+      getCapsuleImagePath,
+      openCapsule
     }
   }
 }

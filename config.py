@@ -462,6 +462,82 @@ CASE_DATA = {
     }
 }
 
+STICKER_CAPSULE_FILE_MAPPING = {
+    'challengers_cluj_napoca_2015': 'challengers_cluj_napoca_2015',
+    'challengers_columbus_2016': 'challengers_columbus_2016',
+    'challengers_katowice_2014': 'challengers_katowice_2014',
+    'legends_boston_2018': 'legends_boston_2018',
+    'legends_cologne_2014': 'legends_cologne_2014',
+    'legends_columbus_2016': 'legends_columbus_2016',
+    'legends_dreamhack_2014': 'legends_dreamhack_2014',
+    'legends_katowice_2014': 'legends_katowice_2014',
+    'legends_katowice_2015': 'legends_katowice_2015'
+}
+
+STICKER_CAPSULE_DATA = {
+    'challengers_cluj_napoca_2015': {
+        'name': 'Cluj-Napoca 2015 Challengers',
+        'image': 'challengers_cluj_napoca_2015.png',
+        'is_capsule': True,
+        'type': 'challengers_cluj_napoca_2015'
+    },
+    'challengers_columbus_2016': {
+        'name': 'MLG Columbus 2016 Challengers',
+        'image': 'challengers_columbus_2016.png',
+        'is_capsule': True,
+        'type': 'challengers_columbus_2016'
+    },
+    'challengers_katowice_2014': {
+        'name': 'Katowice 2014 Challengers',
+        'image': 'challengers_katowice_2014.png',
+        'is_capsule': True,
+        'type': 'challengers_katowice_2014'
+    },
+    'legends_boston_2018': {
+        'name': 'Boston 2018 Legends',
+        'image': 'legends_boston_2018.png',
+        'is_capsule': True,
+        'type': 'legends_boston_2018'
+    },
+    'legends_cologne_2014': {
+        'name': 'Cologne 2014 Legends',
+        'image': 'legends_cologne_2014.png',
+        'is_capsule': True,
+        'type': 'legends_cologne_2014'
+    },
+    'legends_columbus_2016': {
+        'name': 'MLG Columbus 2016 Legends',
+        'image': 'legends_columbus_2016.png',
+        'is_capsule': True,
+        'type': 'legends_columbus_2016'
+    },
+    'legends_dreamhack_2014': {
+        'name': 'DreamHack 2014 Legends',
+        'image': 'legends_dreamhack_2014.png',
+        'is_capsule': True,
+        'type': 'legends_dreamhack_2014'
+    },
+    'legends_katowice_2014': {
+        'name': 'Katowice 2014 Legends',
+        'image': 'legends_katowice_2014.png',
+        'is_capsule': True,
+        'type': 'legends_katowice_2014'
+    },
+    'legends_katowice_2015': {
+        'name': 'Katowice 2015 Legends',
+        'image': 'legends_katowice_2015.png',
+        'is_capsule': True,
+        'type': 'legends_katowice_2015'
+    }
+}
+
+# Sticker capsule drop chances (in percentage)
+STICKER_DROP_CHANCES = {
+    'blue': 80.0,
+    'purple': 16.0,
+    'pink': 3.841  # exotic
+}
+
 BOT_PERSONALITIES = {
     "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
     "Kai.Jayden_02": "A forsen viewer who spams KEKW and PepeLaugh, uses lots of Twitch emotes and speaks in Twitch chat style",

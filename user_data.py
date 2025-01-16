@@ -31,14 +31,14 @@ def create_user_from_dict(data: dict) -> User:
     
     if data.get('inventory'):
         for item in data['inventory']:
-            # Check if item is a case
-            if item.get('is_case'):
-                # Just append the case data directly to inventory
+            # Check if item is a case or capsule
+            if item.get('is_case') or item.get('is_capsule'):
+                # Just append the item data directly to inventory
                 user.inventory.append(item)
             else:
                 # Create Skin object for weapon skins and preserve case_type
                 skin_dict = {
-                    'weapon': item['weapon'],
+                    'weapon': item.get('weapon', ''),  # Make weapon field optional
                     'name': item['name'],
                     'rarity': item['rarity'],
                     'wear': item.get('wear', 'FT'),
