@@ -106,7 +106,7 @@
                 <!-- Info -->
                 <div class="flex flex-col flex-1">
                   <h3 class="font-display text-sm text-white line-clamp-2 min-h-[2.5rem]" :class="{ 'text-yellow': item.stattrak }">
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
                   </h3>
                   <div class="flex items-center gap-2 text-xs text-white/50 mt-1">
                     <span>{{ item.wear }}</span>
@@ -364,14 +364,27 @@ export default {
       
       // Group items by their unique characteristics
       items.forEach(item => {
-        const stackKey = `${item.weapon}|${item.name}|${item.wear}|${item.stattrak}`
-        if (!stackedItems[stackKey]) {
-          stackedItems[stackKey] = {
-            items: [],
-            displayItem: { ...item }
+        if (item.is_sticker) {
+          // Stickers are grouped by name and case type
+          const stackKey = `sticker|${item.name}|${item.case_type}`
+          if (!stackedItems[stackKey]) {
+            stackedItems[stackKey] = {
+              items: [],
+              displayItem: { ...item }
+            }
           }
+          stackedItems[stackKey].items.push(item)
+        } else {
+          // Weapon skins are grouped by weapon, name, wear, and stattrak
+          const stackKey = `${item.weapon}|${item.name}|${item.wear}|${item.stattrak}`
+          if (!stackedItems[stackKey]) {
+            stackedItems[stackKey] = {
+              items: [],
+              displayItem: { ...item }
+            }
+          }
+          stackedItems[stackKey].items.push(item)
         }
-        stackedItems[stackKey].items.push(item)
       })
 
       // Convert to final format, expanding stacks if needed
@@ -881,6 +894,10 @@ export default {
     }
 
     function getSpinnerItemImage(item) {
+      if (item.is_sticker) {
+        const capsuleType = item.case_type || item.capsule_type
+        return `/sticker_skins/${capsuleType}/${item.image}`
+      }
       // For gold/rare items, show the rare item image
       if (item.rarity === 'GOLD' || item.rarity === 'CONTRABAND') {
         return '/cases/rare_item.png'
@@ -893,8 +910,13 @@ export default {
     }
 
     function getSkinImagePath(item) {
+      if (item.is_sticker) {
+        // For stickers, use the case_type to determine the folder
+        const capsuleType = item.case_type || item.capsule_type
+        return `/sticker_skins/${capsuleType}/${item.image}`
+      }
       const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
-      return `/skins/${casePath}/${item.image}`
+      return `/skins/${casePath}/${item.image || 'placeholder.png'}`
     }
 
     function getCaseImagePath(item) {
@@ -950,7 +972,7 @@ export default {
 
         // Generate random items for each spinner
         for (let i = 0; i < count; i++) {
-          const { items, winningPosition } = generateRandomItems(data.items[i], capsuleContents)
+          const { items, winningPosition } = generateRandomStickerItems(data.items[i], capsuleContents)
           spinnerContainers.value.push({ items, winningPosition })
         }
         console.log('Generated spinner items:', spinnerContainers.value)
@@ -1045,7 +1067,7 @@ export default {
 
     async function loadCapsuleContents(capsuleType) {
       try {
-        const response = await fetch(`/api/data/capsule_contents/${capsuleType}`)
+        const response = await fetch(`/api/data/sticker_capsule_contents/${capsuleType}`)
         const data = await response.json()
         
         if (data.error) {
@@ -1057,6 +1079,64 @@ export default {
         console.error('Error loading capsule contents:', error)
         return null
       }
+    }
+
+    // Add new helper function for generating random sticker items
+    function generateRandomStickerItems(actualItem, capsuleContents) {
+      const items = []
+      const totalItems = 100
+      const winningPosition = 85 // Fixed position for the winning item
+
+      // Define rarity weights
+      const weights = {
+        'BLUE': 80.0,
+        'PURPLE': 16.0,
+        'PINK': 3.841
+      }
+
+      // Create weighted item pools
+      const itemPools = {}
+      for (const [rarity, stickers] of Object.entries(capsuleContents.stickers)) {
+        itemPools[rarity.toUpperCase()] = stickers || []
+      }
+
+      // Generate random items
+      for (let i = 0; i < totalItems; i++) {
+        if (i === winningPosition) {
+          // Ensure actualItem has the correct rarity field
+          items.push({
+            ...actualItem,
+            rarity: actualItem.rarity.toUpperCase()
+          })
+        } else {
+          // Pick a random rarity based on weights
+          const random = Math.random() * 100
+          let cumulativeWeight = 0
+          let selectedRarity = 'BLUE'
+          
+          for (const [rarity, weight] of Object.entries(weights)) {
+            cumulativeWeight += weight
+            if (random <= cumulativeWeight && itemPools[rarity] && itemPools[rarity].length > 0) {
+              selectedRarity = rarity
+              break
+            }
+          }
+
+          // Pick a random item from the selected rarity pool
+          const pool = itemPools[selectedRarity]
+          if (pool && pool.length > 0) {
+            const randomItem = pool[Math.floor(Math.random() * pool.length)]
+            items.push({
+              ...randomItem,
+              rarity: selectedRarity,
+              case_type: actualItem.case_type,
+              is_sticker: true
+            })
+          }
+        }
+      }
+
+      return { items, winningPosition }
     }
 
     // Add this new method in setup()

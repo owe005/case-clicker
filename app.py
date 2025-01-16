@@ -33,7 +33,7 @@ from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPI
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
-from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices
+from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices, open_sticker_capsule
 
 # Load environment variables
 load_dotenv('config.env')
@@ -719,7 +719,7 @@ def get_upgrades():
 def cheat():
     user_data = load_user_data()
     user = create_user_from_dict(user_data)
-    user.balance += 1000.0
+    user.balance += 100000.0
     
     user_data['balance'] = user.balance
     save_user_data(user_data)
@@ -801,65 +801,53 @@ def buy_case():
 
 @app.route('/get_inventory')
 def get_inventory():
-    user_data = load_user_data()
-    inventory_items = user_data.get('inventory', [])
-    
-    # Create a dictionary to store already loaded prices to avoid duplicate lookups
-    price_cache = {}
-    
-    # Update prices and ensure float values for all non-case/non-capsule items
-    for item in inventory_items:
-        if not item.get('is_case') and not item.get('is_capsule'):
-            # Handle both float and float_value, standardizing to float_value
-            if 'float_value' not in item:
-                item['float_value'] = item.get('float') or generate_float_for_wear(item.get('wear', 'FT'))
-                # Remove old float key if it exists
-                if 'float' in item:
-                    del item['float']
-            
-            # Create a cache key using weapon, name, wear, case type, and stattrak status
-            cache_key = (
-                item.get('weapon', ''),  # Make weapon optional
-                item['name'],
-                item.get('wear'),
-                item['case_type'],
-                item['float_value'],
-                item.get('stattrak', False)  # Add stattrak to cache key
-            )
-            
-            # Check if we already loaded this price
-            if cache_key in price_cache:
-                item['price'] = price_cache[cache_key]
+    try:
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
+        
+        # Format inventory items for display
+        formatted_inventory = []
+        for item in inventory:
+            if item.get('is_sticker'):
+                # Handle stickers
+                formatted_item = {
+                    'name': item['name'],
+                    'price': item['price'],
+                    'rarity': item['rarity'],
+                    'case_type': item['case_type'],
+                    'timestamp': item['timestamp'],
+                    'is_sticker': True,
+                    'image': item.get('image')  # Add image field
+                }
+            elif item.get('is_case') or item.get('is_capsule'):
+                # Handle cases and capsules
+                formatted_item = item
             else:
-                # Load price and cache it
-                price = load_skin_price(
-                    f"{item['weapon']} | {item['name']}", 
-                    item['case_type'],
-                    item.get('wear'),
-                    item['float_value'],
-                    item.get('stattrak', False)  # Pass stattrak status
-                )
-                price_cache[cache_key] = price
-                item['price'] = price
-    
-    # Sort items so newest appears first
-    inventory_items = sorted(inventory_items, 
-                           key=lambda x: x.get('timestamp', 0) if not x.get('is_case') and not x.get('is_capsule') else 0, 
-                           reverse=True)
-    
-    # Save the updated inventory with standardized float values and prices
-    user_data['inventory'] = inventory_items
-    save_user_data(user_data)
-    
-    return jsonify({
-        'inventory': inventory_items,
-        'balance': user_data['balance'],
-        'rank': user_data['rank'],
-        'exp': user_data['exp'],
-        'upgrades': user_data.get('upgrades', {}),  # Add upgrades for multi-open functionality
-        'CASE_MAPPING': CASE_FILE_MAPPING,  # Add case mapping for image paths
-        'CASE_SKINS_FOLDER_NAMES': CASE_SKINS_FOLDER_NAMES  # Add folder names for skin images
-    })
+                # Handle weapon skins
+                formatted_item = {
+                    'name': item['name'],  # Don't combine weapon and name here
+                    'price': item['price'],
+                    'rarity': item['rarity'],
+                    'case_type': item['case_type'],
+                    'timestamp': item['timestamp'],
+                    'weapon': item['weapon'],
+                    'wear': item.get('wear'),
+                    'float_value': item.get('float_value'),
+                    'stattrak': item.get('stattrak', False),
+                    'image': item.get('image')  # Add image field
+                }
+            formatted_inventory.append(formatted_item)
+
+        return jsonify({
+            'inventory': formatted_inventory,
+            'balance': user_data.get('balance', 0),
+            'exp': user_data.get('exp', 0),
+            'rank': calculate_rank(user_data.get('exp', 0)),
+            'upgrades': user_data.get('upgrades', {})
+        })
+    except Exception as e:
+        print(f"Error getting inventory: {e}")
+        return jsonify({'error': 'Failed to get inventory'})
 
 @app.route('/api/get_user_data')
 def get_user_data():
@@ -3670,6 +3658,98 @@ def buy_sticker_capsule():
     except Exception as e:
         print(f"Error buying sticker capsule: {e}")
         return jsonify({'error': 'Failed to purchase sticker capsule'})
+
+@app.route('/open_capsule/<capsule_type>')
+@login_required
+def open_capsule(capsule_type):
+    """Open a sticker capsule and get a sticker"""
+    try:
+        # Get count parameter (default to 1)
+        count = int(request.args.get('count', 1))
+        if count < 1:
+            return jsonify({'error': 'Invalid count'})
+
+        # Load user data
+        user_data = load_user_data()
+        inventory = user_data.get('inventory', [])
+
+        # Find the capsule in inventory
+        capsule_found = False
+        for item in inventory:
+            if item.get('is_capsule') and item.get('type') == capsule_type:
+                if item.get('quantity', 0) < count:
+                    return jsonify({'error': 'Not enough capsules'})
+                # Decrease quantity instead of removing
+                item['quantity'] = item.get('quantity', 0) - count
+                if item['quantity'] <= 0:
+                    inventory.remove(item)
+                capsule_found = True
+                break
+
+        if not capsule_found:
+            return jsonify({'error': 'Not enough capsules'})
+
+        # Open capsules and get stickers
+        items = []
+        total_exp = 0
+        for _ in range(count):
+            # Open capsule
+            sticker_name, sticker_price, rarity, image = open_sticker_capsule(capsule_type)
+            if not sticker_name:
+                continue
+
+            # Create sticker item
+            sticker_item = {
+                'name': sticker_name,
+                'price': sticker_price,
+                'rarity': rarity.upper(),  # Ensure rarity is uppercase
+                'case_type': capsule_type,
+                'timestamp': time.time(),
+                'is_sticker': True,
+                'image': image
+            }
+            
+            # Add to inventory and items list
+            inventory.append(sticker_item)
+            items.append(sticker_item)
+
+            # Calculate exp gain (more exp for rarer items)
+            exp_multiplier = {
+                'BLUE': 1,
+                'PURPLE': 2,
+                'PINK': 5
+            }.get(rarity.upper(), 1)  # Use uppercase for comparison
+            total_exp += 10 * exp_multiplier
+
+        # Save updated inventory
+        user_data['inventory'] = inventory
+        save_user_data(user_data)
+
+        # Update exp
+        current_exp = user_data.get('exp', 0)
+        new_exp = current_exp + total_exp
+        user_data['exp'] = new_exp
+        
+        # Calculate if level up occurred
+        old_rank_data = calculate_rank(current_exp)
+        new_rank_data = calculate_rank(new_exp)
+        level_up = new_rank_data['rank'] > old_rank_data['rank']
+
+        # Save the updated exp
+        save_user_data(user_data)
+
+        return jsonify({
+            'items': items,
+            'balance': user_data.get('balance', 0),
+            'exp': new_exp,
+            'rank': new_rank_data,
+            'levelUp': level_up
+        })
+
+    except Exception as e:
+        print(f"Error in open_capsule: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to open capsule'})
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

@@ -46,7 +46,7 @@
           <!-- Cases Grid for this Rank -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             <div v-for="case_item in group" :key="case_item.case_type" class="group">
-              <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70"
+              <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70 h-[320px] flex flex-col"
                    :class="{ 'opacity-75': isCaseLocked(case_item.name) }">
                 <!-- Hover Glow Effect -->
                 <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
@@ -65,26 +65,26 @@
                 </div>
                 
                 <!-- Content -->
-                <div class="relative">
+                <div class="relative flex-1 flex flex-col">
                   <!-- Image and Name (Clickable for contents) -->
                   <div @click="viewCaseContents(case_item.case_type)" 
-                       class="cursor-pointer relative"
+                       class="cursor-pointer flex flex-col h-[220px]"
                        :class="{ 'pointer-events-none': isCaseLocked(case_item.name) }">
-                    <div class="aspect-square mb-4 p-4">
+                    <div class="aspect-square w-full p-4 flex-shrink-0">
                       <img :src="getCaseImagePath(case_item)" 
                            :alt="case_item.name" 
                            class="w-full h-full object-contain transition-all duration-300"
                            :class="{ 'grayscale': isCaseLocked(case_item.name) }">
                     </div>
-                    <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 mb-2">
+                    <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 line-clamp-2 min-h-[3rem]">
                       {{ case_item.name }}
                     </h3>
                   </div>
                   
                   <!-- Buy Section -->
-                  <div class="flex items-center justify-between">
-                    <span class="text-yellow font-medium">${{ formatNumber(case_item.price) }}</span>
-                    <div class="flex items-center gap-2">
+                  <div class="flex items-center justify-between mt-4">
+                    <span class="text-yellow font-medium min-w-[60px]">${{ formatNumber(case_item.price) }}</span>
+                    <div class="flex items-center gap-2 flex-shrink-0">
                       <input 
                         type="number" 
                         min="1" 
@@ -116,37 +116,37 @@
       <!-- Sticker Capsules Grid -->
       <div v-if="currentCategory === 'stickers'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <div v-for="capsule in stickerCapsules" :key="capsule.type" class="group">
-          <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70">
+          <div class="relative bg-gray-dark/50 rounded-xl p-5 transition-all duration-300 hover:bg-gray-dark/70 h-[320px] flex flex-col">
             <!-- Hover Glow Effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
             
             <!-- Content -->
-            <div class="relative">
+            <div class="relative flex-1 flex flex-col">
               <!-- Image and Name (Clickable for contents) -->
-              <div @click="viewCapsuleContents(capsule.type)" class="cursor-pointer relative">
-                <div class="aspect-square mb-4 p-4">
+              <div @click="viewCapsuleContents(capsule.type)" class="cursor-pointer flex flex-col h-[220px]">
+                <div class="aspect-square w-full p-4 flex-shrink-0">
                   <img :src="getCapsuleImagePath(capsule)" 
                        :alt="capsule.name" 
                        class="w-full h-full object-contain transition-all duration-300">
                 </div>
-                <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 mb-2">
+                <h3 class="font-display text-sm text-white truncate">
                   {{ capsule.name }}
                 </h3>
               </div>
               
               <!-- Buy Section -->
-              <div class="flex items-center justify-between">
-                <span class="text-yellow font-medium">${{ formatNumber(capsule.price) }}</span>
-                <div class="flex items-center gap-2">
+              <div class="flex items-center justify-between mt-4">
+                <span class="text-yellow font-medium min-w-[80px] mr-2">${{ formatNumber(capsule.price) }}</span>
+                <div class="flex items-center gap-1 flex-shrink-0">
                   <input 
                     type="number" 
                     min="1" 
                     v-model="capsule.quantity" 
-                    class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
+                    class="w-14 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
                   >
                   <button 
                     @click.stop="buyCapsule(capsule.type)"
-                    class="px-4 py-1.5 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
+                    class="px-3 py-1.5 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
                   >
                     Buy
                   </button>
@@ -179,34 +179,34 @@
           
           <div class="space-y-6">
             <!-- Pink Items -->
-            <div v-if="selectedCapsule?.stickers?.pink" class="space-y-2">
-              <h3 class="text-lg font-display text-pink-500">Exotic Stickers <span class="text-sm text-white/50">(3.841%)</span></h3>
+            <div v-if="selectedCapsule?.stickers?.pink?.length" class="space-y-2">
+              <h3 class="text-lg font-display text-pink-500">Exotic Stickers <span class="text-sm text-white/50">({{ formatNumber(selectedCapsule.probabilities?.pink || 0) }}%)</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div v-for="sticker in selectedCapsule.stickers.pink" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                <div v-for="sticker in selectedCapsule.stickers.pink" :key="sticker.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
-                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                  <div class="text-sm text-white">{{ sticker.name }}</div>
                 </div>
               </div>
             </div>
 
             <!-- Purple Items -->
-            <div v-if="selectedCapsule?.stickers?.purple" class="space-y-2">
-              <h3 class="text-lg font-display text-purple-500">Remarkable Stickers <span class="text-sm text-white/50">(16%)</span></h3>
+            <div v-if="selectedCapsule?.stickers?.purple?.length" class="space-y-2">
+              <h3 class="text-lg font-display text-purple-500">Remarkable Stickers <span class="text-sm text-white/50">({{ formatNumber(selectedCapsule.probabilities?.purple || 0) }}%)</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div v-for="sticker in selectedCapsule.stickers.purple" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                <div v-for="sticker in selectedCapsule.stickers.purple" :key="sticker.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
-                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                  <div class="text-sm text-white">{{ sticker.name }}</div>
                 </div>
               </div>
             </div>
 
             <!-- Blue Items -->
-            <div v-if="selectedCapsule?.stickers?.blue" class="space-y-2">
-              <h3 class="text-lg font-display text-blue-500">High Grade Stickers <span class="text-sm text-white/50">(80%)</span></h3>
+            <div v-if="selectedCapsule?.stickers?.blue?.length" class="space-y-2">
+              <h3 class="text-lg font-display text-blue-500">High Grade Stickers <span class="text-sm text-white/50">({{ formatNumber(selectedCapsule.probabilities?.blue || 0) }}%)</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div v-for="sticker in selectedCapsule.stickers.blue" :key="sticker.team + sticker.tournament" class="bg-gray-darker rounded-lg p-4">
+                <div v-for="sticker in selectedCapsule.stickers.blue" :key="sticker.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getStickerImagePath(sticker)" :alt="sticker.name" class="w-full h-32 object-contain mb-2">
-                  <div class="text-sm text-white">{{ sticker.team }} | {{ sticker.tournament }}</div>
+                  <div class="text-sm text-white">{{ sticker.name }}</div>
                 </div>
               </div>
             </div>
@@ -821,9 +821,9 @@ export default {
     }
 
     function getStickerImagePath(sticker) {
-      // Extract type, place, and year from the capsule type
-      const [type, place, year] = selectedCapsule.value.type.split('_');
-      return `/stickers/${type}_${place}_${year}/${sticker.image}`
+      // Extract capsule type from the selected capsule
+      const capsuleType = selectedCapsule.value.type
+      return `/sticker_skins/${capsuleType}/${sticker.image}`
     }
 
     // Watch for category changes
