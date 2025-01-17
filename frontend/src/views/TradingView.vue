@@ -75,16 +75,16 @@
                 </template>
                 <template v-else>
                   <img 
-                    :src="getSkinImage(item)" 
-                    :alt="item.weapon + ' | ' + item.name"
+                    :src="getItemImage(item)" 
+                    :alt="getItemAlt(item)"
                     class="w-16 h-16 object-contain"
                     @error="handleImageError"
                   >
                   <div>
                     <div class="text-sm text-white">
-                      {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                      {{ getItemDisplayName(item) }}
                     </div>
-                    <div class="text-xs text-white/50">{{ item.wear }}</div>
+                    <div class="text-xs text-white/50">{{ item.wear || item.rarity }}</div>
                     <div class="text-sm text-yellow">${{ item.price.toFixed(2) }}</div>
                   </div>
                 </template>
@@ -101,16 +101,16 @@
                 </template>
                 <template v-else>
                   <img 
-                    :src="getSkinImage(item)" 
-                    :alt="item.weapon + ' | ' + item.name"
+                    :src="getItemImage(item)" 
+                    :alt="getItemAlt(item)"
                     class="w-16 h-16 object-contain"
                     @error="handleImageError"
                   >
                   <div>
                     <div class="text-sm text-white">
-                      {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                      {{ getItemDisplayName(item) }}
                     </div>
-                    <div class="text-xs text-white/50">{{ item.wear }}</div>
+                    <div class="text-xs text-white/50">{{ item.wear || item.rarity }}</div>
                     <div class="text-sm text-yellow">${{ item.price.toFixed(2) }}</div>
                   </div>
                 </template>
@@ -296,14 +296,31 @@ export default {
       return trades.value.filter(trade => trade.type === currentFilter.value)
     })
 
-    // Helper function to get skin image URL
-    const getSkinImage = (item) => {
+    // Helper function to get item image URL
+    const getItemImage = (item) => {
       if (item.type === 'money') return ''
+      if (item.is_sticker) {
+        return `/sticker_skins/${item.case_type}/${item.image}`
+      }
       if (!item.image || !item.case_type) {
         return '/skins/rare_item.png'
       }
       const casePath = CASE_MAPPING[item.case_type] || item.case_type
       return `/skins/${casePath}/${item.image}`
+    }
+
+    // Helper function to get item alt text
+    const getItemAlt = (item) => {
+      if (item.type === 'money') return 'Money'
+      if (item.is_sticker) return item.name
+      return `${item.weapon} | ${item.name}`
+    }
+
+    // Helper function to get item display name
+    const getItemDisplayName = (item) => {
+      if (item.type === 'money') return `$${item.amount.toFixed(2)}`
+      if (item.is_sticker) return item.name
+      return `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}`
     }
 
     // Handle image loading errors
@@ -569,7 +586,9 @@ export default {
       chatMessages,
       chatInput,
       chatMinimized,
-      getSkinImage,
+      getItemImage,
+      getItemAlt,
+      getItemDisplayName,
       handleImageError,
       handleTrade,
       completeTrade,

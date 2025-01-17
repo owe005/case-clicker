@@ -30,7 +30,7 @@ from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_w
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
                    CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
-from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
+from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades, generate_float_value
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
 from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices, open_sticker_capsule
@@ -1959,21 +1959,54 @@ def complete_trade():
             if required_money > current_balance:
                 return jsonify({'error': 'Insufficient funds'})
         
-        # Check for required skins
+        # Check for required items (skins and stickers)
         if any(item['type'] == 'skin' for item in trade['requesting']):
-            required_skins = [item for item in trade['requesting'] if item['type'] == 'skin']
-            for required_skin in required_skins:
-                skin_found = False
+            required_items = [item for item in trade['requesting'] if item['type'] == 'skin']
+            for required_item in required_items:
+                item_found = False
                 for inv_item in inventory:
-                    if (not inv_item.get('is_case') and
-                        inv_item['weapon'] == required_skin['weapon'] and
-                        inv_item['name'] == required_skin['name'] and
-                        inv_item['wear'] == required_skin['wear'] and
-                        inv_item['stattrak'] == required_skin['stattrak']):
-                        skin_found = True
-                        break
-                if not skin_found:
-                    return jsonify({'error': f"Missing skin: {required_skin['weapon']} | {required_skin['name']}"})
+                    if required_item.get('is_sticker'):
+                        if (inv_item.get('is_sticker') and
+                            inv_item['name'] == required_item['name'] and
+                            inv_item['case_type'] == required_item['case_type']):
+                            item_found = True
+                            break
+                    else:
+                        if (not inv_item.get('is_case') and not inv_item.get('is_sticker') and
+                            inv_item['weapon'] == required_item['weapon'] and
+                            inv_item['name'] == required_item['name'] and
+                            inv_item['wear'] == required_item['wear'] and
+                            inv_item['stattrak'] == required_item['stattrak']):
+                            item_found = True
+                            break
+                if not item_found:
+                    return jsonify({'error': f"Missing item: {required_item.get('weapon', '')} {required_item['name']}"})
+        
+        # Process inventory changes
+        new_inventory = []
+        used_indices = set()
+        
+        # Remove requested items
+        for required_item in (item for item in trade['requesting'] if item['type'] == 'skin'):
+            for i, inv_item in enumerate(inventory):
+                if i not in used_indices:
+                    if required_item.get('is_sticker'):
+                        if (inv_item.get('is_sticker') and
+                            inv_item['name'] == required_item['name'] and
+                            inv_item['case_type'] == required_item['case_type']):
+                            used_indices.add(i)
+                            break
+                    else:
+                        if (not inv_item.get('is_case') and not inv_item.get('is_sticker') and
+                            inv_item['weapon'] == required_item['weapon'] and
+                            inv_item['name'] == required_item['name'] and
+                            inv_item['wear'] == required_item['wear'] and
+                            inv_item['stattrak'] == required_item['stattrak']):
+                            used_indices.add(i)
+                            break
+        
+        # Keep items that weren't traded
+        new_inventory = [item for i, item in enumerate(inventory) if i not in used_indices]
         
         # Calculate trade value for EXP
         trade_value = 0
@@ -1999,40 +2032,41 @@ def complete_trade():
             new_exp -= RANK_EXP[new_rank]
             new_rank += 1
         
-        # Process inventory changes
-        new_inventory = []
-        used_indices = set()
-        
-        # Remove requested skins
-        for required_skin in (item for item in trade['requesting'] if item['type'] == 'skin'):
-            for i, inv_item in enumerate(inventory):
-                if (i not in used_indices and
-                    not inv_item.get('is_case') and
-                    inv_item['weapon'] == required_skin['weapon'] and
-                    inv_item['name'] == required_skin['name'] and
-                    inv_item['wear'] == required_skin['wear'] and
-                    inv_item['stattrak'] == required_skin['stattrak']):
-                    used_indices.add(i)
-                    break
-        
-        # Keep items that weren't traded
-        new_inventory = [item for i, item in enumerate(inventory) if i not in used_indices]
-        
-        # Add offered skins
+        # Add offered items
         for offered_item in trade['offering']:
             if offered_item['type'] == 'skin':
-                skin_item = {
-                    'weapon': offered_item['weapon'],
-                    'name': offered_item['name'],
-                    'rarity': offered_item['rarity'],
-                    'wear': offered_item['wear'],
-                    'stattrak': offered_item['stattrak'],
-                    'price': offered_item['price'],
-                    'timestamp': time.time(),
-                    'case_type': offered_item['case_type'],
-                    'is_case': False
-                }
-                new_inventory.append(skin_item)
+                if offered_item.get('is_sticker'):
+                    sticker_item = {
+                        'name': offered_item['name'],
+                        'price': offered_item['price'],
+                        'rarity': offered_item['rarity'],
+                        'case_type': offered_item['case_type'],
+                        'image': offered_item['image'],
+                        'timestamp': time.time(),
+                        'is_sticker': True
+                    }
+                    new_inventory.append(sticker_item)
+                else:
+                    # Generate float value if not present
+                    if 'float_value' not in offered_item:
+                        offered_item['float_value'] = generate_float_for_wear(offered_item['wear'])
+                    
+                    skin_item = {
+                        'weapon': offered_item['weapon'],
+                        'name': offered_item['name'],
+                        'wear': offered_item['wear'],
+                        'stattrak': offered_item['stattrak'],
+                        'price': offered_item['price'],
+                        'rarity': offered_item['rarity'],
+                        'case_type': offered_item['case_type'],
+                        'case_file': offered_item.get('case_file'),
+                        'float_value': offered_item['float_value'],
+                        'image': offered_item['image'],
+                        'timestamp': time.time(),
+                        'is_case': False,
+                        'is_sticker': False
+                    }
+                    new_inventory.append(skin_item)
         
         # Update balance
         money_received = sum(item['amount'] for item in trade['offering'] if item['type'] == 'money')
@@ -3890,6 +3924,32 @@ def open_capsule(capsule_type):
         print(f"Error in open_capsule: {e}")
         traceback.print_exc()
         return jsonify({'error': 'Failed to open capsule'})
+
+@app.route('/reset_trades', methods=['GET', 'POST'])
+@login_required
+def reset_trades():
+    try:
+        # Generate new trades
+        new_trades = generate_daily_trades()
+        
+        # Save the new trades
+        trades_data = {
+            'date': datetime.now().strftime('%Y-%m-%d'),
+            'trades': new_trades,
+            'completed_trades': []
+        }
+        save_daily_trades(trades_data)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Daily trades have been reset',
+            'trades': new_trades
+        })
+        
+    except Exception as e:
+        print(f"Error resetting trades: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to reset trades'}), 500
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

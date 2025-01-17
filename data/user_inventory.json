@@ -1,5 +1,5 @@
 {
-  "balance": 49874.781,
+  "balance": 48022.885941615044,
   "inventory": [
     {
       "name": "Operation Wildfire Case",
@@ -313,23 +313,109 @@
       "is_case": false
     },
     {
-      "weapon": "AWP",
-      "name": "Containment Breach",
-      "wear": "FN",
-      "float_value": 0.01134408188318582,
-      "rarity": "RED",
-      "case_type": "shattered_web",
-      "base_price": 580.01,
-      "adjusted_price": 638.0110000000001,
-      "stattrak": true,
-      "image": "awp_containment_breach.png",
+      "weapon": "M4A1-S",
+      "name": "Briefing",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 4.27,
+      "timestamp": 1737156066.8846452,
+      "case_type": "hydra",
+      "is_case": false,
       "is_sticker": false,
-      "price": 638.0110000000001,
-      "timestamp": 1737155060.6600125,
-      "is_case": false
+      "float_value": 0.14722276,
+      "image": "m4a1s_briefing.png"
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Allure",
+      "rarity": "PURPLE",
+      "wear": "FT",
+      "stattrak": true,
+      "price": 0.49,
+      "timestamp": 1737156066.8846452,
+      "case_type": "fracture",
+      "image": "mac10_allure.png",
+      "is_case": false,
+      "is_sticker": false,
+      "float_value": 0.17933439
+    },
+    {
+      "weapon": "Glock-18",
+      "name": "Royal Legion",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 1.88,
+      "image": "glock18_royal_legion.png",
+      "timestamp": 1737156202.1729708,
+      "case_type": "wildfire",
+      "is_case": false,
+      "is_sticker": false,
+      "float_value": 0.9337077
+    },
+    {
+      "name": "Splyce (Holo)",
+      "price": 26.95,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "image": "splyce_holo.png",
+      "timestamp": 1737156206.345425,
+      "is_sticker": true
+    },
+    {
+      "name": "Fnatic (Holo)",
+      "price": 12.54,
+      "rarity": "PURPLE",
+      "case_type": "legends_columbus_2016",
+      "image": "fnatic_holo.png",
+      "timestamp": 1737156206.345425,
+      "is_sticker": true
+    },
+    {
+      "name": "3DMAX",
+      "price": 420.2,
+      "rarity": "BLUE",
+      "case_type": "challengers_katowice_2014",
+      "image": "3dmax.png",
+      "timestamp": 1737156206.345425,
+      "is_sticker": true
+    },
+    {
+      "name": "mousesports",
+      "price": 434.55,
+      "rarity": "BLUE",
+      "case_type": "challengers_katowice_2014",
+      "image": "mousesports.png",
+      "timestamp": 1737156381.8045356,
+      "is_sticker": true
+    },
+    {
+      "name": "ESL Skull (Foil)",
+      "price": 368.8,
+      "rarity": "PINK",
+      "case_type": "legends_katowice_2014",
+      "image": "esl_skull_foil.png",
+      "timestamp": 1737156381.8045356,
+      "is_sticker": true
+    },
+    {
+      "weapon": "Driver Gloves",
+      "name": "Black Tie",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 119.9,
+      "rarity": "GOLD",
+      "case_type": "broken_fang",
+      "case_file": "operation_broken_fang_case",
+      "float_value": 0.6401897,
+      "image": "drivergloves_black_tie.png",
+      "timestamp": 1737156384.2451108,
+      "is_case": false,
+      "is_sticker": false
     }
   ],
-  "exp": 33743.0,
+  "exp": 33892.601,
   "rank": 10,
   "upgrades": {
     "click_value": 8,
