@@ -46,7 +46,7 @@
               :key="item.id"
               class="relative group cursor-pointer transition-all duration-300"
               :class="[
-                `rarity-${item.rarity.toLowerCase()}`,
+                `rarity-${(item.rarity || '').toLowerCase()}`,
                 selectedItems.has(item) ? 'ring-2 ring-yellow' : 'hover:scale-105'
               ]"
               @click="toggleItem(item)"
@@ -62,7 +62,7 @@
                     class="text-sm truncate"
                     :class="{ 'text-[#CF6A32]': item.stattrak }"
                   >
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                    {{ item.is_sticker ? item.name : `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}` }}
                   </div>
                   <div class="text-xs text-white/50">{{ item.wear }}</div>
                   <div class="text-yellow text-sm">${{ item.price.toFixed(2) }}</div>
@@ -82,7 +82,7 @@
               v-for="item in Array.from(selectedItems)" 
               :key="item.id"
               class="relative group cursor-pointer transition-all duration-300"
-              :class="`rarity-${item.rarity.toLowerCase()}`"
+              :class="`rarity-${(item.rarity || '').toLowerCase()}`"
               @click="toggleItem(item)"
             >
               <div class="bg-gray-darker rounded-lg p-3">
@@ -96,7 +96,7 @@
                     class="text-sm truncate"
                     :class="{ 'text-[#CF6A32]': item.stattrak }"
                   >
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                    {{ item.is_sticker ? item.name : `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}` }}
                   </div>
                   <div class="text-xs text-white/50">{{ item.wear }}</div>
                   <div class="text-yellow text-sm">${{ item.price.toFixed(2) }}</div>
@@ -199,14 +199,16 @@
               v-for="item in winner.items" 
               :key="item.id"
               class="bg-gray-darker rounded-lg p-3"
-              :class="`rarity-${item.rarity.toLowerCase()}`"
+              :class="`rarity-${(item.rarity || '').toLowerCase()}`"
             >
               <img 
                 :src="getItemImage(item)" 
                 :alt="item.name"
                 class="w-full h-24 object-contain mb-2"
               >
-              <div class="text-xs truncate">{{ item.weapon }} | {{ item.name }}</div>
+              <div class="text-xs truncate">
+                {{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
+              </div>
               <div class="text-yellow text-xs">${{ item.price.toFixed(2) }}</div>
             </div>
           </div>
@@ -319,16 +321,16 @@ export default {
       }
     }
 
-    const getItemImage = (item) => {
-      if (!item.weapon || !item.name) {
-        return '/skins/placeholder.png'
+    function getItemImage(item) {
+      if (item.is_sticker) {
+        const capsuleType = item.case_type || item.capsule_type
+        return `/sticker_skins/${capsuleType}/${item.image}`
       }
-      return getSkinImagePath(item)
-    }
-
-    function getSkinImagePath(item) {
-      const casePath = CASE_MAPPING[item.case_type] || item.case_type
-      return `/skins/${casePath}/${item.image}`
+      if (item.is_capsule) {
+        return `/stickers/${item.type || item.case_type}.png`
+      }
+      const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
+      return `/skins/${casePath}/${item.image || 'placeholder.png'}`
     }
 
     const getPlayerAvatar = (name) => {

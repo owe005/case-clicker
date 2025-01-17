@@ -9,11 +9,16 @@
              class="history-item"
              :class="getItemRarityClass(item.rarity)">
           <div class="history-item-image">
-            <img :src="getSkinImagePath(item)" :alt="`${item.weapon} | ${item.name}`">
+            <img :src="getSkinImagePath(item)" :alt="item.name">
           </div>
           <div class="history-item-details">
             <div class="history-item-name">
-              {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }} ({{ item.wear }})
+              <template v-if="!item.is_sticker">
+                {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }} ({{ item.wear }})
+              </template>
+              <template v-else>
+                {{ item.name }}
+              </template>
             </div>
             <div class="history-item-price">
               ${{ item.final_price.toFixed(2) }}
@@ -30,28 +35,36 @@
     <div class="item-details main-card" :style="getItemDetailsStyle(auctionItem.rarity)">
       <div class="item-header">
         <div class="item-image">
-          <img :src="getSkinImagePath(auctionItem)" :alt="`${auctionItem.weapon} | ${auctionItem.name}`">
+          <img :src="getSkinImagePath(auctionItem)" :alt="auctionItem.name">
         </div>
         <div class="item-name">
-          {{ auctionItem.stattrak ? 'StatTrak™ ' : '' }}
-          {{ auctionItem.weapon }} | {{ auctionItem.name }}
+          <template v-if="!auctionItem.is_sticker">
+            {{ auctionItem.stattrak ? 'StatTrak™ ' : '' }}
+            {{ auctionItem.weapon }} | {{ auctionItem.name }}
+          </template>
+          <template v-else>
+            {{ auctionItem.name }}
+          </template>
         </div>
       </div>
       <div class="item-info">
-        <div class="info-label">Wear:</div>
-        <div class="info-value">{{ auctionItem.wear }}</div>
-        
-        <div class="info-label">Float:</div>
-        <div class="info-value">
-          <span class="float-value" :class="getFloatClass(auctionItem.float_value)">
-            {{ auctionItem.float_value.toFixed(9) }}
-          </span>
-        </div>
+        <!-- Only show wear and float for non-sticker items -->
+        <template v-if="!auctionItem.is_sticker">
+          <div class="info-label">Wear:</div>
+          <div class="info-value">{{ auctionItem.wear }}</div>
+          
+          <div class="info-label">Float:</div>
+          <div class="info-value">
+            <span class="float-value" :class="getFloatClass(auctionItem.float_value)">
+              {{ auctionItem.float_value.toFixed(9) }}
+            </span>
+          </div>
+        </template>
         
         <div class="info-label">Base Price:</div>
         <div class="info-value">${{ auctionItem.base_price.toFixed(2) }}</div>
         
-        <div class="info-label">Current Price:</div>
+        <div class="info-label">Current Value:</div>
         <div class="info-value">${{ auctionItem.adjusted_price.toFixed(2) }}</div>
       </div>
     </div>
@@ -433,20 +446,25 @@ export default {
     }
 
     function getSkinImagePath(item) {
-      if (!item.image) return ''
-      
-      // Extract just the filename from the full path
-      const filename = item.image.split('/').pop()
-      
-      // For history items, try to use case_type, fallback to case_file, or use a default
-      let casePath = 'default'
-      if (item.case_type) {
-        casePath = CASE_MAPPING[item.case_type] || item.case_type
-      } else if (item.case_file) {
-        casePath = item.case_file
+      if (!item || !item.image) {
+        return ''
       }
       
-      return `/skins/${casePath}/${filename}`
+      // Check if it's a sticker by either is_sticker flag or by checking if weapon is null
+      if (item.is_sticker || (item.weapon === null && item.wear === null)) {
+        const capsuleType = item.case_type || item.capsule_type
+        const path = `/sticker_skins/${capsuleType}/${item.image}`
+        return path
+      }
+      
+      if (item.is_capsule) {
+        const path = `/stickers/${item.type || item.case_type}.png`
+        return path
+      }
+      
+      const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
+      const path = `/skins/${casePath}/${item.image || 'placeholder.png'}`
+      return path
     }
 
     const getItemRarityClass = (rarity) => {

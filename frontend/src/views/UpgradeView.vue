@@ -37,7 +37,7 @@
                     class="text-sm truncate"
                     :class="{ 'text-[#CF6A32]': item.stattrak }"
                   >
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                    {{ item.is_sticker ? item.name : `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}` }}
                   </div>
                   <div class="text-xs text-white/50">{{ item.wear }}</div>
                   <div class="text-yellow text-sm">${{ formatNumber(item.price) }}</div>
@@ -71,7 +71,7 @@
                     class="text-sm truncate"
                     :class="{ 'text-[#CF6A32]': item.stattrak }"
                   >
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+                    {{ item.is_sticker ? item.name : `${item.stattrak ? 'StatTrak™ ' : ''}${item.weapon} | ${item.name}` }}
                   </div>
                   <div class="text-xs text-white/50">{{ item.wear }}</div>
                   <div class="text-yellow text-sm">${{ formatNumber(item.price) }}</div>
@@ -301,6 +301,10 @@ export default {
     }
 
     const getItemImage = (item) => {
+      if (item.is_sticker) {
+        const capsuleType = item.case_type || item.capsule_type
+        return `/sticker_skins/${capsuleType}/${item.image}`
+      }
       if (!item.weapon || !item.name) {
         return '/skins/placeholder.png'
       }

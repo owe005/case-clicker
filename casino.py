@@ -12,6 +12,10 @@ def find_best_skin_combination(available_skins, target_value, max_skins=10):
         # Add normal version
         all_skins.append(skin)
         
+        # Skip StatTrak for stickers
+        if skin.get('is_sticker'):
+            continue
+            
         # Add StatTrak version if price exists in case data
         try:
             case_file = CASE_FILE_MAPPING.get(skin['case_type'])
