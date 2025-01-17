@@ -2340,14 +2340,32 @@ def sell_specific_item():
         # Find the specific item in inventory
         item_index = None
         for i, inv_item in enumerate(inventory):
-            if (not inv_item.get('is_case') and
-                inv_item['weapon'] == item_data['weapon'] and
-                inv_item['name'] == item_data['name'] and
-                inv_item['wear'] == item_data['wear'] and
-                inv_item.get('stattrak', False) == item_data['stattrak'] and
-                abs(float(inv_item['float_value']) - float(item_data['float_value'])) < 0.0001):  # Compare float values with tolerance
-                item_index = i
-                break
+            if inv_item.get('is_case') or inv_item.get('is_capsule'):
+                continue
+                
+            # First check if either item is a sticker
+            is_sticker_inv = inv_item.get('is_sticker', False)
+            is_sticker_data = item_data.get('is_sticker', False)
+            
+            # If one is a sticker and the other isn't, skip
+            if is_sticker_inv != is_sticker_data:
+                continue
+                
+            if is_sticker_inv:
+                # For sticker items, compare name and case_type
+                if (inv_item['name'] == item_data['name'] and
+                    inv_item['case_type'] == item_data['case_type']):
+                    item_index = i
+                    break
+            else:
+                # For weapon skins, compare all attributes
+                if (inv_item['weapon'] == item_data['weapon'] and
+                    inv_item['name'] == item_data['name'] and
+                    inv_item['wear'] == item_data['wear'] and
+                    inv_item.get('stattrak', False) == item_data.get('stattrak', False) and
+                    abs(float(inv_item['float_value']) - float(item_data['float_value'])) < 0.0001):
+                    item_index = i
+                    break
         
         if item_index is None:
             return jsonify({'error': 'Item not found in inventory'})
@@ -2362,7 +2380,7 @@ def sell_specific_item():
         
         # Remove the item from inventory
         inventory.pop(item_index)
-        
+
         # Update user's balance
         user_data['balance'] = float(user_data['balance']) + sale_price
         

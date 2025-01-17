@@ -1,140 +1,16 @@
 {
-  "balance": 1386.100999999995,
+  "balance": 16283.873999999985,
   "inventory": [
     {
       "name": "Prisma Case",
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 3
-    },
-    {
-      "name": "Cluj-Napoca 2015 Challengers",
-      "image": "challengers_cluj_napoca_2015.png",
-      "is_capsule": true,
-      "type": "challengers_cluj_napoca_2015",
-      "quantity": 4
-    },
-    {
-      "name": "Team Liquid (Foil)",
-      "price": 26.0,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737069917.0296361,
-      "is_sticker": true,
-      "image": "team_liquid_foil.png"
-    },
-    {
-      "name": "Counter Logic Gaming (Foil)",
-      "price": 15.74,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737069948.5456233,
-      "is_sticker": true,
-      "image": "counter_logic_gaming_foil.png"
-    },
-    {
-      "name": "mousesports (Foil)",
-      "price": 26.97,
-      "rarity": "pink",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070006.5164552,
-      "is_sticker": true,
-      "image": "mousesports_foil.png"
-    },
-    {
-      "name": "Flipsid3 Tactics (Foil)",
-      "price": 17.0,
-      "rarity": "pink",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070065.136658,
-      "is_sticker": true,
-      "image": "flipsid3_tactics_foil.png"
-    },
-    {
-      "name": "Team Liquid (Foil)",
-      "price": 26.0,
-      "rarity": "pink",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070082.1626754,
-      "is_sticker": true,
-      "image": "team_liquid_foil.png"
-    },
-    {
-      "name": "Vexed Gaming (Foil)",
-      "price": 18.63,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070137.4796734,
-      "is_sticker": true,
-      "image": "vexed_gaming_foil.png"
-    },
-    {
-      "name": "Vexed Gaming (Foil)",
-      "price": 18.63,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070160.9264483,
-      "is_sticker": true,
-      "image": "vexed_gaming_foil.png"
-    },
-    {
-      "name": "Counter Logic Gaming (Foil)",
-      "price": 15.74,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737070207.26435,
-      "is_sticker": true,
-      "image": "counter_logic_gaming_foil.png"
-    },
-    {
-      "name": "Team Dignitas",
-      "price": 698.06,
-      "rarity": "BLUE",
-      "case_type": "legends_katowice_2014",
-      "timestamp": 1737070251.22549,
-      "is_sticker": true,
-      "image": "team_dignitas.png"
-    },
-    {
-      "name": "LGB eSports",
-      "price": 564.96,
-      "rarity": "BLUE",
-      "case_type": "legends_katowice_2014",
-      "timestamp": 1737070262.6151826,
-      "is_sticker": true,
-      "image": "lgb_esports.png"
-    },
-    {
-      "name": "Fnatic",
-      "price": 378.0,
-      "rarity": "BLUE",
-      "case_type": "legends_katowice_2014",
-      "timestamp": 1737070271.0030222,
-      "is_sticker": true,
-      "image": "fnatic.png"
-    },
-    {
-      "name": "3DMAX",
-      "price": 420.2,
-      "rarity": "BLUE",
-      "case_type": "challengers_katowice_2014",
-      "timestamp": 1737070279.6271825,
-      "is_sticker": true,
-      "image": "3dmax.png"
-    },
-    {
-      "name": "Reason Gaming",
-      "price": 2559.81,
-      "rarity": "BLUE",
-      "case_type": "challengers_katowice_2014",
-      "timestamp": 1737070288.1079218,
-      "is_sticker": true,
-      "image": "reason_gaming.png"
+      "quantity": 1
     }
   ],
-  "exp": 9016.0,
-  "rank": 8,
+  "exp": 19768.0,
+  "rank": 9,
   "upgrades": {
     "click_value": 4,
     "max_multiplier": 1,
@@ -143,13 +19,14 @@
     "critical_strike": 0,
     "progress_per_click": 1,
     "case_quality": 1,
-    "multi_open": 1
+    "multi_open": 5
   },
   "achievements": {
     "completed": [
       "earnings_1",
       "earnings_2",
-      "earnings_3"
+      "earnings_3",
+      "earnings_4"
     ],
     "in_progress": {
       "clicks_1": {
@@ -172,28 +49,28 @@
         "reward": 100,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 7,
+        "current_value": 9,
         "category": "cases",
-        "progress": 70.0
+        "progress": 90.0
       },
-      "earnings_4": {
-        "id": "earnings_4",
-        "title": "Expert Trader",
-        "description": "Earn your first $100,000",
-        "target_value": 100000,
-        "reward": 10000,
-        "exp_reward": 20000,
-        "icon": "\ud83d\udc8e",
-        "current_value": 99850.161,
+      "earnings_5": {
+        "id": "earnings_5",
+        "title": "Millionaire",
+        "description": "Earn your first $1,000,000",
+        "target_value": 1000000,
+        "reward": 100000,
+        "exp_reward": 50000,
+        "icon": "\ud83c\udfc6",
+        "current_value": 105335.961,
         "category": "special",
-        "progress": 99.85016099999999
+        "progress": 10.533596099999999
       }
     },
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 99850.161,
-    "total_cases_opened": 7,
+    "total_earnings": 105335.961,
+    "total_cases_opened": 9,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 9780,

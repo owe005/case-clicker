@@ -256,9 +256,9 @@
               </template>
               <template v-else>
                 <div class="item-name" :class="{ 'stattrak': item.stattrak }">
-                  {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }}
+                  {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : item.weapon }}
                 </div>
-                <div class="item-skin">{{ item.name }}</div>
+                <div class="item-skin">{{ item.is_sticker ? '' : item.name }}</div>
               </template>
             </div>
           </div>
@@ -289,7 +289,7 @@
                ]">
             <img :src="getSkinImagePath(item)" :alt="item.name" class="mx-auto mb-4 max-h-48 w-auto">
             <div class="item-name text-lg" :class="{ 'stattrak': item.stattrak }">
-              {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.weapon }} | {{ item.name }}
+              {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
             </div>
             <div class="text-white/70">{{ item.wear }} • {{ item.rarity }}</div>
             <div class="text-yellow text-xl mt-2">${{ item.price.toFixed(2) }}</div>
@@ -533,14 +533,7 @@ export default {
           return
         }
 
-        // Update store with new data
-        store.updateUserData({
-          balance: data.balance,
-          exp: data.exp,
-          rank: data.rank
-        })
-
-        // Refresh inventory
+        // Refresh inventory (this will also update store with new data)
         await fetchInventory()
 
         // Handle achievement if present
