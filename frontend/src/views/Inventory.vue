@@ -313,6 +313,9 @@
 <script>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useStore, CASE_MAPPING } from '../store'
+import { createConfetti } from '@/utils/confetti'
+import { showLevelUpBanner } from '@/utils/notifications'
+import { RANKS } from '@/constants'
 
 export default {
   name: 'InventoryView',
@@ -720,7 +723,8 @@ export default {
 
         // Handle level up
         if (data.levelUp) {
-          store.showLevelUpAnimation()
+          createConfetti()
+          showLevelUpBanner(RANKS[data.rank])
         }
 
         // Update case quantity
@@ -1046,7 +1050,8 @@ export default {
 
         // Handle level up
         if (data.levelUp) {
-          store.showLevelUpAnimation()
+          createConfetti()
+          showLevelUpBanner(RANKS[data.rank])
         }
 
         // Update capsule quantity

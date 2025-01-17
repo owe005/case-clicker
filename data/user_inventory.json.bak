@@ -1,16 +1,536 @@
 {
-  "balance": 16283.873999999985,
+  "balance": 10296.610999999974,
   "inventory": [
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.20003169,
+      "timestamp": 1737141192.0556479,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.16730372,
+      "timestamp": 1737141192.2947059,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.19498359,
+      "timestamp": 1737141192.4417236,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.33482642,
+      "timestamp": 1737141192.5968032,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.34510983,
+      "timestamp": 1737141192.754031,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.35784582,
+      "timestamp": 1737141192.9076722,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.20486707,
+      "timestamp": 1737141193.0595608,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.24307182,
+      "timestamp": 1737141193.2089877,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.33878654,
+      "timestamp": 1737141193.3715909,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.25246405,
+      "timestamp": 1737141193.5196779,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.27296558,
+      "timestamp": 1737141193.6738389,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.35516756,
+      "timestamp": 1737141193.8198245,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.16604452,
+      "timestamp": 1737141193.9788952,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.3709054,
+      "timestamp": 1737141194.127827,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.3535532,
+      "timestamp": 1737141194.2855775,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.28742771,
+      "timestamp": 1737141194.436606,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.27113633,
+      "timestamp": 1737141194.6053855,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.35268203,
+      "timestamp": 1737141194.753053,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Death by Puppy",
+      "rarity": "PINK",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 4.67,
+      "float_value": 0.16025797,
+      "timestamp": 1737141194.9216058,
+      "case_type": "cs20",
+      "is_case": false,
+      "image": "aug_death_by_puppy.png"
+    },
+    {
+      "name": "Splyce (Foil)",
+      "price": 33.41,
+      "rarity": "PINK",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141199.363482,
+      "is_sticker": true,
+      "image": "splyce_foil.png"
+    },
+    {
+      "name": "Splyce (Holo)",
+      "price": 26.95,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141199.3658376,
+      "is_sticker": true,
+      "image": "splyce_holo.png"
+    },
+    {
+      "name": "Flipsid3 Tactics (Foil)",
+      "price": 33.97,
+      "rarity": "PINK",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141199.3678386,
+      "is_sticker": true,
+      "image": "flipsid3_tactics_foil.png"
+    },
+    {
+      "name": "mousesports (Holo)",
+      "price": 35.98,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141199.3698401,
+      "is_sticker": true,
+      "image": "mousesports_holo.png"
+    },
+    {
+      "name": "Cloud9 (Holo)",
+      "price": 33.5,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141199.371346,
+      "is_sticker": true,
+      "image": "cloud9_holo.png"
+    },
+    {
+      "name": "Cloud9 (Holo)",
+      "price": 33.5,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141217.6447842,
+      "is_sticker": true,
+      "image": "cloud9_holo.png"
+    },
+    {
+      "name": "G2 Esports (Holo)",
+      "price": 22.91,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141217.646783,
+      "is_sticker": true,
+      "image": "g2_esports_holo.png"
+    },
+    {
+      "name": "G2 Esports (Holo)",
+      "price": 22.91,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141217.6487832,
+      "is_sticker": true,
+      "image": "g2_esports_holo.png"
+    },
+    {
+      "name": "mousesports (Foil)",
+      "price": 28.13,
+      "rarity": "PINK",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141217.6507833,
+      "is_sticker": true,
+      "image": "mousesports_foil.png"
+    },
+    {
+      "name": "G2 Esports (Foil)",
+      "price": 34.0,
+      "rarity": "PINK",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141217.6522875,
+      "is_sticker": true,
+      "image": "g2_esports_foil.png"
+    },
+    {
+      "name": "mousesports (Holo)",
+      "price": 35.98,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141382.4004455,
+      "is_sticker": true,
+      "image": "mousesports_holo.png"
+    },
+    {
+      "name": "Splyce (Holo)",
+      "price": 26.95,
+      "rarity": "PURPLE",
+      "case_type": "challengers_columbus_2016",
+      "timestamp": 1737141382.401951,
+      "is_sticker": true,
+      "image": "splyce_holo.png"
+    },
+    {
+      "name": "Cloud9 (Holo)",
+      "price": 359.99,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141407.1138918,
+      "is_sticker": true,
+      "image": "cloud9_holo.png"
+    },
+    {
+      "name": "Fnatic (Holo)",
+      "price": 252.99,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141407.1158924,
+      "is_sticker": true,
+      "image": "fnatic_holo.png"
+    },
+    {
+      "name": "Ninjas in Pyjamas (Holo)",
+      "price": 108.39,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141445.587672,
+      "is_sticker": true,
+      "image": "ninjas_in_pyjamas_holo.png"
+    },
+    {
+      "name": "Fnatic (Holo)",
+      "price": 252.99,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141445.5916803,
+      "is_sticker": true,
+      "image": "fnatic_holo.png"
+    },
+    {
+      "name": "Cloud9 (Foil)",
+      "price": 170.0,
+      "rarity": "PINK",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141445.593154,
+      "is_sticker": true,
+      "image": "cloud9_foil.png"
+    },
+    {
+      "name": "Operation Wildfire Case",
+      "image": "operation_wildfire_case.png",
+      "is_case": true,
+      "type": "wildfire",
+      "quantity": 8
+    },
+    {
+      "name": "Cloud9 (Holo)",
+      "price": 359.99,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141808.3189204,
+      "is_sticker": true,
+      "image": "cloud9_holo.png"
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Uncharted",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.96,
+      "timestamp": 1737141834.1662765,
+      "case_type": "prisma",
+      "float_value": 0.05450741,
+      "is_case": false,
+      "image": "ak47_uncharted.png"
+    },
+    {
+      "name": "Ninjas in Pyjamas (Holo)",
+      "price": 108.39,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141865.1847665,
+      "is_sticker": true,
+      "image": "ninjas_in_pyjamas_holo.png"
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Lapis Gator",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": true,
+      "price": 1.11,
+      "timestamp": 1737141884.8258147,
+      "case_type": "wildfire",
+      "float_value": 0.09840601,
+      "is_case": false,
+      "image": "mac10_lapis_gator.png"
+    },
+    {
+      "name": "Ninjas in Pyjamas (Holo)",
+      "price": 108.39,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737141999.091984,
+      "is_sticker": true,
+      "image": "ninjas_in_pyjamas_holo.png"
+    },
+    {
+      "name": "Virtus.Pro (Holo)",
+      "price": 178.87,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737142065.6918426,
+      "is_sticker": true,
+      "image": "virtus_pro_holo.png"
+    },
+    {
+      "name": "DreamHack 2014 Legends",
+      "image": "legends_dreamhack_2014.png",
+      "is_capsule": true,
+      "type": "legends_dreamhack_2014",
+      "quantity": 4,
+      "price": 305.0
+    },
+    {
+      "name": "Team Dignitas (Foil)",
+      "price": 179.14,
+      "rarity": "PINK",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737142206.9799047,
+      "is_sticker": true,
+      "image": "team_dignitas_foil.png"
+    },
+    {
+      "name": "Virtus.Pro (Foil)",
+      "price": 87.16,
+      "rarity": "PINK",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737142217.2060947,
+      "is_sticker": true,
+      "image": "virtus_pro_foil.png"
+    },
+    {
+      "name": "Team Dignitas (Holo)",
+      "price": 292.34,
+      "rarity": "PURPLE",
+      "case_type": "legends_dreamhack_2014",
+      "timestamp": 1737142217.2070947,
+      "is_sticker": true,
+      "image": "team_dignitas_holo.png"
+    },
     {
       "name": "Prisma Case",
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 1
+      "quantity": 12
+    },
+    {
+      "name": "Cluj-Napoca 2015 Challengers",
+      "image": "challengers_cluj_napoca_2015.png",
+      "is_capsule": true,
+      "type": "challengers_cluj_napoca_2015",
+      "quantity": 13,
+      "price": 33.0
+    },
+    {
+      "name": "MLG Columbus 2016 Challengers",
+      "image": "challengers_columbus_2016.png",
+      "is_capsule": true,
+      "type": "challengers_columbus_2016",
+      "quantity": 5,
+      "price": 37.0
     }
   ],
-  "exp": 19768.0,
-  "rank": 9,
+  "exp": 21028.0,
+  "rank": 10,
   "upgrades": {
     "click_value": 4,
     "max_multiplier": 1,
@@ -26,7 +546,8 @@
       "earnings_1",
       "earnings_2",
       "earnings_3",
-      "earnings_4"
+      "earnings_4",
+      "cases_1"
     ],
     "in_progress": {
       "clicks_1": {
@@ -41,18 +562,6 @@
         "category": "clicks",
         "progress": 68.10000000000001
       },
-      "cases_1": {
-        "id": "cases_1",
-        "title": "Case Opener",
-        "description": "Open 10 cases",
-        "target_value": 10,
-        "reward": 100,
-        "exp_reward": 0,
-        "icon": "\ud83d\udce6",
-        "current_value": 9,
-        "category": "cases",
-        "progress": 90.0
-      },
       "earnings_5": {
         "id": "earnings_5",
         "title": "Millionaire",
@@ -61,16 +570,28 @@
         "reward": 100000,
         "exp_reward": 50000,
         "icon": "\ud83c\udfc6",
-        "current_value": 105335.961,
+        "current_value": 105628.30099999999,
         "category": "special",
-        "progress": 10.533596099999999
+        "progress": 10.5628301
+      },
+      "cases_2": {
+        "id": "cases_2",
+        "title": "Case Enthusiast",
+        "description": "Open 100 cases",
+        "target_value": 100,
+        "reward": 500,
+        "exp_reward": 0,
+        "icon": "\ud83d\udce6",
+        "current_value": 11,
+        "category": "cases",
+        "progress": 11.0
       }
     },
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 105335.961,
-    "total_cases_opened": 9,
+    "total_earnings": 105628.30099999999,
+    "total_cases_opened": 11,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 9780,

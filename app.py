@@ -3656,12 +3656,20 @@ def buy_sticker_capsule():
         for item in inventory:
             if item.get('is_capsule') and item.get('type') == capsule_type:
                 item['quantity'] = item.get('quantity', 0) + quantity
+                # Make sure price is set
+                if 'price' not in item:
+                    item['price'] = capsule_price
                 capsule_found = True
                 break
 
         if not capsule_found:
             capsule_info = STICKER_CAPSULE_DATA[capsule_type].copy()
-            capsule_info['quantity'] = quantity
+            capsule_info.update({
+                'quantity': quantity,
+                'price': capsule_price,
+                'is_capsule': True,
+                'type': capsule_type
+            })
             inventory.append(capsule_info)
 
         # Save user data
@@ -3693,10 +3701,13 @@ def open_capsule(capsule_type):
 
         # Find the capsule in inventory
         capsule_found = False
+        capsule_price = 0
         for item in inventory:
             if item.get('is_capsule') and item.get('type') == capsule_type:
                 if item.get('quantity', 0) < count:
                     return jsonify({'error': 'Not enough capsules'})
+                # Get capsule price for EXP calculation
+                capsule_price = float(item.get('price', 0))
                 # Decrease quantity instead of removing
                 item['quantity'] = item.get('quantity', 0) - count
                 if item['quantity'] <= 0:
@@ -3709,7 +3720,6 @@ def open_capsule(capsule_type):
 
         # Open capsules and get stickers
         items = []
-        total_exp = 0
         for _ in range(count):
             # Open capsule
             sticker_name, sticker_price, rarity, image = open_sticker_capsule(capsule_type)
@@ -3731,37 +3741,32 @@ def open_capsule(capsule_type):
             inventory.append(sticker_item)
             items.append(sticker_item)
 
-            # Calculate exp gain (more exp for rarer items)
-            exp_multiplier = {
-                'BLUE': 1,
-                'PURPLE': 2,
-                'PINK': 5
-            }.get(rarity.upper(), 1)  # Use uppercase for comparison
-            total_exp += 10 * exp_multiplier
-
         # Save updated inventory
         user_data['inventory'] = inventory
-        save_user_data(user_data)
 
-        # Update exp
-        current_exp = user_data.get('exp', 0)
-        new_exp = current_exp + total_exp
-        user_data['exp'] = new_exp
+        # Update exp and calculate rank - EXP gain is equal to capsule price
+        current_exp = float(user_data.get('exp', 0))
+        current_rank = int(user_data.get('rank', 0))
+        new_exp = current_exp + (capsule_price * count)
         
         # Calculate if level up occurred
-        old_rank_data = calculate_rank(current_exp)
-        new_rank_data = calculate_rank(new_exp)
-        level_up = new_rank_data['rank'] > old_rank_data['rank']
-
-        # Save the updated exp
+        while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+            new_exp -= RANK_EXP[current_rank]
+            current_rank += 1
+        
+        # Update user data with new exp and rank
+        user_data['exp'] = new_exp
+        user_data['rank'] = current_rank
+        
+        # Save all changes
         save_user_data(user_data)
 
         return jsonify({
             'items': items,
             'balance': user_data.get('balance', 0),
             'exp': new_exp,
-            'rank': new_rank_data,
-            'levelUp': level_up
+            'rank': current_rank,
+            'levelUp': current_rank > int(user_data.get('rank', 0))
         })
 
     except Exception as e:

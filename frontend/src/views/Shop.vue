@@ -508,13 +508,13 @@ export default {
     }
 
     // Show notification
-    function showNotification(message, duration = 2000, caseType = null) {
-      // If there's an existing notification and it's the same case
-      if (notification.value.show && caseType && caseType === notification.value.lastCase) {
+    function showNotification(message, duration = 2000, caseType = null, capsuleType = null) {
+      // If there's an existing notification and it's the same case/capsule
+      if (notification.value.show && ((caseType && caseType === notification.value.lastCase) || (capsuleType && capsuleType === notification.value.lastCapsule))) {
         // Increment the purchase count
-        notification.value.purchaseCount += cases.value[caseType].quantity
+        notification.value.purchaseCount += caseType ? cases.value[caseType].quantity : stickerCapsules.value[capsuleType].quantity
         // Update message with new count
-        notification.value.message = `Purchased ${notification.value.purchaseCount}x ${cases.value[caseType].name}!`
+        notification.value.message = `Purchased ${notification.value.purchaseCount}x ${caseType ? cases.value[caseType].name : stickerCapsules.value[capsuleType].name}!`
         // Make it bounce
         notification.value.bounce = true
         setTimeout(() => {
@@ -529,13 +529,15 @@ export default {
         notification.value.show = true
         notification.value.message = message
         notification.value.lastCase = caseType
-        notification.value.purchaseCount = caseType ? cases.value[caseType].quantity : 0
+        notification.value.lastCapsule = capsuleType
+        notification.value.purchaseCount = caseType ? cases.value[caseType].quantity : (capsuleType ? stickerCapsules.value[capsuleType].quantity : 0)
       }
 
       notification.value.timeout = setTimeout(() => {
         notification.value.show = false
         notification.value.message = ''
         notification.value.lastCase = null
+        notification.value.lastCapsule = null
         notification.value.purchaseCount = 0
       }, duration)
     }
@@ -791,8 +793,8 @@ export default {
         // Update store balance
         store.updateUserData({ balance: data.balance })
         
-        // Show success notification
-        showNotification(`Purchased ${stickerCapsules.value[capsuleType].quantity}x ${stickerCapsules.value[capsuleType].name}!`)
+        // Show success notification with capsule type for tracking
+        showNotification(`Purchased ${stickerCapsules.value[capsuleType].quantity}x ${stickerCapsules.value[capsuleType].name}!`, 2000, null, capsuleType)
       } catch (error) {
         console.error('Error buying sticker capsule:', error)
         showNotification('Failed to purchase sticker capsule')
