@@ -45,32 +45,77 @@
       <!-- Skins Section -->
       <div v-if="currentCategory === 'skins'" class="space-y-6">
         <!-- Controls -->
-        <div class="flex items-center justify-between gap-4 flex-wrap">
-          <!-- Sort Controls -->
-          <div class="flex gap-2">
+        <div class="bg-gray-dark/50 rounded-xl p-4">
+          <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+            <!-- Search Input -->
+            <div class="flex-grow">
+              <div class="relative">
+                <input
+                  type="text"
+                  v-model="searchQuery"
+                  placeholder="Search items..."
+                  class="w-full pl-10 pr-20 py-2.5 bg-gray-darker text-white rounded-lg border border-gray-dark/50 focus:border-yellow focus:outline-none transition-colors duration-200"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <!-- Help Icon with Tooltip -->
+                <div class="absolute right-10 top-1/2 -translate-y-1/2 group">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/30 hover:text-white/70 transition-colors duration-200 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="absolute bottom-full right-0 mb-2 w-64 p-3 bg-gray-darker rounded-lg shadow-lg border border-gray-dark/50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 text-sm z-50">
+                    <h4 class="text-yellow font-medium mb-2">Search Examples:</h4>
+                    <ul class="space-y-1.5 text-white/70">
+                      <li><span class="text-white">wear:fn</span> - Factory New items</li>
+                      <li><span class="text-white">st</span> or <span class="text-white">stattrak</span> - StatTrak™ items</li>
+                      <li><span class="text-white">case:gamma</span> - Items from Gamma cases</li>
+                      <li><span class="text-white">float:0.00</span> - Items with specific float</li>
+                      <li class="text-xs text-white/50 pt-1">Terms can be combined: "ak vulcan fn st"</li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- Clear button -->
+                <button 
+                  v-if="searchQuery"
+                  @click="searchQuery = ''"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Sort Controls -->
+            <div class="flex items-center gap-3">
+              <div class="flex gap-2">
+                <button 
+                  v-for="sort in sortOptions" 
+                  :key="sort.id"
+                  class="px-4 py-2 rounded-lg font-medium transition-all duration-200 min-w-[100px] text-center"
+                  :class="[
+                    currentSort === sort.id 
+                      ? 'bg-yellow text-gray-darker' 
+                      : 'bg-gray-darker text-white/70 hover:bg-gray-dark hover:text-white'
+                  ]"
+                  @click="sortItems(sort.id)"
+                >
+                  {{ sort.name }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Sell All Button -->
             <button 
-              v-for="sort in sortOptions" 
-              :key="sort.id"
-              class="px-4 py-2 rounded-lg font-medium transition-all duration-200"
-              :class="[
-                currentSort === sort.id 
-                  ? 'bg-yellow text-gray-darker' 
-                  : 'bg-gray-dark/50 text-white/70 hover:bg-gray-dark hover:text-white'
-              ]"
-              @click="sortItems(sort.id)"
+              v-if="totalValue > 0"
+              class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-all duration-200 font-medium whitespace-nowrap"
+              @click="showSellAllModal = true"
             >
-              {{ sort.name }}
+              Sell All: ${{ totalValue.toFixed(2) }}
             </button>
           </div>
-
-          <!-- Sell All Button -->
-          <button 
-            v-if="totalValue > 0"
-            class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-all duration-200 font-medium"
-            @click="showSellAllModal = true"
-          >
-            Sell All: ${{ totalValue.toFixed(2) }}
-          </button>
         </div>
 
         <!-- Skins Grid -->
@@ -101,6 +146,16 @@
                         class="absolute top-2 right-2 text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
                     {{ item.isExpanded ? 'Click to collapse' : 'Click to expand' }}
                   </span>
+                  <!-- Favorite Star -->
+                  <button 
+                    v-if="!item.isStack"
+                    @click.stop="toggleFavorite(item)"
+                    class="absolute top-2 right-2 text-xl transition-colors duration-200 hover:text-yellow"
+                    :class="item.favorite ? 'text-yellow' : 'text-white/50'"
+                  >
+                    <span v-if="item.favorite">★</span>
+                    <span v-else>☆</span>
+                  </button>
                 </div>
                 
                 <!-- Info -->
@@ -110,14 +165,15 @@
                   </h3>
                   <div class="flex items-center gap-2 text-xs text-white/50 mt-1">
                     <span>{{ item.wear }}</span>
-                    <span v-if="item.wear">•</span>
-                    <span v-if="item.float_value !== undefined" class="font-mono whitespace-nowrap" :class="getFloatClass(item.float_value)">
+                    <span v-if="item.wear && item.float_value !== undefined && item.float_value !== null">•</span>
+                    <span v-if="item.float_value !== undefined && item.float_value !== null" class="font-mono whitespace-nowrap" :class="getFloatClass(item.float_value)">
                       {{ item.float_value.toFixed(8) }}
                     </span>
                   </div>
                   <div class="flex items-center justify-between mt-2">
                     <span class="text-yellow font-medium">${{ formatPrice(item.displayPrice || item.price) }}</span>
                     <button 
+                      v-if="!item.favorite"
                       class="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 text-sm rounded transition-all duration-200"
                       @click.stop="sellItem(item)"
                     >
@@ -361,12 +417,73 @@ export default {
     // Add this to the setup() function after other refs
     const expandedStacks = ref(new Set())
 
+    // Add searchQuery ref
+    const searchQuery = ref('')
+
     const sortedSkins = computed(() => {
       const items = [...skins.value]
       const stackedItems = {}
+      const query = searchQuery.value.toLowerCase().trim()
       
       // Group items by their unique characteristics
       items.forEach(item => {
+        // Skip items that don't match the search query
+        if (query) {
+          // Create a comprehensive searchable text that includes all relevant item properties
+          const searchableText = [
+            // Basic item info
+            item.is_sticker ? item.name : `${item.weapon} ${item.name}`,
+            // Wear condition - allow both full names and abbreviations
+            item.wear,
+            getFullWearName(item.wear),
+            // StatTrak™ - allow multiple variations of spelling
+            item.stattrak ? 'stattrak st stattrack' : '',
+            // Case/Capsule source
+            `case:${item.case_type}`,
+            `capsule:${item.case_type}`,
+            // Float value if available
+            item.float_value ? `float:${item.float_value}` : ''
+          ].join(' ').toLowerCase()
+          
+          // Split search query into terms for more precise matching
+          const searchTerms = query.split(' ')
+          const matchesAllTerms = searchTerms.every(term => {
+            // Special case handling
+            if (term.startsWith('wear:')) {
+              const wearQuery = term.replace('wear:', '')
+              return item.wear?.toLowerCase().includes(wearQuery) || 
+                     getFullWearName(item.wear)?.toLowerCase().includes(wearQuery)
+            }
+            if (term === 'st' || term === 'stattrak' || term === 'stattrack') {
+              return item.stattrak
+            }
+            if (term.startsWith('case:') || term.startsWith('capsule:')) {
+              const sourceQuery = term.split(':')[1]
+              return item.case_type?.toLowerCase().includes(sourceQuery)
+            }
+            if (term.startsWith('float:')) {
+              const floatQuery = term.replace('float:', '')
+              return item.float_value?.toString().includes(floatQuery)
+            }
+            // Default term matching
+            return searchableText.includes(term)
+          })
+
+          if (!matchesAllTerms) {
+            return
+          }
+        }
+
+        // Don't stack favorited items
+        if (item.favorite) {
+          const stackKey = `individual_${item.timestamp}`
+          stackedItems[stackKey] = {
+            items: [item],
+            displayItem: { ...item }
+          }
+          return
+        }
+
         if (item.is_sticker) {
           // Stickers are grouped by name and case type
           const stackKey = `sticker|${item.name}|${item.case_type}`
@@ -393,13 +510,14 @@ export default {
       // Convert to final format, expanding stacks if needed
       let result = []
       Object.entries(stackedItems).forEach(([key, stack]) => {
-        if (stack.items.length > 1) {
+        if (stack.items.length > 1 && !key.startsWith('individual_')) {
           if (expandedStacks.value.has(key)) {
             // If stack is expanded, add all items individually
             result.push(...stack.items.map(item => ({
               ...item,
               stackKey: key,
-              isExpanded: true
+              isExpanded: true,
+              favorite: item.favorite || false
             })))
           } else {
             // If stack is collapsed, add as a stack
@@ -410,14 +528,16 @@ export default {
               stackKey: key,
               stackedItems: stack.items,
               quantity: stack.items.length,
-              price: stackPrice
+              price: stackPrice,
+              favorite: false // Stacks can't be favorited
             })
           }
         } else {
           // Single items are added as is
           result.push({
             ...stack.items[0],
-            stackKey: key
+            stackKey: key,
+            favorite: stack.items[0].favorite || false
           })
         }
       })
@@ -466,7 +586,12 @@ export default {
           return
         }
 
-        inventory.value = data.inventory
+        // Ensure all items have a favorite property
+        inventory.value = data.inventory.map(item => ({
+          ...item,
+          favorite: item.favorite || false
+        }))
+
         store.updateUserData({
           balance: data.balance,
           exp: data.exp,
@@ -536,8 +661,50 @@ export default {
           return
         }
 
-        // Refresh inventory (this will also update store with new data)
-        await fetchInventory()
+        // Update store with new data without triggering a full inventory refresh
+        store.updateUserData({
+          balance: data.balance,
+          exp: data.exp,
+          rank: data.rank
+        })
+
+        // Update inventory locally based on the item type
+        if (item.isStack) {
+          // For stacks, remove all items with the same characteristics
+          if (item.is_sticker) {
+            inventory.value = inventory.value.filter(i => 
+              !(i.name === item.name && i.case_type === item.case_type)
+            )
+          } else {
+            inventory.value = inventory.value.filter(i => 
+              !(i.weapon === item.weapon && 
+                i.name === item.name && 
+                i.wear === item.wear && 
+                i.stattrak === item.stattrak)
+            )
+          }
+        } else {
+          // For individual items, remove the exact item
+          inventory.value = inventory.value.filter(i => {
+            // For stickers
+            if (item.is_sticker) {
+              return !(i.name === item.name && 
+                      i.case_type === item.case_type && 
+                      i.timestamp === item.timestamp)
+            }
+            // For weapon skins
+            return !(i.weapon === item.weapon && 
+                    i.name === item.name && 
+                    i.wear === item.wear && 
+                    i.stattrak === item.stattrak && 
+                    i.timestamp === item.timestamp)
+          })
+        }
+
+        // Clear the expanded state if needed
+        if (item.stackKey) {
+          expandedStacks.value.delete(item.stackKey)
+        }
 
         // Handle achievement if present
         if (data.achievement) {
@@ -1151,6 +1318,70 @@ export default {
       return (price || 0).toFixed(2)
     }
 
+    // Add helper function for full wear names
+    function getFullWearName(wear) {
+      const wearNames = {
+        'FN': 'factory new',
+        'MW': 'minimal wear',
+        'FT': 'field tested',
+        'WW': 'well worn',
+        'BS': 'battle scarred'
+      }
+      return wearNames[wear] || wear
+    }
+
+    // Add this new method in setup()
+    async function toggleFavorite(item) {
+      try {
+        const response = await fetch('/toggle_favorite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            timestamp: item.timestamp,
+            weapon: item.weapon,
+            name: item.name,
+            wear: item.wear,
+            stattrak: item.stattrak,
+            case_type: item.case_type,
+            type: item.type,
+            is_sticker: item.is_sticker,
+            is_case: item.is_case
+          })
+        })
+
+        const data = await response.json()
+        
+        if (data.error) {
+          console.error('Error:', data.error)
+          return
+        }
+
+        // Update inventory with new data and ensure favorites are preserved
+        inventory.value = data.inventory.map(item => ({
+          ...item,
+          favorite: item.favorite || false
+        }))
+
+        // If this was a favorited item in a stack
+        if (!item.favorite && item.stackKey) {
+          // Remove the item from its stack
+          expandedStacks.value.add(item.stackKey)
+        } else if (item.favorite && item.stackKey) {
+          // When unfavoriting, check if we should collapse the stack
+          const stack = inventory.value.filter(i => 
+            i.stackKey === item.stackKey && !i.favorite
+          )
+          if (stack.length > 1) {
+            expandedStacks.value.delete(item.stackKey)
+          }
+        }
+      } catch (error) {
+        console.error('Error toggling favorite:', error)
+      }
+    }
+
     // Lifecycle hooks
     onMounted(async () => {
       await fetchInventory()
@@ -1168,6 +1399,7 @@ export default {
       cases,
       sortedSkins,
       totalValue,
+      searchQuery,
       sortItems,
       getFloatClass,
       getRarityColor,
@@ -1191,7 +1423,8 @@ export default {
       formatPrice,
       capsules,
       getCapsuleImagePath,
-      openCapsule
+      openCapsule,
+      toggleFavorite
     }
   }
 }

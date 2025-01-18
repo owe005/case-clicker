@@ -4,12 +4,12 @@ import os
 import random
 import time
 import traceback
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from datetime import datetime, timedelta
 from functools import wraps
-from typing import List, Optional
 from threading import Thread, Lock, Timer
 import atexit
+from typing import Optional
 from werkzeug.utils import safe_join
 from pathlib import Path
 
@@ -23,17 +23,18 @@ from achievements import (update_case_achievements, update_click_achievements,
                         update_earnings_achievements)
 from bots import (client, create_system_message, format_bot_selection_history,
                  format_bot_selection_system_message, format_conversation_history,
-                 generate_bot_players, get_trades_context, images_bots_avatars,
-                 select_bot_with_ai)
-from casino import find_best_skin_combination
+                 generate_bot_players, get_trades_context, select_bot_with_ai)
+
+from casino import find_best_skin_combination, handle_blackjack_end
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
                    CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
-from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades, generate_float_value
+from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
 from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices, open_sticker_capsule
+from auction import load_auction_data, save_auction_data
 
 # Load environment variables
 load_dotenv('config.env')
@@ -48,47 +49,24 @@ app = Flask(__name__,
 app.secret_key = 'your-secret-key-here'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=7)
 
+# Auction-related globals
 FEATURED_SKINS = None
 LAST_REFRESH_TIME = None
-CURRENT_AUCTION: Optional[dict] = None
+CURRENT_AUCTION = None
 AUCTION_BIDS = []
 AUCTION_END_TIME = None
 AUCTION_BOT_BUDGETS = {}
+AUCTION_FILE = 'data/auction_data.json'
 LAST_BID_TIME = None
+LAST_BIDDER = None
 MIN_BID_INCREMENT = 10  # Minimum bid increment in dollars
 
-# Add these globals
-auction_lock = Lock()
-auction_thread = None
-
-# Add this global variable at the top with the other globals
-LAST_BIDDER = None
-
-# Add these global variables near the other globals
 auction_timer = None
 last_auction_check = None
 
 # Add these globals
-AUCTION_FILE = 'data/auction.json'
-
-def save_auction_data(auction_data):
-    """Save auction data to JSON file"""
-    try:
-        with open(AUCTION_FILE, 'w') as f:
-            json.dump(auction_data, f, indent=2, default=str)
-    except Exception as e:
-        print(f"Error saving auction data: {e}")
-
-def load_auction_data():
-    """Load auction data from JSON file"""
-    try:
-        if not Path(AUCTION_FILE).exists():
-            return None
-        with open(AUCTION_FILE, 'r') as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Error loading auction data: {e}")
-        return None
+auction_lock = Lock()
+auction_thread = None
 
 def login_required(f):
     @wraps(f)
@@ -802,52 +780,25 @@ def buy_case():
 @app.route('/get_inventory')
 def get_inventory():
     try:
-        user_data = load_user_data()
-        inventory = user_data.get('inventory', [])
+        # Load user inventory
+        with open('data/user_inventory.json', 'r') as f:
+            user_data = json.load(f)
         
-        # Format inventory items for display
-        formatted_inventory = []
-        for item in inventory:
-            if item.get('is_sticker'):
-                # Handle stickers
-                formatted_item = {
-                    'name': item['name'],
-                    'price': item['price'],
-                    'rarity': item['rarity'],
-                    'case_type': item['case_type'],
-                    'timestamp': item['timestamp'],
-                    'is_sticker': True,
-                    'image': item.get('image')  # Add image field
-                }
-            elif item.get('is_case') or item.get('is_capsule'):
-                # Handle cases and capsules
-                formatted_item = item
-            else:
-                # Handle weapon skins
-                formatted_item = {
-                    'name': item['name'],  # Don't combine weapon and name here
-                    'price': item['price'],
-                    'rarity': item['rarity'],
-                    'case_type': item['case_type'],
-                    'timestamp': item['timestamp'],
-                    'weapon': item['weapon'],
-                    'wear': item.get('wear'),
-                    'float_value': item.get('float_value'),
-                    'stattrak': item.get('stattrak', False),
-                    'image': item.get('image')  # Add image field
-                }
-            formatted_inventory.append(formatted_item)
-
+        # Ensure each item has a favorite field (even if false)
+        for item in user_data['inventory']:
+            if 'favorite' not in item:
+                item['favorite'] = False
+        
         return jsonify({
-            'inventory': formatted_inventory,
-            'balance': user_data.get('balance', 0),
-            'exp': user_data.get('exp', 0),
-            'rank': calculate_rank(user_data.get('exp', 0)),
+            'inventory': user_data['inventory'],
+            'balance': user_data['balance'],
+            'exp': user_data['exp'],
+            'rank': user_data['rank'],
             'upgrades': user_data.get('upgrades', {})
         })
     except Exception as e:
-        print(f"Error getting inventory: {e}")
-        return jsonify({'error': 'Failed to get inventory'})
+        print(f"Error in get_inventory: {str(e)}")
+        return jsonify({'error': 'Failed to get inventory'}), 500
 
 @app.route('/api/get_user_data')
 def get_user_data():
@@ -3717,37 +3668,6 @@ def blackjack_insurance():
         traceback.print_exc()
         return jsonify({'error': 'Failed to take insurance'})
 
-def handle_blackjack_end(game_state):
-    try:
-        user_data = load_user_data()
-        total_payout = 0
-        
-        # Calculate total payout from all hands
-        for hand in game_state['player_hands']:
-            if 'payout' in hand:
-                total_payout += hand['payout']
-                
-        # Update user balance with winnings/losses
-        if total_payout > 0:
-            user_data['balance'] = float(user_data['balance']) + total_payout
-            
-        save_user_data(user_data)
-        
-        # Clear game from session
-        session.pop('blackjack_state', None)
-        
-        return jsonify({
-            'success': True,
-            'state': game_state,
-            'balance': user_data['balance'],
-            'payout': total_payout
-        })
-        
-    except Exception as e:
-        print(f"Error handling blackjack end: {e}")
-        traceback.print_exc()  # Add traceback for better debugging
-        return jsonify({'error': 'Failed to process game end'})
-
 @app.route('/blackjack')
 @login_required
 def blackjack():
@@ -3950,6 +3870,68 @@ def reset_trades():
         print(f"Error resetting trades: {e}")
         traceback.print_exc()
         return jsonify({'error': 'Failed to reset trades'}), 500
+
+@app.route('/toggle_favorite', methods=['POST'])
+@login_required
+def toggle_favorite():
+    try:
+        data = request.get_json()
+        if not data or 'timestamp' not in data:
+            return jsonify({'error': 'Invalid request data'}), 400
+
+        timestamp = data['timestamp']
+        
+        # Load user inventory
+        with open('data/user_inventory.json', 'r') as f:
+            user_data = json.load(f)
+        
+        # Find the item with matching timestamp and other properties
+        target_item = None
+        for item in user_data['inventory']:
+            if item.get('timestamp') == timestamp:
+                # For weapon skins, match weapon, name, wear, and stattrak
+                if (not item.get('is_sticker') and not item.get('is_case') and 
+                    item.get('weapon') and item.get('name')):
+                    if (item.get('weapon') == data.get('weapon') and 
+                        item.get('name') == data.get('name') and 
+                        item.get('wear') == data.get('wear') and 
+                        item.get('stattrak') == data.get('stattrak')):
+                        target_item = item
+                        break
+                # For stickers, match name and case_type
+                elif item.get('is_sticker'):
+                    if (item.get('name') == data.get('name') and 
+                        item.get('case_type') == data.get('case_type')):
+                        target_item = item
+                        break
+                # For cases, match type
+                elif item.get('is_case'):
+                    if item.get('type') == data.get('type'):
+                        target_item = item
+                        break
+
+        if target_item:
+            # Toggle favorite status
+            if target_item.get('favorite'):
+                del target_item['favorite']
+            else:
+                target_item['favorite'] = True
+
+            # Save updated inventory
+            with open('data/user_inventory.json', 'w') as f:
+                json.dump(user_data, f, indent=2)
+            
+            # Return the updated inventory data
+            return jsonify({
+                'success': True,
+                'inventory': user_data['inventory']
+            })
+        else:
+            return jsonify({'error': 'Item not found'}), 404
+            
+    except Exception as e:
+        print(f"Error in toggle_favorite: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

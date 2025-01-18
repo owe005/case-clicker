@@ -1,5 +1,9 @@
 import json
+import traceback
+
+from flask import jsonify, session
 from config import CASE_FILE_MAPPING
+from user_data import load_user_data, save_user_data
 
 def find_best_skin_combination(available_skins, target_value, max_skins=10):
     """
@@ -92,3 +96,34 @@ def find_best_skin_combination(available_skins, target_value, max_skins=10):
             return [best_single]
 
     return result_skins
+
+def handle_blackjack_end(game_state):
+    try:
+        user_data = load_user_data()
+        total_payout = 0
+        
+        # Calculate total payout from all hands
+        for hand in game_state['player_hands']:
+            if 'payout' in hand:
+                total_payout += hand['payout']
+                
+        # Update user balance with winnings/losses
+        if total_payout > 0:
+            user_data['balance'] = float(user_data['balance']) + total_payout
+            
+        save_user_data(user_data)
+        
+        # Clear game from session
+        session.pop('blackjack_state', None)
+        
+        return jsonify({
+            'success': True,
+            'state': game_state,
+            'balance': user_data['balance'],
+            'payout': total_payout
+        })
+        
+    except Exception as e:
+        print(f"Error handling blackjack end: {e}")
+        traceback.print_exc()  # Add traceback for better debugging
+        return jsonify({'error': 'Failed to process game end'})

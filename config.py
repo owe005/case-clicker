@@ -1,6 +1,7 @@
 # Standard library imports
 import os
 from enum import Enum
+from typing import Optional
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -11,6 +12,8 @@ load_dotenv()
 
 # Featured skins refresh interval
 REFRESH_INTERVAL = 3600 
+AUCTION_FILE = 'data/auction_data.json'
+
 
 # Initialize OpenAI client with API key from environment
 api_key = os.getenv('OPENAI_API_KEY')

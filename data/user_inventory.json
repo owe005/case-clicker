@@ -1,12 +1,12 @@
 {
-  "balance": 48022.885941615044,
+  "balance": 73477.85094161502,
   "inventory": [
     {
       "name": "Operation Wildfire Case",
       "image": "operation_wildfire_case.png",
       "is_case": true,
       "type": "wildfire",
-      "quantity": 8
+      "quantity": 3
     },
     {
       "name": "Prisma Case",
@@ -28,22 +28,8 @@
       "image": "p90_emerald_dragon.png",
       "price": 1067.532,
       "timestamp": 1737153086.827216,
-      "is_case": false
-    },
-    {
-      "weapon": "AWP",
-      "name": "BOOM",
-      "wear": "FN",
-      "float_value": 0.009230630521177244,
-      "rarity": "PINK",
-      "case_type": "esports",
-      "base_price": 279.14,
-      "adjusted_price": 307.05400000000003,
-      "stattrak": false,
-      "image": "awp_boom.png",
-      "price": 307.05400000000003,
-      "timestamp": 1737153132.2263699,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "weapon": "AK-47",
@@ -58,23 +44,8 @@
       "image": "ak47_case_hardened.png",
       "price": 540.8370000000001,
       "timestamp": 1737153305.701452,
-      "is_case": false
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Printstream",
-      "wear": "FN",
-      "float_value": 7.473819161896734e-05,
-      "rarity": "RED",
-      "case_type": "broken_fang",
-      "base_price": 835.5,
-      "adjusted_price": 3342.0,
-      "stattrak": true,
-      "image": "m4a1s_printstream.png",
-      "is_sticker": false,
-      "price": 3342.0,
-      "timestamp": 1737153322.4463491,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "weapon": "AWP",
@@ -106,7 +77,8 @@
       "is_sticker": false,
       "price": 919.0500000000001,
       "timestamp": 1737153350.9123902,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "weapon": "AWP",
@@ -202,23 +174,8 @@
       "is_sticker": false,
       "price": 919.0500000000001,
       "timestamp": 1737153603.4871485,
-      "is_case": false
-    },
-    {
-      "weapon": "M4A4",
-      "name": "Howl",
-      "wear": "FN",
-      "float_value": 0.00756968776450627,
-      "rarity": "CONTRABAND",
-      "case_type": "huntsman",
-      "base_price": 12263.59,
-      "adjusted_price": 13489.949,
-      "stattrak": true,
-      "image": "m4a4_howl.png",
-      "is_sticker": false,
-      "price": 13489.949,
-      "timestamp": 1737153619.243072,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "name": "Natus Vincere (Holo)",
@@ -230,15 +187,6 @@
       "image": "natus_vincere_holo.png"
     },
     {
-      "name": "Ninjas in Pyjamas (Holo)",
-      "price": 108.39,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737153994.065896,
-      "is_sticker": true,
-      "image": "ninjas_in_pyjamas_holo.png"
-    },
-    {
       "name": "Natus Vincere (Holo)",
       "price": 189.21,
       "rarity": "PURPLE",
@@ -246,15 +194,6 @@
       "timestamp": 1737153994.0674028,
       "is_sticker": true,
       "image": "natus_vincere_holo.png"
-    },
-    {
-      "name": "Ninjas in Pyjamas (Foil)",
-      "price": 133.67,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737153994.0694108,
-      "is_sticker": true,
-      "image": "ninjas_in_pyjamas_foil.png"
     },
     {
       "name": "Natus Vincere (Holo)",
@@ -278,7 +217,8 @@
       "image": "awp_lightning_strike.png",
       "price": 2855.08,
       "timestamp": 1737154023.3993742,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "name": "Clan-Mystik (Holo)",
@@ -294,7 +234,8 @@
       "weapon": null,
       "price": 5468.84,
       "timestamp": 1737154046.1885834,
-      "is_case": false
+      "is_case": false,
+      "favorite": true
     },
     {
       "weapon": "AK-47",
@@ -310,112 +251,63 @@
       "is_sticker": false,
       "price": 4340.435,
       "timestamp": 1737154459.556904,
-      "is_case": false
-    },
-    {
-      "weapon": "M4A1-S",
-      "name": "Briefing",
-      "rarity": "BLUE",
-      "wear": "MW",
-      "stattrak": false,
-      "price": 4.27,
-      "timestamp": 1737156066.8846452,
-      "case_type": "hydra",
       "is_case": false,
-      "is_sticker": false,
-      "float_value": 0.14722276,
-      "image": "m4a1s_briefing.png"
+      "favorite": true
     },
     {
       "weapon": "MAC-10",
-      "name": "Allure",
-      "rarity": "PURPLE",
-      "wear": "FT",
-      "stattrak": true,
-      "price": 0.49,
-      "timestamp": 1737156066.8846452,
-      "case_type": "fracture",
-      "image": "mac10_allure.png",
-      "is_case": false,
-      "is_sticker": false,
-      "float_value": 0.17933439
-    },
-    {
-      "weapon": "Glock-18",
-      "name": "Royal Legion",
-      "rarity": "PURPLE",
-      "wear": "BS",
+      "name": "Lapis Gator",
+      "rarity": "BLUE",
+      "wear": "MW",
       "stattrak": false,
-      "price": 1.88,
-      "image": "glock18_royal_legion.png",
-      "timestamp": 1737156202.1729708,
+      "price": 0.51,
+      "timestamp": 1737212500.3352993,
       "case_type": "wildfire",
+      "float_value": 0.11666241,
       "is_case": false,
-      "is_sticker": false,
-      "float_value": 0.9337077
+      "image": "mac10_lapis_gator.png"
     },
     {
-      "name": "Splyce (Holo)",
-      "price": 26.95,
-      "rarity": "PURPLE",
-      "case_type": "challengers_columbus_2016",
-      "image": "splyce_holo.png",
-      "timestamp": 1737156206.345425,
-      "is_sticker": true
-    },
-    {
-      "name": "Fnatic (Holo)",
-      "price": 12.54,
-      "rarity": "PURPLE",
-      "case_type": "legends_columbus_2016",
-      "image": "fnatic_holo.png",
-      "timestamp": 1737156206.345425,
-      "is_sticker": true
-    },
-    {
-      "name": "3DMAX",
-      "price": 420.2,
+      "weapon": "Tec-9",
+      "name": "Jambiya",
       "rarity": "BLUE",
-      "case_type": "challengers_katowice_2014",
-      "image": "3dmax.png",
-      "timestamp": 1737156206.345425,
-      "is_sticker": true
-    },
-    {
-      "name": "mousesports",
-      "price": 434.55,
-      "rarity": "BLUE",
-      "case_type": "challengers_katowice_2014",
-      "image": "mousesports.png",
-      "timestamp": 1737156381.8045356,
-      "is_sticker": true
-    },
-    {
-      "name": "ESL Skull (Foil)",
-      "price": 368.8,
-      "rarity": "PINK",
-      "case_type": "legends_katowice_2014",
-      "image": "esl_skull_foil.png",
-      "timestamp": 1737156381.8045356,
-      "is_sticker": true
-    },
-    {
-      "weapon": "Driver Gloves",
-      "name": "Black Tie",
       "wear": "BS",
       "stattrak": false,
-      "price": 119.9,
-      "rarity": "GOLD",
-      "case_type": "broken_fang",
-      "case_file": "operation_broken_fang_case",
-      "float_value": 0.6401897,
-      "image": "drivergloves_black_tie.png",
-      "timestamp": 1737156384.2451108,
+      "price": 0.238,
+      "timestamp": 1737212500.3352993,
+      "case_type": "wildfire",
+      "float_value": 0.9320312,
       "is_case": false,
-      "is_sticker": false
+      "image": "tec9_jambiya.png"
+    },
+    {
+      "weapon": "Tec-9",
+      "name": "Jambiya",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 0.5,
+      "timestamp": 1737212500.3352993,
+      "case_type": "wildfire",
+      "float_value": 0.09906002,
+      "is_case": false,
+      "image": "tec9_jambiya.png"
+    },
+    {
+      "weapon": "MAG-7",
+      "name": "Praetorian",
+      "rarity": "PURPLE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 1.78,
+      "timestamp": 1737212500.3352993,
+      "case_type": "wildfire",
+      "float_value": 0.39384156,
+      "is_case": false,
+      "image": "mag7_praetorian.png"
     }
   ],
-  "exp": 33892.601,
+  "exp": 33907.601,
   "rank": 10,
   "upgrades": {
     "click_value": 8,
@@ -456,9 +348,9 @@
         "reward": 100000,
         "exp_reward": 50000,
         "icon": "\ud83c\udfc6",
-        "current_value": 178299.525,
+        "current_value": 203754.49,
         "category": "special",
-        "progress": 17.829952499999997
+        "progress": 20.375449
       },
       "cases_2": {
         "id": "cases_2",
@@ -468,16 +360,16 @@
         "reward": 500,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 11,
+        "current_value": 16,
         "category": "cases",
-        "progress": 11.0
+        "progress": 16.0
       }
     },
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 178299.525,
-    "total_cases_opened": 11,
+    "total_earnings": 203754.49,
+    "total_cases_opened": 16,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 10082,

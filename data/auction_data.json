@@ -1,0 +1,76 @@
+{
+  "item": {
+    "weapon": "Karambit",
+    "name": "Crimson Web",
+    "wear": "FN",
+    "float_value": 0.00164167456555467,
+    "rarity": "GOLD",
+    "case_type": "csgo3",
+    "base_price": 31178.99,
+    "adjusted_price": 37414.788,
+    "stattrak": true,
+    "image": "karambit_crimson_web.png",
+    "is_sticker": false
+  },
+  "end_time": "2025-01-18T20:26:02.914444",
+  "current_bid": 37.30708130445987,
+  "bids": [
+    {
+      "bidder": "Theo.91",
+      "amount": 13.997329067429542,
+      "timestamp": "2025-01-18T19:56:03.933600"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 25.661577810869204,
+      "timestamp": "2025-01-18T19:56:33.030768"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 37.30708130445987,
+      "timestamp": "2025-01-18T19:56:53.576071"
+    }
+  ],
+  "bot_budgets": {
+    "_Astrid47": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Kai.Jayden_02": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Orion_Phoenix98": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "ElaraB_23": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Theo.91": {
+      "budget": 33593.79328103613,
+      "status": "online"
+    },
+    "Nova-Lyn": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "FelixHaven19": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Aria.Stella85": {
+      "budget": 30283.82080313736,
+      "status": "online"
+    },
+    "Lucien_Kai": {
+      "budget": 0,
+      "status": "offline"
+    },
+    "Mira-Eclipse": {
+      "budget": 32859.16554324981,
+      "status": "online"
+    }
+  }
+}
