@@ -197,56 +197,11 @@
         {{ toast.message }}
       </div>
     </div>
-
-    <!-- Chat Area -->
-    <div 
-      class="fixed bottom-0 right-4 w-80 bg-gray-dark/95 backdrop-blur-md rounded-t-xl border border-yellow/10 shadow-lg"
-      :class="{ 'h-auto': chatMinimized }"
-    >
-      <div class="p-3 border-b border-yellow/10 flex items-center justify-between">
-        <div class="text-sm font-medium text-white">Trade Chat</div>
-        <button 
-          @click="chatMinimized = !chatMinimized"
-          class="text-white/50 hover:text-white"
-        >
-          {{ chatMinimized ? '+' : '−' }}
-        </button>
-      </div>
-      <template v-if="!chatMinimized">
-        <div ref="chatMessages" class="h-80 p-4 overflow-y-auto">
-          <div v-for="msg in chatMessages" :key="msg.id" class="mb-4">
-            <div class="text-xs text-white/50 mb-1">{{ msg.sender }}</div>
-            <div 
-              class="inline-block rounded-lg px-3 py-2 text-sm"
-              :class="msg.isBot ? 'bg-gray-dark/50 text-white' : 'bg-yellow text-gray-darker'"
-            >
-              {{ msg.message }}
-            </div>
-            <div class="text-xs text-white/30 mt-1">{{ msg.time }}</div>
-          </div>
-        </div>
-        <div class="p-3 border-t border-yellow/10 flex gap-2">
-          <input 
-            v-model="chatInput"
-            @keyup.enter="sendChatMessage"
-            type="text" 
-            placeholder="Type a message..." 
-            class="flex-1 bg-gray-dark/50 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-yellow/30"
-          >
-          <button 
-            @click="sendChatMessage"
-            class="px-4 py-2 bg-yellow text-gray-darker rounded-lg text-sm font-medium hover:bg-yellow/90"
-          >
-            Send
-          </button>
-        </div>
-      </template>
-    </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useStore } from '../store'
 import { CASE_MAPPING } from '../store'
 
@@ -254,19 +209,6 @@ export default {
   name: 'TradingView',
   setup() {
     const store = useStore()
-    
-    const BOT_PERSONALITIES = {
-      "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
-      "Kai.Jayden_02": "A young enthusiastic trader who loves discussing market trends and making predictions about future skin prices.",
-      "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
-      "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
-      "Theo.91": "A veteran trader who's been in the CS:GO trading scene since the beginning. Likes to share stories about old trades.",
-      "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
-      "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
-      "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
-      "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
-      "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
-    }
 
     const currentFilter = ref('all')
     const isLoading = ref(true)
@@ -275,14 +217,7 @@ export default {
     const selectedTrade = ref(null)
     const selectedTradeIndex = ref(null)
     const toasts = ref([])
-    const chatInput = ref('')
-    const chatMinimized = ref(false)
-    const chatActive = ref(false)
-    const lastMessageTime = ref(Date.now())
-    const conversationTimer = ref(null)
-    const chatMessages = ref([
-      { id: 1, sender: 'System', message: 'Welcome to the trading chat!', isBot: true, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
-    ])
+
 
     const filters = [
       { id: 'all', name: 'All Trades' },
@@ -408,140 +343,6 @@ export default {
       }, 3000)
     }
 
-    // Chat functionality
-    const sendChatMessage = async () => {
-      if (!chatInput.value.trim()) return
-
-      const message = chatInput.value
-      chatInput.value = ''
-
-      // Add user message
-      addChatMessage(message, 'You', false)
-      lastMessageTime.value = Date.now()
-
-      // Start conversation if not active
-      if (!chatActive.value) {
-        chatActive.value = true
-        startConversationLoop()
-      }
-
-      try {
-        // Get responding bot
-        const botResponse = await fetch('/select_responding_bot', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message,
-            chatHistory: chatMessages.value
-          })
-        })
-
-        const botData = await botResponse.json()
-        if (botData.error) throw new Error(botData.error)
-
-        // Get bot's response
-        setTimeout(async () => {
-          const response = await fetch('/chat_with_bot', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              botName: botData.selectedBot,
-              message,
-              chatHistory: chatMessages.value,
-              isAmbient: false
-            })
-          })
-
-          const data = await response.json()
-          if (data.error) throw new Error(data.error)
-
-          addChatMessage(data.message, botData.selectedBot, true)
-        }, Math.random() * 1500 + 500)
-      } catch (error) {
-        console.error('Chat error:', error)
-      }
-    }
-
-    const addChatMessage = (message, sender, isBot = false) => {
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      chatMessages.value.push({
-        id: Date.now(),
-        sender,
-        message: message.replace(`${sender}: `, '').replace(`${sender} `, ''),
-        isBot,
-        time
-      })
-
-      // Scroll to bottom on next tick
-      nextTick(() => {
-        const chatContainer = document.querySelector('.chat-messages')
-        if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight
-        }
-      })
-    }
-
-    const startConversationLoop = () => {
-      if (conversationTimer.value) {
-        clearInterval(conversationTimer.value)
-      }
-
-      conversationTimer.value = setInterval(async () => {
-        // Check if chat has been inactive
-        if (Date.now() - lastMessageTime.value > 120000) {
-          chatActive.value = false
-          clearInterval(conversationTimer.value)
-          return
-        }
-
-        // Random ambient message chance
-        if (Math.random() > 0.2) return
-
-        try {
-          // Get a random bot that hasn't spoken recently
-          const recentSpeakers = new Set(
-            chatMessages.value.slice(-5)
-              .filter(msg => msg.isBot)
-              .map(msg => msg.sender)
-          )
-
-          // Filter out recent speakers from bot selection
-          const availableBots = Object.keys(BOT_PERSONALITIES || {})
-            .filter(bot => !recentSpeakers.has(bot))
-
-          // Use a random available bot or any bot if all have spoken recently
-          const randomBot = availableBots.length > 0 ? 
-            availableBots[Math.floor(Math.random() * availableBots.length)] :
-            Object.keys(BOT_PERSONALITIES || {})[Math.floor(Math.random() * Object.keys(BOT_PERSONALITIES || {}).length)]
-
-          const response = await fetch('/chat_with_bot', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              botName: randomBot,
-              message: "Keep it very short (max 10 words)",
-              chatHistory: chatMessages.value.slice(-3),
-              isAmbient: true
-            })
-          })
-
-          const data = await response.json()
-          if (!data.error) {
-            addChatMessage(data.message, data.botName, true)
-            lastMessageTime.value = Date.now()
-          }
-        } catch (error) {
-          console.error('Ambient chat error:', error)
-        }
-      }, 10000)
-    }
-
     // Timer update
     const updateTimer = () => {
       const now = new Date()
@@ -564,14 +365,6 @@ export default {
     onMounted(() => {
       fetchTrades()
       updateTimer()
-      const timerInterval = setInterval(updateTimer, 1000)
-
-      onUnmounted(() => {
-        clearInterval(timerInterval)
-        if (conversationTimer.value) {
-          clearInterval(conversationTimer.value)
-        }
-      })
     })
 
     return {
@@ -583,16 +376,12 @@ export default {
       showModal,
       selectedTrade,
       toasts,
-      chatMessages,
-      chatInput,
-      chatMinimized,
       getItemImage,
       getItemAlt,
       getItemDisplayName,
       handleImageError,
       handleTrade,
-      completeTrade,
-      sendChatMessage
+      completeTrade
     }
   }
 }

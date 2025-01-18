@@ -123,7 +123,8 @@ export default {
       { path: '/casino', name: 'Casino' },
       { path: '/trading', name: 'Trading' },
       { path: '/achievements', name: 'Achievements' },
-      { path: '/auction', name: 'Auction' }
+      { path: '/auction', name: 'Auction' },
+      { path: '/loadout', name: 'Loadout' }
     ]
 
     const currentRoute = computed(() => route.path)

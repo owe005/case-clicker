@@ -561,8 +561,13 @@ export default {
     })
 
     const totalValue = computed(() => {
-      // Calculate total value using the backend-provided prices
-      return skins.value.reduce((total, item) => total + item.price, 0);
+      // Calculate total value excluding favorited items
+      return skins.value.reduce((total, item) => {
+        if (!item.favorite) {
+          return total + item.price
+        }
+        return total
+      }, 0);
     });
 
     // Update the total value display

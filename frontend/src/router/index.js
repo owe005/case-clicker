@@ -81,6 +81,11 @@ const routes = [
     path: '/auction',
     name: 'Auction',
     component: () => import('../views/AuctionView.vue')
+  },
+  {
+    path: '/loadout',
+    name: 'Loadout',
+    component: () => import('../views/LoadoutView.vue')
   }
 ]
 

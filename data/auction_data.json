@@ -1,75 +1,59 @@
 {
   "item": {
-    "weapon": "Karambit",
-    "name": "Crimson Web",
+    "weapon": "P90",
+    "name": "Emerald Dragon",
     "wear": "FN",
-    "float_value": 0.00164167456555467,
-    "rarity": "GOLD",
-    "case_type": "csgo3",
-    "base_price": 31178.99,
-    "adjusted_price": 37414.788,
+    "float_value": 0.005025815495117126,
+    "rarity": "PINK",
+    "case_type": "bravo",
+    "base_price": 889.61,
+    "adjusted_price": 1067.532,
     "stattrak": true,
-    "image": "karambit_crimson_web.png",
+    "image": "p90_emerald_dragon.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-18T20:26:02.914444",
-  "current_bid": 37.30708130445987,
-  "bids": [
-    {
-      "bidder": "Theo.91",
-      "amount": 13.997329067429542,
-      "timestamp": "2025-01-18T19:56:03.933600"
-    },
-    {
-      "bidder": "Theo.91",
-      "amount": 25.661577810869204,
-      "timestamp": "2025-01-18T19:56:33.030768"
-    },
-    {
-      "bidder": "Aria.Stella85",
-      "amount": 37.30708130445987,
-      "timestamp": "2025-01-18T19:56:53.576071"
-    }
-  ],
+  "end_time": "2025-01-19T00:57:02.240945",
+  "current_bid": 0,
+  "bids": [],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 886.2835821904457,
+      "status": "online"
     },
     "Kai.Jayden_02": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 866.905461734614,
+      "status": "online"
     },
     "Orion_Phoenix98": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 876.1839010465251,
+      "status": "online"
     },
     "ElaraB_23": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 444.805,
+      "status": "online"
     },
     "Theo.91": {
-      "budget": 33593.79328103613,
+      "budget": 444.805,
       "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 879.4758580583178,
+      "status": "online"
     },
     "FelixHaven19": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 880.5263807397434,
+      "status": "online"
     },
     "Aria.Stella85": {
-      "budget": 30283.82080313736,
+      "budget": 809.191184904185,
       "status": "online"
     },
     "Lucien_Kai": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 882.1664048462981,
+      "status": "online"
     },
     "Mira-Eclipse": {
-      "budget": 32859.16554324981,
+      "budget": 444.805,
       "status": "online"
     }
   }

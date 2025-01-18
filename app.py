@@ -9,9 +9,8 @@ from datetime import datetime, timedelta
 from functools import wraps
 from threading import Thread, Lock, Timer
 import atexit
-from typing import Optional
 from werkzeug.utils import safe_join
-from pathlib import Path
+import uuid
 
 # Third-party imports
 from dotenv import load_dotenv
@@ -21,20 +20,18 @@ from flask import (Flask, jsonify, redirect, render_template, request, send_from
 # Local imports
 from achievements import (update_case_achievements, update_click_achievements,
                         update_earnings_achievements)
-from bots import (client, create_system_message, format_bot_selection_history,
-                 format_bot_selection_system_message, format_conversation_history,
-                 generate_bot_players, get_trades_context, select_bot_with_ai)
+from bots import generate_bot_players
 
 from casino import find_best_skin_combination, handle_blackjack_end
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
-from config import (BLACK_NUMBERS, BOT_PERSONALITIES, CASE_DATA, CASE_FILE_MAPPING,
+from config import (BLACK_NUMBERS, CASE_DATA, CASE_FILE_MAPPING,
                    CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
 from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices, open_sticker_capsule
-from auction import load_auction_data, save_auction_data
+from auction import load_auction_data, save_auction_data, generate_bot_budgets, generate_auction_item
 
 # Load environment variables
 load_dotenv('config.env')
@@ -56,7 +53,6 @@ CURRENT_AUCTION = None
 AUCTION_BIDS = []
 AUCTION_END_TIME = None
 AUCTION_BOT_BUDGETS = {}
-AUCTION_FILE = 'data/auction_data.json'
 LAST_BID_TIME = None
 LAST_BIDDER = None
 MIN_BID_INCREMENT = 10  # Minimum bid increment in dollars
@@ -1182,9 +1178,10 @@ def sell_all():
         user_data = load_user_data()
         inventory = user_data.get('inventory', [])
         
-        # Get only non-case items
-        skins = [item for item in inventory if not item.get('is_case')]
+        # Get only non-case, non-favorited items
+        skins = [item for item in inventory if not item.get('is_case') and not item.get('favorite', False)]
         cases = [item for item in inventory if item.get('is_case')]
+        favorited = [item for item in inventory if not item.get('is_case') and item.get('favorite', False)]
         
         if not skins:
             return jsonify({'error': 'No items to sell'})
@@ -1199,8 +1196,8 @@ def sell_all():
         # Update user's balance
         user_data['balance'] = float(user_data['balance']) + total_value
         
-        # Keep only cases in inventory
-        user_data['inventory'] = cases
+        # Keep cases and favorited items in inventory
+        user_data['inventory'] = cases + favorited
         
         # Update achievements with the total earned amount
         update_earnings_achievements(user_data, total_value)
@@ -2052,97 +2049,6 @@ def complete_trade():
         traceback.print_exc()  # Add this to get more detailed error info
         return jsonify({'error': 'Failed to complete trade'})
 
-@app.route('/chat_with_bot', methods=['POST'])
-def chat_with_bot():
-    try:
-        data = request.get_json()
-        bot_name = data.get('botName')
-        message = data.get('message')
-        chat_history = data.get('chatHistory', [])
-        
-        print(f"Received chat request - Bot: {bot_name}, Message: {message}")
-        
-        if not bot_name or not message:
-            return jsonify({'error': 'Missing bot name or message'})
-            
-        personality = BOT_PERSONALITIES.get(bot_name, "A friendly CS:GO skin trader")
-        trades_context = get_trades_context()
-        system_message = create_system_message(bot_name, personality, trades_context)
-
-        # Add example responses
-        EXAMPLE_RESPONSES = [
-            "kys noob", "trash inv fr fr", "ratio + didn't ask",
-            "nice pattern KEKW", "ur poor lmao", "actual silver trader xD",
-            "cope harder kid", "nice lowball kekw", "imagine being this broke",
-            "skill issue + L"
-        ]
-        system_message += f"\n\nExample responses: {', '.join(EXAMPLE_RESPONSES)}"
-
-        conversation_history = format_conversation_history(chat_history, message)
-
-        try:
-            print("Sending request to OpenAI API...")
-            completion = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": system_message},
-                    *conversation_history
-                ],
-                max_tokens=150,
-                temperature=0.7
-            )
-            
-            print("Received response from OpenAI API")
-            bot_response = completion.choices[0].message.content
-            print(f"Bot response: {bot_response}")
-            
-            return jsonify({
-                'success': True,
-                'message': bot_response,
-                'timestamp': time.time()
-            })
-            
-        except Exception as e:
-            print(f"OpenAI API error: {str(e)}")
-            print(f"Error type: {type(e)}")
-            traceback.print_exc()
-            return jsonify({
-                'error': 'Failed to generate response',
-                'details': str(e)
-            })
-            
-    except Exception as e:
-        print(f"Chat error: {str(e)}")
-        traceback.print_exc()
-        return jsonify({
-            'error': 'Failed to process chat',
-            'details': str(e)
-        })
-
-@app.route('/select_responding_bot', methods=['POST'])
-def select_responding_bot():
-    try:
-        data = request.get_json()
-        message = data.get('message')
-        chat_history = data.get('chatHistory', [])
-        
-        system_message = format_bot_selection_system_message(chat_history, message)
-        conversation_history = format_bot_selection_history(chat_history, message)
-        selected_bot = select_bot_with_ai(system_message, conversation_history)
-            
-        return jsonify({
-            'success': True,
-            'selectedBot': selected_bot
-        })
-        
-    except Exception as e:
-        print(f"Error selecting bot: {str(e)}")
-        traceback.print_exc()
-        return jsonify({
-            'error': 'Failed to select bot',
-            'details': str(e)
-        })
-
 # Add this route after the other routes
 @app.route('/achievements')
 @login_required
@@ -2493,305 +2399,6 @@ def process_auction_background():
 def auction():
     # For Vue routes, we need to serve the main Vue app
     return render_template('index.html')
-
-def generate_auction_item():
-    """Generate a rare/valuable item for auction with balanced distribution"""
-    try:
-        # Load all case data
-        weapon_skins = []  # Regular weapons (AK-47, M4A4, etc.)
-        knife_skins = []   # All knife skins
-        glove_skins = []   # All glove skins
-        sticker_items = [] # High value stickers
-        
-        print("\nGenerating auction item...")
-        
-        # First load valuable stickers
-        for capsule_type, file_name in STICKER_CAPSULE_FILE_MAPPING.items():
-            try:
-                with open(f'stickers/{file_name}.json', 'r') as f:
-                    capsule_data = json.load(f)
-                    
-                    # Look through all sticker rarities
-                    for rarity, stickers in capsule_data['stickers'].items():
-                        for sticker in stickers:
-                            try:
-                                price = float(sticker['price'])
-                                # Only include very valuable stickers (over $800)
-                                if price >= 800:
-                                    print(f"Found valuable sticker: {sticker['name']} - ${price}")
-                                    sticker_item = {
-                                        'name': sticker['name'],
-                                        'image': sticker['image'],
-                                        'rarity': rarity.upper(),
-                                        'case_type': capsule_type,
-                                        'base_price': price,
-                                        'adjusted_price': price,  # Stickers don't have float adjustment
-                                        'is_sticker': True,
-                                        'stattrak': False,  # Stickers don't have StatTrak
-                                        'wear': None,  # Stickers don't have wear
-                                        'float_value': None,  # Stickers don't have float
-                                        'weapon': None  # Stickers don't have weapon type
-                                    }
-                                    sticker_items.append(sticker_item)
-                            except (ValueError, KeyError) as e:
-                                print(f"Error processing sticker price: {e}")
-                                continue
-            except Exception as e:
-                print(f"Error loading sticker capsule {file_name}: {e}")
-                continue
-        
-        print(f"\nFound {len(sticker_items)} valuable stickers")
-        
-        # Get wear ranges from cases_prices_and_floats
-        wear_ranges = {
-            'FN': (0.00, 0.07),
-            'MW': (0.07, 0.15),
-            'FT': (0.15, 0.38),
-            'WW': (0.38, 0.45),
-            'BS': (0.45, 1.00)
-        }
-        
-        # Then load weapon/knife/glove skins
-        for case_type in CASE_TYPES:
-            file_name = CASE_FILE_MAPPING.get(case_type)
-            folder_name = CASE_SKINS_FOLDER_NAMES.get(case_type)
-            if not file_name:
-                continue
-                
-            with open(f'cases/{file_name}.json', 'r') as f:
-                case_data = json.load(f)
-                
-                # Look through all skins
-                for grade, skins in case_data['skins'].items():
-                    for skin in skins:
-                        # Just use the image filename without the path
-                        image_path = skin['image']
-                        
-                        # Check prices for valuable items
-                        for wear, price in skin['prices'].items():
-                            if wear != 'NO' and not wear.startswith('ST_'):
-                                try:
-                                    price_value = float(price)
-                                    
-                                    # Categorize items by their rarity grade
-                                    is_knife = grade.upper() in ['GOLD', 'GOLD_KNIFE'] and not ('Gloves' in skin['weapon'] or 'Hand Wraps' in skin['weapon'])
-                                    is_glove = 'Gloves' in skin['weapon'] or 'Hand Wraps' in skin['weapon']
-                                    
-                                    # Adjust thresholds to better balance with stickers
-                                    if is_knife:
-                                        # Knives: Only FN/ST FN over $2500 (increased from $2000)
-                                        if wear != 'FN':
-                                            continue
-                                        threshold = 2500  # Further increased threshold to reduce knife count
-                                    elif is_glove:
-                                        # Gloves: Include FN/MW/FT over $1000
-                                        if wear not in ['FN', 'MW', 'FT']:  # Added FT for gloves
-                                            continue
-                                        threshold = 1000  # Increased threshold but allowing more wear conditions
-                                    else:
-                                        # Regular weapons: Only FN/ST FN over $250 (reduced from $300)
-                                        if wear != 'FN':
-                                            continue
-                                        threshold = 250  # Further reduced threshold to include more weapons
-                                    
-                                    if price_value >= threshold:                                        
-                                        # Generate float based on wear range
-                                        wear_range = wear_ranges.get(wear)
-                                        if not wear_range:
-                                            continue
-                                        
-                                        # Generate a very good float for the wear range
-                                        min_float, max_float = wear_range
-                                        float_range = max_float - min_float
-                                        max_special = min_float + (float_range * 0.2)
-                                        float_value = random.uniform(min_float, max_special)
-                                        
-                                        # Adjust price based on special float
-                                        adjusted_price = adjust_price_by_float(
-                                            price_value,
-                                            wear,
-                                            float_value
-                                        )
-                                        
-                                        item_data = {
-                                            'weapon': skin['weapon'],
-                                            'name': skin['name'],
-                                            'wear': wear,
-                                            'float_value': float_value,
-                                            'rarity': grade.upper(),
-                                            'case_type': case_type,
-                                            'base_price': price_value,
-                                            'adjusted_price': adjusted_price,
-                                            'stattrak': False,
-                                            'image': image_path,
-                                            'is_sticker': False
-                                        }
-                                        
-                                        # Categorize the item based on rarity grade
-                                        if is_knife:
-                                            knife_skins.append(item_data)
-                                        elif is_glove:
-                                            glove_skins.append(item_data)
-                                        else:
-                                            weapon_skins.append(item_data)
-                                        
-                                        # Also add StatTrak version if available (only for weapons and knives)
-                                        st_key = f'ST_{wear}'
-                                        if st_key in skin['prices'] and not is_glove:
-                                            st_price = float(skin['prices'][st_key])
-                                            if st_price >= threshold:  # Use same threshold for StatTrak
-                                                print(f"Found StatTrak version: {skin['weapon']} | {skin['name']} ({wear}) - ${st_price}")
-                                                # Calculate StatTrak adjusted price
-                                                st_adjusted_price = adjust_price_by_float(
-                                                    st_price,
-                                                    wear,
-                                                    float_value
-                                                )
-                                                
-                                                st_item_data = {
-                                                    'weapon': skin['weapon'],
-                                                    'name': skin['name'],
-                                                    'wear': wear,
-                                                    'float_value': float_value,
-                                                    'rarity': grade.upper(),
-                                                    'case_type': case_type,
-                                                    'base_price': st_price,
-                                                    'adjusted_price': st_adjusted_price,
-                                                    'stattrak': True,
-                                                    'image': image_path,
-                                                    'is_sticker': False
-                                                }
-                                                
-                                                if is_knife:
-                                                    knife_skins.append(st_item_data)
-                                                else:
-                                                    weapon_skins.append(st_item_data)
-                                except Exception as e:
-                                    print(f"Error processing price: {e}")
-                                    continue
-        
-        print(f"\nFound items:")
-        print(f"Weapons: {len(weapon_skins)}")
-        print(f"Knives: {len(knife_skins)}")
-        print(f"Gloves: {len(glove_skins)}")
-        print(f"Stickers: {len(sticker_items)}")
-        
-        # Ensure we have at least some items
-        if not any([weapon_skins, knife_skins, glove_skins, sticker_items]):
-            raise ValueError("No valuable items found")
-            
-        # Select item type with balanced probability
-        available_types = []
-        if weapon_skins:
-            available_types.append(('weapon', weapon_skins))
-        if knife_skins:
-            available_types.append(('knife', knife_skins))
-        if glove_skins:
-            available_types.append(('glove', glove_skins))
-        if sticker_items:
-            available_types.append(('sticker', sticker_items))
-            
-        # Distribution: 40% weapons, 20% knives, 20% gloves, 20% stickers
-        weights = []
-        for item_type, items in available_types:
-            if item_type == 'weapon':
-                weights.append(40)  # Increased from 35%
-            elif item_type == 'knife':
-                weights.append(20)  # Reduced from 25%
-            elif item_type == 'glove':
-                weights.append(20)  # Increased from 15%
-            else:  # sticker
-                weights.append(20)  # Reduced from 25%
-                
-        # Normalize weights if not all types are available
-        if weights:
-            total = sum(weights)
-            weights = [w/total * 100 for w in weights]
-            
-        # If weapons are available, force weapon selection 30% of the time (reduced from 40%)
-        if any(t[0] == 'weapon' for t in available_types):
-            force_weapon = random.random() < 0.30
-            if force_weapon:
-                weapon_pool = next(pool for type_name, pool in available_types if type_name == 'weapon')
-                selected_item = random.choice(weapon_pool)
-                print(f"\nForced weapon selection: {selected_item.get('weapon')} | {selected_item.get('name')}")
-                return selected_item
-            
-        # Otherwise use weighted selection
-        chosen_type, chosen_pool = random.choices(available_types, weights=weights)[0]
-        selected_item = random.choice(chosen_pool)
-        
-        if selected_item['is_sticker']:
-            print(f"\nSelected sticker: {selected_item['name']} - ${selected_item['base_price']}")
-        else:
-            print(f"\nSelected item: {selected_item.get('weapon')} | {selected_item['name']} - ${selected_item['base_price']}")
-            
-        return selected_item
-        
-    except Exception as e:
-        print(f"Error generating auction item: {e}")
-        traceback.print_exc()  # Add full traceback
-        # Return a fallback item if something goes wrong
-        return {
-            'weapon': 'Karambit',
-            'name': 'Fade',
-            'wear': 'FN',
-            'float_value': 0.0007,
-            'rarity': 'GOLD',
-            'case_type': 'csgo',
-            'base_price': 1500.0,
-            'adjusted_price': 2000.0,
-            'stattrak': False,
-            'image': 'karambit_fade.png',
-            'is_sticker': False
-        }
-
-def generate_bot_budgets(base_price):
-    """Generate random budgets for bots based on item value"""
-    budgets = {}
-    
-    # List of all possible bot names
-    all_bot_names = [
-        "_Astrid47", "Kai.Jayden_02", "Orion_Phoenix98", "ElaraB_23",
-        "Theo.91", "Nova-Lyn", "FelixHaven19", "Aria.Stella85",
-        "Lucien_Kai", "Mira-Eclipse"
-    ]
-    
-    # Randomly select 3-10 bots to participate
-    num_bots = random.randint(3, 10)
-    active_bots = random.sample(all_bot_names, num_bots)
-    
-    # Set all bots as offline initially
-    for bot_name in all_bot_names:
-        budgets[bot_name] = {
-            "budget": 0,
-            "status": "offline"
-        }
-    
-    # Set budgets for active bots
-    for bot_name in active_bots:
-        # Determine budget strategy (5% chance for high/low, 90% for normal)
-        strategy = random.choices(
-            ['normal', 'high', 'low'],
-            weights=[90, 5, 5]
-        )[0]
-        
-        if strategy == 'normal':
-            # Normal budget: ±10% of base price
-            budget = base_price * random.uniform(0.9, 1.1)
-        elif strategy == 'high':
-            # High budget: +10% to +100% of base price
-            budget = base_price * random.uniform(1.1, 2.0)
-        else:  # low
-            # Low budget: 50% to 90% of base price
-            budget = base_price * random.uniform(0.5, 0.9)
-        
-        budgets[bot_name] = {
-            "budget": budget,
-            "status": "online"
-        }
-    
-    return budgets
 
 def get_current_bid():
     """Get the current highest bid"""
@@ -3266,24 +2873,6 @@ def get_all_case_contents():
     except Exception as e:
         print(f"Error loading all cases: {str(e)}")
         return jsonify({'error': 'Failed to load cases'}), 500
-
-def calculate_rank(exp):
-    """Calculate rank based on experience points"""
-    for rank, required_exp in RANK_EXP.items():
-        if exp < required_exp:
-            return {
-                'rank': rank,
-                'name': RANKS[rank],
-                'next_rank_exp': required_exp
-            }
-    
-    # If exp is higher than all ranks, return max rank
-    max_rank = max(RANKS.keys())
-    return {
-        'rank': max_rank,
-        'name': RANKS[max_rank],
-        'next_rank_exp': None
-    }
 
 @app.route('/api/batch_click', methods=['POST'])
 @login_required
@@ -3932,6 +3521,98 @@ def toggle_favorite():
     except Exception as e:
         print(f"Error in toggle_favorite: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/api/loadout/save', methods=['POST'])
+@login_required
+def save_loadout():
+    try:
+        loadout_data = request.json
+        
+        # Validate loadout data against inventory
+        inventory = get_user_inventory()
+        validated_loadout = {
+            'CT': {},
+            'T': {}
+        }
+        
+        for team in ['CT', 'T']:
+            for slot, item in loadout_data.get(team, {}).items():
+                if item:
+                    # Find matching item in inventory to get all fields
+                    matching_item = next(
+                        (inv_item for inv_item in inventory
+                        if inv_item['name'] == item['name'] and
+                        inv_item['wear'] == item['wear'] and
+                        inv_item['stattrak'] == item['stattrak']),
+                        None
+                    )
+                    if matching_item:
+                        # Copy all fields from inventory item
+                        validated_loadout[team][slot] = matching_item
+
+        # Save directly to user_loadouts.json
+        with open('data/user_loadouts.json', 'w') as f:
+            json.dump(validated_loadout, f, indent=2)
+
+        return jsonify({'success': True, 'loadout': validated_loadout})
+    except Exception as e:
+        print(f"Error in save_loadout: {str(e)}")
+        return jsonify({'error': 'Failed to save loadout'}), 500
+
+@app.route('/api/loadout/load')
+@login_required
+def load_loadout():
+    try:
+        # Load directly from user_loadouts.json
+        try:
+            with open('data/user_loadouts.json', 'r') as f:
+                user_loadout = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            user_loadout = {
+                'CT': {},
+                'T': {}
+            }
+
+        # Validate against current inventory
+        inventory = get_user_inventory()
+        validated_loadout = {
+            'CT': {},
+            'T': {}
+        }
+
+        for team in ['CT', 'T']:
+            for slot, item in user_loadout.get(team, {}).items():
+                if item:
+                    # Find matching item in inventory to get all fields
+                    matching_item = next(
+                        (inv_item for inv_item in inventory
+                        if inv_item['name'] == item['name'] and
+                        inv_item['wear'] == item['wear'] and
+                        inv_item['stattrak'] == item['stattrak']),
+                        None
+                    )
+                    if matching_item:
+                        # Copy all fields from inventory item
+                        validated_loadout[team][slot] = matching_item
+
+        return jsonify({'loadout': validated_loadout})
+    except Exception as e:
+        print(f"Error in load_loadout: {str(e)}")
+        return jsonify({'error': 'Failed to load loadout'}), 500
+
+def get_user_inventory():
+    try:
+        with open('data/user_inventory.json', 'r') as f:
+            user_data = json.load(f)
+            return user_data.get('inventory', [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+@app.route('/loadout')
+@login_required
+def loadout():
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('')
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line
