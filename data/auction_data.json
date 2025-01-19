@@ -1,54 +1,114 @@
 {
   "item": {
-    "weapon": "Karambit",
-    "name": "Crimson Web",
+    "weapon": "AK-47",
+    "name": "Fire Serpent",
     "wear": "FN",
-    "float_value": 0.011941211313763179,
-    "rarity": "GOLD",
-    "case_type": "csgo",
-    "base_price": 4915.0,
-    "adjusted_price": 5406.5,
+    "float_value": 0.009463305633294951,
+    "rarity": "RED",
+    "case_type": "bravo",
+    "base_price": 2005.0,
+    "adjusted_price": 2205.5,
     "stattrak": false,
-    "image": "karambit_crimson_web.png",
+    "image": "ak47_fire_serpent.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-19T17:06:37.035629",
-  "current_bid": 85.96609008446578,
+  "end_time": "2025-01-19T17:36:37.078208",
+  "current_bid": 237.64795388608607,
   "bids": [
     {
-      "bidder": "_Astrid47",
-      "amount": 13.756702754633977,
-      "timestamp": "2025-01-19T16:37:33.476962"
+      "bidder": "Lucien_Kai",
+      "amount": 14.90194641079454,
+      "timestamp": "2025-01-19T17:09:39.134199"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 30.395606602464838,
+      "timestamp": "2025-01-19T17:09:47.474591"
     },
     {
       "bidder": "FelixHaven19",
-      "amount": 26.93410822753793,
-      "timestamp": "2025-01-19T16:37:40.329439"
+      "amount": 45.18153621015882,
+      "timestamp": "2025-01-19T17:10:08.046200"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 57.90948682383798,
+      "timestamp": "2025-01-19T17:10:29.847551"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 69.8873930550605,
+      "timestamp": "2025-01-19T17:10:58.528211"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 85.97691322256372,
+      "timestamp": "2025-01-19T17:11:46.103936"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 98.54932586837734,
+      "timestamp": "2025-01-19T17:12:11.430184"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 113.13611352021107,
+      "timestamp": "2025-01-19T17:12:26.477439"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 124.86538896703479,
+      "timestamp": "2025-01-19T17:12:33.636483"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 136.0606183582095,
+      "timestamp": "2025-01-19T17:13:09.708323"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 149.064579566391,
+      "timestamp": "2025-01-19T17:14:44.282360"
     },
     {
       "bidder": "Nova-Lyn",
-      "amount": 42.38142977712337,
-      "timestamp": "2025-01-19T16:38:09.452834"
+      "amount": 160.4650815703503,
+      "timestamp": "2025-01-19T17:15:00.123013"
     },
     {
-      "bidder": "Orion_Phoenix98",
-      "amount": 54.83130166347268,
-      "timestamp": "2025-01-19T16:38:34.054995"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 70.80902319114749,
-      "timestamp": "2025-01-19T16:38:34.543961"
+      "bidder": "_Astrid47",
+      "amount": 173.8589549695957,
+      "timestamp": "2025-01-19T17:15:43.179673"
     },
     {
       "bidder": "FelixHaven19",
-      "amount": 85.96609008446578,
-      "timestamp": "2025-01-19T16:39:15.743928"
+      "amount": 185.46823006013355,
+      "timestamp": "2025-01-19T17:15:45.337874"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 201.32790000550978,
+      "timestamp": "2025-01-19T17:16:19.987288"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 212.54704049084776,
+      "timestamp": "2025-01-19T17:16:53.783893"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 226.10488866446616,
+      "timestamp": "2025-01-19T17:17:17.075190"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 237.64795388608607,
+      "timestamp": "2025-01-19T17:17:29.291425"
     }
   ],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 7372.5,
+      "budget": 1949.1711471074102,
       "status": "online"
     },
     "Kai.Jayden_02": {
@@ -56,23 +116,23 @@
       "status": "offline"
     },
     "Orion_Phoenix98": {
-      "budget": 4674.1645715265695,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "ElaraB_23": {
-      "budget": 7372.5,
+      "budget": 2175.748534948527,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 4442.698327900851,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Nova-Lyn": {
-      "budget": 4610.630114576102,
+      "budget": 2007.853023284142,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 5144.880972834851,
+      "budget": 2185.4520430768885,
       "status": "online"
     },
     "Aria.Stella85": {
@@ -80,8 +140,8 @@
       "status": "offline"
     },
     "Lucien_Kai": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 1002.5,
+      "status": "online"
     },
     "Mira-Eclipse": {
       "budget": 0,

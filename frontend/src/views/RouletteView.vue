@@ -1,5 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-darker">
+    <!-- Add audio element -->
+    <audio ref="spinSound" src="/roulette_spin.mp3" preload="auto"></audio>
     <!-- Header -->
     <div class="relative py-12 mb-8">
       <div class="absolute inset-0 bg-gradient-to-b from-yellow/5 to-transparent"></div>
@@ -341,8 +343,8 @@ const WHEEL_ORDER = [
   0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
   5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
 ]
-const BETTING_TIME = 10 // Time allowed for betting
-const WARNING_TIME = 3  // Time after betting closes before result
+const BETTING_TIME = 2 // Time allowed for betting
+const WARNING_TIME = 2  // Time after betting closes before result
 const ROUND_TIME = BETTING_TIME + WARNING_TIME // Total round time
 
 export default {
@@ -368,6 +370,29 @@ export default {
     const bettingOpen = ref(true)
     const balance = ref(0) // Start at 0, will be updated from server
     const timerInterval = ref(null)
+    const spinSound = ref(null) // Add ref for the audio element
+    const audioInitialized = ref(false) // Add flag for audio initialization
+
+    // Function to initialize audio
+    const initializeAudio = () => {
+      if (!audioInitialized.value && spinSound.value) {
+        spinSound.value.load()
+        // Create a silent audio context to initialize audio
+        spinSound.value.volume = 0
+        spinSound.value.play().then(() => {
+          spinSound.value.pause()
+          spinSound.value.volume = 1
+          audioInitialized.value = true
+        }).catch(error => {
+          console.log('Audio initialization failed:', error)
+        })
+      }
+    }
+
+    // Add click handler to initialize audio
+    const handleClick = () => {
+      initializeAudio()
+    }
 
     // Function to fetch and update balance
     const updateBalance = async () => {
@@ -398,11 +423,17 @@ export default {
 
       // Add event listeners
       document.querySelectorAll('.number, .special-bet').forEach(element => {
-        element.addEventListener('click', () => handleNumberClick(element))
+        element.addEventListener('click', () => {
+          handleClick()
+          handleNumberClick(element)
+        })
       })
 
       document.querySelectorAll('.quick-bet').forEach(btn => {
-        btn.addEventListener('click', () => handleQuickBet(btn))
+        btn.addEventListener('click', () => {
+          handleClick()
+          handleQuickBet(btn)
+        })
       })
 
       // Start game cycle
@@ -794,7 +825,7 @@ export default {
 
             // Calculate wheel position
             const numberIndex = findNumberIndex(data.result)
-            const itemWidth = 90 // 80px width + 10px margin
+            const itemWidth = 66 // 60px width + 6px margin
             const paddingItems = 5
             const basePosition = (paddingItems + 37 + numberIndex) * itemWidth
             const containerWidth = wheelRef.value.parentElement.offsetWidth
@@ -816,7 +847,14 @@ export default {
             requestAnimationFrame(() => {
               wheelStyle.value = {
                 transform: `translateX(-${finalPosition}px)`,
-                transition: 'transform 4s cubic-bezier(0.22, 1, 0.36, 1)'
+                transition: 'transform 6s cubic-bezier(0.05, 0, 0.05, 1)'
+              }
+              // Play the spin sound with proper error handling
+              if (spinSound.value) {
+                spinSound.value.currentTime = 0
+                spinSound.value.play().catch(error => {
+                  console.log('Error playing spin sound:', error)
+                })
               }
             })
 
@@ -884,7 +922,7 @@ export default {
               setTimeout(() => {
                 startGameCycle()
               }, 2000)
-            }, 4000) // Wait for wheel animation to complete
+            }, 6000) // Wait for wheel animation to complete
           })
           .catch(error => {
             console.error('Error in playGame:', error)
@@ -1054,11 +1092,17 @@ export default {
 
       // Add event listeners
       document.querySelectorAll('.number, .special-bet').forEach(element => {
-        element.addEventListener('click', () => handleNumberClick(element))
+        element.addEventListener('click', () => {
+          handleClick()
+          handleNumberClick(element)
+        })
       })
 
       document.querySelectorAll('.quick-bet').forEach(btn => {
-        btn.addEventListener('click', () => handleQuickBet(btn))
+        btn.addEventListener('click', () => {
+          handleClick()
+          handleQuickBet(btn)
+        })
       })
 
       // Start game cycle
@@ -1119,6 +1163,7 @@ export default {
       balance,
       handleNumberClick,
       handleQuickBet,
+      spinSound,
     }
   }
 }
