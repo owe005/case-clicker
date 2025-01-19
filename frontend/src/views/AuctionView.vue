@@ -251,6 +251,7 @@ export default {
               data.current_bid !== currentBid.value &&
               !data.ended) {
             notification.value = 'You have been outbid!'
+            playReverseBidSound() // Play reverse sound when outbid
             // Update store balance immediately
             const balanceResponse = await fetch('/get_balance')
             const balanceData = await balanceResponse.json()
@@ -274,6 +275,7 @@ export default {
         if (data.ended && data.winner === 'You' && !showWinningScreen.value) {
           wonItem.value = data.won_item
           finalPrice.value = data.final_price
+          playWinSound() // Play win sound when user wins
           showWinScreen()
           notification.value = ''
         } else if (data.ended && !showWinningScreen.value) {
@@ -307,12 +309,37 @@ export default {
       }, 500)
     }
 
+    const playClickSound = () => {
+      const audio = new Audio('/roulette_click.wav')
+      audio.play()
+    }
+
+    // Add playBidSound function
+    const playBidSound = () => {
+      const audio = new Audio('/auction_bid.wav')
+      audio.play()
+    }
+
+    // Add playReverseBidSound function
+    const playReverseBidSound = () => {
+      const audio = new Audio('/auction_bid_reverse.wav')
+      audio.play()
+    }
+
+    // Add playWinSound function
+    const playWinSound = () => {
+      const audio = new Audio('/auction_win.wav')
+      audio.play()
+    }
+
     const placeBid = async () => {
       const amount = parseFloat(bidAmount.value)
       if (!amount || isNaN(amount) || amount <= currentBid.value) {
         notification.value = 'Please enter a valid bid amount higher than the current bid'
         return
       }
+
+      playClickSound()
 
       try {
         const response = await fetch('/place_bid', {
@@ -326,6 +353,9 @@ export default {
           notification.value = data.error
           return
         }
+
+        // Play bid sound on successful bid
+        playBidSound()
 
         // Update state with response data
         currentBid.value = data.current_bid
@@ -343,6 +373,7 @@ export default {
     }
 
     const setQuickBid = (increment) => {
+      playClickSound()
       bidAmount.value = (currentBid.value + increment).toFixed(2)
     }
 
@@ -521,7 +552,11 @@ export default {
       wonItem,
       finalPrice,
       auctionHistory,
-      getItemRarityClass
+      getItemRarityClass,
+      playClickSound,
+      playBidSound,
+      playReverseBidSound,
+      playWinSound,
     }
   }
 }

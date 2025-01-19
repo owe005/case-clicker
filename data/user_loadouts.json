@@ -2,18 +2,39 @@
   "CT": {
     "knife": {
       "weapon": "Karambit",
-      "name": "Slaughter",
+      "name": "Crimson Web",
+      "wear": "FN",
+      "float_value": 0.0017323154014359094,
       "rarity": "GOLD",
-      "wear": "FT",
+      "case_type": "csgo2",
+      "base_price": 4915.0,
+      "adjusted_price": 5898.0,
       "stattrak": false,
-      "price": 1035.0,
-      "float_value": 0.16945838,
-      "timestamp": 1737310951.1311722,
-      "case_type": "phoenix",
+      "image": "karambit_crimson_web.png",
+      "is_sticker": false,
+      "price": 5898.0,
+      "timestamp": 1737319375.970239,
       "is_case": false,
-      "image": "karambit_slaughter.png",
       "favorite": true
     }
   },
-  "T": {}
+  "T": {
+    "knife": {
+      "weapon": "Karambit",
+      "name": "Crimson Web",
+      "wear": "FN",
+      "float_value": 0.0017323154014359094,
+      "rarity": "GOLD",
+      "case_type": "csgo2",
+      "base_price": 4915.0,
+      "adjusted_price": 5898.0,
+      "stattrak": false,
+      "image": "karambit_crimson_web.png",
+      "is_sticker": false,
+      "price": 5898.0,
+      "timestamp": 1737319375.970239,
+      "is_case": false,
+      "favorite": true
+    }
+  }
 }

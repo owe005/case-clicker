@@ -2,12 +2,44 @@
   <div class="min-h-screen bg-gray-darker">
     <!-- Add audio element -->
     <audio ref="spinSound" src="/roulette_spin.mp3" preload="auto"></audio>
+    <!-- Add win/lose sound elements -->
+    <audio ref="winSound" src="/roulette_win.wav" preload="auto"></audio>
+    <audio ref="loseSound" src="/roulette_lose.wav" preload="auto"></audio>
+    <!-- Add lightning sound -->
+    <audio ref="lightningSound" src="/roulette_lightning.wav" preload="auto"></audio>
+    <!-- Add background music -->
+    <audio ref="backgroundMusic" src="/roulette_background.mp3" preload="auto" loop></audio>
+    <!-- Add chip click sound -->
+    <audio ref="clickSound" src="/roulette_click.wav" preload="auto"></audio>
     <!-- Header -->
     <div class="relative py-12 mb-8">
       <div class="absolute inset-0 bg-gradient-to-b from-yellow/5 to-transparent"></div>
       <div class="relative max-w-7xl mx-auto px-4">
         <h1 class="text-4xl font-display font-bold text-white mb-2">Roulette</h1>
         <p class="text-white/70">Classic casino roulette with multipliers!</p>
+        <!-- Add volume controls -->
+        <div class="flex gap-4 mt-4">
+          <button 
+            class="px-4 py-2 rounded-lg bg-gray-dark/50 text-white/70 hover:bg-gray-darker hover:text-white transition-all duration-200 flex items-center gap-2"
+            @click="toggleMusic"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path v-if="!isMusicMuted" fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" />
+              <path v-else fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 1.414L10.414 12l3.293 3.293a1 1 0 01-1.414 1.414L9 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L7.586 12 4.293 8.707a1 1 0 011.414-1.414L9 10.586l3.293-3.293z" clip-rule="evenodd" />
+            </svg>
+            {{ isMusicMuted ? 'Unmute Music' : 'Mute Music' }}
+          </button>
+          <button 
+            class="px-4 py-2 rounded-lg bg-gray-dark/50 text-white/70 hover:bg-gray-darker hover:text-white transition-all duration-200 flex items-center gap-2"
+            @click="toggleSoundEffects"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path v-if="!isSoundMuted" fill-rule="evenodd" d="M10 3.5a.5.5 0 01.5.5v12a.5.5 0 01-1 0V4a.5.5 0 01.5-.5zM4.5 6.5a.5.5 0 01.5.5v6a.5.5 0 01-1 0V7a.5.5 0 01.5-.5zm11 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V7a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+              <path v-else fill-rule="evenodd" d="M10 3.5a.5.5 0 01.5.5v12a.5.5 0 01-1 0V4a.5.5 0 01.5-.5zM4.5 6.5a.5.5 0 01.5.5v6a.5.5 0 01-1 0V7a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+            </svg>
+            {{ isSoundMuted ? 'Unmute Effects' : 'Mute Effects' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -343,8 +375,8 @@ const WHEEL_ORDER = [
   0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
   5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
 ]
-const BETTING_TIME = 2 // Time allowed for betting
-const WARNING_TIME = 2  // Time after betting closes before result
+const BETTING_TIME = 10 // Time allowed for betting
+const WARNING_TIME = 3  // Time after betting closes before result
 const ROUND_TIME = BETTING_TIME + WARNING_TIME // Total round time
 
 export default {
@@ -371,25 +403,54 @@ export default {
     const balance = ref(0) // Start at 0, will be updated from server
     const timerInterval = ref(null)
     const spinSound = ref(null) // Add ref for the audio element
+    const winSound = ref(null)  // Add ref for win sound
+    const loseSound = ref(null) // Add ref for lose sound
+    const lightningSound = ref(null) // Add ref for lightning sound
+    const backgroundMusic = ref(null) // Add ref for background music
+    const clickSound = ref(null) // Add ref for click sound
     const audioInitialized = ref(false) // Add flag for audio initialization
+    const isMusicMuted = ref(false)
+    const isSoundMuted = ref(false)
+    const previousMusicVolume = ref(0.1) // Store previous music volume
+    const previousSoundVolume = ref(1) // Store previous sound volume
 
     // Function to initialize audio
     const initializeAudio = () => {
-      if (!audioInitialized.value && spinSound.value) {
-        spinSound.value.load()
-        // Create a silent audio context to initialize audio
-        spinSound.value.volume = 0
-        spinSound.value.play().then(() => {
-          spinSound.value.pause()
-          spinSound.value.volume = 1
+      if (!audioInitialized.value) {
+        // Initialize effect sounds first
+        const sounds = [spinSound.value, winSound.value, loseSound.value, lightningSound.value, clickSound.value].filter(Boolean)
+        Promise.all(sounds.map(sound => {
+          sound.load()
+          sound.volume = 0
+          return sound.play().then(() => {
+            sound.pause()
+            sound.volume = isSoundMuted.value ? 0 : 1
+          }).catch(error => {
+            console.log('Audio initialization failed:', error)
+          })
+        })).then(() => {
           audioInitialized.value = true
-        }).catch(error => {
-          console.log('Audio initialization failed:', error)
+          // Initialize and start background music
+          if (backgroundMusic.value) {
+            backgroundMusic.value.load()
+            backgroundMusic.value.volume = isMusicMuted.value ? 0 : 0.1 // Set volume to 10%
+            backgroundMusic.value.loop = true  // Ensure looping is enabled
+            backgroundMusic.value.play().catch(error => {
+              console.log('Error playing background music:', error)
+            })
+          }
+        })
+      } else if (backgroundMusic.value && backgroundMusic.value.paused) {
+        // If audio is initialized but background music is paused, try to start it
+        backgroundMusic.value.volume = isMusicMuted.value ? 0 : 0.1
+        backgroundMusic.value.loop = true
+        backgroundMusic.value.play().catch(error => {
+          console.log('Error playing background music:', error)
         })
       }
     }
 
-    // Add click handler to initialize audio
+    // Add click handler to initialize audio and ensure background music plays
     const handleClick = () => {
       initializeAudio()
     }
@@ -420,6 +481,9 @@ export default {
         balance: balance.value,
         type: typeof balance.value
       })
+
+      // Try to start background music
+      initializeAudio()
 
       // Add event listeners
       document.querySelectorAll('.number, .special-bet').forEach(element => {
@@ -609,6 +673,14 @@ export default {
         currentBets.value[betType] = amount
       }
 
+      // Play click sound when adding chips
+      if (clickSound.value && !isSoundMuted.value) {
+        clickSound.value.currentTime = 0
+        clickSound.value.play().catch(error => {
+          console.log('Error playing click sound:', error)
+        })
+      }
+
       // Update visual selection and add chips
       const element = document.querySelector(`[data-bet-type="${betType}"]`)
       if (element) {
@@ -648,6 +720,14 @@ export default {
 
     // Update generateLightningNumbers function
     const generateLightningNumbers = () => {
+      // Play lightning sound effect
+      if (lightningSound.value) {
+        lightningSound.value.currentTime = 0
+        lightningSound.value.play().catch(error => {
+          console.log('Error playing lightning sound:', error)
+        })
+      }
+
       // Clear previous lightning numbers
       document.querySelectorAll('[data-bet-type].lightning').forEach(el => {
         el.classList.remove('lightning')
@@ -885,9 +965,22 @@ export default {
 
                 showResult.value = true
 
-                // Create confetti if won
+                // Play win/lose sound and create confetti if won
                 if (resultWon.value) {
+                  if (winSound.value) {
+                    winSound.value.currentTime = 0
+                    winSound.value.play().catch(error => {
+                      console.log('Error playing win sound:', error)
+                    })
+                  }
                   createConfetti()
+                } else {
+                  if (loseSound.value) {
+                    loseSound.value.currentTime = 0
+                    loseSound.value.play().catch(error => {
+                      console.log('Error playing lose sound:', error)
+                    })
+                  }
                 }
 
                 // Update balance after showing result
@@ -1074,6 +1167,41 @@ export default {
       betAmount.value = newAmount.toFixed(2)
     }
 
+    // Function to toggle music
+    const toggleMusic = () => {
+      if (backgroundMusic.value) {
+        if (isMusicMuted.value) {
+          // Unmute - restore previous volume
+          backgroundMusic.value.volume = previousMusicVolume.value
+          isMusicMuted.value = false
+        } else {
+          // Mute - store current volume and set to 0
+          previousMusicVolume.value = backgroundMusic.value.volume
+          backgroundMusic.value.volume = 0
+          isMusicMuted.value = true
+        }
+      }
+    }
+
+    // Function to toggle sound effects
+    const toggleSoundEffects = () => {
+      const soundEffects = [spinSound.value, winSound.value, loseSound.value, lightningSound.value, clickSound.value].filter(Boolean)
+      if (isSoundMuted.value) {
+        // Unmute - restore previous volume
+        soundEffects.forEach(sound => {
+          sound.volume = previousSoundVolume.value
+        })
+        isSoundMuted.value = false
+      } else {
+        // Mute - store current volume and set to 0
+        previousSoundVolume.value = soundEffects[0]?.volume || 1
+        soundEffects.forEach(sound => {
+          sound.volume = 0
+        })
+        isSoundMuted.value = true
+      }
+    }
+
     // Lifecycle
     onMounted(() => {
       // Fetch initial balance
@@ -1164,7 +1292,20 @@ export default {
       handleNumberClick,
       handleQuickBet,
       spinSound,
+      winSound,
+      loseSound,
+      lightningSound,
+      backgroundMusic,
+      clickSound,
+      isMusicMuted,
+      isSoundMuted,
+      toggleMusic,
+      toggleSoundEffects,
     }
   }
 }
 </script>
+
+<style scoped>
+/* Add any existing styles */
+</style>

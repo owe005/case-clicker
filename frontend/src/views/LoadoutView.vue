@@ -315,6 +315,7 @@ export default {
           return
         }
 
+        console.log('Loaded loadout:', data.loadout)
         loadout.value = data.loadout
         validateLoadout() // Validate after loading
       } catch (error) {
@@ -356,12 +357,22 @@ export default {
         for (const [slot, item] of Object.entries(loadout.value[team])) {
           if (item) {
             // Check if item still exists in inventory
-            const exists = inventory.some(invItem => 
-              invItem.name === item.name && 
-              invItem.wear === item.wear && 
-              invItem.stattrak === item.stattrak
-            )
+            const exists = inventory.some(invItem => {
+              const match = invItem.name === item.name && 
+                invItem.wear === item.wear && 
+                invItem.stattrak === item.stattrak &&
+                invItem.weapon === item.weapon
+              
+              if (match) {
+                console.log('Found matching item:', invItem)
+              }
+              return match
+            })
+            
+            console.log('Validating item:', item, 'Exists:', exists)
+            
             if (!exists) {
+              console.log('Removing non-existent item:', item)
               delete loadout.value[team][slot]
               hasChanges = true
             }
@@ -378,7 +389,7 @@ export default {
     // Watch for inventory changes to validate loadout
     watch(() => store.state.inventory, () => {
       validateLoadout()
-    })
+    }, { deep: true })
 
     // Get equipped item for a slot
     const getEquippedItem = (slot) => {
@@ -397,44 +408,61 @@ export default {
       currentSlot.value = null
     }
 
-    // Get available skins for current slot
-    const getAvailableSkins = () => {
-      return store.state.inventory.filter(item => {
-        // Skip cases and stickers
-        if (item.is_case || item.is_sticker) {
-          return false
-        }
-
-        // For knives
-        if (currentSlot.value === 'knife') {
-          const knives = ['knife', 'karambit', 'bayonet', 'butterfly', 'm9 bayonet', 'flip', 'gut', 'huntsman', 'falchion', 'bowie', 'shadow daggers', 'ursus', 'navaja', 'stiletto', 'talon', 'classic', 'paracord', 'survival', 'skeleton', 'nomad']
-          return knives.some(knifeType => item.weapon?.toLowerCase().includes(knifeType))
-        }
-        // For gloves
-        if (currentSlot.value === 'glove') {
-          return item.weapon?.toLowerCase().includes('glove')
-        }
-        // For other weapons, normalize the names for comparison
-        const itemWeapon = item.weapon?.toLowerCase()
-          .replace('-', '')
-          .replace(' ', '')
-          .replace('553', '553')
-          .replace('galil ar', 'galil')
-          .replace('galilar', 'galil')
-        const slotWeapon = currentSlot.value.toLowerCase()
-        return itemWeapon === slotWeapon
-      })
+    // Check if an item is already equipped on the other team
+    const isItemEquippedOnOtherTeam = (skin) => {
+      const otherTeam = currentTeam.value === 'CT' ? 'T' : 'CT'
+      return Object.values(loadout.value[otherTeam]).some(item => 
+        item && 
+        item.weapon === skin.weapon && 
+        item.name === skin.name && 
+        item.wear === skin.wear && 
+        item.stattrak === skin.stattrak &&
+        item.float_value === skin.float_value
+      )
     }
 
     // Equip a skin
-    const equipSkin = (skin) => {
+    const equipSkin = async (skin) => {
+      const team = currentTeam.value
+      const slot = currentSlot.value
+      
       if (skin) {
-        loadout.value[currentTeam.value][currentSlot.value] = skin
+        console.log('Equipping skin:', skin)
+        // Check if already equipped on other team
+        if (isItemEquippedOnOtherTeam(skin)) {
+          alert('This item is already equipped on the other team!')
+          closeSelector()
+          return
+        }
+        // Create a deep copy of the skin to prevent reference issues
+        loadout.value[team][slot] = JSON.parse(JSON.stringify(skin))
       } else {
-        delete loadout.value[currentTeam.value][currentSlot.value]
+        delete loadout.value[team][slot]
       }
-      saveLoadout()
-      closeSelector()
+      
+      try {
+        const response = await fetch('/api/loadout/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(loadout.value)
+        })
+        
+        const data = await response.json()
+        
+        if (data.error) {
+          console.error('Error saving loadout:', data.error)
+          return
+        }
+
+        // Update local state with validated loadout from server
+        loadout.value = data.loadout
+      } catch (error) {
+        console.error('Error saving loadout:', error)
+      } finally {
+        closeSelector()
+      }
     }
 
     // Get skin image path
@@ -475,6 +503,35 @@ export default {
         'BLUE': 'bg-gradient-to-r from-blue-500 to-blue-600'
       }
       return colors[rarity] || 'bg-gradient-to-r from-gray-500 to-gray-600'
+    }
+
+    // Get available skins for current slot
+    const getAvailableSkins = () => {
+      return store.state.inventory.filter(item => {
+        // Skip cases and stickers
+        if (item.is_case || item.is_sticker) {
+          return false
+        }
+
+        // For knives
+        if (currentSlot.value === 'knife') {
+          const knives = ['knife', 'karambit', 'bayonet', 'butterfly', 'm9 bayonet', 'flip', 'gut', 'huntsman', 'falchion', 'bowie', 'shadow daggers', 'ursus', 'navaja', 'stiletto', 'talon', 'classic', 'paracord', 'survival', 'skeleton', 'nomad']
+          return knives.some(knifeType => item.weapon?.toLowerCase().includes(knifeType))
+        }
+        // For gloves
+        if (currentSlot.value === 'glove') {
+          return item.weapon?.toLowerCase().includes('glove')
+        }
+        // For other weapons, normalize the names for comparison
+        const itemWeapon = item.weapon?.toLowerCase()
+          .replace('-', '')
+          .replace(' ', '')
+          .replace('553', '553')
+          .replace('galil ar', 'galil')
+          .replace('galilar', 'galil')
+        const slotWeapon = currentSlot.value.toLowerCase()
+        return itemWeapon === slotWeapon
+      }).filter(item => !isItemEquippedOnOtherTeam(item)) // Filter out items equipped on other team
     }
 
     return {

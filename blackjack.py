@@ -103,11 +103,22 @@ class BlackjackGame:
     def from_state(cls, state: dict) -> 'BlackjackGame':
         """Reconstruct a BlackjackGame instance from a state dictionary."""
         game = cls()
-        # Only replace the deck if it exists in the state
-        if 'deck' in state:
-            game.deck = [Card.from_dict(card_data) for card_data in state['deck']]
-        game.dealer_hand = Hand.from_dict(state['dealer_hand'])
-        game.player_hands = [Hand.from_dict(hand_data) for hand_data in state['player_hands']]
+        
+        # Reconstruct dealer hand
+        for card_data in state['dealer_hand']['cards']:
+            game.dealer_hand.add_card(Card(card_data['rank'], card_data['suit'], 0, card_data['rank'] == 'A'))
+        
+        # Reconstruct player hands
+        game.player_hands = []
+        for hand_data in state['player_hands']:
+            hand = Hand()
+            for card_data in hand_data['cards']:
+                hand.add_card(Card(card_data['rank'], card_data['suit'], 0, card_data['rank'] == 'A'))
+            hand.bet = hand_data['bet']
+            hand.doubled = hand_data.get('doubled', False)
+            hand.insurance = hand_data.get('insurance', 0)
+            game.player_hands.append(hand)
+        
         game.current_hand_index = state['current_hand_index']
         game.game_over = state['game_over']
         return game
@@ -115,9 +126,17 @@ class BlackjackGame:
     def to_state(self) -> dict:
         """Convert the current game state to a dictionary for storage."""
         return {
-            'deck': [card.to_dict() for card in self.deck],
-            'dealer_hand': self.dealer_hand.to_dict(),
-            'player_hands': [hand.to_dict() for hand in self.player_hands],
+            'dealer_hand': {
+                'cards': [{'rank': c.rank, 'suit': c.suit} for c in self.dealer_hand.cards],
+                'value': self.dealer_hand.value
+            },
+            'player_hands': [{
+                'cards': [{'rank': c.rank, 'suit': c.suit} for c in hand.cards],
+                'value': hand.value,
+                'bet': hand.bet,
+                'doubled': hand.doubled,
+                'insurance': hand.insurance
+            } for hand in self.player_hands],
             'current_hand_index': self.current_hand_index,
             'game_over': self.game_over
         }

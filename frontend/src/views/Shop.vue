@@ -678,9 +678,16 @@ export default {
       return groups;
     });
 
+    // Add playBuySound function
+    function playBuySound() {
+      const audio = new Audio('/roulette_click.wav')
+      audio.play()
+    }
+
     // Buy case function
     async function buyCase(caseType) {
       try {
+        playBuySound() // Play sound when buying
         // Find the case item in the grouped cases
         let caseItem = null;
         for (const group of Object.values(groupedCases.value)) {
@@ -727,6 +734,7 @@ export default {
     // Purchase skin
     async function purchaseSkin(skin) {
       try {
+        playBuySound() // Play sound when buying
         // Only send the required fields
         const skinData = {
           weapon: skin.weapon,
@@ -922,6 +930,7 @@ export default {
     // Buy sticker capsule function
     async function buyCapsule(capsuleType) {
       try {
+        playBuySound() // Play sound when buying
         // Find the capsule item in the grouped capsules
         let capsuleItem = null;
         for (const group of Object.values(groupedCapsules.value)) {
@@ -1056,6 +1065,7 @@ export default {
       formatNumber,
       groupedCapsules,
       sortedCapsuleRankGroups,
+      playBuySound,
     }
   }
 }

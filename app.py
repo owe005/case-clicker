@@ -71,9 +71,8 @@ active_mines_games = {}
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user' not in session:
-            user_data = load_user_data()
-            session['user'] = user_data
+        if 'logged_in' not in session:
+            session['logged_in'] = True
         return f(*args, **kwargs)
     return decorated_function
 
@@ -992,7 +991,7 @@ def play_roulette():
             })
             
         bets = bet_info['bets']
-        total_bet = bet_info['total_bet']
+        total_bet = bet_info['total']
         
         # Calculate winnings for placed bets
         winnings = 0
@@ -2775,8 +2774,8 @@ def close_roulette_bets():
         
         # Store minimal bet info in session
         session['roulette_bet'] = {
-            'bets': bets,
-            'total_bet': total_bet
+            'bets': {k: float(v) for k, v in bets.items()},  # Store only bet amounts
+            'total': total_bet
         }
         
         return jsonify({
@@ -2936,9 +2935,11 @@ def batch_click():
         # Save to file
         save_user_data(user_data)
         
-        # Update session
-        session['user_data'] = user_data
-        session.modified = True
+        # Only store the multiplier in session if it's not 1.0
+        if current_multiplier != 1.0:
+            session['multiplier'] = current_multiplier
+        else:
+            session.pop('multiplier', None)
 
         return jsonify({
             'balance': new_balance,
@@ -3542,20 +3543,34 @@ def save_loadout():
             'T': {}
         }
         
+        # Keep track of used items to prevent duplicates
+        used_items = set()
+        
         for team in ['CT', 'T']:
             for slot, item in loadout_data.get(team, {}).items():
                 if item:
+                    # Create a unique identifier for the item
+                    item_id = f"{item['weapon']}_{item['name']}_{item['wear']}_{item['float_value']}_{item['stattrak']}"
+                    
+                    # Skip if this exact item is already used
+                    if item_id in used_items:
+                        continue
+                        
                     # Find matching item in inventory to get all fields
                     matching_item = next(
                         (inv_item for inv_item in inventory
                         if inv_item['name'] == item['name'] and
                         inv_item['wear'] == item['wear'] and
-                        inv_item['stattrak'] == item['stattrak']),
+                        inv_item['stattrak'] == item['stattrak'] and
+                        inv_item['weapon'] == item['weapon']),
                         None
                     )
+                    
                     if matching_item:
+                        # Add to used items
+                        used_items.add(item_id)
                         # Copy all fields from inventory item
-                        validated_loadout[team][slot] = matching_item
+                        validated_loadout[team][slot] = matching_item.copy()
 
         # Save directly to user_loadouts.json
         with open('data/user_loadouts.json', 'w') as f:
@@ -3595,12 +3610,13 @@ def load_loadout():
                         (inv_item for inv_item in inventory
                         if inv_item['name'] == item['name'] and
                         inv_item['wear'] == item['wear'] and
-                        inv_item['stattrak'] == item['stattrak']),
+                        inv_item['stattrak'] == item['stattrak'] and
+                        inv_item['weapon'] == item['weapon']),  # Add weapon check
                         None
                     )
                     if matching_item:
                         # Copy all fields from inventory item
-                        validated_loadout[team][slot] = matching_item
+                        validated_loadout[team][slot] = matching_item.copy()  # Make a copy to prevent reference issues
 
         return jsonify({'loadout': validated_loadout})
     except Exception as e:
