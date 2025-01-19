@@ -1,75 +1,19 @@
 {
   "CT": {
     "knife": {
-      "weapon": "Gut Knife",
-      "name": "Bright Water",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 108.19,
+      "weapon": "Karambit",
+      "name": "Slaughter",
       "rarity": "GOLD",
-      "case_type": "gamma",
-      "case_file": "gamma_case",
-      "float_value": 0.05357746,
-      "image": "gutknife_bright_water.png",
-      "timestamp": 1737228676.027512,
-      "is_case": false,
-      "is_sticker": false
-    },
-    "mp5": {
-      "weapon": "MP5",
-      "name": "Gauss",
-      "rarity": "PURPLE",
       "wear": "FT",
       "stattrak": false,
-      "price": 0.26,
-      "timestamp": 1737229652.508959,
-      "case_type": "prisma",
-      "float_value": 0.30253454,
+      "price": 1035.0,
+      "float_value": 0.16945838,
+      "timestamp": 1737310951.1311722,
+      "case_type": "phoenix",
       "is_case": false,
-      "image": "mp5_gauss.png"
-    },
-    "ssg08": {
-      "weapon": "SSG 08",
-      "name": "Necropos",
-      "rarity": "BLUE",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 0.79,
-      "timestamp": 1737241385.436246,
-      "case_type": "wildfire",
-      "float_value": 0.02301963,
-      "is_case": false,
-      "image": "ssg08_necropos.png"
+      "image": "karambit_slaughter.png",
+      "favorite": true
     }
   },
-  "T": {
-    "knife": {
-      "weapon": "Gut Knife",
-      "name": "Bright Water",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 108.19,
-      "rarity": "GOLD",
-      "case_type": "gamma",
-      "case_file": "gamma_case",
-      "float_value": 0.05357746,
-      "image": "gutknife_bright_water.png",
-      "timestamp": 1737228676.027512,
-      "is_case": false,
-      "is_sticker": false
-    },
-    "ak47": {
-      "weapon": "AK-47",
-      "name": "Uncharted",
-      "rarity": "BLUE",
-      "wear": "BS",
-      "stattrak": false,
-      "price": 0.24,
-      "timestamp": 1737229652.509965,
-      "case_type": "prisma",
-      "float_value": 0.63682582,
-      "is_case": false,
-      "image": "ak47_uncharted.png"
-    }
-  }
+  "T": {}
 }

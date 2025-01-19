@@ -88,7 +88,9 @@
                       <input 
                         type="number" 
                         min="1" 
-                        v-model="case_item.quantity" 
+                        :value="case_item.quantity"
+                        @input="e => case_item.quantity = Number(e.target.value) || 1"
+                        @change="e => case_item.quantity = Number(e.target.value) || 1"
                         :disabled="isCaseLocked(case_item.name)"
                         class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center disabled:opacity-50"
                       >
@@ -173,7 +175,9 @@
                       <input 
                         type="number" 
                         min="1" 
-                        v-model="capsule.quantity" 
+                        :value="capsule.quantity"
+                        @input="e => capsule.quantity = Number(e.target.value) || 1"
+                        @change="e => capsule.quantity = Number(e.target.value) || 1"
                         :disabled="isCapsuleLocked(capsule.name)"
                         class="w-14 px-2 py-1 bg-gray-darker text-white rounded-lg text-center disabled:opacity-50"
                       >
@@ -511,7 +515,7 @@ export default {
           console.error('Error loading cases:', data.error)
           return
         }
-        // Add quantity field to each case
+        // Add quantity field to each case as a number
         Object.values(data).forEach(case_data => {
           case_data.quantity = 1
         })
@@ -571,40 +575,127 @@ export default {
     function showNotification(message, duration = 2000, caseType = null, capsuleType = null) {
       // If there's an existing notification and it's the same case/capsule
       if (notification.value.show && ((caseType && caseType === notification.value.lastCase) || (capsuleType && capsuleType === notification.value.lastCapsule))) {
-        // Increment the purchase count
-        notification.value.purchaseCount += caseType ? cases.value[caseType].quantity : stickerCapsules.value[capsuleType].quantity
-        // Update message with new count
-        notification.value.message = `Purchased ${notification.value.purchaseCount}x ${caseType ? cases.value[caseType].name : stickerCapsules.value[capsuleType].name}!`
+        // Get the new quantity
+        let newQuantity = 0;
+        if (caseType) {
+          for (const group of Object.values(groupedCases.value)) {
+            const item = group.find(item => item.case_type === caseType);
+            if (item) {
+              newQuantity = Number(item.quantity) || 1;
+              break;
+            }
+          }
+        } else if (capsuleType) {
+          for (const group of Object.values(groupedCapsules.value)) {
+            const item = group.find(item => item.type === capsuleType);
+            if (item) {
+              newQuantity = Number(item.quantity) || 1;
+              break;
+            }
+          }
+        }
+        
+        // Add the new quantity to the total
+        notification.value.purchaseCount += newQuantity;
+        
+        // Update message with total count
+        const itemName = caseType ? 
+          cases.value[caseType].name : 
+          (capsuleType ? stickerCapsules.value[capsuleType].name : '');
+        notification.value.message = `Purchased ${notification.value.purchaseCount}x ${itemName}!`;
+        
         // Make it bounce
-        notification.value.bounce = true
+        notification.value.bounce = true;
         setTimeout(() => {
-          notification.value.bounce = false
-        }, 200)
+          notification.value.bounce = false;
+        }, 200);
+        
         // Reset the timeout
         if (notification.value.timeout) {
-          clearTimeout(notification.value.timeout)
+          clearTimeout(notification.value.timeout);
         }
       } else {
         // New notification
-        notification.value.show = true
-        notification.value.message = message
-        notification.value.lastCase = caseType
-        notification.value.lastCapsule = capsuleType
-        notification.value.purchaseCount = caseType ? cases.value[caseType].quantity : (capsuleType ? stickerCapsules.value[capsuleType].quantity : 0)
+        notification.value.show = true;
+        notification.value.message = message;
+        notification.value.lastCase = caseType;
+        notification.value.lastCapsule = capsuleType;
+        
+        // Set initial purchase count from the current quantity
+        if (caseType) {
+          for (const group of Object.values(groupedCases.value)) {
+            const item = group.find(item => item.case_type === caseType);
+            if (item) {
+              notification.value.purchaseCount = Number(item.quantity) || 1;
+              break;
+            }
+          }
+        } else if (capsuleType) {
+          for (const group of Object.values(groupedCapsules.value)) {
+            const item = group.find(item => item.type === capsuleType);
+            if (item) {
+              notification.value.purchaseCount = Number(item.quantity) || 1;
+              break;
+            }
+          }
+        } else {
+          notification.value.purchaseCount = 1;
+        }
       }
 
       notification.value.timeout = setTimeout(() => {
-        notification.value.show = false
-        notification.value.message = ''
-        notification.value.lastCase = null
-        notification.value.lastCapsule = null
-        notification.value.purchaseCount = 0
-      }, duration)
+        notification.value.show = false;
+        notification.value.message = '';
+        notification.value.lastCase = null;
+        notification.value.lastCapsule = null;
+        notification.value.purchaseCount = 0;
+      }, duration);
     }
+
+    // Add computed property for grouped cases
+    const groupedCases = computed(() => {
+      const casesArray = Object.entries(cases.value).map(([case_type, case_data]) => ({
+        case_type,
+        ...case_data,
+        quantity: Number(case_data.quantity) || 1  // Ensure quantity is a number
+      }));
+
+      // Group cases by rank requirement using CASE_RANK_REQUIREMENTS
+      const groups = {};
+      casesArray.forEach(case_item => {
+        const requiredRank = CASE_RANK_REQUIREMENTS[case_item.name] || 0;
+        if (!groups[requiredRank]) {
+          groups[requiredRank] = [];
+        }
+        groups[requiredRank].push(case_item);
+      });
+
+      // Sort cases within each group by price
+      Object.values(groups).forEach(group => {
+        group.sort((a, b) => a.price - b.price);
+      });
+
+      return groups;
+    });
 
     // Buy case function
     async function buyCase(caseType) {
       try {
+        // Find the case item in the grouped cases
+        let caseItem = null;
+        for (const group of Object.values(groupedCases.value)) {
+          caseItem = group.find(item => item.case_type === caseType);
+          if (caseItem) break;
+        }
+        
+        if (!caseItem) {
+          console.error('Case not found:', caseType);
+          return;
+        }
+
+        const quantity = Number(caseItem.quantity) || 1;
+        console.log('Buying case with quantity:', quantity); // Debug log
+        
         const response = await fetch('/buy_case', {
           method: 'POST',
           headers: {
@@ -612,24 +703,24 @@ export default {
           },
           body: JSON.stringify({
             case_type: caseType,
-            quantity: cases.value[caseType].quantity
+            quantity: quantity
           })
-        })
+        });
         
-        const data = await response.json()
+        const data = await response.json();
         if (data.error) {
-          showNotification(data.error)
-          return
+          showNotification(data.error);
+          return;
         }
 
         // Update store balance
-        store.updateUserData({ balance: data.balance })
+        store.updateUserData({ balance: data.balance });
         
         // Show success notification with case type for tracking
-        showNotification(`Purchased ${cases.value[caseType].quantity}x ${cases.value[caseType].name}!`, 2000, caseType)
+        showNotification(`Purchased ${quantity}x ${caseItem.name}!`, 2000, caseType);
       } catch (error) {
-        console.error('Error buying case:', error)
-        showNotification('Failed to purchase case')
+        console.error('Error buying case:', error);
+        showNotification('Failed to purchase case');
       }
     }
 
@@ -777,34 +868,6 @@ export default {
       )
     })
 
-    // Add computed property for grouped cases
-    const groupedCases = computed(() => {
-      const casesArray = Object.entries(cases.value).map(([case_type, case_data]) => ({
-        case_type,
-        ...case_data
-      }));
-
-      // Group cases by rank requirement using CASE_RANK_REQUIREMENTS
-      const groups = {};
-      casesArray.forEach(case_item => {
-        const requiredRank = CASE_RANK_REQUIREMENTS[case_item.name] || 0;
-        if (!groups[requiredRank]) {
-          groups[requiredRank] = [];
-        }
-        groups[requiredRank].push(case_item);
-      });
-
-      // Log cases grouped under Silver I
-      console.log('Cases under Silver I:', groups[0]);
-
-      // Sort cases within each group by price
-      Object.values(groups).forEach(group => {
-        group.sort((a, b) => a.price - b.price);
-      });
-
-      return groups;
-    });
-
     // Add computed property for sorted rank groups
     const sortedRankGroups = computed(() => {
       return Object.entries(groupedCases.value)
@@ -820,7 +883,7 @@ export default {
           console.error('Error loading sticker capsules:', data.error)
           return
         }
-        // Add quantity field to each capsule
+        // Add quantity field to each capsule as a number
         Object.values(data).forEach(capsule => {
           capsule.quantity = 1
         })
@@ -830,9 +893,50 @@ export default {
       }
     }
 
+    // Add computed property for grouped capsules
+    const groupedCapsules = computed(() => {
+      const capsulesArray = Object.entries(stickerCapsules.value).map(([type, capsule]) => ({
+        type,
+        ...capsule,
+        quantity: Number(capsule.quantity) || 1  // Ensure quantity is a number
+      }));
+
+      // Group capsules by rank requirement
+      const groups = {};
+      capsulesArray.forEach(capsule => {
+        const requiredRank = STICKER_RANK_REQUIREMENTS[capsule.name] || 0;
+        if (!groups[requiredRank]) {
+          groups[requiredRank] = [];
+        }
+        groups[requiredRank].push(capsule);
+      });
+
+      // Sort capsules within each group by price
+      Object.values(groups).forEach(group => {
+        group.sort((a, b) => a.price - b.price);
+      });
+
+      return groups;
+    });
+
     // Buy sticker capsule function
     async function buyCapsule(capsuleType) {
       try {
+        // Find the capsule item in the grouped capsules
+        let capsuleItem = null;
+        for (const group of Object.values(groupedCapsules.value)) {
+          capsuleItem = group.find(item => item.type === capsuleType);
+          if (capsuleItem) break;
+        }
+        
+        if (!capsuleItem) {
+          console.error('Capsule not found:', capsuleType);
+          return;
+        }
+
+        const quantity = Number(capsuleItem.quantity) || 1;
+        console.log('Buying capsule with quantity:', quantity); // Debug log
+        
         const response = await fetch('/buy_sticker_capsule', {
           method: 'POST',
           headers: {
@@ -840,24 +944,24 @@ export default {
           },
           body: JSON.stringify({
             capsule_type: capsuleType,
-            quantity: stickerCapsules.value[capsuleType].quantity
+            quantity: quantity
           })
-        })
+        });
         
-        const data = await response.json()
+        const data = await response.json();
         if (data.error) {
-          showNotification(data.error)
-          return
+          showNotification(data.error);
+          return;
         }
 
         // Update store balance
-        store.updateUserData({ balance: data.balance })
+        store.updateUserData({ balance: data.balance });
         
         // Show success notification with capsule type for tracking
-        showNotification(`Purchased ${stickerCapsules.value[capsuleType].quantity}x ${stickerCapsules.value[capsuleType].name}!`, 2000, null, capsuleType)
+        showNotification(`Purchased ${quantity}x ${capsuleItem.name}!`, 2000, null, capsuleType);
       } catch (error) {
-        console.error('Error buying sticker capsule:', error)
-        showNotification('Failed to purchase sticker capsule')
+        console.error('Error buying sticker capsule:', error);
+        showNotification('Failed to purchase sticker capsule');
       }
     }
 
@@ -912,31 +1016,6 @@ export default {
         clearInterval(refreshInterval.value)
       }
     })
-
-    // Add computed property for grouped capsules
-    const groupedCapsules = computed(() => {
-      const capsulesArray = Object.entries(stickerCapsules.value).map(([type, capsule]) => ({
-        type,
-        ...capsule
-      }));
-
-      // Group capsules by rank requirement
-      const groups = {};
-      capsulesArray.forEach(capsule => {
-        const requiredRank = STICKER_RANK_REQUIREMENTS[capsule.name] || 0;
-        if (!groups[requiredRank]) {
-          groups[requiredRank] = [];
-        }
-        groups[requiredRank].push(capsule);
-      });
-
-      // Sort capsules within each group by price
-      Object.values(groups).forEach(group => {
-        group.sort((a, b) => a.price - b.price);
-      });
-
-      return groups;
-    });
 
     // Add computed property for sorted rank groups
     const sortedCapsuleRankGroups = computed(() => {

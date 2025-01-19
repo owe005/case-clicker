@@ -10,6 +10,7 @@
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.7",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",

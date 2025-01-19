@@ -32,6 +32,7 @@ from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
 from sticker_capsules import load_sticker_capsule, get_sticker_capsule_prices, open_sticker_capsule
 from auction import load_auction_data, save_auction_data, generate_bot_budgets, generate_auction_item
+from mines import MinesGame
 
 # Load environment variables
 load_dotenv('config.env')
@@ -63,6 +64,9 @@ last_auction_check = None
 # Add these globals
 auction_lock = Lock()
 auction_thread = None
+
+# Store active mines games in memory
+active_mines_games = {}
 
 def login_required(f):
     @wraps(f)
@@ -3616,6 +3620,118 @@ def get_user_inventory():
 def loadout():
     # For Vue routes, we need to serve the main Vue app
     return serve_vue_app('')
+
+@app.route('/mines')
+@login_required
+def mines():
+    # For Vue routes, we need to serve the main Vue app
+    return serve_vue_app('')
+
+@app.route('/api/mines/start', methods=['POST'])
+@login_required
+def start_mines():
+    try:
+        # Ensure user_id exists in session
+        if 'user_id' not in session:
+            session['user_id'] = str(uuid.uuid4())
+
+        data = request.get_json()
+        grid_size = int(data.get('grid_size', 5))
+        num_mines = int(data.get('num_mines', 3))
+        bet_amount = float(data.get('bet_amount', 1.0))
+        
+        # Validate parameters
+        valid, error_msg = MinesGame.validate_params(grid_size, num_mines, bet_amount)
+        if not valid:
+            return jsonify({"error": error_msg}), 400
+            
+        # Check if user has enough balance
+        user_data = load_user_data()
+        if bet_amount > user_data['balance']:
+            return jsonify({"error": "Insufficient funds"}), 400
+            
+        # Deduct bet amount
+        user_data['balance'] -= bet_amount
+        save_user_data(user_data)
+        
+        # Create new game
+        game = MinesGame(grid_size, num_mines, bet_amount)
+        active_mines_games[session['user_id']] = game
+        
+        return jsonify({
+            "success": True,
+            "balance": user_data['balance'],
+            "grid_size": grid_size,
+            "num_mines": num_mines,
+            "bet_amount": bet_amount,
+            "multiplier": 1.0,
+            "potential_win": bet_amount
+        })
+        
+    except Exception as e:
+        print(f"Error in start_mines: {str(e)}")  # Add debug logging
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/api/mines/reveal', methods=['POST'])
+@login_required
+def reveal_mines_tile():
+    try:
+        game = active_mines_games.get(session['user_id'])
+        if not game:
+            return jsonify({"error": "No active game"}), 400
+            
+        data = request.get_json()
+        x = int(data.get('x'))
+        y = int(data.get('y'))
+        
+        result = game.reveal(x, y)
+        
+        if "error" in result:
+            return jsonify(result), 400
+            
+        if result["status"] in ["game_over", "win"]:
+            if result["status"] == "win":
+                # Award winnings
+                user_data = load_user_data()
+                win_amount = game.bet_amount * result["multiplier"]
+                user_data['balance'] += win_amount
+                save_user_data(user_data)
+                result["balance"] = user_data['balance']
+            
+            # Clear active game
+            del active_mines_games[session['user_id']]
+            
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/api/mines/cashout', methods=['POST'])
+@login_required
+def cashout_mines():
+    try:
+        game = active_mines_games.get(session['user_id'])
+        if not game:
+            return jsonify({"error": "No active game"}), 400
+            
+        result = game.cash_out()
+        
+        if "error" in result:
+            return jsonify(result), 400
+            
+        # Award winnings
+        user_data = load_user_data()
+        user_data['balance'] += result["win_amount"]
+        save_user_data(user_data)
+        
+        # Clear active game
+        del active_mines_games[session['user_id']]
+        
+        result["balance"] = user_data['balance']
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

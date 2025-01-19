@@ -407,7 +407,8 @@ export default {
 
         // For knives
         if (currentSlot.value === 'knife') {
-          return item.weapon?.toLowerCase().includes('knife')
+          const knives = ['knife', 'karambit', 'bayonet', 'butterfly', 'm9 bayonet', 'flip', 'gut', 'huntsman', 'falchion', 'bowie', 'shadow daggers', 'ursus', 'navaja', 'stiletto', 'talon', 'classic', 'paracord', 'survival', 'skeleton', 'nomad']
+          return knives.some(knifeType => item.weapon?.toLowerCase().includes(knifeType))
         }
         // For gloves
         if (currentSlot.value === 'glove') {

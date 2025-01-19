@@ -4,6 +4,7 @@ import CoinflipView from '../views/CoinflipView.vue'
 import RouletteView from '../views/RouletteView.vue'
 import TradingView from '../views/TradingView.vue'
 import BlackjackView from '../views/BlackjackView.vue'
+import MinesView from '../views/MinesView.vue'
 import { useStore } from '../store'
 
 const routes = [
@@ -86,6 +87,11 @@ const routes = [
     path: '/loadout',
     name: 'Loadout',
     component: () => import('../views/LoadoutView.vue')
+  },
+  {
+    path: '/mines',
+    name: 'mines',
+    component: MinesView
   }
 ]
 

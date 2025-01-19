@@ -151,6 +151,29 @@
             </div>
           </div>
         </div>
+
+        <!-- Mines -->
+        <div class="group h-full">
+          <div class="bg-gray-dark/50 rounded-xl overflow-hidden transition-all duration-300 hover:bg-gray-dark/70 hover:transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col">
+            <div class="aspect-video w-full bg-gray-darker/50 overflow-hidden flex items-center justify-center">
+              <img 
+                src="/casino/mines.png" 
+                alt="Mines"
+                class="w-auto h-auto max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
+              >
+            </div>
+            <div class="p-6 flex flex-col flex-grow">
+              <h2 class="text-xl font-display text-white mb-2">Mines</h2>
+              <p class="text-white/70 mb-6 flex-grow">Find the diamonds, avoid the mines!</p>
+              <router-link 
+                to="/mines"
+                class="block w-full px-4 py-2 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200 text-center mt-auto"
+              >
+                Play Now
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -1089,8 +1089,10 @@ export default {
     }
 
     function getCaseImagePath(item) {
-      const caseType = item.type || item.case_type
-      return `/cases/${CASE_MAPPING[caseType] || caseType}.png`
+      const caseType = item.type || item.case_type;
+      // Add '_case.png' suffix if not already present
+      const imageName = item.image || `${CASE_MAPPING[caseType] || caseType}_case.png`;
+      return `/cases/${imageName}`;
     }
 
     function getCapsuleImagePath(item) {

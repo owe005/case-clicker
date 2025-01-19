@@ -1,19 +1,6 @@
 {
-  "balance": 21206.168999999994,
+  "balance": 545363860183567.9,
   "inventory": [
-    {
-      "weapon": "Gut Knife",
-      "name": "Slaughter",
-      "rarity": "GOLD",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 166.59,
-      "float_value": 0.06061181,
-      "timestamp": 1737227771.173219,
-      "case_type": "winter_offensive",
-      "is_case": false,
-      "image": "gutknife_slaughter.png"
-    },
     {
       "weapon": "XM1014",
       "name": "XOXO",
@@ -64,21 +51,6 @@
       "case_file": "chroma_2_case",
       "float_value": 0.23143271,
       "image": "mag7_heat.png",
-      "timestamp": 1737228676.027512,
-      "is_case": false,
-      "is_sticker": false
-    },
-    {
-      "weapon": "Gut Knife",
-      "name": "Bright Water",
-      "wear": "FN",
-      "stattrak": false,
-      "price": 108.19,
-      "rarity": "GOLD",
-      "case_type": "gamma",
-      "case_file": "gamma_case",
-      "float_value": 0.05357746,
-      "image": "gutknife_bright_water.png",
       "timestamp": 1737228676.027512,
       "is_case": false,
       "is_sticker": false
@@ -610,7 +582,8 @@
       "case_type": "legends_dreamhack_2014",
       "timestamp": 1737241792.366939,
       "is_sticker": true,
-      "image": "virtus_pro_holo.png"
+      "image": "virtus_pro_holo.png",
+      "favorite": true
     },
     {
       "name": "Fnatic (Holo)",
@@ -663,9 +636,413 @@
       "price": 424.716,
       "timestamp": 1737297396.4493182,
       "is_case": false
+    },
+    {
+      "weapon": "Karambit",
+      "name": "Slaughter",
+      "rarity": "GOLD",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1035.0,
+      "float_value": 0.16945838,
+      "timestamp": 1737310951.1311722,
+      "case_type": "phoenix",
+      "is_case": false,
+      "image": "karambit_slaughter.png",
+      "favorite": true
+    },
+    {
+      "weapon": "Glock-18",
+      "name": "Neo-Noir",
+      "rarity": "RED",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 186.92,
+      "float_value": 0.00076813,
+      "timestamp": 1737310994.0798838,
+      "case_type": "broken_fang",
+      "is_case": false,
+      "image": "glock18_neo-noir.png",
+      "favorite": true
+    },
+    {
+      "name": "ELEAGUE (Holo)",
+      "price": 1.15,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311046.181946,
+      "is_sticker": true,
+      "image": "eleague_holo.png"
+    },
+    {
+      "name": "Fnatic (Holo)",
+      "price": 11.49,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311046.184947,
+      "is_sticker": true,
+      "image": "fnatic_holo.png"
+    },
+    {
+      "name": "BIG (Holo)",
+      "price": 6.65,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311046.1869452,
+      "is_sticker": true,
+      "image": "big_holo.png"
+    },
+    {
+      "name": "100 Thieves (Holo)",
+      "price": 243.89,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311046.1894617,
+      "is_sticker": true,
+      "image": "100_thieves_holo.png"
+    },
+    {
+      "name": "North (Holo)",
+      "price": 15.54,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311046.1934702,
+      "is_sticker": true,
+      "image": "north_holo.png"
+    },
+    {
+      "name": "North (Holo)",
+      "price": 15.54,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311054.9583323,
+      "is_sticker": true,
+      "image": "north_holo.png"
+    },
+    {
+      "name": "Gambit Esports (Holo)",
+      "price": 9.89,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311054.9603822,
+      "is_sticker": true,
+      "image": "gambit_esports_holo.png"
+    },
+    {
+      "name": "Virtus.Pro (Holo)",
+      "price": 17.02,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311054.962382,
+      "is_sticker": true,
+      "image": "virtus_pro_holo.png"
+    },
+    {
+      "name": "North (Holo)",
+      "price": 15.54,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311054.9643817,
+      "is_sticker": true,
+      "image": "north_holo.png"
+    },
+    {
+      "name": "Gambit Esports (Foil)",
+      "price": 11.48,
+      "rarity": "PINK",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311054.96638,
+      "is_sticker": true,
+      "image": "gambit_esports_foil.png"
+    },
+    {
+      "name": "ELEAGUE (Holo)",
+      "price": 1.15,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737311063.5424292,
+      "is_sticker": true,
+      "image": "eleague_holo.png"
+    },
+    {
+      "name": "Prisma Case",
+      "image": "prisma_case.png",
+      "is_case": true,
+      "type": "prisma",
+      "quantity": 618
+    },
+    {
+      "name": "Vexed Gaming (Foil)",
+      "price": 18.63,
+      "rarity": "PINK",
+      "case_type": "challengers_cluj_napoca_2015",
+      "timestamp": 1737314997.699703,
+      "is_sticker": true,
+      "image": "vexed_gaming_foil.png"
+    },
+    {
+      "name": "Team Dignitas (Foil)",
+      "price": 49.39,
+      "rarity": "PINK",
+      "case_type": "challengers_cluj_napoca_2015",
+      "timestamp": 1737314997.702027,
+      "is_sticker": true,
+      "image": "team_dignitas_foil.png"
+    },
+    {
+      "name": "Astralis (Holo)",
+      "price": 30.92,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315015.4841032,
+      "is_sticker": true,
+      "image": "astralis_holo.png"
+    },
+    {
+      "name": "Cluj-Napoca 2015 Challengers",
+      "image": "challengers_cluj_napoca_2015.png",
+      "is_capsule": true,
+      "type": "challengers_cluj_napoca_2015",
+      "quantity": 1,
+      "price": 33.0
+    },
+    {
+      "name": "Boston 2018 Legends",
+      "image": "legends_boston_2018.png",
+      "is_capsule": true,
+      "type": "legends_boston_2018",
+      "quantity": 1685,
+      "price": 250.0
+    },
+    {
+      "name": "Virtus.Pro (Holo)",
+      "price": 17.02,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315367.0794525,
+      "is_sticker": true,
+      "image": "virtus_pro_holo.png"
+    },
+    {
+      "name": "Fnatic (Holo)",
+      "price": 11.49,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315367.0819619,
+      "is_sticker": true,
+      "image": "fnatic_holo.png"
+    },
+    {
+      "name": "100 Thieves (Holo)",
+      "price": 243.89,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315367.0839689,
+      "is_sticker": true,
+      "image": "100_thieves_holo.png"
+    },
+    {
+      "name": "SK Gaming (Foil)",
+      "price": 26.15,
+      "rarity": "PINK",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315367.0859754,
+      "is_sticker": true,
+      "image": "sk_gaming_foil.png"
+    },
+    {
+      "name": "100 Thieves (Holo)",
+      "price": 243.89,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315367.0879998,
+      "is_sticker": true,
+      "image": "100_thieves_holo.png"
+    },
+    {
+      "name": "Virtus.Pro (Holo)",
+      "price": 17.02,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315386.2968788,
+      "is_sticker": true,
+      "image": "virtus_pro_holo.png"
+    },
+    {
+      "name": "Gambit Esports (Holo)",
+      "price": 9.89,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315386.3365772,
+      "is_sticker": true,
+      "image": "gambit_esports_holo.png"
+    },
+    {
+      "name": "SK Gaming (Holo)",
+      "price": 12.26,
+      "rarity": "PURPLE",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315386.346965,
+      "is_sticker": true,
+      "image": "sk_gaming_holo.png"
+    },
+    {
+      "name": "Astralis (Foil)",
+      "price": 33.55,
+      "rarity": "PINK",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315386.3595364,
+      "is_sticker": true,
+      "image": "astralis_foil.png"
+    },
+    {
+      "name": "100 Thieves (Foil)",
+      "price": 470.0,
+      "rarity": "PINK",
+      "case_type": "legends_boston_2018",
+      "timestamp": 1737315386.3806102,
+      "is_sticker": true,
+      "image": "100_thieves_foil.png"
+    },
+    {
+      "name": "eSports 2014 Summer Case",
+      "image": "esports_2014_summer_case.png",
+      "is_case": true,
+      "type": "esports_summer",
+      "quantity": 90
+    },
+    {
+      "weapon": "XM1014",
+      "name": "Red Python",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 1.89,
+      "timestamp": 1737315523.9020474,
+      "case_type": "esports_summer",
+      "float_value": 0.13307977,
+      "is_case": false,
+      "image": "xm1014_red_python.png"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Blood Tiger",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 5.96,
+      "timestamp": 1737315523.9030542,
+      "case_type": "esports_summer",
+      "float_value": 0.015484,
+      "is_case": false,
+      "image": "usps_blood_tiger.png"
+    },
+    {
+      "weapon": "XM1014",
+      "name": "Red Python",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.4,
+      "timestamp": 1737315523.9030542,
+      "case_type": "esports_summer",
+      "float_value": 0.30634685,
+      "is_case": false,
+      "image": "xm1014_red_python.png"
+    },
+    {
+      "weapon": "XM1014",
+      "name": "Red Python",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 2.27,
+      "timestamp": 1737315523.9040537,
+      "case_type": "esports_summer",
+      "float_value": 0.75966296,
+      "is_case": false,
+      "image": "xm1014_red_python.png"
+    },
+    {
+      "weapon": "USP-S",
+      "name": "Blood Tiger",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 2.29,
+      "timestamp": 1737315523.9040537,
+      "case_type": "esports_summer",
+      "float_value": 0.37134149,
+      "is_case": false,
+      "image": "usps_blood_tiger.png"
+    },
+    {
+      "weapon": "Negev",
+      "name": "Bratatat",
+      "rarity": "BLUE",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 2.14,
+      "timestamp": 1737315542.7957642,
+      "case_type": "esports_summer",
+      "float_value": 0.14672585,
+      "is_case": false,
+      "image": "negev_bratatat.png"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Dark Water",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.54,
+      "timestamp": 1737315542.7957642,
+      "case_type": "esports_summer",
+      "float_value": 0.29370707,
+      "is_case": false,
+      "image": "ssg08_dark_water.png"
+    },
+    {
+      "weapon": "AWP",
+      "name": "Corticera",
+      "rarity": "PINK",
+      "wear": "MW",
+      "stattrak": false,
+      "price": 13.73,
+      "timestamp": 1737315542.7957642,
+      "case_type": "esports_summer",
+      "float_value": 0.12003862,
+      "is_case": false,
+      "image": "awp_corticera.png"
+    },
+    {
+      "weapon": "SSG 08",
+      "name": "Dark Water",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": true,
+      "price": 2.41,
+      "timestamp": 1737315542.7972686,
+      "case_type": "esports_summer",
+      "float_value": 0.36065244,
+      "is_case": false,
+      "image": "ssg08_dark_water.png"
+    },
+    {
+      "weapon": "MAC-10",
+      "name": "Ultraviolet",
+      "rarity": "BLUE",
+      "wear": "FT",
+      "stattrak": false,
+      "price": 1.54,
+      "timestamp": 1737315542.7982738,
+      "case_type": "esports_summer",
+      "float_value": 0.27203201,
+      "is_case": false,
+      "image": "mac10_ultraviolet.png"
     }
   ],
-  "exp": 33328.890999999996,
+  "exp": 40244.890999999996,
   "rank": 13,
   "upgrades": {
     "click_value": 8,
@@ -706,9 +1083,9 @@
         "reward": 100000,
         "exp_reward": 50000,
         "icon": "\ud83c\udfc6",
-        "current_value": 293075.9410000001,
+        "current_value": 293518.0940000001,
         "category": "special",
-        "progress": 29.30759410000001
+        "progress": 29.35180940000001
       },
       "cases_2": {
         "id": "cases_2",
@@ -718,16 +1095,16 @@
         "reward": 500,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 52,
+        "current_value": 62,
         "category": "cases",
-        "progress": 52.0
+        "progress": 62.0
       }
     },
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 293075.9410000001,
-    "total_cases_opened": 52,
+    "total_earnings": 293518.0940000001,
+    "total_cases_opened": 62,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
     "total_clicks": 14606,
