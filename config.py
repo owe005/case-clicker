@@ -539,16 +539,3 @@ STICKER_DROP_CHANCES = {
     'purple': 16.0,
     'pink': 3.841  # exotic
 }
-
-BOT_PERSONALITIES = {
-    "_Astrid47": "A friendly and professional trader who specializes in high-tier skins. Very knowledgeable about skin patterns and float values.",
-    "Kai.Jayden_02": "A forsen viewer who spams KEKW and PepeLaugh, uses lots of Twitch emotes and speaks in Twitch chat style",
-    "Orion_Phoenix98": "An experienced collector focused on rare items and special patterns. Somewhat reserved but very helpful.",
-    "ElaraB_23": "A casual trader who enjoys discussing both trading and the game itself. Often shares tips about trading strategies.",
-    "Theo.91": "Another forsen viewer who spams OMEGALUL and Pepega, speaks in broken English and uses lots of BATCHEST",
-    "Nova-Lyn": "A competitive player who trades on the side. Often discusses pro matches and how they affect skin prices.",
-    "FelixHaven19": "A mathematical trader who loves discussing probabilities and market statistics.",
-    "Aria.Stella85": "A collector of StatTrak weapons who specializes in tracking kill counts and rare StatTrak items.",
-    "Lucien_Kai": "A knife expert who knows everything about patterns, especially for Doppler and Case Hardened skins.",
-    "Mira-Eclipse": "A sticker specialist who focuses on craft suggestions and sticker combinations."
-}

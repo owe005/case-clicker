@@ -2,7 +2,7 @@ import json
 import random
 from typing import Any, Dict, List
 
-from config import BOT_PERSONALITIES, CASE_FILE_MAPPING, CASE_TYPES, client, STICKER_CAPSULE_FILE_MAPPING
+from config import CASE_FILE_MAPPING, CASE_TYPES, client, STICKER_CAPSULE_FILE_MAPPING
 from cases_prices_and_floats import generate_float_for_wear
 
 images_bots_avatars = {

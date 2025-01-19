@@ -26,7 +26,7 @@ from casino import find_best_skin_combination, handle_blackjack_end
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, CASE_DATA, CASE_FILE_MAPPING,
-                   CASE_TYPES, CASE_SKINS_FOLDER_NAMES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
+                   CASE_TYPES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame

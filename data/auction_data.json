@@ -1,129 +1,23 @@
 {
   "item": {
-    "weapon": "P90",
-    "name": "Emerald Dragon",
+    "weapon": "AK-47",
+    "name": "Fuel Injector",
     "wear": "FN",
-    "float_value": 0.011712036555454643,
-    "rarity": "PINK",
-    "case_type": "bravo",
-    "base_price": 259.35,
-    "adjusted_price": 285.285,
+    "float_value": 0.01140525415787425,
+    "rarity": "RED",
+    "case_type": "wildfire",
+    "base_price": 353.93,
+    "adjusted_price": 389.32300000000004,
     "stattrak": false,
-    "image": "p90_emerald_dragon.png",
+    "image": "ak47_fuel_injector.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-19T02:07:28.358505",
-  "current_bid": 280.9671142000635,
-  "bids": [
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 11.42474848805951,
-      "timestamp": "2025-01-19T01:37:51.429389"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 27.35119665322962,
-      "timestamp": "2025-01-19T01:38:08.756138"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 42.276792496354574,
-      "timestamp": "2025-01-19T01:38:36.114965"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 54.49264891006604,
-      "timestamp": "2025-01-19T01:38:36.123150"
-    },
-    {
-      "bidder": "FelixHaven19",
-      "amount": 66.66572330931356,
-      "timestamp": "2025-01-19T01:38:36.129149"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 80.62738753954895,
-      "timestamp": "2025-01-19T01:39:33.302875"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 92.51507890742444,
-      "timestamp": "2025-01-19T01:39:34.096311"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 103.53229901222495,
-      "timestamp": "2025-01-19T01:40:18.234683"
-    },
-    {
-      "bidder": "FelixHaven19",
-      "amount": 119.89009427558176,
-      "timestamp": "2025-01-19T01:40:38.025058"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 132.2966473981667,
-      "timestamp": "2025-01-19T01:41:02.241017"
-    },
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 145.28793825206563,
-      "timestamp": "2025-01-19T01:41:19.086811"
-    },
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 161.01153736290811,
-      "timestamp": "2025-01-19T01:41:26.064764"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 176.7861737781198,
-      "timestamp": "2025-01-19T01:42:12.236397"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 193.9323923712324,
-      "timestamp": "2025-01-19T01:42:16.477819"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 206.8317228626923,
-      "timestamp": "2025-01-19T01:42:40.043217"
-    },
-    {
-      "bidder": "FelixHaven19",
-      "amount": 219.69369529617697,
-      "timestamp": "2025-01-19T01:42:40.051485"
-    },
-    {
-      "bidder": "_Astrid47",
-      "amount": 233.31640182544515,
-      "timestamp": "2025-01-19T01:42:53.751765"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 250.18739543857507,
-      "timestamp": "2025-01-19T01:43:16.776095"
-    },
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 263.07386784570565,
-      "timestamp": "2025-01-19T01:44:12.991272"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 276.7942109019754,
-      "timestamp": "2025-01-19T01:44:35.085317"
-    },
-    {
-      "bidder": "Nova-Lyn",
-      "amount": 280.9671142000635,
-      "timestamp": "2025-01-19T01:49:12.720786"
-    }
-  ],
+  "end_time": "2025-01-19T02:37:28.402724",
+  "current_bid": 0,
+  "bids": [],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 276.7687286087164,
+      "budget": 386.11976923795135,
       "status": "online"
     },
     "Kai.Jayden_02": {
@@ -131,35 +25,35 @@
       "status": "offline"
     },
     "Orion_Phoenix98": {
-      "budget": 246.2730969012018,
+      "budget": 368.73290819947925,
       "status": "online"
     },
     "ElaraB_23": {
-      "budget": 276.7942109019754,
+      "budget": 383.8572197259511,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 235.08810020195324,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Nova-Lyn": {
-      "budget": 280.9671142000635,
+      "budget": 331.6930610471726,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 243.39920264342356,
+      "budget": 334.9503904501182,
       "status": "online"
     },
     "Aria.Stella85": {
-      "budget": 263.5423350589452,
+      "budget": 367.73132694856866,
       "status": "online"
     },
     "Lucien_Kai": {
-      "budget": 267.2560274844366,
+      "budget": 361.949127913481,
       "status": "online"
     },
     "Mira-Eclipse": {
-      "budget": 252.3161810205195,
+      "budget": 362.11213074398427,
       "status": "online"
     }
   }
