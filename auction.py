@@ -6,15 +6,34 @@ import traceback
 from cases_prices_and_floats import adjust_price_by_float
 from config import AUCTION_FILE, CASE_FILE_MAPPING, CASE_SKINS_FOLDER_NAMES, CASE_TYPES, STICKER_CAPSULE_FILE_MAPPING
 import random
+import os
 
 
 def save_auction_data(auction_data):
-    """Save auction data to JSON file"""
+    """Save auction data to JSON file using atomic write to prevent corruption"""
     try:
-        with open(AUCTION_FILE, 'w') as f:
+        # Create a temporary file in the same directory
+        temp_file = AUCTION_FILE + '.tmp'
+        
+        # Write to temporary file first
+        with open(temp_file, 'w') as f:
             json.dump(auction_data, f, indent=2, default=str)
+            
+        # Ensure all data is written to disk
+        f.flush()
+        os.fsync(f.fileno())
+            
+        # Rename temp file to target file (atomic operation)
+        os.replace(temp_file, AUCTION_FILE)
+            
     except Exception as e:
         print(f"Error saving auction data: {e}")
+        # Clean up temp file if it exists
+        try:
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+        except:
+            pass
 
 def load_auction_data():
     """Load auction data from JSON file"""
@@ -23,6 +42,17 @@ def load_auction_data():
             return None
         with open(AUCTION_FILE, 'r') as f:
             return json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding auction data: {e}")
+        # Backup corrupted file for debugging
+        backup_file = AUCTION_FILE + '.corrupted'
+        try:
+            import shutil
+            shutil.copy2(AUCTION_FILE, backup_file)
+            print(f"Corrupted file backed up to: {backup_file}")
+        except Exception as backup_err:
+            print(f"Failed to backup corrupted file: {backup_err}")
+        return None
     except Exception as e:
         print(f"Error loading auction data: {e}")
         return None
