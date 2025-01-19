@@ -1,5 +1,5 @@
 {
-  "balance": 51.74922090057498,
+  "balance": 5.0589999999999975,
   "inventory": [
     {
       "weapon": "Gut Knife",
@@ -746,9 +746,27 @@
       "timestamp": 1737241809.4743028,
       "is_sticker": true,
       "image": "team_dignitas_holo.png"
+    },
+    {
+      "name": "Counter Logic Gaming (Foil)",
+      "price": 15.74,
+      "rarity": "PINK",
+      "case_type": "challengers_cluj_napoca_2015",
+      "timestamp": 1737246115.4295535,
+      "is_sticker": true,
+      "image": "counter_logic_gaming_foil.png"
+    },
+    {
+      "name": "Cloud9 (Foil)",
+      "price": 27.79,
+      "rarity": "PINK",
+      "case_type": "challengers_cluj_napoca_2015",
+      "timestamp": 1737246115.430807,
+      "is_sticker": true,
+      "image": "cloud9_foil.png"
     }
   ],
-  "exp": 33262.890999999996,
+  "exp": 33328.890999999996,
   "rank": 13,
   "upgrades": {
     "click_value": 8,
@@ -809,11 +827,11 @@
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 255366.52105914222,
+    "total_earnings": 255385.831,
     "total_cases_opened": 52,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 14493,
+    "total_clicks": 14606,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0

@@ -114,42 +114,83 @@
       </div>
 
       <!-- Sticker Capsules Grid -->
-      <div v-if="currentCategory === 'stickers'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <div v-for="capsule in stickerCapsules" :key="capsule.type" class="group">
-          <div class="relative bg-gray-dark/50 rounded-xl p-5 transition-all duration-300 hover:bg-gray-dark/70 h-[320px] flex flex-col">
-            <!-- Hover Glow Effect -->
-            <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            
-            <!-- Content -->
-            <div class="relative flex-1 flex flex-col">
-              <!-- Image and Name (Clickable for contents) -->
-              <div @click="viewCapsuleContents(capsule.type)" class="cursor-pointer flex flex-col h-[220px]">
-                <div class="aspect-square w-full p-4 flex-shrink-0">
-                  <img :src="getCapsuleImagePath(capsule)" 
-                       :alt="capsule.name" 
-                       class="w-full h-full object-contain transition-all duration-300">
+      <div v-if="currentCategory === 'stickers'" class="space-y-8">
+        <div v-for="[rank, group] in sortedCapsuleRankGroups" :key="rank" class="space-y-4">
+          <!-- Rank Group Header -->
+          <div class="flex items-center gap-4">
+            <h2 class="text-xl font-display font-medium" 
+                :class="Number(rank) <= store.state.rank ? 'text-yellow' : 'text-white/50'">
+              {{ RANKS[rank] }}
+            </h2>
+            <div class="flex-1 h-px bg-yellow/10"></div>
+            <span class="text-sm text-white/50">
+              {{ Number(rank) <= store.state.rank ? 'Unlocked' : 'Locked' }}
+            </span>
+          </div>
+
+          <!-- Capsules Grid for this Rank -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div v-for="capsule in group" :key="capsule.type" class="group">
+              <div class="relative bg-gray-dark/50 rounded-xl p-5 transition-all duration-300 hover:bg-gray-dark/70 h-[320px] flex flex-col"
+                   :class="{ 'opacity-75': isCapsuleLocked(capsule.name) }">
+                <!-- Rest of the capsule card content remains the same -->
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                
+                <!-- Lock Overlay for Locked Capsules -->
+                <div v-if="isCapsuleLocked(capsule.name)" 
+                     class="absolute inset-0 backdrop-blur-[1px] rounded-xl flex items-center justify-center z-10">
+                  <div class="bg-black/80 px-4 py-2 rounded-lg backdrop-blur-sm">
+                    <div class="flex items-center gap-2 text-red-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="font-display">Unlocks at {{ RANKS[STICKER_RANK_REQUIREMENTS[capsule.name]] }}</span>
+                    </div>
+                  </div>
                 </div>
-                <h3 class="font-display text-sm text-white truncate">
-                  {{ capsule.name }}
-                </h3>
-              </div>
-              
-              <!-- Buy Section -->
-              <div class="flex items-center justify-between mt-4">
-                <span class="text-yellow font-medium min-w-[80px] mr-2">${{ formatNumber(capsule.price) }}</span>
-                <div class="flex items-center gap-1 flex-shrink-0">
-                  <input 
-                    type="number" 
-                    min="1" 
-                    v-model="capsule.quantity" 
-                    class="w-14 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
-                  >
-                  <button 
-                    @click.stop="buyCapsule(capsule.type)"
-                    class="px-3 py-1.5 bg-yellow/10 hover:bg-yellow/20 text-yellow rounded-lg transition-all duration-200"
-                  >
-                    Buy
-                  </button>
+                
+                <!-- Content -->
+                <div class="relative flex-1 flex flex-col">
+                  <!-- Image and Name -->
+                  <div @click="viewCapsuleContents(capsule.type)" 
+                       class="cursor-pointer flex flex-col h-[220px]"
+                       :class="{ 'pointer-events-none': isCapsuleLocked(capsule.name) }">
+                    <div class="aspect-square w-full p-4 flex-shrink-0">
+                      <img :src="getCapsuleImagePath(capsule)" 
+                           :alt="capsule.name" 
+                           class="w-full h-full object-contain transition-all duration-300"
+                           :class="{ 'grayscale': isCapsuleLocked(capsule.name) }">
+                    </div>
+                    <h3 class="font-display text-sm text-white truncate">
+                      {{ capsule.name }}
+                    </h3>
+                  </div>
+                  
+                  <!-- Buy Section -->
+                  <div class="flex items-center justify-between mt-4">
+                    <span class="text-yellow font-medium min-w-[80px] mr-2">${{ formatNumber(capsule.price) }}</span>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                      <input 
+                        type="number" 
+                        min="1" 
+                        v-model="capsule.quantity" 
+                        :disabled="isCapsuleLocked(capsule.name)"
+                        class="w-14 px-2 py-1 bg-gray-darker text-white rounded-lg text-center disabled:opacity-50"
+                      >
+                      <button 
+                        @click.stop="buyCapsule(capsule.type)"
+                        :disabled="isCapsuleLocked(capsule.name)"
+                        class="px-3 py-1.5 rounded-lg transition-all duration-200"
+                        :class="[
+                          isCapsuleLocked(capsule.name)
+                            ? 'bg-gray-dark/50 text-white/30 cursor-not-allowed'
+                            : 'bg-yellow/10 hover:bg-yellow/20 text-yellow'
+                        ]"
+                      >
+                        {{ isCapsuleLocked(capsule.name) ? 'Locked' : 'Buy' }}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -391,6 +432,19 @@
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useStore, CASE_MAPPING, RANKS, CASE_RANK_REQUIREMENTS } from '../store'
 
+// Add sticker capsule rank requirements
+const STICKER_RANK_REQUIREMENTS = {
+  'Cluj-Napoca 2015 Challengers': 1,  // Silver 1
+  'Columbus 2016 Legends': 3,     // Silver 3
+  'Columbus 2016 Challengers': 5,  // Silver Elite Master
+  'Cologne 2014 Legends': 7,   // Gold Nova 2
+  'Katowice 2015 Legends': 9,  // Gold Nova Master
+  'Boston 2018 Legends': 12,           // Master Guardian Elite
+  'DreamHack 2014 Legends': 14,        // Legendary Eagle Master
+  'Katowice 2014 Legends': 16, // Supreme Master First Class
+  'Katowice 2014 Challengers': 17 // Global Elite
+}
+
 export default {
   name: 'ShopView',
   setup() {
@@ -439,6 +493,12 @@ export default {
     // Add computed property to check if a case is locked
     const isCaseLocked = (caseName) => {
       const requiredRank = CASE_RANK_REQUIREMENTS[caseName] || 0;
+      return store.state.rank < requiredRank;
+    };
+
+    // Add isCapsuleLocked function
+    const isCapsuleLocked = (capsuleName) => {
+      const requiredRank = STICKER_RANK_REQUIREMENTS[capsuleName] || 0;
       return store.state.rank < requiredRank;
     };
 
@@ -853,6 +913,37 @@ export default {
       }
     })
 
+    // Add computed property for grouped capsules
+    const groupedCapsules = computed(() => {
+      const capsulesArray = Object.entries(stickerCapsules.value).map(([type, capsule]) => ({
+        type,
+        ...capsule
+      }));
+
+      // Group capsules by rank requirement
+      const groups = {};
+      capsulesArray.forEach(capsule => {
+        const requiredRank = STICKER_RANK_REQUIREMENTS[capsule.name] || 0;
+        if (!groups[requiredRank]) {
+          groups[requiredRank] = [];
+        }
+        groups[requiredRank].push(capsule);
+      });
+
+      // Sort capsules within each group by price
+      Object.values(groups).forEach(group => {
+        group.sort((a, b) => a.price - b.price);
+      });
+
+      return groups;
+    });
+
+    // Add computed property for sorted rank groups
+    const sortedCapsuleRankGroups = computed(() => {
+      return Object.entries(groupedCapsules.value)
+        .sort(([rankA], [rankB]) => Number(rankA) - Number(rankB));
+    });
+
     return {
       currentCategory,
       categories,
@@ -869,8 +960,10 @@ export default {
       getSkinImagePath,
       purchaseSkin,
       isCaseLocked,
+      isCapsuleLocked,
       RANKS,
       CASE_RANK_REQUIREMENTS,
+      STICKER_RANK_REQUIREMENTS,
       groupedCases,
       sortedRankGroups,
       store,
@@ -882,6 +975,8 @@ export default {
       getCapsuleImagePath,
       getStickerImagePath,
       formatNumber,
+      groupedCapsules,
+      sortedCapsuleRankGroups,
     }
   }
 }

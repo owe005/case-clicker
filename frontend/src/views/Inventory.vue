@@ -432,7 +432,7 @@ export default {
           // Create a comprehensive searchable text that includes all relevant item properties
           const searchableText = [
             // Basic item info
-            item.is_sticker ? item.name : `${item.weapon} ${item.name}`,
+            item.is_sticker ? `sticker ${item.name}` : `${item.weapon} ${item.name}`,
             // Wear condition - allow both full names and abbreviations
             item.wear,
             getFullWearName(item.wear),
