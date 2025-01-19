@@ -350,7 +350,7 @@ export default {
 
     // Validate loadout against inventory (client-side)
     const validateLoadout = () => {
-      const inventory = store.state.inventory
+      const inventory = store.state.inventory.map(item => JSON.parse(JSON.stringify(item))) // Convert proxies to plain objects
       let hasChanges = false
 
       for (const team of ['CT', 'T']) {
@@ -358,15 +358,19 @@ export default {
           if (item) {
             // Check if item still exists in inventory
             const exists = inventory.some(invItem => {
-              const match = invItem.name === item.name && 
-                invItem.wear === item.wear && 
-                invItem.stattrak === item.stattrak &&
-                invItem.weapon === item.weapon
-              
-              if (match) {
-                console.log('Found matching item:', invItem)
+              // For weapon skins, match all attributes
+              if (!invItem.is_sticker && !invItem.is_case) {
+                const match = invItem.name === item.name && 
+                  invItem.wear === item.wear && 
+                  invItem.stattrak === item.stattrak &&
+                  invItem.weapon === item.weapon
+                
+                if (match) {
+                  console.log('Found matching item:', invItem)
+                }
+                return match
               }
-              return match
+              return false
             })
             
             console.log('Validating item:', item, 'Exists:', exists)
@@ -416,8 +420,7 @@ export default {
         item.weapon === skin.weapon && 
         item.name === skin.name && 
         item.wear === skin.wear && 
-        item.stattrak === skin.stattrak &&
-        item.float_value === skin.float_value
+        item.stattrak === skin.stattrak
       )
     }
 
@@ -427,41 +430,91 @@ export default {
       const slot = currentSlot.value
       
       if (skin) {
-        console.log('Equipping skin:', skin)
+        // Unwrap the proxy to get the raw object
+        const rawSkin = JSON.parse(JSON.stringify(skin))
+        console.log('Equipping skin (raw):', rawSkin)
+        
         // Check if already equipped on other team
-        if (isItemEquippedOnOtherTeam(skin)) {
+        if (isItemEquippedOnOtherTeam(rawSkin)) {
           alert('This item is already equipped on the other team!')
           closeSelector()
           return
         }
-        // Create a deep copy of the skin to prevent reference issues
-        loadout.value[team][slot] = JSON.parse(JSON.stringify(skin))
-      } else {
-        delete loadout.value[team][slot]
-      }
-      
-      try {
-        const response = await fetch('/api/loadout/save', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(loadout.value)
-        })
-        
-        const data = await response.json()
-        
-        if (data.error) {
-          console.error('Error saving loadout:', data.error)
-          return
-        }
 
-        // Update local state with validated loadout from server
-        loadout.value = data.loadout
-      } catch (error) {
-        console.error('Error saving loadout:', error)
-      } finally {
-        closeSelector()
+        try {
+          // Create a deep copy of the current loadout
+          const updatedLoadout = JSON.parse(JSON.stringify(loadout.value))
+          
+          // Find the exact item in inventory and get ALL its fields
+          const inventoryItem = store.state.inventory.find(item => 
+            item.weapon === rawSkin.weapon &&
+            item.name === rawSkin.name &&
+            item.wear === rawSkin.wear &&
+            item.stattrak === rawSkin.stattrak
+          )
+
+          if (!inventoryItem) {
+            console.error('Could not find item in inventory:', rawSkin)
+            return
+          }
+
+          // Convert proxy to plain object
+          const plainInventoryItem = JSON.parse(JSON.stringify(inventoryItem))
+          console.log('Found inventory item:', plainInventoryItem)
+          
+          // Add the new skin with all fields from inventory
+          updatedLoadout[team][slot] = plainInventoryItem
+          console.log('Sending updated loadout with skin:', updatedLoadout[team][slot])
+          
+          const response = await fetch('/api/loadout/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedLoadout)
+          })
+          
+          const data = await response.json()
+          
+          if (data.error) {
+            console.error('Error saving loadout:', data.error)
+            return
+          }
+
+          // Update local state with validated loadout from server
+          loadout.value = data.loadout
+        } catch (error) {
+          console.error('Error saving loadout:', error)
+        } finally {
+          closeSelector()
+        }
+      } else {
+        // Handle removing a skin
+        try {
+          const updatedLoadout = JSON.parse(JSON.stringify(loadout.value))
+          delete updatedLoadout[team][slot]
+          
+          const response = await fetch('/api/loadout/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedLoadout)
+          })
+          
+          const data = await response.json()
+          
+          if (data.error) {
+            console.error('Error saving loadout:', data.error)
+            return
+          }
+
+          loadout.value = data.loadout
+        } catch (error) {
+          console.error('Error removing skin:', error)
+        } finally {
+          closeSelector()
+        }
       }
     }
 

@@ -1,56 +1,72 @@
 {
   "item": {
-    "weapon": "AWP",
-    "name": "Oni Taiji",
+    "weapon": "P90",
+    "name": "Emerald Dragon",
     "wear": "FN",
-    "float_value": 0.0068717414931829725,
-    "rarity": "RED",
-    "case_type": "hydra",
-    "base_price": 380.55,
-    "adjusted_price": 418.605,
+    "float_value": 0.010234848381968533,
+    "rarity": "PINK",
+    "case_type": "bravo",
+    "base_price": 259.35,
+    "adjusted_price": 285.285,
     "stattrak": false,
-    "image": "awp_oni_taiji.png",
+    "image": "p90_emerald_dragon.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-20T00:17:17.440974",
-  "current_bid": 0,
-  "bids": [],
+  "end_time": "2025-01-20T01:15:57.474544",
+  "current_bid": 26.0,
+  "bids": [
+    {
+      "bidder": "FelixHaven19",
+      "amount": 11.610400963122572,
+      "timestamp": "2025-01-20T00:46:12.993807"
+    },
+    {
+      "bidder": "You",
+      "amount": 22.0,
+      "timestamp": "2025-01-20T00:46:32.487646"
+    },
+    {
+      "bidder": "You",
+      "amount": 26.0,
+      "timestamp": "2025-01-20T00:47:23.503358"
+    }
+  ],
   "bot_budgets": {
     "_Astrid47": {
       "budget": 0,
       "status": "offline"
     },
     "Kai.Jayden_02": {
-      "budget": 190.275,
+      "budget": 244.98163975495024,
       "status": "online"
     },
     "Orion_Phoenix98": {
-      "budget": 375.0687722633461,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "ElaraB_23": {
       "budget": 0,
       "status": "offline"
     },
     "Theo.91": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 238.5161934881365,
+      "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 380.97535878086103,
+      "budget": 259.7286367599483,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 235.53473714970858,
+      "status": "online"
     },
     "Aria.Stella85": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 247.42668654326198,
+      "status": "online"
     },
     "Lucien_Kai": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 275.2618724575973,
+      "status": "online"
     },
     "Mira-Eclipse": {
       "budget": 0,

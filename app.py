@@ -3535,6 +3535,7 @@ def toggle_favorite():
 def save_loadout():
     try:
         loadout_data = request.json
+        print("Received loadout data:", loadout_data)
         
         # Validate loadout data against inventory
         inventory = get_user_inventory()
@@ -3549,29 +3550,37 @@ def save_loadout():
         for team in ['CT', 'T']:
             for slot, item in loadout_data.get(team, {}).items():
                 if item:
+                    print(f"Processing {team} {slot} item:", item)
                     # Create a unique identifier for the item
-                    item_id = f"{item['weapon']}_{item['name']}_{item['wear']}_{item['float_value']}_{item['stattrak']}"
+                    item_id = f"{item['weapon']}_{item['name']}_{item['wear']}_{item.get('stattrak', False)}"
                     
                     # Skip if this exact item is already used
                     if item_id in used_items:
+                        print(f"Item {item_id} already used, skipping")
                         continue
                         
                     # Find matching item in inventory to get all fields
-                    matching_item = next(
-                        (inv_item for inv_item in inventory
-                        if inv_item['name'] == item['name'] and
-                        inv_item['wear'] == item['wear'] and
-                        inv_item['stattrak'] == item['stattrak'] and
-                        inv_item['weapon'] == item['weapon']),
-                        None
-                    )
+                    matching_item = None
+                    for inv_item in inventory:
+                        if not inv_item.get('is_case') and not inv_item.get('is_sticker'):
+                            if (inv_item.get('name') == item['name'] and
+                                inv_item.get('wear') == item['wear'] and
+                                inv_item.get('stattrak', False) == item.get('stattrak', False) and
+                                inv_item.get('weapon') == item['weapon']):
+                                matching_item = inv_item
+                                print("Found matching item!")
+                                break
                     
                     if matching_item:
+                        print(f"Found matching item in inventory:", matching_item)
                         # Add to used items
                         used_items.add(item_id)
                         # Copy all fields from inventory item
                         validated_loadout[team][slot] = matching_item.copy()
+                    else:
+                        print(f"No matching item found in inventory for {item_id}")
 
+        print("Final validated loadout:", validated_loadout)
         # Save directly to user_loadouts.json
         with open('data/user_loadouts.json', 'w') as f:
             json.dump(validated_loadout, f, indent=2)
@@ -3579,6 +3588,7 @@ def save_loadout():
         return jsonify({'success': True, 'loadout': validated_loadout})
     except Exception as e:
         print(f"Error in save_loadout: {str(e)}")
+        traceback.print_exc()
         return jsonify({'error': 'Failed to save loadout'}), 500
 
 @app.route('/api/loadout/load')

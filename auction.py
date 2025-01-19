@@ -11,29 +11,35 @@ import os
 
 def save_auction_data(auction_data):
     """Save auction data to JSON file using atomic write to prevent corruption"""
+    temp_file = AUCTION_FILE + '.tmp'
     try:
-        # Create a temporary file in the same directory
-        temp_file = AUCTION_FILE + '.tmp'
-        
         # Write to temporary file first
         with open(temp_file, 'w') as f:
+            # Write data and ensure it's flushed to disk
             json.dump(auction_data, f, indent=2, default=str)
+            f.flush()
+            os.fsync(f.fileno())
+            # Close the file explicitly before rename
+            f.close()
             
-        # Ensure all data is written to disk
-        f.flush()
-        os.fsync(f.fileno())
-            
-        # Rename temp file to target file (atomic operation)
+        # Now that file is closed, perform the atomic rename
         os.replace(temp_file, AUCTION_FILE)
             
     except Exception as e:
         print(f"Error saving auction data: {e}")
         # Clean up temp file if it exists
-        try:
-            if os.path.exists(temp_file):
+        if os.path.exists(temp_file):
+            try:
                 os.remove(temp_file)
-        except:
-            pass
+            except Exception as cleanup_err:
+                print(f"Error cleaning up temp file: {cleanup_err}")
+                
+    # Final cleanup check
+    if os.path.exists(temp_file):
+        try:
+            os.remove(temp_file)
+        except Exception:
+            pass  # Already logged any important errors above
 
 def load_auction_data():
     """Load auction data from JSON file"""
