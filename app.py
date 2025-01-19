@@ -987,10 +987,6 @@ def play_roulette():
                 'balance': current_balance
             })
             
-        # Verify bet was properly closed
-        if not bet_info.get('balance_deducted'):
-            return jsonify({'error': 'Bet not properly closed'})
-            
         bets = bet_info['bets']
         total_bet = bet_info['total_bet']
         
@@ -1031,21 +1027,18 @@ def play_roulette():
                     winnings += win_amount
                     update_earnings_achievements(user_data, win_amount - amount)
         
-        # Update final balance with winnings
-        final_balance = float(user_data['balance']) + winnings
-        user_data['balance'] = final_balance
-        save_user_data(user_data)
-        
-        # Clear the bet info from session after processing
-        session.pop('roulette_bet', None)
-        session.pop('roulette_result', None)
+        # Store the result and winnings in session for the update_roulette_balance endpoint
+        session['roulette_result'] = {
+            'winnings': winnings,
+            'total_bet': total_bet
+        }
         
         return jsonify({
             'success': True,
             'result': result,
             'winnings': winnings,
-            'balance': final_balance,
-            'total_bet': total_bet
+            'total_bet': total_bet,
+            'balance': current_balance  # Return current balance without updating it
         })
         
     except Exception as e:
@@ -1056,22 +1049,32 @@ def play_roulette():
 @login_required
 def update_roulette_balance():
     try:
-        # Get stored game result
-        result = session.get('roulette_result')
-        if not result:
-            return jsonify({'error': 'No active game found'})
-        
-        # Load and update user data
+        # Get the stored result from session
+        result_info = session.get('roulette_result')
+        if not result_info:
+            return jsonify({'error': 'No roulette result found'})
+            
+        # Load user data
         user_data = load_user_data()
-        user_data['balance'] = result['new_balance']
+        
+        # Apply winnings to balance
+        winnings = result_info['winnings']
+        user_data['balance'] = float(user_data['balance']) + winnings
+        
+        # Save updated balance
         save_user_data(user_data)
         
-        # Clear the stored result
+        # Clear result from session
         session.pop('roulette_result', None)
+        session.pop('roulette_bet', None)
         
-        return jsonify({'success': True, 'balance': user_data['balance']})
+        return jsonify({
+            'success': True,
+            'balance': user_data['balance']
+        })
+        
     except Exception as e:
-        print(f"Error updating balance: {e}")
+        print(f"Error updating roulette balance: {e}")
         return jsonify({'error': 'Failed to update balance'})
 
 @app.route('/crash')
@@ -2749,27 +2752,27 @@ def close_roulette_bets():
         data = request.get_json()
         bets = data.get('bets', {})
         
-        # If no bets, just return success
         if not bets:
             return jsonify({'success': True})
             
-        # Load current user data
-        user_data = load_user_data()
-        current_balance = float(user_data['balance'])
-        
-        # Calculate total bet amount
+        # Calculate total bet
         total_bet = sum(float(amount) for amount in bets.values())
+        
+        # Load user data
+        user_data = load_user_data()
+        
+        # Verify user has enough balance
+        if total_bet > float(user_data['balance']):
+            return jsonify({'error': 'Insufficient funds'})
         
         # Immediately deduct the bet amount and save
         user_data['balance'] -= total_bet
         save_user_data(user_data)
         
-        # Store the bet state in session
+        # Store minimal bet info in session
         session['roulette_bet'] = {
             'bets': bets,
-            'total_bet': total_bet,
-            'in_progress': True,
-            'balance_deducted': True
+            'total_bet': total_bet
         }
         
         return jsonify({

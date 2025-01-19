@@ -1,9 +1,9 @@
-from datetime import date, datetime
+from datetime import datetime
 import json
 import random
 import traceback
 
-from config import CASE_FILE_MAPPING, CASE_TYPES, STICKER_CAPSULE_FILE_MAPPING
+from config import CASE_FILE_MAPPING, STICKER_CAPSULE_FILE_MAPPING
 
 # Define wear ranges for float value generation
 WEAR_RANGES = {

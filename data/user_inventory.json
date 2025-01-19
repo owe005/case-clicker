@@ -1,5 +1,5 @@
 {
-  "balance": 5.0589999999999975,
+  "balance": 21226.168999999994,
   "inventory": [
     {
       "weapon": "Gut Knife",
@@ -545,15 +545,6 @@
       "price": 178.87,
       "rarity": "PURPLE",
       "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241586.3556926,
-      "is_sticker": true,
-      "image": "virtus_pro_holo.png"
-    },
-    {
-      "name": "Virtus.Pro (Holo)",
-      "price": 178.87,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
       "timestamp": 1737241586.3571625,
       "is_sticker": true,
       "image": "virtus_pro_holo.png"
@@ -566,33 +557,6 @@
       "timestamp": 1737241586.361675,
       "is_sticker": true,
       "image": "virtus_pro_holo.png"
-    },
-    {
-      "name": "Natus Vincere (Holo)",
-      "price": 189.21,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241595.4428728,
-      "is_sticker": true,
-      "image": "natus_vincere_holo.png"
-    },
-    {
-      "name": "Team Dignitas (Holo)",
-      "price": 292.34,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241595.4438727,
-      "is_sticker": true,
-      "image": "team_dignitas_holo.png"
-    },
-    {
-      "name": "Cloud9 (Holo)",
-      "price": 359.99,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241595.446648,
-      "is_sticker": true,
-      "image": "cloud9_holo.png"
     },
     {
       "name": "Cloud9 (Holo)",
@@ -613,15 +577,6 @@
       "image": "cloud9_holo.png"
     },
     {
-      "name": "Fnatic (Holo)",
-      "price": 252.99,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241783.4004781,
-      "is_sticker": true,
-      "image": "fnatic_holo.png"
-    },
-    {
       "name": "Natus Vincere (Holo)",
       "price": 189.21,
       "rarity": "PURPLE",
@@ -629,24 +584,6 @@
       "timestamp": 1737241783.4024773,
       "is_sticker": true,
       "image": "natus_vincere_holo.png"
-    },
-    {
-      "name": "Ninjas in Pyjamas (Holo)",
-      "price": 108.39,
-      "rarity": "PURPLE",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241783.4044776,
-      "is_sticker": true,
-      "image": "ninjas_in_pyjamas_holo.png"
-    },
-    {
-      "name": "Virtus.Pro (Foil)",
-      "price": 87.16,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241783.4067774,
-      "is_sticker": true,
-      "image": "virtus_pro_foil.png"
     },
     {
       "name": "Virtus.Pro (Holo)",
@@ -676,33 +613,6 @@
       "image": "virtus_pro_holo.png"
     },
     {
-      "name": "Natus Vincere (Foil)",
-      "price": 88.39,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241792.3692844,
-      "is_sticker": true,
-      "image": "natus_vincere_foil.png"
-    },
-    {
-      "name": "DreamHack Winter 2014 (Foil)",
-      "price": 115.26,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241792.371291,
-      "is_sticker": true,
-      "image": "dreamhack_winter_2014_foil.png"
-    },
-    {
-      "name": "Ninjas in Pyjamas (Foil)",
-      "price": 133.67,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241800.896471,
-      "is_sticker": true,
-      "image": "ninjas_in_pyjamas_foil.png"
-    },
-    {
       "name": "Fnatic (Holo)",
       "price": 252.99,
       "rarity": "PURPLE",
@@ -725,15 +635,6 @@
       "price": 179.14,
       "rarity": "PINK",
       "case_type": "legends_dreamhack_2014",
-      "timestamp": 1737241800.9030924,
-      "is_sticker": true,
-      "image": "team_dignitas_foil.png"
-    },
-    {
-      "name": "Team Dignitas (Foil)",
-      "price": 179.14,
-      "rarity": "PINK",
-      "case_type": "legends_dreamhack_2014",
       "timestamp": 1737241800.9040976,
       "is_sticker": true,
       "image": "team_dignitas_foil.png"
@@ -748,22 +649,20 @@
       "image": "team_dignitas_holo.png"
     },
     {
-      "name": "Counter Logic Gaming (Foil)",
-      "price": 15.74,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737246115.4295535,
-      "is_sticker": true,
-      "image": "counter_logic_gaming_foil.png"
-    },
-    {
-      "name": "Cloud9 (Foil)",
-      "price": 27.79,
-      "rarity": "PINK",
-      "case_type": "challengers_cluj_napoca_2015",
-      "timestamp": 1737246115.430807,
-      "is_sticker": true,
-      "image": "cloud9_foil.png"
+      "weapon": "AK-47",
+      "name": "Fuel Injector",
+      "wear": "FN",
+      "float_value": 0.004546183831557966,
+      "rarity": "RED",
+      "case_type": "wildfire",
+      "base_price": 353.93,
+      "adjusted_price": 424.716,
+      "stattrak": false,
+      "image": "ak47_fuel_injector.png",
+      "is_sticker": false,
+      "price": 424.716,
+      "timestamp": 1737297396.4493182,
+      "is_case": false
     }
   ],
   "exp": 33328.890999999996,
@@ -807,9 +706,9 @@
         "reward": 100000,
         "exp_reward": 50000,
         "icon": "\ud83c\udfc6",
-        "current_value": 255366.52105914222,
+        "current_value": 293075.9410000001,
         "category": "special",
-        "progress": 25.53665210591422
+        "progress": 29.30759410000001
       },
       "cases_2": {
         "id": "cases_2",
@@ -827,7 +726,7 @@
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 255385.831,
+    "total_earnings": 293075.9410000001,
     "total_cases_opened": 52,
     "total_trades_completed": 0,
     "highest_win_streak": 0,

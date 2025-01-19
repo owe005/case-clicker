@@ -135,7 +135,6 @@
         <p>{{ wonItem.weapon }} | {{ wonItem.name }}</p>
         <p>Final Price: ${{ finalPrice.toFixed(2) }}</p>
         <p>Countdown: {{ winScreenTimer }}s</p>
-        <button @click="closeWinningScreen">Awesome!</button>
       </div>
     </div>
 

@@ -1,23 +1,54 @@
 {
   "item": {
-    "weapon": "AK-47",
-    "name": "Fuel Injector",
+    "weapon": "Karambit",
+    "name": "Crimson Web",
     "wear": "FN",
-    "float_value": 0.01140525415787425,
-    "rarity": "RED",
-    "case_type": "wildfire",
-    "base_price": 353.93,
-    "adjusted_price": 389.32300000000004,
+    "float_value": 0.011941211313763179,
+    "rarity": "GOLD",
+    "case_type": "csgo",
+    "base_price": 4915.0,
+    "adjusted_price": 5406.5,
     "stattrak": false,
-    "image": "ak47_fuel_injector.png",
+    "image": "karambit_crimson_web.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-19T02:37:28.402724",
-  "current_bid": 0,
-  "bids": [],
+  "end_time": "2025-01-19T17:06:37.035629",
+  "current_bid": 85.96609008446578,
+  "bids": [
+    {
+      "bidder": "_Astrid47",
+      "amount": 13.756702754633977,
+      "timestamp": "2025-01-19T16:37:33.476962"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 26.93410822753793,
+      "timestamp": "2025-01-19T16:37:40.329439"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 42.38142977712337,
+      "timestamp": "2025-01-19T16:38:09.452834"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 54.83130166347268,
+      "timestamp": "2025-01-19T16:38:34.054995"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 70.80902319114749,
+      "timestamp": "2025-01-19T16:38:34.543961"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 85.96609008446578,
+      "timestamp": "2025-01-19T16:39:15.743928"
+    }
+  ],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 386.11976923795135,
+      "budget": 7372.5,
       "status": "online"
     },
     "Kai.Jayden_02": {
@@ -25,36 +56,36 @@
       "status": "offline"
     },
     "Orion_Phoenix98": {
-      "budget": 368.73290819947925,
+      "budget": 4674.1645715265695,
       "status": "online"
     },
     "ElaraB_23": {
-      "budget": 383.8572197259511,
+      "budget": 7372.5,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 4442.698327900851,
+      "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 331.6930610471726,
+      "budget": 4610.630114576102,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 334.9503904501182,
+      "budget": 5144.880972834851,
       "status": "online"
     },
     "Aria.Stella85": {
-      "budget": 367.73132694856866,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Lucien_Kai": {
-      "budget": 361.949127913481,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Mira-Eclipse": {
-      "budget": 362.11213074398427,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     }
   }
 }

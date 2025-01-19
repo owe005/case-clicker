@@ -341,8 +341,8 @@ const WHEEL_ORDER = [
   0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
   5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
 ]
-const BETTING_TIME = 25 // Time allowed for betting
-const WARNING_TIME = 5  // Time after betting closes before result
+const BETTING_TIME = 10 // Time allowed for betting
+const WARNING_TIME = 3  // Time after betting closes before result
 const ROUND_TIME = BETTING_TIME + WARNING_TIME // Total round time
 
 export default {
@@ -578,19 +578,6 @@ export default {
         currentBets.value[betType] = amount
       }
 
-      // Decrease balance immediately when placing bet
-      const store = useStore()
-      balance.value = Number(balance.value) - amount
-      store.state.balance = balance.value
-
-      console.log('Bet placed successfully:', {
-        betType,
-        amount,
-        newTotalBets: totalBetAmount.value,
-        remainingBalance: availableBalance.value,
-        newBalance: balance.value
-      })
-
       // Update visual selection and add chips
       const element = document.querySelector(`[data-bet-type="${betType}"]`)
       if (element) {
@@ -769,6 +756,10 @@ export default {
             totalBetAmount: totalBetAmount.value
           })
           
+          // Store bets before clearing them
+          const storedBets = {...currentBets.value}
+          const storedTotalBet = totalBetAmount.value
+          
           // Clear bets immediately to prevent them from being reused
           clearBets()
           currentBets.value = {}
@@ -829,6 +820,7 @@ export default {
               }
             })
 
+            // Wait for wheel animation to complete before showing results
             setTimeout(() => {
               // Update previous rolls
               updatePreviousRolls(data.result)
@@ -845,13 +837,13 @@ export default {
 
               // Only show result and update balance if there were bets THIS round
               // AND we sent actual bets to the server (not an empty object)
-              if (hasBets && Object.keys(betsToSend).length > 0 && data.winnings !== undefined) {
+              if (hasBets && Object.keys(storedBets).length > 0 && data.winnings !== undefined) {
                 // Update reactive state for result display
                 lastResult.value = data.result
-                resultWon.value = data.winnings > data.total_bet
-                resultAmount.value = data.winnings > data.total_bet ? 
-                  data.winnings - data.total_bet : // If won, show net win
-                  data.total_bet // If lost, show amount lost
+                resultWon.value = data.winnings > storedTotalBet
+                resultAmount.value = data.winnings > storedTotalBet ? 
+                  data.winnings - storedTotalBet : // If won, show net win
+                  storedTotalBet // If lost, show amount lost
 
                 showResult.value = true
 
@@ -861,34 +853,26 @@ export default {
                 }
 
                 // Update balance after showing result
-                setTimeout(() => {
-                  console.log('Updating balance after result:', {
-                    currentBalance: balance.value,
-                    winnings: data.winnings,
-                    totalBet: data.total_bet
-                  })
-
-                  fetch('/update_roulette_balance', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    }
-                  })
-                  .then(response => response.json())
-                  .then(updateData => {
-                    console.log('Balance update response:', updateData)
-                    if (updateData.success) {
-                      balance.value = updateData.balance
-                      // Update store balance as well
-                      const store = useStore()
-                      store.state.balance = balance.value
-                      console.log('Updated balance:', {
-                        newBalance: balance.value,
-                        storeBalance: store.state.balance
-                      })
-                    }
-                  })
-                }, 500)
+                fetch('/update_roulette_balance', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(updateData => {
+                  console.log('Balance update response:', updateData)
+                  if (updateData.success) {
+                    balance.value = updateData.balance
+                    // Update store balance as well
+                    const store = useStore()
+                    store.state.balance = balance.value
+                    console.log('Updated balance:', {
+                      newBalance: balance.value,
+                      storeBalance: store.state.balance
+                    })
+                  }
+                })
 
                 // Hide result after 4 seconds
                 setTimeout(() => {
@@ -900,7 +884,7 @@ export default {
               setTimeout(() => {
                 startGameCycle()
               }, 2000)
-            }, 4000)
+            }, 4000) // Wait for wheel animation to complete
           })
           .catch(error => {
             console.error('Error in playGame:', error)
