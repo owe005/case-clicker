@@ -7,16 +7,27 @@ from cases_prices_and_floats import adjust_price_by_float
 from config import AUCTION_FILE, CASE_FILE_MAPPING, CASE_SKINS_FOLDER_NAMES, CASE_TYPES, STICKER_CAPSULE_FILE_MAPPING
 import random
 import os
+import time
+import shutil
+import msvcrt
 
 
 def save_auction_data(auction_data):
     """Save auction data to JSON file using atomic write to prevent corruption"""
     temp_file = AUCTION_FILE + '.tmp'
+    backup_file = AUCTION_FILE + '.bak'
     max_retries = 3
     retry_delay = 0.5  # seconds
     
     for attempt in range(max_retries):
         try:
+            # First, create a backup of current file if it exists
+            if os.path.exists(AUCTION_FILE):
+                try:
+                    shutil.copy2(AUCTION_FILE, backup_file)
+                except Exception as e:
+                    print(f"Warning: Failed to create backup: {e}")
+            
             # Clean up any existing temp file first
             if os.path.exists(temp_file):
                 try:
@@ -24,38 +35,66 @@ def save_auction_data(auction_data):
                 except Exception:
                     pass
                     
-            # Write to temporary file first
+            # Write to temporary file with proper locking
             with open(temp_file, 'w') as f:
-                # Write data and ensure it's flushed to disk
-                json.dump(auction_data, f, indent=2, default=str)
-                f.flush()
-                os.fsync(f.fileno())
+                # Try to get an exclusive lock using Windows file locking
+                try:
+                    handle = msvcrt.get_osfhandle(f.fileno())
+                    msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+                    
+                    # Write data and ensure it's flushed to disk
+                    json.dump(auction_data, f, indent=2, default=str)
+                    f.flush()
+                    os.fsync(f.fileno())
+                    
+                finally:
+                    # Always release the lock
+                    try:
+                        msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                    except:
+                        pass
+            
+            # Verify the temp file is valid JSON
+            with open(temp_file, 'r') as f:
+                json.load(f)  # This will raise an error if JSON is invalid
             
             # Now perform the atomic rename
-            try:
-                os.replace(temp_file, AUCTION_FILE)
-                return  # Success - exit function
-            except OSError as e:
-                if attempt == max_retries - 1:  # Last attempt
-                    raise  # Re-raise the error on final attempt
-                import time
-                time.sleep(retry_delay)  # Wait before retry
-                continue
+            if os.path.exists(AUCTION_FILE):
+                os.remove(AUCTION_FILE)  # Windows requires this for replace
+            os.rename(temp_file, AUCTION_FILE)
+            
+            # Success - clean up backup
+            if os.path.exists(backup_file):
+                try:
+                    os.remove(backup_file)
+                except Exception:
+                    pass
+                    
+            return  # Success - exit function
                 
         except Exception as e:
+            print(f"Error saving auction data (attempt {attempt + 1}/{max_retries}): {e}")
             if attempt == max_retries - 1:  # Last attempt
-                print(f"Error saving auction data (attempt {attempt + 1}/{max_retries}): {e}")
+                # Restore from backup if possible
+                if os.path.exists(backup_file):
+                    try:
+                        if os.path.exists(AUCTION_FILE):
+                            os.remove(AUCTION_FILE)
+                        shutil.copy2(backup_file, AUCTION_FILE)
+                        print("Restored auction data from backup")
+                    except Exception as restore_err:
+                        print(f"Failed to restore from backup: {restore_err}")
             else:
-                import time
                 time.sleep(retry_delay)  # Wait before retry
                 
     # If we get here, all retries failed
     # Final cleanup attempt
-    if os.path.exists(temp_file):
-        try:
-            os.remove(temp_file)
-        except Exception:
-            pass  # Already logged any important errors above
+    for file in [temp_file, backup_file]:
+        if os.path.exists(file):
+            try:
+                os.remove(file)
+            except Exception:
+                pass  # Already logged any important errors above
 
 def load_auction_data():
     """Load auction data from JSON file"""

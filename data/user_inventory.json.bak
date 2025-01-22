@@ -1,5 +1,5 @@
 {
-  "balance": 97538.53013446732,
+  "balance": 96395.44013446732,
   "inventory": [
     {
       "name": "Prisma Case",
@@ -187,6 +187,38 @@
       "is_sticker": false,
       "price": 1210.0,
       "timestamp": 1737580418.3872886,
+      "is_case": false
+    },
+    {
+      "weapon": "M9 Bayonet",
+      "name": "Crimson Web",
+      "wear": "FN",
+      "float_value": 0.009984217073909583,
+      "rarity": "GOLD",
+      "case_type": "esports",
+      "base_price": 5200.0,
+      "adjusted_price": 5720.000000000001,
+      "stattrak": false,
+      "image": "m9bayonet_crimson_web.png",
+      "is_sticker": false,
+      "price": 5720.000000000001,
+      "timestamp": 1737582174.2416503,
+      "is_case": false
+    },
+    {
+      "weapon": "AK-47",
+      "name": "Case Hardened",
+      "wear": "FN",
+      "float_value": 0.008385168242947577,
+      "rarity": "PINK",
+      "case_type": "csgo",
+      "base_price": 491.67,
+      "adjusted_price": 540.8370000000001,
+      "stattrak": false,
+      "image": "ak47_case_hardened.png",
+      "is_sticker": false,
+      "price": 540.8370000000001,
+      "timestamp": 1737582464.1562474,
       "is_case": false
     }
   ],

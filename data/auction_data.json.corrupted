@@ -3,41 +3,41 @@
     "weapon": "AWP",
     "name": "Oni Taiji",
     "wear": "FN",
-    "float_value": 0.0068717414931829725,
+    "float_value": 0.006246198017943473,
     "rarity": "RED",
     "case_type": "hydra",
-    "base_price": 380.55,
-    "adjusted_price": 418.605,
-    "stattrak": false,
+    "base_price": 709.99,
+    "adjusted_price": 780.989,
+    "stattrak": true,
     "image": "awp_oni_taiji.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-20T00:17:17.440974",
+  "end_time": "2025-01-22T23:13:38.595275",
   "current_bid": 0,
   "bids": [],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 646.3959408613823,
+      "status": "online"
     },
     "Kai.Jayden_02": {
-      "budget": 190.275,
+      "budget": 769.5955821689784,
       "status": "online"
     },
     "Orion_Phoenix98": {
-      "budget": 375.0687722633461,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "ElaraB_23": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 750.9167875845089,
+      "status": "online"
     },
     "Theo.91": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 647.2035050403504,
+      "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 380.97535878086103,
+      "budget": 741.7040979850156,
       "status": "online"
     },
     "FelixHaven19": {
@@ -45,19 +45,19 @@
       "status": "offline"
     },
     "Aria.Stella85": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 723.0882008308669,
+      "status": "online"
     },
     "Lucien_Kai": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 354.995,
+      "status": "online"
     },
     "Mira-Eclipse": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 678.478967701162,
+      "status": "online"
     }
   }
-} "offline"
+}us": "online"
     }
   }
 }
