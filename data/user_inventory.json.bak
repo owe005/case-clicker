@@ -1,5 +1,5 @@
 {
-  "balance": 100024.85013446733,
+  "balance": 97538.53013446732,
   "inventory": [
     {
       "name": "Prisma Case",
@@ -172,6 +172,22 @@
       "timestamp": 1737319637.0708349,
       "is_case": false,
       "favorite": true
+    },
+    {
+      "weapon": "AWP",
+      "name": "Lightning Strike",
+      "wear": "FN",
+      "float_value": 0.011427280929742621,
+      "rarity": "RED",
+      "case_type": "csgo",
+      "base_price": 1100.0,
+      "adjusted_price": 1210.0,
+      "stattrak": true,
+      "image": "awp_lightning_strike.png",
+      "is_sticker": false,
+      "price": 1210.0,
+      "timestamp": 1737580418.3872886,
+      "is_case": false
     }
   ],
   "exp": 44144.890999999996,

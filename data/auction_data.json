@@ -1,76 +1,131 @@
 {
   "item": {
-    "weapon": "P90",
-    "name": "Emerald Dragon",
+    "weapon": "M9 Bayonet",
+    "name": "Crimson Web",
     "wear": "FN",
-    "float_value": 0.010234848381968533,
-    "rarity": "PINK",
-    "case_type": "bravo",
-    "base_price": 259.35,
-    "adjusted_price": 285.285,
+    "float_value": 0.009984217073909583,
+    "rarity": "GOLD",
+    "case_type": "esports",
+    "base_price": 5200.0,
+    "adjusted_price": 5720.000000000001,
     "stattrak": false,
-    "image": "p90_emerald_dragon.png",
+    "image": "m9bayonet_crimson_web.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-20T01:15:57.474544",
-  "current_bid": 26.0,
+  "end_time": "2025-01-22T22:43:38.552224",
+  "current_bid": 1161.5838893188275,
   "bids": [
     {
-      "bidder": "FelixHaven19",
-      "amount": 11.610400963122572,
-      "timestamp": "2025-01-20T00:46:12.993807"
+      "bidder": "You",
+      "amount": 1020.0,
+      "timestamp": "2025-01-22T22:13:51.796664"
     },
     {
-      "bidder": "You",
-      "amount": 22.0,
-      "timestamp": "2025-01-20T00:46:32.487646"
+      "bidder": "Lucien_Kai",
+      "amount": 1033.4690436493922,
+      "timestamp": "2025-01-22T22:14:31.242257"
     },
     {
-      "bidder": "You",
-      "amount": 26.0,
-      "timestamp": "2025-01-20T00:47:23.503358"
+      "bidder": "Kai.Jayden_02",
+      "amount": 1047.7866221363329,
+      "timestamp": "2025-01-22T22:14:35.791350"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 1061.922214927765,
+      "timestamp": "2025-01-22T22:14:50.948435"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 1075.4888544321,
+      "timestamp": "2025-01-22T22:15:16.709092"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 1090.4539629713368,
+      "timestamp": "2025-01-22T22:16:01.871406"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 1103.7694229177916,
+      "timestamp": "2025-01-22T22:16:03.157751"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1119.146025185554,
+      "timestamp": "2025-01-22T22:16:19.790920"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 1133.2832060456378,
+      "timestamp": "2025-01-22T22:16:30.903960"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 1146.0394674305496,
+      "timestamp": "2025-01-22T22:17:10.874264"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1161.5838893188275,
+      "timestamp": "2025-01-22T22:17:28.428969"
     }
   ],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 4908.304519254568,
+      "status": "online"
     },
     "Kai.Jayden_02": {
-      "budget": 244.98163975495024,
+      "budget": 5687.558908372228,
       "status": "online"
     },
     "Orion_Phoenix98": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 5055.754723958254,
+      "status": "online"
     },
     "ElaraB_23": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 5149.325593652875,
+      "status": "online"
     },
     "Theo.91": {
-      "budget": 238.5161934881365,
+      "budget": 4684.1072620642435,
       "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 259.7286367599483,
+      "budget": 2600.0,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 235.53473714970858,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Aria.Stella85": {
-      "budget": 247.42668654326198,
+      "budget": 4881.097334616412,
       "status": "online"
     },
     "Lucien_Kai": {
-      "budget": 275.2618724575973,
+      "budget": 5563.545292813563,
       "status": "online"
     },
     "Mira-Eclipse": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 4735.329843596575,
+      "status": "online"
     }
-  }
+  },
+  "history": [
+    {
+      "weapon": "AWP",
+      "name": "Lightning Strike",
+      "wear": "FN",
+      "rarity": "RED",
+      "stattrak": true,
+      "image": "awp_lightning_strike.png",
+      "case_type": "csgo",
+      "final_price": 1500.0,
+      "winner": "You",
+      "timestamp": "2025-01-22T22:13:38.384288",
+      "is_sticker": false
+    }
+  ]
 }

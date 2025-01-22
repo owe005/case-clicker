@@ -12,29 +12,45 @@ import os
 def save_auction_data(auction_data):
     """Save auction data to JSON file using atomic write to prevent corruption"""
     temp_file = AUCTION_FILE + '.tmp'
-    try:
-        # Write to temporary file first
-        with open(temp_file, 'w') as f:
-            # Write data and ensure it's flushed to disk
-            json.dump(auction_data, f, indent=2, default=str)
-            f.flush()
-            os.fsync(f.fileno())
-            # Close the file explicitly before rename
-            f.close()
+    max_retries = 3
+    retry_delay = 0.5  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            # Clean up any existing temp file first
+            if os.path.exists(temp_file):
+                try:
+                    os.remove(temp_file)
+                except Exception:
+                    pass
+                    
+            # Write to temporary file first
+            with open(temp_file, 'w') as f:
+                # Write data and ensure it's flushed to disk
+                json.dump(auction_data, f, indent=2, default=str)
+                f.flush()
+                os.fsync(f.fileno())
             
-        # Now that file is closed, perform the atomic rename
-        os.replace(temp_file, AUCTION_FILE)
-            
-    except Exception as e:
-        print(f"Error saving auction data: {e}")
-        # Clean up temp file if it exists
-        if os.path.exists(temp_file):
+            # Now perform the atomic rename
             try:
-                os.remove(temp_file)
-            except Exception as cleanup_err:
-                print(f"Error cleaning up temp file: {cleanup_err}")
+                os.replace(temp_file, AUCTION_FILE)
+                return  # Success - exit function
+            except OSError as e:
+                if attempt == max_retries - 1:  # Last attempt
+                    raise  # Re-raise the error on final attempt
+                import time
+                time.sleep(retry_delay)  # Wait before retry
+                continue
                 
-    # Final cleanup check
+        except Exception as e:
+            if attempt == max_retries - 1:  # Last attempt
+                print(f"Error saving auction data (attempt {attempt + 1}/{max_retries}): {e}")
+            else:
+                import time
+                time.sleep(retry_delay)  # Wait before retry
+                
+    # If we get here, all retries failed
+    # Final cleanup attempt
     if os.path.exists(temp_file):
         try:
             os.remove(temp_file)
