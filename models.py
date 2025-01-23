@@ -83,11 +83,38 @@ class User:
             self.rank += 1
 
 class Case:
-    def __init__(self, name: str, skins: dict, case_type: str = 'weapon_case_1'):
+    def __init__(self, name: str, contents: dict, file_name: str, is_souvenir: bool = False):
         self.name = name
-        self.skins = skins
-        self.case_type = case_type
-    
+        self.contents = contents
+        self.file_name = file_name
+        self.is_souvenir = is_souvenir
+
+    def get_drop_chances(self) -> dict:
+        """Get the drop chances based on case type"""
+        if self.is_souvenir:
+            from config import SOUVENIR_DROP_CHANCES
+            return SOUVENIR_DROP_CHANCES
+        else:
+            return {
+                'gold': 0.26,
+                'red': 0.90,
+                'pink': 4.10,
+                'purple': 20.08,
+                'blue': 74.66
+            }
+
+    def get_special_chance(self) -> float:
+        """Get chance for StatTrak or Souvenir based on case type"""
+        if self.is_souvenir:
+            from config import SOUVENIR_CHANCE
+            return SOUVENIR_CHANCE
+        else:
+            return 10  # 10% chance for StatTrak
+
+    def get_special_prefix(self) -> str:
+        """Get the prefix for special items (StatTrak™ or Souvenir)"""
+        return "Souvenir" if self.is_souvenir else "StatTrak™"
+
     def open(self) -> Skin:
         # Roll for rarity based on percentages
         roll = random.random() * 100
@@ -104,7 +131,7 @@ class Case:
             chosen_rarity = Rarity.BLUE
         
         # Select random skin from chosen rarity
-        possible_skins = self.skins.get(chosen_rarity, [])
+        possible_skins = self.contents.get(chosen_rarity, [])
         if not possible_skins:
             return None
         
@@ -112,7 +139,7 @@ class Case:
         
         try:
             # Load case data to get valid wears
-            with open(f'cases/{self.case_type}.json', 'r') as f:
+            with open(f'cases/{self.file_name}.json', 'r') as f:
                 case_data = json.load(f)
                 
             # Find the skin in the case data
@@ -138,7 +165,7 @@ class Case:
                     chosen_rarity, 
                     chosen_wear, 
                     stattrak,
-                    self.case_type
+                    self.file_name
                 )
         except Exception as e:
             print(f"Error in Case.open(): {e}")
@@ -150,5 +177,5 @@ class Case:
             chosen_rarity,
             Wear.FT,
             False,
-            self.case_type
+            self.file_name
         ) 

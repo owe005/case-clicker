@@ -5,6 +5,7 @@
 .rarity-red { @apply ring-1 ring-[#eb4b4b]; }
 .rarity-gold { @apply ring-1 ring-[#caab05]; }
 .rarity-contraband { @apply ring-1 ring-[#b4814f]; }
+.rarity-light_blue { @apply ring-1 ring-[#99ccff]; }
 
 /* Blackjack Styles */
 .action-btn:disabled {
@@ -764,6 +765,7 @@ input[type="number"] {
   border: 1px solid transparent;
   position: relative;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .spinner-item-image {
@@ -799,6 +801,14 @@ input[type="number"] {
   background-image: none;
 }
 
+.spinner-item .item-name.stattrak {
+  color: #CF6A32 !important;
+}
+
+.spinner-item .item-name.souvenir {
+  color: #FFD700 !important;
+}
+
 .spinner-item .item-skin {
   font-size: 11px;
   opacity: 0.7;
@@ -813,17 +823,23 @@ input[type="number"] {
 }
 
 /* Rarity-specific styles */
-.spinner-item.rarity-BLUE { 
+.spinner-item.rarity-BLUE, .spinner-item.rarity-blue { 
   background: linear-gradient(135deg, rgba(75, 105, 255, 0.2) 0%, rgba(30, 43, 102, 0.2) 100%);
   border-color: rgba(75, 105, 255, 0.5);
 }
-.spinner-item.rarity-BLUE .item-name { color: #4b69ff; }
+.spinner-item.rarity-BLUE .item-name, .spinner-item.rarity-blue .item-name { color: #4b69ff; }
 
-.spinner-item.rarity-PURPLE { 
+.spinner-item.rarity-LIGHT_BLUE, .spinner-item.rarity-light_blue { 
+  background: linear-gradient(135deg, rgba(153, 204, 255, 0.2) 0%, rgba(51, 102, 153, 0.2) 100%) !important;
+  border-color: rgba(153, 204, 255, 0.5);
+}
+.spinner-item.rarity-LIGHT_BLUE .item-name, .spinner-item.rarity-light_blue .item-name { color: #99ccff; }
+
+.spinner-item.rarity-PURPLE, .spinner-item.rarity-purple { 
   background: linear-gradient(135deg, rgba(136, 71, 255, 0.2) 0%, rgba(52, 28, 102, 0.2) 100%);
   border-color: rgba(136, 71, 255, 0.5);
 }
-.spinner-item.rarity-PURPLE .item-name { color: #8847ff; }
+.spinner-item.rarity-PURPLE .item-name, .spinner-item.rarity-purple .item-name { color: #8847ff; }
 
 .spinner-item.rarity-PINK { 
   background: linear-gradient(135deg, rgba(211, 44, 230, 0.2) 0%, rgba(83, 28, 102, 0.2) 100%);
@@ -862,26 +878,13 @@ input[type="number"] {
   background: transparent;
 }
 
-.spinner-item.rarity-BLUE::before { background: #4b69ff; }
-.spinner-item.rarity-PURPLE::before { background: #8847ff; }
+.spinner-item.rarity-BLUE::before, .spinner-item.rarity-blue::before { background: #4b69ff; }
+.spinner-item.rarity-LIGHT_BLUE::before, .spinner-item.rarity-light_blue::before { background: #99ccff; }
+.spinner-item.rarity-PURPLE::before, .spinner-item.rarity-purple::before { background: #8847ff; }
 .spinner-item.rarity-PINK::before { background: #d32ce6; }
 .spinner-item.rarity-RED::before { background: #eb4b4b; }
 .spinner-item.rarity-GOLD::before { background: #caab05; }
 .spinner-item.rarity-CONTRABAND::before { background: #FF8C00; }
-
-.spinner-item.winning {
-  transform: scale(1.05);
-  z-index: 1;
-  border-width: 2px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-}
-
-.spinner-item.winning.rarity-BLUE { box-shadow: 0 0 15px rgba(75, 105, 255, 0.5); }
-.spinner-item.winning.rarity-PURPLE { box-shadow: 0 0 15px rgba(136, 71, 255, 0.5); }
-.spinner-item.winning.rarity-PINK { box-shadow: 0 0 15px rgba(211, 44, 230, 0.5); }
-.spinner-item.winning.rarity-RED { box-shadow: 0 0 15px rgba(235, 75, 75, 0.5); }
-.spinner-item.winning.rarity-GOLD { box-shadow: 0 0 15px rgba(202, 171, 5, 0.5); }
-.spinner-item.winning.rarity-CONTRABAND { box-shadow: 0 0 15px rgba(255, 140, 0, 0.5); }
 
 /* Showcase styles */
 .showcase-container {
@@ -924,6 +927,7 @@ input[type="number"] {
 }
 
 .showcase-container.rarity-BLUE { @apply ring-2 ring-[#4b69ff] ring-opacity-50; }
+.showcase-container.rarity-LIGHT_BLUE, .showcase-container.rarity-light_blue { @apply ring-2 ring-[#99ccff] ring-opacity-50; }
 .showcase-container.rarity-PURPLE { @apply ring-2 ring-[#8847ff] ring-opacity-50; }
 .showcase-container.rarity-PINK { @apply ring-2 ring-[#d32ce6] ring-opacity-50; }
 .showcase-container.rarity-RED { @apply ring-2 ring-[#eb4b4b] ring-opacity-50; }
@@ -1052,33 +1056,52 @@ input[type="number"] {
   max-width: 85%;
 }
 
-.showcase-item.rarity-BLUE { 
+.showcase-item .item-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.showcase-item .item-name.stattrak {
+  color: #CF6A32 !important;
+}
+
+.showcase-item .item-name.souvenir {
+  color: #FFD700 !important;
+}
+
+.showcase-item.rarity-BLUE, .showcase-item.rarity-blue { 
   border-color: #4b69ff;
   box-shadow: 0 0 20px rgba(75, 105, 255, 0.5), inset 0 0 15px rgba(75, 105, 255, 0.3);
 }
 
-.showcase-item.rarity-PURPLE { 
+.showcase-item.rarity-LIGHT_BLUE, .showcase-item.rarity-light_blue { 
+  border-color: #99ccff;
+  box-shadow: 0 0 20px rgba(153, 204, 255, 0.5), inset 0 0 15px rgba(153, 204, 255, 0.3);
+}
+
+.showcase-item.rarity-PURPLE, .showcase-item.rarity-purple { 
   border-color: #8847ff;
   box-shadow: 0 0 20px rgba(136, 71, 255, 0.5), inset 0 0 15px rgba(136, 71, 255, 0.3);
 }
 
-.showcase-item.rarity-PINK { 
+.showcase-item.rarity-PINK, .showcase-item.rarity-pink { 
   border-color: #d32ce6;
   box-shadow: 0 0 20px rgba(211, 44, 230, 0.5), inset 0 0 15px rgba(211, 44, 230, 0.3);
 }
 
-.showcase-item.rarity-RED { 
+.showcase-item.rarity-RED, .showcase-item.rarity-red { 
   border-color: #eb4b4b;
   box-shadow: 0 0 20px rgba(235, 75, 75, 0.5), inset 0 0 15px rgba(235, 75, 75, 0.3);
 }
 
-.showcase-item.rarity-GOLD { 
+.showcase-item.rarity-GOLD, .showcase-item.rarity-gold { 
   border-color: #caab05;
   box-shadow: 0 0 20px rgba(202, 171, 5, 0.5), inset 0 0 15px rgba(202, 171, 5, 0.3);
   animation: goldItemGlow 2s infinite;
 }
 
-.showcase-item.rarity-CONTRABAND { 
+.showcase-item.rarity-CONTRABAND, .showcase-item.rarity-contraband { 
   border-color: #FF8C00;
   box-shadow: 0 0 20px rgba(255, 140, 0, 0.5), inset 0 0 15px rgba(255, 140, 0, 0.3);
   animation: contrabandItemGlow 2s infinite;

@@ -1,510 +1,578 @@
 {
-  "date": "2025-01-19",
+  "date": "2025-01-23",
   "trades": [
     {
-      "type": "buy",
-      "botName": "Mira-Eclipse",
-      "botAvatar": "bot10.png",
-      "offering": [
-        {
-          "type": "money",
-          "amount": 403.5803359674674
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Sport Gloves",
-          "name": "Nocts",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 368.45,
-          "case_type": "broken_fang",
-          "case_file": "operation_broken_fang_case",
-          "rarity": "GOLD",
-          "image": "sportgloves_nocts.png",
-          "float_value": 0.83310455
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "MAC-10",
-          "name": "Lapis Gator",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 0.46,
-          "case_type": "wildfire",
-          "case_file": "operation_wildfire_case",
-          "rarity": "BLUE",
-          "image": "mac10_lapis_gator.png",
-          "float_value": 0.61550083
-        }
-      ]
-    },
-    {
-      "type": "buy",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
-      "offering": [
-        {
-          "type": "money",
-          "amount": 6198.91750070524
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": true,
-          "name": "LGB eSports (Holo)",
-          "price": 5468.84,
-          "case_type": "legends_katowice_2014",
-          "rarity": "PURPLE",
-          "image": "lgb_esports_holo.png"
-        },
-        {
-          "type": "skin",
-          "is_sticker": true,
-          "name": "Natus Vincere (Foil)",
-          "price": 16.74,
-          "case_type": "legends_columbus_2016",
-          "rarity": "PINK",
-          "image": "natus_vincere_foil.png"
-        },
-        {
-          "type": "skin",
-          "is_sticker": true,
-          "name": "SK Gaming (Holo)",
-          "price": 12.26,
-          "case_type": "legends_boston_2018",
-          "rarity": "PURPLE",
-          "image": "sk_gaming_holo.png"
-        }
-      ]
-    },
-    {
-      "type": "buy",
-      "botName": "ElaraB_23",
-      "botAvatar": "bot4.png",
-      "offering": [
-        {
-          "type": "money",
-          "amount": 849.2976158452635
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "SG 553",
-          "name": "Ultraviolet",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 31.99,
-          "case_type": "csgo",
-          "case_file": "weapon_case_1",
-          "rarity": "BLUE",
-          "image": "sg553_ultraviolet.png",
-          "float_value": 0.29807428
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "M9 Bayonet",
-          "name": "Stained",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 610.57,
-          "case_type": "esports_summer",
-          "case_file": "esports_2014_summer",
-          "rarity": "GOLD",
-          "image": "m9bayonet_stained.png",
-          "float_value": 0.08493032
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Gut Knife",
-          "name": "Rust Coat",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 96.34,
-          "case_type": "chroma_3",
-          "case_file": "chroma_3_case",
-          "rarity": "GOLD",
-          "image": "gutknife_rust_coat.png",
-          "float_value": 0.83566369
-        }
-      ]
-    },
-    {
-      "type": "swap",
-      "botName": "Aria.Stella85",
-      "botAvatar": "bot8.png",
-      "offering": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "MP7",
-          "name": "Powercore",
-          "wear": "FN",
-          "stattrak": false,
-          "price": 2.74,
-          "case_type": "horizon",
-          "case_file": "horizon_case",
-          "rarity": "PURPLE",
-          "image": "mp7_powercore.png",
-          "float_value": 0.01068491
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "XM1014",
-          "name": "XOXO",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 1.31,
-          "case_type": "snakebite",
-          "case_file": "snakebite_case",
-          "rarity": "PINK",
-          "image": "xm1014_xoxo.png",
-          "float_value": 0.18163059
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "SG 553",
-          "name": "Atlas",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 0.08,
-          "case_type": "chroma_3",
-          "case_file": "chroma_3_case",
-          "rarity": "BLUE",
-          "image": "sg553_atlas.png",
-          "float_value": 0.27989482
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "SCAR-20",
-          "name": "Assault",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 0.13,
-          "case_type": "cs20",
-          "case_file": "cs20_case",
-          "rarity": "BLUE",
-          "image": "scar20_assault.png",
-          "float_value": 0.16102373
-        }
-      ]
-    },
-    {
-      "type": "swap",
-      "botName": "Orion_Phoenix98",
-      "botAvatar": "bot3.png",
-      "offering": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Bowie Knife",
-          "name": "Urban Masked",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 100.13,
-          "case_type": "wildfire",
-          "case_file": "operation_wildfire_case",
-          "rarity": "GOLD",
-          "image": "bowieknife_urban_masked.png",
-          "float_value": 0.8845674
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "AK-47",
-          "name": "Elite Build",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 1.83,
-          "case_type": "chroma_2",
-          "case_file": "chroma_2_case",
-          "rarity": "BLUE",
-          "image": "ak47_elite_build.png",
-          "float_value": 0.07535284
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Bowie Knife",
-          "name": "Urban Masked",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 112.42,
-          "case_type": "wildfire",
-          "case_file": "operation_wildfire_case",
-          "rarity": "GOLD",
-          "image": "bowieknife_urban_masked.png",
-          "float_value": 0.10428089
-        }
-      ]
-    },
-    {
-      "type": "buy",
+      "type": "sell",
       "botName": "FelixHaven19",
       "botAvatar": "bot7.png",
       "offering": [
         {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Karambit",
+          "name": "Scorched",
+          "wear": "FN",
+          "stattrak": false,
+          "price": 1065.04,
+          "case_type": "csgo2",
+          "case_file": "weapon_case_2",
+          "rarity": "GOLD",
+          "image": "karambit_scorched.png",
+          "float_value": 0.04849453
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Flip Knife",
+          "name": "Blue Steel",
+          "wear": "FN",
+          "stattrak": false,
+          "price": 350.0,
+          "case_type": "bravo",
+          "case_file": "operation_bravo",
+          "rarity": "GOLD",
+          "image": "flipknife_blue_steel.png",
+          "float_value": 0.06985917
+        }
+      ],
+      "requesting": [
+        {
           "type": "money",
-          "amount": 248.0635500379087
+          "amount": 1666.2916748232215
+        }
+      ]
+    },
+    {
+      "type": "swap",
+      "botName": "Nova-Lyn",
+      "botAvatar": "bot6.png",
+      "offering": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Moto Gloves",
+          "name": "Boom",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 152.94,
+          "case_type": "glove",
+          "case_file": "glove_case",
+          "rarity": "GOLD",
+          "image": "motogloves_boom.png",
+          "float_value": 0.28981291
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "M4A4",
+          "name": "Zirka",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 22.42,
+          "case_type": "bravo",
+          "case_file": "operation_bravo",
+          "rarity": "PURPLE",
+          "image": "m4a4_zirka.png",
+          "float_value": 0.20860235
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Dual Berettas",
+          "name": "Marina",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 4.92,
+          "case_type": "winter_offensive",
+          "case_file": "winter_offensive_case",
+          "rarity": "PURPLE",
+          "image": "dualberettas_marina.png",
+          "float_value": 0.12065927
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "P2000",
+          "name": "Handgun",
+          "wear": "FT",
+          "stattrak": true,
+          "price": 1.3,
+          "case_type": "falchion",
+          "case_file": "falchion_case",
+          "rarity": "PURPLE",
+          "image": "p2000_handgun.png",
+          "float_value": 0.29997723
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "botName": "Theo.91",
+      "botAvatar": "bot5.png",
+      "offering": [
+        {
+          "type": "money",
+          "amount": 11609.89519645098
         }
       ],
       "requesting": [
         {
           "type": "skin",
           "is_sticker": true,
-          "name": "BIG (Foil)",
-          "price": 12.93,
-          "case_type": "legends_boston_2018",
-          "rarity": "PINK",
-          "image": "big_foil.png"
-        },
-        {
-          "type": "skin",
-          "is_sticker": true,
-          "name": "PENTA Sports (Foil)",
-          "price": 29.84,
-          "case_type": "legends_katowice_2015",
-          "rarity": "PINK",
-          "image": "penta_sports_foil.png"
+          "name": "G2 Esports (Holo)",
+          "price": 22.91,
+          "case_type": "challengers_columbus_2016",
+          "rarity": "PURPLE",
+          "image": "g2_esports_holo.png"
         },
         {
           "type": "skin",
           "is_sticker": true,
           "name": "HellRaisers (Holo)",
-          "price": 181.78,
-          "case_type": "legends_katowice_2015",
+          "price": 9995.0,
+          "case_type": "legends_katowice_2014",
           "rarity": "PURPLE",
           "image": "hellraisers_holo.png"
+        },
+        {
+          "type": "skin",
+          "is_sticker": true,
+          "name": "Team Dignitas (Holo)",
+          "price": 752.0,
+          "case_type": "legends_cologne_2014",
+          "rarity": "PURPLE",
+          "image": "team_dignitas_holo.png"
         }
       ]
     },
     {
       "type": "swap",
-      "botName": "FelixHaven19",
-      "botAvatar": "bot7.png",
-      "offering": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Huntsman Knife",
-          "name": "Gamma Doppler",
-          "wear": "MW",
-          "stattrak": true,
-          "price": 418.32,
-          "case_type": "riptide",
-          "case_file": "operation_riptide_case",
-          "rarity": "GOLD",
-          "image": "huntsmanknife_gamma_doppler.png",
-          "float_value": 0.13300715
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Sport Gloves",
-          "name": "Slingshot",
-          "wear": "MW",
-          "stattrak": false,
-          "price": 1999.95,
-          "case_type": "broken_fang",
-          "case_file": "operation_broken_fang_case",
-          "rarity": "GOLD",
-          "image": "sportgloves_slingshot.png",
-          "float_value": 0.11787241
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Gut Knife",
-          "name": "Scorched",
-          "wear": "WW",
-          "stattrak": false,
-          "price": 94.35,
-          "case_type": "phoenix",
-          "case_file": "operation_phoenix_case",
-          "rarity": "GOLD",
-          "image": "gutknife_scorched.png",
-          "float_value": 0.41318076
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Glock-18",
-          "name": "Off World",
-          "wear": "MW",
-          "stattrak": true,
-          "price": 0.58,
-          "case_type": "spectrum_2",
-          "case_file": "spectrum_2_case",
-          "rarity": "BLUE",
-          "image": "glock18_off_world.png",
-          "float_value": 0.10578983
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "MP5",
-          "name": "Phosphor",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 2.08,
-          "case_type": "danger_zone",
-          "case_file": "danger_zone_case",
-          "rarity": "PINK",
-          "image": "mp5_phosphor.png",
-          "float_value": 0.32430865
-        }
-      ]
-    },
-    {
-      "type": "buy",
-      "botName": "FelixHaven19",
-      "botAvatar": "bot7.png",
-      "offering": [
-        {
-          "type": "money",
-          "amount": 142.51272628906153
-        }
-      ],
-      "requesting": [
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Ursus Knife",
-          "name": "Damascus Steel",
-          "wear": "BS",
-          "stattrak": false,
-          "price": 126.56,
-          "case_type": "prisma",
-          "case_file": "prisma_case",
-          "rarity": "GOLD",
-          "image": "ursusknife_damascus_steel.png",
-          "float_value": 0.61338262
-        }
-      ]
-    },
-    {
-      "type": "buy",
       "botName": "Aria.Stella85",
       "botAvatar": "bot8.png",
       "offering": [
         {
-          "type": "money",
-          "amount": 978.6270916731038
-        }
-      ],
-      "requesting": [
-        {
           "type": "skin",
           "is_sticker": false,
-          "weapon": "Bowie Knife",
-          "name": "Forest DDPAT",
-          "wear": "WW",
+          "weapon": "M9 Bayonet",
+          "name": "Slaughter",
+          "wear": "MW",
           "stattrak": false,
-          "price": 98.11,
-          "case_type": "wildfire",
-          "case_file": "operation_wildfire_case",
+          "price": 974.5,
+          "case_type": "vanguard",
+          "case_file": "operation_vanguard_case",
           "rarity": "GOLD",
-          "image": "bowieknife_forest_ddpat.png",
-          "float_value": 0.39795341
-        },
-        {
-          "type": "skin",
-          "is_sticker": false,
-          "weapon": "Karambit",
-          "name": "Damascus Steel",
-          "wear": "FT",
-          "stattrak": false,
-          "price": 777.0,
-          "case_type": "chroma_3",
-          "case_file": "chroma_3_case",
-          "rarity": "GOLD",
-          "image": "karambit_damascus_steel.png",
-          "float_value": 0.36297791
+          "image": "m9bayonet_slaughter.png",
+          "float_value": 0.07918273
         },
         {
           "type": "skin",
           "is_sticker": false,
           "weapon": "Desert Eagle",
-          "name": "Trigger Discipline",
+          "name": "Naga",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 1.81,
+          "case_type": "chroma",
+          "case_file": "chroma_case",
+          "rarity": "PURPLE",
+          "image": "deserteagle_naga.png",
+          "float_value": 0.07616117
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Karambit",
+          "name": "Boreal Forest",
+          "wear": "FT",
+          "stattrak": false,
+          "price": 564.99,
+          "case_type": "esports",
+          "case_file": "esports_2013",
+          "rarity": "GOLD",
+          "image": "karambit_boreal_forest.png",
+          "float_value": 0.2462174
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Karambit",
+          "name": "Bright Water",
           "wear": "BS",
           "stattrak": false,
-          "price": 0.28,
-          "case_type": "snakebite",
-          "case_file": "snakebite_case",
+          "price": 608.54,
+          "case_type": "gamma",
+          "case_file": "gamma_case",
+          "rarity": "GOLD",
+          "image": "karambit_bright_water.png",
+          "float_value": 0.72389326
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "botName": "Orion_Phoenix98",
+      "botAvatar": "bot3.png",
+      "offering": [
+        {
+          "type": "money",
+          "amount": 528.1444629138958
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Glock-18",
+          "name": "Steel Disruption",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 2.74,
+          "case_type": "esports_summer",
+          "case_file": "esports_2014_summer",
           "rarity": "PURPLE",
-          "image": "deserteagle_trigger_discipline.png",
-          "float_value": 0.94850029
+          "image": "glock18_steel_disruption.png",
+          "float_value": 0.12275305
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "CZ75-Auto",
+          "name": "Tread Plate",
+          "wear": "FN",
+          "stattrak": false,
+          "price": 5.6,
+          "case_type": "csgo3",
+          "case_file": "weapon_case_3",
+          "rarity": "PURPLE",
+          "image": "cz75auto_tread_plate.png",
+          "float_value": 0.02486639
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Bayonet",
+          "name": "Tiger Tooth",
+          "wear": "MW",
+          "stattrak": true,
+          "price": 491.8,
+          "case_type": "chroma",
+          "case_file": "chroma_case",
+          "rarity": "GOLD",
+          "image": "bayonet_tiger_tooth.png",
+          "float_value": 0.13682116
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "botName": "FelixHaven19",
+      "botAvatar": "bot7.png",
+      "offering": [
+        {
+          "type": "money",
+          "amount": 163.07166189441338
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": true,
+          "name": "Virtus.Pro (Foil)",
+          "price": 60.71,
+          "case_type": "legends_katowice_2015",
+          "rarity": "PINK",
+          "image": "virtus_pro_foil.png"
+        },
+        {
+          "type": "skin",
+          "is_sticker": true,
+          "name": "Natus Vincere (Foil)",
+          "price": 94.5,
+          "case_type": "legends_katowice_2015",
+          "rarity": "PINK",
+          "image": "natus_vincere_foil.png"
+        }
+      ]
+    },
+    {
+      "type": "swap",
+      "botName": "Kai.Jayden_02",
+      "botAvatar": "bot2.png",
+      "offering": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Gut Knife",
+          "name": "Black Laminate",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 102.44,
+          "case_type": "gamma",
+          "case_file": "gamma_case",
+          "rarity": "GOLD",
+          "image": "gutknife_black_laminate.png",
+          "float_value": 0.09510709
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "UMP-45",
+          "name": "Arctic Wolf",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 0.56,
+          "case_type": "clutch",
+          "case_file": "clutch_case",
+          "rarity": "PURPLE",
+          "image": "ump45_arctic_wolf.png",
+          "float_value": 0.08046141
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Desert Eagle",
+          "name": "Cobalt Disruption",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 60.28,
+          "case_type": "esports_winter",
+          "case_file": "esports_2013_winter",
+          "rarity": "PINK",
+          "image": "deserteagle_cobalt_disruption.png",
+          "float_value": 0.13706172
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "AWP",
+          "name": "Worm God",
+          "wear": "WW",
+          "stattrak": false,
+          "price": 1.23,
+          "case_type": "chroma_2",
+          "case_file": "chroma_2_case",
+          "rarity": "PURPLE",
+          "image": "awp_worm_god.png",
+          "float_value": 0.42328503
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "MP7",
+          "name": "Akoben",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 0.25,
+          "case_type": "spectrum",
+          "case_file": "spectrum_case",
+          "rarity": "BLUE",
+          "image": "mp7_akoben.png",
+          "float_value": 0.07113909
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "botName": "_Astrid47",
+      "botAvatar": "bot1.png",
+      "offering": [
+        {
+          "type": "money",
+          "amount": 413.5519776119935
+        }
+      ],
+      "requesting": [
+        {
+          "type": "skin",
+          "is_sticker": true,
+          "name": "ESL Skull (Foil)",
+          "price": 368.8,
+          "case_type": "legends_katowice_2014",
+          "rarity": "PINK",
+          "image": "esl_skull_foil.png"
         }
       ]
     },
     {
       "type": "sell",
-      "botName": "Theo.91",
-      "botAvatar": "bot5.png",
+      "botName": "Kai.Jayden_02",
+      "botAvatar": "bot2.png",
       "offering": [
         {
           "type": "skin",
           "is_sticker": false,
-          "weapon": "PP-Bizon",
-          "name": "Judgement of Anubis",
-          "wear": "MW",
+          "weapon": "Ursus Knife",
+          "name": "Forest DDPAT",
+          "wear": "WW",
           "stattrak": false,
-          "price": 4.34,
-          "case_type": "chroma_3",
-          "case_file": "chroma_3_case",
-          "rarity": "RED",
-          "image": "ppbizon_judgement_of_anubis.png",
-          "float_value": 0.12697897
+          "price": 106.67,
+          "case_type": "horizon",
+          "case_file": "horizon_case",
+          "rarity": "GOLD",
+          "image": "ursusknife_forest_ddpat.png",
+          "float_value": 0.39063493
         }
       ],
       "requesting": [
         {
           "type": "money",
-          "amount": 5.705838241587597
+          "amount": 143.51399274084483
+        }
+      ]
+    },
+    {
+      "type": "sell",
+      "botName": "_Astrid47",
+      "botAvatar": "bot1.png",
+      "offering": [
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Karambit",
+          "name": "Scorched",
+          "wear": "FN",
+          "stattrak": true,
+          "price": 3481.39,
+          "case_type": "esports_summer",
+          "case_file": "esports_2014_summer",
+          "rarity": "GOLD",
+          "image": "karambit_scorched.png",
+          "float_value": 0.02221738
+        },
+        {
+          "type": "skin",
+          "is_sticker": false,
+          "weapon": "Gut Knife",
+          "name": "Doppler",
+          "wear": "MW",
+          "stattrak": false,
+          "price": 171.24,
+          "case_type": "chroma_3",
+          "case_file": "chroma_3_case",
+          "rarity": "GOLD",
+          "image": "gutknife_doppler.png",
+          "float_value": 0.11227147
+        }
+      ],
+      "requesting": [
+        {
+          "type": "money",
+          "amount": 4227.616385295094
         }
       ]
     }
   ],
   "completed_trades": [
     {
-      "botAvatar": "bot5.png",
-      "botName": "Theo.91",
+      "botAvatar": "bot7.png",
+      "botName": "FelixHaven19",
       "offering": [
+        {
+          "case_file": "weapon_case_2",
+          "case_type": "csgo2",
+          "float_value": 0.04849453,
+          "image": "karambit_scorched.png",
+          "is_sticker": false,
+          "name": "Scorched",
+          "price": 1065.04,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Karambit",
+          "wear": "FN"
+        },
+        {
+          "case_file": "operation_bravo",
+          "case_type": "bravo",
+          "float_value": 0.06985917,
+          "image": "flipknife_blue_steel.png",
+          "is_sticker": false,
+          "name": "Blue Steel",
+          "price": 350,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Flip Knife",
+          "wear": "FN"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 1666.2916748232215,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
+    },
+    {
+      "botAvatar": "bot2.png",
+      "botName": "Kai.Jayden_02",
+      "offering": [
+        {
+          "case_file": "horizon_case",
+          "case_type": "horizon",
+          "float_value": 0.39063493,
+          "image": "ursusknife_forest_ddpat.png",
+          "is_sticker": false,
+          "name": "Forest DDPAT",
+          "price": 106.67,
+          "rarity": "GOLD",
+          "stattrak": false,
+          "type": "skin",
+          "weapon": "Ursus Knife",
+          "wear": "WW"
+        }
+      ],
+      "requesting": [
+        {
+          "amount": 143.51399274084483,
+          "type": "money"
+        }
+      ],
+      "type": "sell"
+    },
+    {
+      "botAvatar": "bot1.png",
+      "botName": "_Astrid47",
+      "offering": [
+        {
+          "case_file": "esports_2014_summer",
+          "case_type": "esports_summer",
+          "float_value": 0.02221738,
+          "image": "karambit_scorched.png",
+          "is_sticker": false,
+          "name": "Scorched",
+          "price": 3481.39,
+          "rarity": "GOLD",
+          "stattrak": true,
+          "type": "skin",
+          "weapon": "Karambit",
+          "wear": "FN"
+        },
         {
           "case_file": "chroma_3_case",
           "case_type": "chroma_3",
-          "float_value": 0.12697897,
-          "image": "ppbizon_judgement_of_anubis.png",
+          "float_value": 0.11227147,
+          "image": "gutknife_doppler.png",
           "is_sticker": false,
-          "name": "Judgement of Anubis",
-          "price": 4.34,
-          "rarity": "RED",
+          "name": "Doppler",
+          "price": 171.24,
+          "rarity": "GOLD",
           "stattrak": false,
           "type": "skin",
-          "weapon": "PP-Bizon",
+          "weapon": "Gut Knife",
           "wear": "MW"
         }
       ],
       "requesting": [
         {
-          "amount": 5.705838241587597,
+          "amount": 4227.616385295094,
           "type": "money"
         }
       ],

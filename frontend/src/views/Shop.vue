@@ -202,6 +202,51 @@
         </div>
       </div>
 
+      <!-- Souvenir Cases Grid -->
+      <div v-if="currentCategory === 'souvenirs'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div v-for="case_item in souvenirCases" :key="case_item.case_type" class="group">
+          <div class="relative bg-gray-dark/50 rounded-xl p-6 transition-all duration-300 hover:bg-gray-dark/70 h-[320px] flex flex-col">
+            <!-- Hover Glow Effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow/0 via-yellow/10 to-yellow/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            
+            <!-- Content -->
+            <div class="relative flex-1 flex flex-col">
+              <!-- Image and Name (Clickable for contents) -->
+              <div @click="viewSouvenirCaseContents(case_item.case_type)" 
+                   class="cursor-pointer flex flex-col h-[220px]">
+                <div class="aspect-square w-full p-4 flex-shrink-0">
+                  <img :src="`/souvenir/${case_item.image}`" 
+                       :alt="case_item.name" 
+                       class="w-full h-full object-contain transition-all duration-300">
+                </div>
+                <h3 class="font-display text-white group-hover:text-yellow transition-colors duration-200 line-clamp-2 min-h-[3rem]">
+                  {{ case_item.name }}
+                </h3>
+              </div>
+              
+              <!-- Buy Section -->
+              <div class="flex items-center justify-between mt-4">
+                <span class="text-yellow font-medium min-w-[60px]">${{ formatNumber(case_item.price) }}</span>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <input 
+                    type="number" 
+                    min="1" 
+                    v-model="case_item.quantity"
+                    class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
+                  >
+                  <button 
+                    @click="buySouvenirCase(case_item.case_type)"
+                    class="px-4 py-1.5 rounded-lg bg-yellow/10 hover:bg-yellow/20 text-yellow transition-all duration-200"
+                  >
+                    Buy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Capsule Contents Overlay -->
       <div 
         v-if="showCapsuleContents"
@@ -477,8 +522,7 @@ export default {
       { id: 'cases', name: 'Cases' },
       { id: 'skins', name: 'Skins' },
       { id: 'stickers', name: 'Sticker Capsules' },
-      { id: 'collections', name: 'Collections' },
-      { id: 'souvenir', name: 'Souvenir Packages' }
+      { id: 'souvenirs', name: 'Souvenir Packages' }
     ]
 
     // Format number function
@@ -654,11 +698,13 @@ export default {
 
     // Add computed property for grouped cases
     const groupedCases = computed(() => {
-      const casesArray = Object.entries(cases.value).map(([case_type, case_data]) => ({
-        case_type,
-        ...case_data,
-        quantity: Number(case_data.quantity) || 1  // Ensure quantity is a number
-      }));
+      const casesArray = Object.entries(cases.value)
+        .filter(([, case_data]) => !case_data.is_souvenir) // Filter out souvenir cases
+        .map(([case_type, case_data]) => ({
+          case_type,
+          ...case_data,
+          quantity: Number(case_data.quantity) || 1  // Ensure quantity is a number
+        }));
 
       // Group cases by rank requirement using CASE_RANK_REQUIREMENTS
       const groups = {};
@@ -1032,6 +1078,68 @@ export default {
         .sort(([rankA], [rankB]) => Number(rankA) - Number(rankB));
     });
 
+    // Add souvenir case data
+    const souvenirCases = ref([
+      {
+        case_type: 'cache_dreamhack_2014',
+        name: 'Cache Souvenir Package DreamHack 2014',
+        image: 'cache_dreamhack_2014.png',
+        price: 500.00,
+        quantity: 1
+      }
+    ])
+
+    // Add souvenir case methods
+    const buySouvenirCase = async (case_type) => {
+      try {
+        playBuySound() // Play sound when buying
+        const caseItem = souvenirCases.value.find(c => c.case_type === case_type)
+        if (!caseItem) {
+          console.error('Souvenir case not found:', case_type)
+          return
+        }
+
+        const response = await fetch('/buy_souvenir_case', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            case_type,
+            quantity: caseItem.quantity
+          })
+        })
+        
+        const data = await response.json()
+        if (data.error) {
+          showNotification(data.error)
+          return
+        }
+        
+        store.updateUserData({ balance: data.new_balance })
+        showNotification(`Purchased ${caseItem.quantity}x ${caseItem.name}!`, 2000, case_type)
+      } catch (error) {
+        console.error('Error buying souvenir case:', error)
+        showNotification('Failed to purchase souvenir case')
+      }
+    }
+
+    const viewSouvenirCaseContents = async (case_type) => {
+      try {
+        const response = await fetch(`/api/data/souvenir_case_contents/${case_type}`)
+        const data = await response.json()
+        if (data.error) {
+          showNotification(data.error)
+          return
+        }
+        selectedCase.value = data
+        showCaseContents.value = true
+      } catch (error) {
+        console.error('Error loading souvenir case contents:', error)
+        showNotification('Failed to load souvenir case contents')
+      }
+    }
+
     return {
       currentCategory,
       categories,
@@ -1066,6 +1174,9 @@ export default {
       groupedCapsules,
       sortedCapsuleRankGroups,
       playBuySound,
+      souvenirCases,
+      buySouvenirCase,
+      viewSouvenirCaseContents,
     }
   }
 }

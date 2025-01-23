@@ -30,6 +30,8 @@ class Rarity(Enum):
     PINK = "PINK"
     PURPLE = "PURPLE"
     BLUE = "BLUE"
+    LIGHT_BLUE = "LIGHT_BLUE"
+    GREY = "GREY"
 
 class Wear(Enum):
     BS = "Battle-Scarred"
@@ -464,6 +466,22 @@ CASE_DATA = {
     }
 }
 
+SOUVENIR_CASE_FILE_MAPPING = {
+    'cache_dreamhack_2014': 'cache_dreamhack_2014'
+}
+
+SOUVENIR_CASE_DATA = {
+    'cache_dreamhack_2014': {
+        'name': 'Cache Souvenir Package DreamHack 2014',
+        'image': 'cache_dreamhack_2014.png',
+        'is_case': True,
+        'is_souvenir': True,
+        'type': 'cache_dreamhack_2014'
+    }
+}
+
+SOUVENIR_CASE_TYPES = list(SOUVENIR_CASE_FILE_MAPPING.keys())
+
 STICKER_CAPSULE_FILE_MAPPING = {
     'challengers_cluj_napoca_2015': 'challengers_cluj_napoca_2015',
     'challengers_columbus_2016': 'challengers_columbus_2016',
@@ -539,3 +557,16 @@ STICKER_DROP_CHANCES = {
     'purple': 16.0,
     'pink': 3.841  # exotic
 }
+
+# Add souvenir case mappings
+SOUVENIR_DROP_CHANCES = {
+    'red': 0.26,
+    'pink': 3.2,
+    'purple': 15.98,
+    'blue': 39.52,
+    'light_blue': 35.0,
+    'grey': 6.0
+}
+
+# Add souvenir chance
+SOUVENIR_CHANCE = 10  # 10% chance for souvenir items

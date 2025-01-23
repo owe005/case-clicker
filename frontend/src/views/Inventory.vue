@@ -160,8 +160,17 @@
                 
                 <!-- Info -->
                 <div class="flex flex-col flex-1">
-                  <h3 class="font-display text-sm text-white line-clamp-2 min-h-[2.5rem]" :class="{ 'text-yellow': item.stattrak }">
-                    {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
+                  <h3 class="font-display text-sm text-white line-clamp-2 min-h-[2.5rem]" :class="{ 
+                    'text-yellow': item.stattrak || item.is_souvenir,
+                    'text-[#CF6A32]': item.stattrak && !item.is_souvenir,
+                    'text-[#FFD700]': item.is_souvenir 
+                  }">
+                    <template v-if="item.is_sticker">{{ item.name }}</template>
+                    <template v-else>
+                      <template v-if="item.stattrak">StatTrak™ </template>
+                      <template v-if="item.is_souvenir">Souvenir </template>
+                      {{ item.weapon }} | {{ item.name }}
+                    </template>
                   </h3>
                   <div class="flex items-center gap-2 text-xs text-white/50 mt-1">
                     <span>{{ item.wear }}</span>
@@ -256,6 +265,41 @@
           </a>
         </div>
       </div>
+
+      <!-- Souvenir Cases Section -->
+      <div v-else-if="currentCategory === 'souvenirs'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        <div v-for="item in souvenirs" :key="item.type" 
+             class="bg-gray-dark rounded-xl p-4 flex flex-col items-center">
+          <img :src="`/souvenir/${item.image}`" :alt="item.name" class="w-48 h-48 object-contain mb-4">
+          <h3 class="text-lg font-display text-white mb-2">{{ item.name }}</h3>
+          <p class="text-white/70 mb-4">Quantity: {{ item.quantity }}</p>
+          <div class="flex flex-wrap gap-2 justify-center">
+            <button 
+              v-for="count in getAvailableOpenCounts(item)" 
+              :key="count"
+              class="case-open-btn"
+              :class="{
+                'primary': count === 1,
+                'opacity-50 cursor-not-allowed': count > item.quantity
+              }"
+              :disabled="count > item.quantity"
+              @click="() => {
+                console.log('Opening souvenir case:', item.type, 'count:', count);
+                openSouvenirCase(item.type, count);
+              }"
+            >
+              <span class="relative z-10">Open {{ count }}x</span>
+            </button>
+          </div>
+        </div>
+        <div v-if="souvenirs.length === 0" class="col-span-full text-center py-12">
+          <h2 class="text-2xl font-display text-white mb-4">No Souvenir Packages Found</h2>
+          <p class="text-white/70 mb-6">You don't have any souvenir packages in your inventory.</p>
+          <a href="/shop" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+            Buy Souvenir Packages
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- Sell All Modal -->
@@ -306,15 +350,22 @@
               <div class="spinner-item-image">
                 <img :src="getSpinnerItemImage(item)" :alt="item.name">
               </div>
-              <template v-if="item.rarity === 'GOLD' || item.rarity === 'CONTRABAND'">
+              <template v-if="item.rarity === 'GOLD' && !item.is_sticker">
                 <div class="item-name rare">★</div>
                 <div class="item-skin rare">Rare Special Item</div>
               </template>
               <template v-else>
-                <div class="item-name" :class="{ 'stattrak': item.stattrak }">
-                  {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : item.weapon }}
+                <div class="item-name" :class="{ 
+                  'stattrak': item.stattrak,
+                  'souvenir': item.is_souvenir 
+                }">
+                  {{ item.stattrak ? 'StatTrak™ ' : '' }}
+                  {{ item.is_souvenir ? 'Souvenir ' : '' }}
+                  {{ item.is_sticker ? '' : item.weapon }}
                 </div>
-                <div class="item-skin">{{ item.is_sticker ? '' : item.name }}</div>
+                <div class="item-skin">
+                  {{ item.name }}
+                </div>
               </template>
             </div>
           </div>
@@ -344,10 +395,15 @@
                  { 'hidden': index >= spinCount }
                ]">
             <img :src="getSkinImagePath(item)" :alt="item.name" class="mx-auto mb-4 max-h-48 w-auto">
-            <div class="item-name text-lg" :class="{ 'stattrak': item.stattrak }">
-              {{ item.stattrak ? 'StatTrak™ ' : '' }}{{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
+            <div class="item-name text-lg" :class="{ 
+              'stattrak': item.stattrak,
+              'souvenir': item.is_souvenir 
+            }">
+              {{ item.stattrak ? 'StatTrak™ ' : '' }}
+              {{ item.is_souvenir ? 'Souvenir ' : '' }}
+              {{ item.is_sticker ? item.name : `${item.weapon} | ${item.name}` }}
             </div>
-            <div class="text-white/70">{{ item.wear }} • {{ item.rarity }}</div>
+            <div class="text-white/70">{{ item.wear }} • {{ formatRarity(item.rarity) }}</div>
             <div class="text-yellow text-xl mt-2">${{ item.price.toFixed(2) }}</div>
           </div>
         </div>
@@ -393,7 +449,8 @@ export default {
     const categories = [
       { id: 'skins', name: 'Skins' },
       { id: 'cases', name: 'Cases' },
-      { id: 'capsules', name: 'Sticker Capsules' }
+      { id: 'capsules', name: 'Sticker Capsules' },
+      { id: 'souvenirs', name: 'Souvenir Packages' }
     ]
 
     const sortOptions = [
@@ -407,11 +464,15 @@ export default {
     })
 
     const cases = computed(() => {
-      return inventory.value.filter(item => item.is_case)
+      return inventory.value.filter(item => item.is_case && !item.is_souvenir)
     })
 
     const capsules = computed(() => {
       return inventory.value.filter(item => item.is_capsule)
+    })
+
+    const souvenirs = computed(() => {
+      return inventory.value.filter(item => item.is_case && item.is_souvenir)
     })
 
     // Add this to the setup() function after other refs
@@ -496,7 +557,7 @@ export default {
           stackedItems[stackKey].items.push(item)
         } else {
           // Weapon skins are grouped by weapon, name, wear, and stattrak
-          const stackKey = `${item.weapon}|${item.name}|${item.wear}|${item.stattrak}`
+          const stackKey = `${item.weapon}|${item.name}|${item.wear}|${item.stattrak}|${item.is_souvenir}`
           if (!stackedItems[stackKey]) {
             stackedItems[stackKey] = {
               items: [],
@@ -976,6 +1037,7 @@ export default {
               rarity: selectedRarity, // Explicitly set the rarity
               wear: ['FN', 'MW', 'FT', 'WW', 'BS'][Math.floor(Math.random() * 5)],
               stattrak: Math.random() < 0.1,
+              is_souvenir: Math.random() < 0.1, // 10% chance for souvenir
               case_type: actualItem.case_type
             })
           }
@@ -1084,7 +1146,12 @@ export default {
         const capsuleType = item.case_type || item.capsule_type
         return `/sticker_skins/${capsuleType}/${item.image}`
       }
-      const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
+      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014') {
+        // For souvenir items, use the souvenir_skins folder
+        return `/souvenir_skins/${item.case_type}/${item.image}`
+      }
+      // For regular skins from cases
+      const casePath = CASE_MAPPING[item.case_type] || item.case_type
       return `/skins/${casePath}/${item.image || 'placeholder.png'}`
     }
 
@@ -1389,6 +1456,210 @@ export default {
       }
     }
 
+    // Add openSouvenirCase function
+    async function openSouvenirCase(caseType, count = 1) {
+      console.log('openSouvenirCase called with:', caseType, count)
+      try {
+        spinCount.value = count
+        showCaseOpeningOverlay.value = true
+        spinnerContainers.value = []
+        wonItems.value = []
+
+        // Load case contents first
+        console.log('Loading souvenir case contents...')
+        const response = await fetch(`/api/data/souvenir_case_contents/${caseType}`)
+        const caseContents = await response.json()
+        if (!caseContents || caseContents.error) {
+          console.error('Failed to load souvenir case contents')
+          alert('Failed to load souvenir case contents')
+          return
+        }
+
+        // Start spinning sound
+        if (spinningSound.value) {
+          spinningSound.value.currentTime = 0
+          spinningSound.value.volume = 0.5
+          try {
+            await spinningSound.value.play()
+          } catch (error) {
+            console.error('Failed to play spinning sound:', error)
+          }
+        }
+
+        // Call backend to get items
+        console.log('Calling backend to open souvenir case...')
+        const openResponse = await fetch(`/open_souvenir/${caseType}?count=${count}`)
+        const data = await openResponse.json()
+        
+        if (data.error) {
+          console.error('Backend error:', data.error)
+          alert(data.error)
+          return
+        }
+        console.log('Received items from backend:', data)
+
+        // Generate random items for each spinner
+        for (let i = 0; i < count; i++) {
+          const { items, winningPosition } = generateRandomSouvenirItems(data.items[i], caseContents)
+          spinnerContainers.value.push({ items, winningPosition })
+        }
+        console.log('Generated spinner items:', spinnerContainers.value)
+
+        // Store won items for showcase
+        wonItems.value = data.items
+
+        // Wait for Vue to update the DOM
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // Calculate final positions for all spinners
+        const spinnerPositions = spinnerContainers.value.map((container, index) => {
+          const spinnerEl = document.getElementById(`spinner-${index}`)
+          if (spinnerEl) {
+            const itemWidth = 200
+            const spacing = 4
+            const containerWidth = spinnerEl.parentElement.offsetWidth
+            const centerOffset = (containerWidth / 2) - (itemWidth / 2)
+            const randomOffset = Math.floor(Math.random() * itemWidth) - (itemWidth / 2)
+            return (container.winningPosition * (itemWidth + spacing)) - centerOffset + randomOffset
+          }
+          return 0
+        })
+
+        // Reset all spinners to starting position
+        spinnerContainers.value.forEach((_, index) => {
+          const spinnerEl = document.getElementById(`spinner-${index}`)
+          if (spinnerEl) {
+            spinnerEl.style.transition = 'none'
+            spinnerEl.style.transform = 'translateX(0)'
+            spinnerEl.offsetHeight
+          }
+        })
+
+        // Start synchronized spinning animation
+        requestAnimationFrame(() => {
+          spinnerContainers.value.forEach((_, index) => {
+            const spinnerEl = document.getElementById(`spinner-${index}`)
+            if (spinnerEl) {
+              spinnerEl.style.transition = 'transform 6s cubic-bezier(0.12, 0.39, 0.01, 1)'
+              spinnerEl.style.transform = `translateX(-${spinnerPositions[index]}px)`
+            }
+          })
+        })
+
+        // Wait for animation to complete
+        await new Promise(resolve => setTimeout(resolve, 6800))
+
+        // Stop spinning sound
+        let soundFadeInterval
+        if (spinningSound.value) {
+          soundFadeInterval = setInterval(() => {
+            if (spinningSound.value && spinningSound.value.volume > 0.1) {
+              spinningSound.value.volume -= 0.1
+            } else {
+              if (spinningSound.value) {
+                spinningSound.value.pause()
+              }
+              clearInterval(soundFadeInterval)
+            }
+          }, 100)
+        }
+
+        showCaseOpeningOverlay.value = false
+        showShowcase()
+
+        // Update store with new data
+        store.updateUserData({
+          balance: data.balance,
+          exp: data.exp,
+          rank: data.rank
+        })
+
+        // Handle achievement if present
+        if (data.achievement) {
+          store.showAchievementPopup(data.achievement)
+        }
+
+        // Handle level up
+        if (data.levelUp) {
+          createConfetti()
+          showLevelUpBanner(RANKS[data.rank])
+        }
+
+        // Update inventory
+        await fetchInventory()
+
+      } catch (error) {
+        console.error('Error in openSouvenirCase:', error)
+        alert('Failed to open souvenir case')
+      }
+    }
+
+    // Add generateRandomSouvenirItems function
+    function generateRandomSouvenirItems(actualItem, caseContents) {
+      const items = []
+      const totalItems = 100
+      const winningPosition = 85 // Fixed position for the winning item
+
+      // Define rarity weights for souvenir cases
+      const weights = {
+        'RED': 0.26,
+        'PINK': 3.2,
+        'PURPLE': 15.98,
+        'BLUE': 39.52,
+        'LIGHT_BLUE': 35.0,
+        'GREY': 6.0
+      }
+
+      // Create weighted item pools
+      const itemPools = {
+        'RED': caseContents.skins?.red || [],
+        'PINK': caseContents.skins?.pink || [],
+        'PURPLE': caseContents.skins?.purple || [],
+        'BLUE': caseContents.skins?.blue || [],
+        'LIGHT_BLUE': caseContents.skins?.light_blue || [],
+        'GREY': caseContents.skins?.grey || []
+      }
+
+      // Generate random items
+      for (let i = 0; i < totalItems; i++) {
+        if (i === winningPosition) {
+          items.push(actualItem)
+        } else {
+          // Pick a random rarity based on weights
+          const random = Math.random() * 100
+          let cumulativeWeight = 0
+          let selectedRarity = 'BLUE'
+          
+          for (const [rarity, weight] of Object.entries(weights)) {
+            cumulativeWeight += weight
+            if (random <= cumulativeWeight && itemPools[rarity] && itemPools[rarity].length > 0) {
+              selectedRarity = rarity
+              break
+            }
+          }
+
+          // Pick a random item from the selected rarity pool
+          const pool = itemPools[selectedRarity]
+          if (pool && pool.length > 0) {
+            const randomItem = pool[Math.floor(Math.random() * pool.length)]
+            items.push({
+              ...randomItem,
+              rarity: selectedRarity,
+              case_type: actualItem.case_type,
+              is_souvenir: Math.random() < 0.10 // 10% chance for souvenir
+            })
+          }
+        }
+      }
+
+      return { items, winningPosition }
+    }
+
+    // Add this new method in setup()
+    function formatRarity(rarity) {
+      return rarity.toUpperCase().replace('_', ' ')
+    }
+
     // Lifecycle hooks
     onMounted(async () => {
       await fetchInventory()
@@ -1431,11 +1702,13 @@ export default {
       capsules,
       getCapsuleImagePath,
       openCapsule,
-      toggleFavorite
+      toggleFavorite,
+      souvenirs,
+      openSouvenirCase,
+      formatRarity
     }
   }
 }
 </script>
-
 <style scoped>
 </style> 

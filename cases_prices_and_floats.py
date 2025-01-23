@@ -3,7 +3,8 @@ import json
 import random
 from typing import Dict, Union
 
-from config import CASE_FILE_MAPPING, Rarity
+from config import (CASE_FILE_MAPPING, SOUVENIR_CASE_FILE_MAPPING, 
+                  Rarity, SOUVENIR_CASE_DATA)
 from models import Case
 
 def generate_float_for_wear(wear: str) -> float:
@@ -51,16 +52,22 @@ def adjust_price_by_float(price: float, wear: str, float_value: float) -> float:
     
     return price
 
-def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float, is_stattrak: bool = False) -> float:
+def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: float, is_stattrak: bool = False, is_souvenir: bool = False) -> float:
     """Load and adjust price for a skin based on case data and float value"""
     try:
         # Get case file name
-        file_name = CASE_FILE_MAPPING.get(case_type)
+        if case_type in SOUVENIR_CASE_FILE_MAPPING:
+            file_name = SOUVENIR_CASE_FILE_MAPPING[case_type]
+            file_path = f'souvenir/{file_name}.json'
+        else:
+            file_name = CASE_FILE_MAPPING.get(case_type)
+            file_path = f'cases/{file_name}.json'
+            
         if not file_name:
             return 0
             
         # Load case data
-        with open(f'cases/{file_name}.json', 'r') as f:
+        with open(file_path, 'r') as f:
             case_data = json.load(f)
             
         # Find the skin in case data
@@ -68,8 +75,8 @@ def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: floa
         for grade, skins in case_data['skins'].items():
             for skin in skins:
                 if skin['weapon'] == weapon and skin['name'] == name:
-                    # Get the correct price key based on StatTrak
-                    price_key = f'ST_{wear}' if is_stattrak else wear
+                    # Get the correct price key based on StatTrak/Souvenir
+                    price_key = f'Souvenir_{wear}' if is_souvenir else (f'ST_{wear}' if is_stattrak else wear)
                     if price_key not in skin['prices']:
                         return 0
                         
@@ -79,11 +86,11 @@ def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: floa
                     # Adjust price based on float value
                     adjusted_price = adjust_price_by_float(base_price, wear, float_value)
                     
-                    # If it's StatTrak, we need to ensure we're using the StatTrak price as base
-                    if is_stattrak:
+                    # If it's StatTrak/Souvenir, we need to ensure we're using the correct price as base
+                    if is_stattrak or is_souvenir:
                         # Calculate the adjustment multiplier from the base adjustment
                         adjustment_multiplier = adjusted_price / base_price
-                        # Apply the same multiplier to the StatTrak price
+                        # Apply the same multiplier to the special price
                         return base_price * adjustment_multiplier
                     
                     return adjusted_price
@@ -92,7 +99,6 @@ def load_skin_price(skin_name: str, case_type: str, wear: str, float_value: floa
     except Exception as e:
         print(f"Error loading skin price: {e}")
         return 0
-    
 
 def load_case(case_type: str) -> Union[Case, Dict, None]:
     """
@@ -103,6 +109,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
         # If we just need basic case info for the shop
         if case_type == 'all':
             cases = {}
+            # Regular cases
             for case_key, file_name in CASE_FILE_MAPPING.items():
                 try:
                     with open(f'cases/{file_name}.json', 'r') as f:
@@ -110,38 +117,64 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
                         cases[case_key] = {
                             'name': case_data['name'],
                             'image': case_data['image'],
-                            'price': case_data['price']
+                            'price': case_data['price'],
+                            'is_souvenir': False
                         }
                 except Exception as e:
                     print(f"Error loading {file_name}: {e}")
+            
+            # Souvenir cases
+            for case_key, file_name in SOUVENIR_CASE_FILE_MAPPING.items():
+                try:
+                    with open(f'souvenir/{file_name}.json', 'r') as f:
+                        case_data = json.load(f)
+                        cases[case_key] = {
+                            'name': case_data['name'],
+                            'image': case_data['image'],
+                            'price': case_data['price'],
+                            'is_souvenir': True
+                        }
+                except Exception as e:
+                    print(f"Error loading souvenir {file_name}: {e}")
             return cases
             
         # For opening specific cases
-        file_name = CASE_FILE_MAPPING.get(case_type)
+        is_souvenir = case_type in SOUVENIR_CASE_FILE_MAPPING
+        if is_souvenir:
+            file_name = SOUVENIR_CASE_FILE_MAPPING[case_type]
+            file_path = f'souvenir/{file_name}.json'
+        else:
+            file_name = CASE_FILE_MAPPING.get(case_type)
+            file_path = f'cases/{file_name}.json'
+            
         if not file_name:
             print(f"Invalid case type: {case_type}")
             return None
             
-        with open(f'cases/{file_name}.json', 'r') as f:
+        with open(file_path, 'r') as f:
             data = json.load(f)
             
         # For opening cases, create a Case object with full skin data
         contents = {
-            Rarity.CONTRABAND: [],  # Add CONTRABAND rarity
+            Rarity.CONTRABAND: [],
             Rarity.GOLD: [],
             Rarity.RED: [],
             Rarity.PINK: [],
             Rarity.PURPLE: [],
-            Rarity.BLUE: []
+            Rarity.BLUE: [],
+            Rarity.LIGHT_BLUE: [],
+            Rarity.GREY: []
         }
         
         grade_map = {
-            'contraband': Rarity.CONTRABAND,  # Add contraband mapping
+            'contraband': Rarity.CONTRABAND,
             'gold': Rarity.GOLD,
             'red': Rarity.RED,
             'pink': Rarity.PINK,
             'purple': Rarity.PURPLE,
-            'blue': Rarity.BLUE
+            'blue': Rarity.BLUE,
+            'light_blue': Rarity.LIGHT_BLUE,
+            'grey': Rarity.GREY
         }
         
         for grade, items in data['skins'].items():
@@ -149,7 +182,7 @@ def load_case(case_type: str) -> Union[Case, Dict, None]:
             for item in items:
                 contents[rarity].append((item['weapon'], item['name']))
         
-        return Case(data['name'], contents, file_name)
+        return Case(data['name'], contents, file_name, is_souvenir)
         
     except Exception as e:
         print(f"Error loading case {case_type}: {e}")

@@ -26,7 +26,9 @@ from casino import find_best_skin_combination, handle_blackjack_end
 from cases_prices_and_floats import (adjust_price_by_float, generate_float_for_wear,
                                    get_case_prices, load_case, load_skin_price)
 from config import (BLACK_NUMBERS, CASE_DATA, CASE_FILE_MAPPING,
-                   CASE_TYPES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING)
+                   CASE_TYPES, RANK_EXP, RANKS, RED_NUMBERS, REFRESH_INTERVAL, 
+                   STICKER_CAPSULE_DATA, STICKER_CAPSULE_FILE_MAPPING,
+                   SOUVENIR_CASE_DATA, SOUVENIR_CASE_FILE_MAPPING, SOUVENIR_CASE_TYPES)
 from daily_trades import generate_daily_trades, load_daily_trades, save_daily_trades
 from user_data import create_user_from_dict, load_user_data, save_user_data
 from blackjack import BlackjackGame
@@ -3758,6 +3760,235 @@ def cashout_mines():
         
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+@app.route('/open_souvenir/<case_type>')
+def open_souvenir_case(case_type):
+    count = int(request.args.get('count', 1))
+    user_data = load_user_data()
+    
+    # Check multi_open upgrade level
+    multi_open_level = user_data.get('upgrades', {}).get('multi_open', 1)
+    if count > multi_open_level:
+        return jsonify({'error': f'You can only open up to {multi_open_level} cases at once. Upgrade Multi Open to open more!'})
+    
+    if count not in [1, 2, 3, 4, 5]:
+        return jsonify({'error': 'Invalid case count'})
+        
+    inventory = user_data.get('inventory', [])
+    current_exp = user_data.get('exp', 0)
+    current_rank = user_data.get('rank', 0)
+    new_exp = current_exp  # Initialize with current exp
+    
+    # Find the souvenir case in inventory
+    case_found = False
+    for i in range(len(inventory)):
+        item = inventory[i]
+        if item.get('is_case') and item.get('is_souvenir') and item.get('type') == case_type:
+            quantity = item.get('quantity', 0)
+            if quantity >= count:
+                case_found = True
+                # Decrease case quantity
+                inventory[i]['quantity'] = quantity - count
+                if inventory[i]['quantity'] <= 0:
+                    inventory.pop(i)
+                break
+    
+    if not case_found:
+        return jsonify({'error': f'Not enough souvenir cases ({count} needed)'})
+    
+    # Load the appropriate case
+    try:
+        with open(f'souvenir/{case_type}.json', 'r') as f:
+            case_data = json.load(f)
+            case_price = float(case_data.get('price', 0))
+            
+            # Add exp based on case price (for all cases opened)
+            new_exp = current_exp + (case_price * count)
+            
+            # Check for rank up
+            while current_rank < len(RANK_EXP) and new_exp >= RANK_EXP[current_rank]:
+                new_exp -= RANK_EXP[current_rank]
+                current_rank += 1
+            
+            # Update user data with new exp and rank
+            user_data['exp'] = new_exp
+            user_data['rank'] = current_rank
+            
+    except Exception as e:
+        print(f"Error getting souvenir case price: {e}")
+        return jsonify({'error': 'Invalid souvenir case type'})
+    
+    # Open cases and get items
+    items = []
+    for _ in range(count):
+        # Randomly select a rarity based on probabilities
+        rarities = ['purple', 'blue', 'light_blue']
+        weights = [5, 20, 75]  # Probabilities in percentage
+        rarity = random.choices(rarities, weights=weights)[0]
+        
+        # Get all skins of selected rarity
+        available_skins = case_data['skins'].get(rarity, [])
+        if not available_skins:
+            continue
+            
+        # Select a random skin
+        skin = random.choice(available_skins)
+        
+        # Generate float value and determine wear
+        float_value = generate_float_for_wear(random.choice(skin['valid_wears']))
+        wear = next((w for w in skin['valid_wears'] if float_value <= {'FN': 0.07, 'MW': 0.15, 'FT': 0.37, 'WW': 0.44, 'BS': 1.0}[w]), 'BS')
+        
+        # Get souvenir price
+        price = skin['prices'].get(f'Souvenir_{wear}', 0)
+        
+        # Determine if item is souvenir (10% chance)
+        is_souvenir = random.random() < 0.1  # 10% chance
+        
+        # Get appropriate price based on souvenir status
+        if is_souvenir:
+            price = skin['prices'].get(f'Souvenir_{wear}', 0)
+        else:
+            price = skin['prices'].get(wear, 0)
+        
+        skin_dict = {
+            'weapon': skin['weapon'],
+            'name': skin['name'],
+            'rarity': rarity,
+            'wear': wear,
+            'stattrak': False,
+            'is_souvenir': is_souvenir,
+            'price': price,
+            'timestamp': time.time(),
+            'case_type': case_type,
+            'float_value': float_value,
+            'is_case': False,
+            'is_skin': True,
+            'image': skin['image']
+        }
+        items.append(skin_dict)
+        
+        # Add the skin to inventory
+        inventory.append(skin_dict)
+    
+    # Update user data
+    user_data['inventory'] = inventory
+    save_user_data(user_data)
+    
+    # Store initial achievements state
+    initial_achievements = set(user_data['achievements']['completed'])
+    
+    # Update total cases opened stat
+    user_data['stats']['total_cases_opened'] += count
+    
+    # Update case achievements
+    update_case_achievements(user_data)
+    
+    # Check if any new achievements were completed
+    new_achievements = set(user_data['achievements']['completed']) - initial_achievements
+    completed_achievement = None
+    if new_achievements:
+        achievement_id = list(new_achievements)[0]  # Get the first new achievement
+        level = int(achievement_id.split('_')[1])
+        completed_achievement = {
+            'title': {
+                1: 'Case Opener',
+                2: 'Case Enthusiast',
+                3: 'Case Veteran',
+                4: 'Case Master',
+                5: 'Case God'
+            }.get(level, 'Unknown'),
+            'level': level
+        }
+    
+    return jsonify({
+        'items': items,
+        'new_exp': new_exp,
+        'new_rank': current_rank,
+        'completed_achievement': completed_achievement
+    })
+
+@app.route('/buy_souvenir_case', methods=['POST'])
+def buy_souvenir_case():
+    data = request.get_json()
+    case_type = data.get('case_type')
+    quantity = int(data.get('quantity', 1))
+    
+    if not case_type or case_type not in SOUVENIR_CASE_TYPES:
+        return jsonify({'error': 'Invalid souvenir case type'})
+        
+    if quantity < 1:
+        return jsonify({'error': 'Invalid quantity'})
+    
+    user_data = load_user_data()
+    balance = user_data.get('balance', 0)
+    
+    # Get case price
+    try:
+        with open(f'souvenir/{case_type}.json', 'r') as f:
+            case_data = json.load(f)
+            case_price = float(case_data.get('price', 0))
+    except:
+        return jsonify({'error': 'Failed to get souvenir case price'})
+    
+    total_cost = case_price * quantity
+    
+    if balance < total_cost:
+        return jsonify({'error': 'Insufficient funds'})
+    
+    # Update balance
+    user_data['balance'] = balance - total_cost
+    
+    # Add case to inventory
+    inventory = user_data.get('inventory', [])
+    case_found = False
+    
+    for item in inventory:
+        if item.get('is_case') and item.get('is_souvenir') and item.get('type') == case_type:
+            item['quantity'] = item.get('quantity', 0) + quantity
+            case_found = True
+            break
+    
+    if not case_found:
+        case_data = SOUVENIR_CASE_DATA.get(case_type, {})
+        inventory.append({
+            'type': case_type,
+            'name': case_data.get('name', ''),
+            'image': case_data.get('image', ''),
+            'is_case': True,
+            'is_souvenir': True,
+            'quantity': quantity,
+            'price': case_price
+        })
+    
+    user_data['inventory'] = inventory
+    save_user_data(user_data)
+    
+    return jsonify({
+        'success': True,
+        'new_balance': user_data['balance']
+    })
+
+@app.route('/api/data/souvenir_case_contents/<case_type>')
+def get_souvenir_case_contents(case_type):
+    if case_type not in SOUVENIR_CASE_TYPES:
+        return jsonify({'error': 'Invalid souvenir case type'})
+        
+    try:
+        with open(f'souvenir/{case_type}.json', 'r') as f:
+            case_data = json.load(f)
+            return jsonify({
+                'name': case_data['name'],
+                'image': case_data['image'],
+                'skins': case_data['skins'],
+                'probabilities': {
+                    'purple': 5,
+                    'blue': 20,
+                    'light_blue': 75
+                }
+            })
+    except Exception as e:
+        print(f"Error loading souvenir case contents: {e}")
+        return jsonify({'error': 'Failed to load souvenir case contents'})
 
 if __name__ == '__main__':
     init_auction_system()  # Keep this line

@@ -1,0 +1,258 @@
+{
+    "name": "Cache Souvenir Package DreamHack 2014",
+    "image": "cache_dreamhack_2014.png",
+    "price": 500.00,
+    "skins": {
+        "purple": [
+            {
+                "weapon": "Galil AR",
+                "name": "Cerberus",
+                "image": "galil_cerberus.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 52.72,
+                    "MW": 33.91,
+                    "FT": 17.68,
+                    "WW": 16.30,
+                    "BS": 15.65,
+                    "Souvenir_FN": 397.09,
+                    "Souvenir_MW": 82.22,
+                    "Souvenir_FT": 31.60,
+                    "Souvenir_WW": 24.58,
+                    "Souvenir_BS": 24.54
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Styx",
+                "image": "famas_styx.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 7.17,
+                    "MW": 4.28,
+                    "FT": 2.72,
+                    "WW": 4.47,
+                    "BS": 2.88,
+                    "Souvenir_FN": 46.30,
+                    "Souvenir_MW": 23.09,
+                    "Souvenir_FT": 9.45,
+                    "Souvenir_WW": 16.49,
+                    "Souvenir_BS": 8.89
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Tec-9",
+                "name": "Toxic",
+                "image": "tec9_toxic.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 9.66,
+                    "MW": 8.36,
+                    "FT": 7.69,
+                    "WW": 10.98,
+                    "BS": 10.46,
+                    "Souvenir_FN": 48.00,
+                    "Souvenir_MW": 17.10,
+                    "Souvenir_FT": 7.49,
+                    "Souvenir_WW": 8.69,
+                    "Souvenir_BS": 7.68
+                }
+            },
+            {
+                "weapon": "Glock-18",
+                "name": "Reactor",
+                "image": "glock18_reactor.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 8.60,
+                    "MW": 6.09,
+                    "FT": 5.29,
+                    "WW": 4.79,
+                    "BS": 4.48,
+                    "Souvenir_FN": 99.04,
+                    "Souvenir_MW": 20.82,
+                    "Souvenir_FT": 9.90,
+                    "Souvenir_WW": 7.84,
+                    "Souvenir_BS": 7.30
+                }
+            },
+            {
+                "weapon": "MAC-10",
+                "name": "Nuclear Garden",
+                "image": "mac10_nuclear_garden.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 9.30,
+                    "MW": 7.43,
+                    "FT": 6.87,
+                    "WW": 7.83,
+                    "BS": 6.65,
+                    "Souvenir_FN": 29.57,
+                    "Souvenir_MW": 11.24,
+                    "Souvenir_FT": 6.10,
+                    "Souvenir_WW": 6.87,
+                    "Souvenir_BS": 3.83
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Setting Sun",
+                "image": "mp9_setting_sun.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 9.37,
+                    "MW": 7.05,
+                    "FT": 4.72,
+                    "WW": 4.76,
+                    "BS": 5.25,
+                    "Souvenir_FN": 64.34,
+                    "Souvenir_MW": 14.36,
+                    "Souvenir_FT": 5.63,
+                    "Souvenir_WW": 4.06,
+                    "Souvenir_BS": 3.05
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Bone Machine",
+                "image": "xm1014_bone_machine.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 6.43,
+                    "MW": 5.70,
+                    "FT": 4.59,
+                    "WW": 5.39,
+                    "BS": 7.04,
+                    "Souvenir_FN": 14.89,
+                    "Souvenir_MW": 6.21,
+                    "Souvenir_FT": 3.13,
+                    "Souvenir_WW": 4.22,
+                    "Souvenir_BS": 3.00
+                }
+            }
+        ],
+        "light_blue": [
+            {
+                "weapon": "Five-SeveN",
+                "name": "Hot Shot",
+                "image": "fiveseven_hot_shot.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 14.86,
+                    "MW": 4.02,
+                    "FT": 1.89,
+                    "WW": 1.40,
+                    "BS": 1.71,
+                    "Souvenir_FN": 21.99,
+                    "Souvenir_MW": 6.57,
+                    "Souvenir_FT": 2.50,
+                    "Souvenir_WW": 1.32,
+                    "Souvenir_BS": 1.08
+                }
+            },
+            {
+                "weapon": "Negev",
+                "name": "Nuclear Waste",
+                "image": "negev_nuclear_waste.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 2.29,
+                    "MW": 1.88,
+                    "FT": 1.78,
+                    "WW": 5.91,
+                    "Souvenir_FN": 3.42,
+                    "Souvenir_MW": 1.82,
+                    "Souvenir_FT": 1.14,
+                    "Souvenir_WW": 4.95
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Radiation Hazard",
+                "image": "aug_radiation_hazard.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.34,
+                    "MW": 1.75,
+                    "FT": 1.63,
+                    "WW": 1.81,
+                    "BS": 2.09,
+                    "Souvenir_FN": 3.80,
+                    "Souvenir_MW": 2.02,
+                    "Souvenir_FT": 1.22,
+                    "Souvenir_WW": 1.64,
+                    "Souvenir_BS": 5.39
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Chemical Green",
+                "image": "ppbizon_chemical_green.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 4.99,
+                    "MW": 2.20,
+                    "FT": 1.50,
+                    "WW": 2.07,
+                    "BS": 2.14,
+                    "Souvenir_FN": 11.79,
+                    "Souvenir_MW": 2.41,
+                    "Souvenir_FT": 1.12,
+                    "Souvenir_WW": 1.00,
+                    "Souvenir_BS": 0.69
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Fallout Warning",
+                "image": "sg553_fallout_warning.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.54,
+                    "MW": 1.92,
+                    "FT": 1.63,
+                    "WW": 1.78,
+                    "BS": 1.76,
+                    "Souvenir_FN": 7.43,
+                    "Souvenir_MW": 2.08,
+                    "Souvenir_FT": 0.95,
+                    "Souvenir_WW": 3.38,
+                    "Souvenir_BS": 1.05
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Contamination",
+                "image": "p250_contamination.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 2.48,
+                    "MW": 1.72,
+                    "FT": 1.57,
+                    "WW": 2.92,
+                    "BS": 1.41,
+                    "Souvenir_FN": 3.97,
+                    "Souvenir_MW": 1.40,
+                    "Souvenir_FT": 0.54,
+                    "Souvenir_WW": 1.13,
+                    "Souvenir_BS": 0.62
+                }
+            }
+        ]
+    }
+}
