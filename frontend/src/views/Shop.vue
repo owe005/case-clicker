@@ -231,7 +231,9 @@
                   <input 
                     type="number" 
                     min="1" 
-                    v-model="case_item.quantity"
+                    :value="case_item.quantity"
+                    @input="e => case_item.quantity = Number(e.target.value) || 1"
+                    @change="e => case_item.quantity = Number(e.target.value) || 1"
                     class="w-16 px-2 py-1 bg-gray-darker text-white rounded-lg text-center"
                   >
                   <button 
@@ -644,11 +646,15 @@ export default {
         // Get the new quantity
         let newQuantity = 0;
         if (caseType) {
-          for (const group of Object.values(groupedCases.value)) {
-            const item = group.find(item => item.case_type === caseType);
-            if (item) {
-              newQuantity = Number(item.quantity) || 1;
-              break;
+          if (souvenirCases.value.length > 0 && souvenirCases.value[0].case_type === caseType) {
+            newQuantity = Number(souvenirCases.value[0].quantity) || 1;
+          } else {
+            for (const group of Object.values(groupedCases.value)) {
+              const item = group.find(item => item.case_type === caseType);
+              if (item) {
+                newQuantity = Number(item.quantity) || 1;
+                break;
+              }
             }
           }
         } else if (capsuleType) {
@@ -666,7 +672,9 @@ export default {
         
         // Update message with total count
         const itemName = caseType ? 
-          cases.value[caseType].name : 
+          (souvenirCases.value.length > 0 && souvenirCases.value[0].case_type === caseType ? 
+            souvenirCases.value[0].name : 
+            cases.value[caseType].name) : 
           (capsuleType ? stickerCapsules.value[capsuleType].name : '');
         notification.value.message = `Purchased ${notification.value.purchaseCount}x ${itemName}!`;
         
@@ -689,11 +697,15 @@ export default {
         
         // Set initial purchase count from the current quantity
         if (caseType) {
-          for (const group of Object.values(groupedCases.value)) {
-            const item = group.find(item => item.case_type === caseType);
-            if (item) {
-              notification.value.purchaseCount = Number(item.quantity) || 1;
-              break;
+          if (souvenirCases.value.length > 0 && souvenirCases.value[0].case_type === caseType) {
+            notification.value.purchaseCount = Number(souvenirCases.value[0].quantity) || 1;
+          } else {
+            for (const group of Object.values(groupedCases.value)) {
+              const item = group.find(item => item.case_type === caseType);
+              if (item) {
+                notification.value.purchaseCount = Number(item.quantity) || 1;
+                break;
+              }
             }
           }
         } else if (capsuleType) {
@@ -1146,6 +1158,7 @@ export default {
           return
         }
 
+        const quantity = Number(caseItem.quantity) || 1;
         const response = await fetch('/buy_souvenir_case', {
           method: 'POST',
           headers: {
@@ -1153,7 +1166,7 @@ export default {
           },
           body: JSON.stringify({
             case_type,
-            quantity: caseItem.quantity
+            quantity
           })
         })
         
@@ -1164,7 +1177,7 @@ export default {
         }
         
         store.updateUserData({ balance: data.new_balance })
-        showNotification(`Purchased ${caseItem.quantity}x ${caseItem.name}!`, 2000, case_type)
+        showNotification(`Purchased ${quantity}x ${caseItem.name}!`, 2000, case_type)
       } catch (error) {
         console.error('Error buying souvenir case:', error)
         showNotification('Failed to purchase souvenir case')

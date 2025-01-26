@@ -1,54 +1,20 @@
 {
   "CT": {
-    "knife": {
-      "weapon": "Karambit",
-      "name": "Crimson Web",
-      "wear": "FN",
-      "float_value": 0.0017323154014359094,
-      "rarity": "GOLD",
-      "case_type": "csgo2",
-      "base_price": 4915.0,
-      "adjusted_price": 5898.0,
+    "fiveseven": {
+      "weapon": "Five-SeveN",
+      "name": "Hot Shot",
+      "rarity": "light_blue",
+      "wear": "WW",
       "stattrak": false,
-      "image": "karambit_crimson_web.png",
-      "is_sticker": false,
-      "price": 5898.0,
-      "timestamp": 1737319375.970239,
+      "is_souvenir": false,
+      "price": 1.4,
+      "timestamp": 1737913016.26452,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.396708,
       "is_case": false,
-      "favorite": true
-    },
-    "p90": {
-      "weapon": "P90",
-      "name": "Emerald Dragon",
-      "wear": "FN",
-      "float_value": 0.008745084659550505,
-      "rarity": "PINK",
-      "case_type": "bravo",
-      "base_price": 889.61,
-      "adjusted_price": 978.5710000000001,
-      "stattrak": true,
-      "image": "p90_emerald_dragon.png",
-      "is_sticker": false,
-      "price": 978.5710000000001,
-      "timestamp": 1737319347.0888004,
-      "is_case": false,
-      "favorite": true
+      "is_skin": true,
+      "image": "fiveseven_hot_shot.png"
     }
   },
-  "T": {
-    "knife": {
-      "weapon": "Karambit",
-      "name": "Slaughter",
-      "rarity": "GOLD",
-      "wear": "FT",
-      "stattrak": false,
-      "price": 1035.0,
-      "float_value": 0.16945838,
-      "timestamp": 1737310951.1311722,
-      "case_type": "phoenix",
-      "is_case": false,
-      "image": "karambit_slaughter.png",
-      "favorite": true
-    }
-  }
+  "T": {}
 }

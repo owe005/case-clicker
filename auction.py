@@ -4,7 +4,7 @@ from pathlib import Path
 from threading import Timer
 import traceback
 from cases_prices_and_floats import adjust_price_by_float
-from config import AUCTION_FILE, CASE_FILE_MAPPING, CASE_SKINS_FOLDER_NAMES, CASE_TYPES, STICKER_CAPSULE_FILE_MAPPING
+from config import AUCTION_FILE, CASE_FILE_MAPPING, CASE_SKINS_FOLDER_NAMES, CASE_TYPES, STICKER_CAPSULE_FILE_MAPPING, SOUVENIR_CASE_FILE_MAPPING
 import random
 import os
 import time
@@ -246,22 +246,30 @@ def generate_auction_item():
                                     is_knife = grade.upper() in ['GOLD', 'GOLD_KNIFE'] and not ('Gloves' in skin['weapon'] or 'Hand Wraps' in skin['weapon'])
                                     is_glove = 'Gloves' in skin['weapon'] or 'Hand Wraps' in skin['weapon']
                                     
+                                    # Handle souvenir items
+                                    is_souvenir = wear.startswith('Souvenir_')
+                                    base_wear = wear[9:] if is_souvenir else wear  # Strip 'Souvenir_' prefix
+                                    
+                                    # Log souvenir items if they meet value threshold
+                                    if is_souvenir and price_value >= 150:
+                                        print(f"Found valuable souvenir: {skin['weapon']} | {skin['name']} ({wear}) - ${price_value}")
+                                    
                                     # Adjust thresholds to better balance with stickers
                                     if is_knife:
                                         # Knives: Only FN/ST FN over $2500 (increased from $2000)
-                                        if wear != 'FN':
+                                        if base_wear != 'FN':
                                             continue
                                         threshold = 2500  # Further increased threshold to reduce knife count
                                     elif is_glove:
                                         # Gloves: Include FN/MW/FT over $1000
-                                        if wear not in ['FN', 'MW', 'FT']:  # Added FT for gloves
+                                        if base_wear not in ['FN', 'MW', 'FT']:  # Added FT for gloves
                                             continue
                                         threshold = 1000  # Increased threshold but allowing more wear conditions
                                     else:
-                                        # Regular weapons: Only FN/ST FN over $250 (reduced from $300)
-                                        if wear != 'FN':
+                                        # For souvenirs, we'll be more lenient with wear conditions
+                                        if not is_souvenir and base_wear != 'FN':
                                             continue
-                                        threshold = 250  # Further reduced threshold to include more weapons
+                                        threshold = 100  # Further reduced threshold to include more weapons
                                     
                                     if price_value >= threshold:                                        
                                         # Generate float based on wear range
@@ -338,6 +346,60 @@ def generate_auction_item():
                                 except Exception as e:
                                     print(f"Error processing price: {e}")
                                     continue
+        
+        # Load souvenir cases
+        print("\nChecking souvenir cases...")
+        for case_type, file_name in SOUVENIR_CASE_FILE_MAPPING.items():
+            try:
+                with open(f'souvenir/{file_name}.json', 'r') as f:
+                    case_data = json.load(f)
+                    
+                    # Look through all skins
+                    for grade, skins in case_data['skins'].items():
+                        for skin in skins:
+                            # Just use the image filename without the path
+                            image_path = skin['image']
+                            
+                            # Check prices for valuable items
+                            for wear, price in skin['prices'].items():
+                                if wear.startswith('Souvenir_'):
+                                    try:
+                                        price_value = float(price)
+                                        if price_value >= 250:
+                                            print(f"Found valuable souvenir: {skin['weapon']} | {skin['name']} ({wear}) - ${price_value}")
+                                            
+                                            # Generate float based on wear range
+                                            base_wear = wear[9:]  # Strip 'Souvenir_' prefix
+                                            wear_range = wear_ranges.get(base_wear)
+                                            if not wear_range:
+                                                continue
+                                            
+                                            # Generate a very good float for the wear range
+                                            min_float, max_float = wear_range
+                                            float_range = max_float - min_float
+                                            max_special = min_float + (float_range * 0.2)
+                                            float_value = random.uniform(min_float, max_special)
+                                            
+                                            # Add to weapon skins pool
+                                            weapon_skins.append({
+                                                'weapon': skin['weapon'],
+                                                'name': skin['name'],
+                                                'wear': base_wear,
+                                                'float_value': float_value,
+                                                'rarity': grade.upper(),
+                                                'case_type': case_type,
+                                                'base_price': price_value,
+                                                'adjusted_price': adjust_price_by_float(price_value, base_wear, float_value),
+                                                'stattrak': False,
+                                                'is_souvenir': True,
+                                                'image': image_path
+                                            })
+                                    except Exception as e:
+                                        print(f"Error processing souvenir price: {e}")
+                                        continue
+            except Exception as e:
+                print(f"Error loading souvenir case {file_name}: {e}")
+                continue
         
         print(f"\nFound items:")
         print(f"Weapons: {len(weapon_skins)}")

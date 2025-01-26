@@ -690,9 +690,13 @@ export default {
         'RED': 'bg-gradient-to-r from-red-500 to-red-600',
         'PINK': 'bg-gradient-to-r from-pink-500 to-pink-600',
         'PURPLE': 'bg-gradient-to-r from-purple-500 to-purple-600',
-        'BLUE': 'bg-gradient-to-r from-blue-500 to-blue-600'
+        'BLUE': 'bg-gradient-to-r from-blue-500 to-blue-600',
+        'LIGHT_BLUE': 'bg-gradient-to-r from-[#99ccff] to-[#66a3ff]',
+        'GREY': 'bg-gradient-to-r from-gray-400 to-gray-500'
       }
-      return colors[rarity] || 'bg-gradient-to-r from-gray-500 to-gray-600'
+      // Convert rarity to uppercase for case-insensitive matching
+      const upperRarity = (rarity || '').toUpperCase()
+      return colors[upperRarity] || 'bg-gradient-to-r from-gray-500 to-gray-600'
     }
 
     function getAvailableOpenCounts(item) {
@@ -1037,7 +1041,7 @@ export default {
               rarity: selectedRarity, // Explicitly set the rarity
               wear: ['FN', 'MW', 'FT', 'WW', 'BS'][Math.floor(Math.random() * 5)],
               stattrak: Math.random() < 0.1,
-              is_souvenir: Math.random() < 0.1, // 10% chance for souvenir
+              is_souvenir: actualItem.is_souvenir && Math.random() < 0.1, // Only show souvenir items if it's a souvenir case
               case_type: actualItem.case_type
             })
           }

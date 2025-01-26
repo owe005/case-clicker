@@ -3979,6 +3979,7 @@ def get_souvenir_case_contents(case_type):
             return jsonify({
                 'name': case_data['name'],
                 'image': case_data['image'],
+                'price': case_data['price'],
                 'skins': case_data['skins'],
                 'probabilities': {
                     'purple': 5,
