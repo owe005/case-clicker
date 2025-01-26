@@ -45,6 +45,10 @@ export const CASE_MAPPING = {
     'prisma_2': 'prisma_2_case'
 };
 
+export const SOUVENIR_CASE_MAPPING = {
+    'cache_dreamhack_2014': 'cache_dreamhack_2014'
+}
+
 // Case rank requirements
 export const CASE_RANK_REQUIREMENTS = {
     'CS:GO Weapon Case': 17,

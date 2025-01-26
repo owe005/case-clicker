@@ -228,7 +228,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import { CASE_MAPPING } from '../store'
+import { CASE_MAPPING, SOUVENIR_CASE_MAPPING } from '../store'
 
 export default {
   name: 'JackpotView',
@@ -328,6 +328,10 @@ export default {
       }
       if (item.is_capsule) {
         return `/stickers/${item.type || item.case_type}.png`
+      }
+      // Check if it's from a souvenir case type
+      if (item.case_type === 'cache_dreamhack_2014' || (SOUVENIR_CASE_MAPPING && item.case_type in SOUVENIR_CASE_MAPPING)) {
+        return `/souvenir_skins/${item.case_type}/${item.image}`
       }
       const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
       return `/skins/${casePath}/${item.image || 'placeholder.png'}`

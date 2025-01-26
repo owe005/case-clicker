@@ -240,7 +240,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import { CASE_MAPPING } from '../store'
+import { CASE_MAPPING, SOUVENIR_CASE_MAPPING } from '../store'
 
 // Utility function for formatting numbers
 const formatNumber = (num) => {
@@ -308,10 +308,9 @@ export default {
       if (!item.weapon || !item.name) {
         return '/skins/placeholder.png'
       }
-      return getSkinImagePath(item)
-    }
-
-    function getSkinImagePath(item) {
+      if (item.case_type === 'cache_dreamhack_2014' || (SOUVENIR_CASE_MAPPING && item.case_type in SOUVENIR_CASE_MAPPING)) {
+        return `/souvenir_skins/${item.case_type}/${item.image}`
+      }
       const casePath = CASE_MAPPING[item.case_type] || item.case_type
       return `/skins/${casePath}/${item.image}`
     }

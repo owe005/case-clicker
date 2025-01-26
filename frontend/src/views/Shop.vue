@@ -314,7 +314,7 @@
           <div class="flex items-center justify-between mb-6">
             <div>
               <h2 class="text-2xl font-display text-white">{{ selectedCase?.name }}</h2>
-              <p class="text-sm text-white/50">StatTrak™ Available (10% Chance)</p>
+              <p class="text-sm text-white/50">{{ selectedCase?.is_souvenir ? 'Souvenir Package' : 'StatTrak™ Available (10% Chance)' }}</p>
             </div>
             <button 
               @click="showCaseContents = false"
@@ -349,7 +349,7 @@
 
             <!-- Red Items -->
             <div v-if="selectedCase?.skins?.red" class="space-y-2">
-              <h3 class="text-lg font-display text-red-500">Covert Items <span class="text-sm text-white/50">(0.90%)</span></h3>
+              <h3 class="text-lg font-display text-red-500">Covert Items <span class="text-sm text-white/50">({{ selectedCase.is_souvenir ? '0.26%' : '0.90%' }})</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 <div v-for="item in selectedCase.skins.red" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
@@ -360,7 +360,7 @@
 
             <!-- Pink Items -->
             <div v-if="selectedCase?.skins?.pink" class="space-y-2">
-              <h3 class="text-lg font-display text-pink-500">Classified Items <span class="text-sm text-white/50">(4.10%)</span></h3>
+              <h3 class="text-lg font-display text-pink-500">Classified Items <span class="text-sm text-white/50">({{ selectedCase.is_souvenir ? '3.2%' : '4.10%' }})</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 <div v-for="item in selectedCase.skins.pink" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
@@ -371,7 +371,7 @@
 
             <!-- Purple Items -->
             <div v-if="selectedCase?.skins?.purple" class="space-y-2">
-              <h3 class="text-lg font-display text-purple-500">Restricted Items <span class="text-sm text-white/50">(20.08%)</span></h3>
+              <h3 class="text-lg font-display text-purple-500">Restricted Items <span class="text-sm text-white/50">({{ selectedCase.is_souvenir ? '15.98%' : '20.08%' }})</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 <div v-for="item in selectedCase.skins.purple" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
@@ -382,9 +382,31 @@
 
             <!-- Blue Items -->
             <div v-if="selectedCase?.skins?.blue" class="space-y-2">
-              <h3 class="text-lg font-display text-blue-500">Mil-Spec Items <span class="text-sm text-white/50">(74.66%)</span></h3>
+              <h3 class="text-lg font-display text-blue-500">Mil-Spec Items <span class="text-sm text-white/50">({{ selectedCase.is_souvenir ? '39.52%' : '74.66%' }})</span></h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 <div v-for="item in selectedCase.skins.blue" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
+                  <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
+                  <div class="text-sm text-white">{{ item.weapon }} | {{ item.name }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Light Blue Items -->
+            <div v-if="selectedCase?.skins?.light_blue" class="space-y-2">
+              <h3 class="text-lg font-display text-sky-400">Consumer Grade Items <span class="text-sm text-white/50">(35.0%)</span></h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div v-for="item in selectedCase.skins.light_blue" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
+                  <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
+                  <div class="text-sm text-white">{{ item.weapon }} | {{ item.name }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grey Items -->
+            <div v-if="selectedCase?.skins?.grey" class="space-y-2">
+              <h3 class="text-lg font-display text-gray-400">Industrial Grade Items <span class="text-sm text-white/50">(6.0%)</span></h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div v-for="item in selectedCase.skins.grey" :key="item.weapon + item.name" class="bg-gray-darker rounded-lg p-4">
                   <img :src="getSkinImagePath(item, selectedCase.image)" :alt="item.name" class="w-full h-32 object-contain mb-2">
                   <div class="text-sm text-white">{{ item.weapon }} | {{ item.name }}</div>
                 </div>
@@ -893,6 +915,11 @@ export default {
     function getSkinImagePath(skin, case_image) {
       // If case_image is provided (for case contents), use it
       if (case_image) {
+        // For souvenir cases, use the souvenir directory
+        if (selectedCase.value?.is_souvenir) {
+          return `/souvenir_skins/${case_image.replace('.png', '')}/${skin.image}`
+        }
+        
         // Get the case type from the image name (e.g., 'operation_bravo_case.png' -> 'bravo')
         const caseType = Object.keys(CASE_MAPPING).find(key => 
           case_image.includes(CASE_MAPPING[key]) || 
@@ -1053,6 +1080,8 @@ export default {
         loadFeaturedSkins()
       } else if (newCategory === 'stickers') {
         loadStickerCapsules()
+      } else if (newCategory === 'souvenirs') {
+        loadSouvenirCases()
       }
     })
 
@@ -1062,6 +1091,8 @@ export default {
         loadFeaturedSkins()
       } else if (currentCategory.value === 'stickers') {
         loadStickerCapsules()
+      } else if (currentCategory.value === 'souvenirs') {
+        loadSouvenirCases()
       }
     })
 
@@ -1079,15 +1110,31 @@ export default {
     });
 
     // Add souvenir case data
-    const souvenirCases = ref([
-      {
-        case_type: 'cache_dreamhack_2014',
-        name: 'Cache Souvenir Package DreamHack 2014',
-        image: 'cache_dreamhack_2014.png',
-        price: 500.00,
-        quantity: 1
+    const souvenirCases = ref([])
+
+    // Load souvenir cases
+    async function loadSouvenirCases() {
+      try {
+        // Load the cache_dreamhack_2014 case since it's the only one we have
+        const response = await fetch('/api/data/souvenir_case_contents/cache_dreamhack_2014')
+        const data = await response.json()
+        if (data.error) {
+          console.error('Error loading souvenir cases:', data.error)
+          return
+        }
+        
+        // Transform into the format we need
+        souvenirCases.value = [{
+          case_type: 'cache_dreamhack_2014',
+          name: data.name,
+          image: data.image,
+          price: data.price,
+          quantity: 1
+        }]
+      } catch (error) {
+        console.error('Error loading souvenir cases:', error)
       }
-    ])
+    }
 
     // Add souvenir case methods
     const buySouvenirCase = async (case_type) => {
@@ -1132,6 +1179,10 @@ export default {
           showNotification(data.error)
           return
         }
+        
+        // Add is_souvenir flag to indicate this is a souvenir case
+        data.is_souvenir = true
+        
         selectedCase.value = data
         showCaseContents.value = true
       } catch (error) {
