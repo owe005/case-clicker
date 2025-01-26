@@ -1,49 +1,104 @@
 {
   "item": {
-    "weapon": "AK-47",
-    "name": "Vulcan",
+    "weapon": "AWP",
+    "name": "Oni Taiji",
     "wear": "FN",
-    "float_value": 0.013928513128385929,
+    "float_value": 0.006207269981804678,
     "rarity": "RED",
-    "case_type": "huntsman",
-    "base_price": 691.21,
-    "adjusted_price": 760.3310000000001,
-    "stattrak": false,
-    "image": "ak47_vulcan.png",
+    "case_type": "hydra",
+    "base_price": 709.99,
+    "adjusted_price": 780.989,
+    "stattrak": true,
+    "image": "awp_oni_taiji.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-26T19:28:24.283190",
-  "current_bid": 149.2769667010556,
+  "end_time": "2025-01-26T20:58:24.446695",
+  "current_bid": 238.38374160789434,
   "bids": [
     {
-      "bidder": "Theo.91",
-      "amount": 82.21766645043095,
-      "timestamp": "2025-01-26T18:58:35.629993"
+      "bidder": "Lucien_Kai",
+      "amount": 13.331535277464836,
+      "timestamp": "2025-01-26T20:30:41.626709"
     },
     {
-      "bidder": "Aria.Stella85",
-      "amount": 93.77279598536788,
-      "timestamp": "2025-01-26T18:59:16.099698"
-    },
-    {
-      "bidder": "Aria.Stella85",
-      "amount": 106.34015916383424,
-      "timestamp": "2025-01-26T18:59:17.458000"
-    },
-    {
-      "bidder": "Orion_Phoenix98",
-      "amount": 121.29510564128401,
-      "timestamp": "2025-01-26T18:59:30.568940"
+      "bidder": "Lucien_Kai",
+      "amount": 29.117259702914218,
+      "timestamp": "2025-01-26T20:30:57.259865"
     },
     {
       "bidder": "ElaraB_23",
-      "amount": 137.43259436217573,
-      "timestamp": "2025-01-26T18:59:30.583914"
+      "amount": 44.809983340069536,
+      "timestamp": "2025-01-26T20:31:38.553343"
     },
     {
-      "bidder": "Theo.91",
-      "amount": 149.2769667010556,
-      "timestamp": "2025-01-26T19:00:23.401293"
+      "bidder": "Mira-Eclipse",
+      "amount": 56.49285071356931,
+      "timestamp": "2025-01-26T20:31:58.653628"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 71.82299307297316,
+      "timestamp": "2025-01-26T20:31:58.667732"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 86.94961462573579,
+      "timestamp": "2025-01-26T20:33:35.574913"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 104.80976566330753,
+      "timestamp": "2025-01-26T20:35:16.048088"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 117.37737279494851,
+      "timestamp": "2025-01-26T20:35:41.689793"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 132.9986674880661,
+      "timestamp": "2025-01-26T20:35:46.573787"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 145.16408976828663,
+      "timestamp": "2025-01-26T20:36:01.937982"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 160.24104032046012,
+      "timestamp": "2025-01-26T20:38:36.919919"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 173.51307216863682,
+      "timestamp": "2025-01-26T20:38:43.570646"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 184.19663703001552,
+      "timestamp": "2025-01-26T20:39:02.388604"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 198.45381525340414,
+      "timestamp": "2025-01-26T20:39:05.220424"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 210.63434027183794,
+      "timestamp": "2025-01-26T20:39:21.365814"
+    },
+    {
+      "bidder": "Lucien_Kai",
+      "amount": 225.8372626598313,
+      "timestamp": "2025-01-26T20:41:06.415336"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 238.38374160789434,
+      "timestamp": "2025-01-26T20:43:19.498953"
     }
   ],
   "bot_budgets": {
@@ -56,16 +111,16 @@
       "status": "offline"
     },
     "Orion_Phoenix98": {
-      "budget": 670.6474796005666,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "ElaraB_23": {
-      "budget": 683.2127453914563,
+      "budget": 734.3130457846462,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 702.6646969903044,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Nova-Lyn": {
       "budget": 0,
@@ -76,96 +131,16 @@
       "status": "offline"
     },
     "Aria.Stella85": {
-      "budget": 640.8181111512341,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Lucien_Kai": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 718.8212926835473,
+      "status": "online"
     },
     "Mira-Eclipse": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 1064.9850000000001,
+      "status": "online"
     }
-  },
-  "history": [
-    {
-      "weapon": "Moto Gloves",
-      "name": "Spearmint",
-      "wear": "FT",
-      "rarity": "GOLD",
-      "stattrak": false,
-      "image": "motogloves_spearmint.png",
-      "case_type": "hydra",
-      "final_price": 274.199749076797,
-      "winner": "Kai.Jayden_02",
-      "timestamp": "2025-01-26T18:58:24.248200",
-      "is_sticker": false
-    },
-    {
-      "weapon": "Sport Gloves",
-      "name": "Hedge Maze",
-      "wear": "MW",
-      "rarity": "GOLD",
-      "stattrak": false,
-      "image": "sportgloves_hedge_maze.png",
-      "case_type": "hydra",
-      "final_price": 1040.7897541440745,
-      "winner": "Lucien_Kai",
-      "timestamp": "2025-01-26T18:57:22.621379",
-      "is_sticker": false
-    },
-    {
-      "weapon": "AWP",
-      "name": "Oni Taiji",
-      "wear": "FN",
-      "rarity": "RED",
-      "stattrak": false,
-      "image": "awp_oni_taiji.png",
-      "case_type": "hydra",
-      "final_price": 121.23439783063027,
-      "winner": "Theo.91",
-      "timestamp": "2025-01-26T18:56:13.764750",
-      "is_sticker": false
-    },
-    {
-      "weapon": "AWP",
-      "name": "Oni Taiji",
-      "wear": "FN",
-      "rarity": "RED",
-      "stattrak": true,
-      "image": "awp_oni_taiji.png",
-      "case_type": "hydra",
-      "final_price": 103.22966664118312,
-      "winner": "Mira-Eclipse",
-      "timestamp": "2025-01-26T18:55:22.958204",
-      "is_sticker": false
-    },
-    {
-      "weapon": "Sport Gloves",
-      "name": "Hedge Maze",
-      "wear": "FN",
-      "rarity": "GOLD",
-      "stattrak": false,
-      "image": "sportgloves_hedge_maze.png",
-      "case_type": "glove",
-      "final_price": 2623.527254235193,
-      "winner": "Mira-Eclipse",
-      "timestamp": "2025-01-26T18:53:57.526768",
-      "is_sticker": false
-    },
-    {
-      "weapon": "M9 Bayonet",
-      "name": "Crimson Web",
-      "wear": "FN",
-      "rarity": "GOLD",
-      "stattrak": false,
-      "image": "m9bayonet_crimson_web.png",
-      "case_type": "esports_summer",
-      "final_price": 676.491701515107,
-      "winner": "Lucien_Kai",
-      "timestamp": "2025-01-26T18:52:50.178096",
-      "is_sticker": false
-    }
-  ]
+  }
 }
