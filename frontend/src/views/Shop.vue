@@ -1127,24 +1127,29 @@ export default {
     // Load souvenir cases
     async function loadSouvenirCases() {
       try {
-        // Load the cache_dreamhack_2014 case since it's the only one we have
-        const response = await fetch('/api/data/souvenir_case_contents/cache_dreamhack_2014')
-        const data = await response.json()
-        if (data.error) {
-          console.error('Error loading souvenir cases:', data.error)
-          return
-        }
+        // Load all souvenir cases
+        const cases = ['cache_dreamhack_2014', 'cobblestone_cologne_2014'];
+        souvenirCases.value = [];
         
-        // Transform into the format we need
-        souvenirCases.value = [{
-          case_type: 'cache_dreamhack_2014',
-          name: data.name,
-          image: data.image,
-          price: data.price,
-          quantity: 1
-        }]
+        for (const case_type of cases) {
+          const response = await fetch(`/api/data/souvenir_case_contents/${case_type}`);
+          const data = await response.json();
+          if (data.error) {
+            console.error(`Error loading souvenir case ${case_type}:`, data.error);
+            continue;
+          }
+          
+          // Add to souvenir cases array
+          souvenirCases.value.push({
+            case_type: case_type,
+            name: data.name,
+            image: data.image,
+            price: data.price,
+            quantity: 1
+          });
+        }
       } catch (error) {
-        console.error('Error loading souvenir cases:', error)
+        console.error('Error loading souvenir cases:', error);
       }
     }
 

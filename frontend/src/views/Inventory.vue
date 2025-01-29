@@ -1150,7 +1150,8 @@ export default {
         const capsuleType = item.case_type || item.capsule_type
         return `/sticker_skins/${capsuleType}/${item.image}`
       }
-      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014') {
+      // For souvenir items, use the souvenir_skins folder
+      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014') {
         // For souvenir items, use the souvenir_skins folder
         return `/souvenir_skins/${item.case_type}/${item.image}`
       }
@@ -1160,6 +1161,11 @@ export default {
     }
 
     function getCaseImagePath(item) {
+      // Handle souvenir packages
+      if (item.is_souvenir) {
+        return `/souvenir/${item.image}`
+      }
+      // Handle regular cases
       const caseType = item.type || item.case_type;
       // Add '_case.png' suffix if not already present
       const imageName = item.image || `${CASE_MAPPING[caseType] || caseType}_case.png`;

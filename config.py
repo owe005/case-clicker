@@ -467,7 +467,8 @@ CASE_DATA = {
 }
 
 SOUVENIR_CASE_FILE_MAPPING = {
-    'cache_dreamhack_2014': 'cache_dreamhack_2014'
+    'cache_dreamhack_2014': 'cache_dreamhack_2014',
+    'cobblestone_cologne_2014': 'cobblestone_cologne_2014'
 }
 
 SOUVENIR_CASE_DATA = {
@@ -477,6 +478,13 @@ SOUVENIR_CASE_DATA = {
         'is_case': True,
         'is_souvenir': True,
         'type': 'cache_dreamhack_2014'
+    },
+    'cobblestone_cologne_2014': {
+        'name': 'Cobblestone Souvenir Package Cologne 2014',
+        'image': 'cobblestone_cologne_2014.png',
+        'is_case': True,
+        'is_souvenir': True,
+        'type': 'cobblestone_cologne_2014'
     }
 }
 

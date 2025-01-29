@@ -1,0 +1,270 @@
+{
+    "name": "Cobblestone Souvenir Package Cologne 2014",
+    "image": "cobblestone_cologne_2014.png",
+    "price": 1500,
+    "skins": {
+        "red": [
+            {
+                "weapon": "AWP",
+                "name": "Dragon Lore",
+                "image": "awp_dragon_lore.png",
+                "grade": "red",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 11045.72,
+                    "MW": 8515.01,
+                    "FT": 6012.59,
+                    "WW": 5199.00,
+                    "BS": 4169.99,
+                    "Souvenir_FN": 482677.00,
+                    "Souvenir_MW": 206862.00,
+                    "Souvenir_FT": 45509.70,
+                    "Souvenir_WW": 34200.30,
+                    "Souvenir_BS": 27581.64
+                }
+            }
+        ],
+        "pink": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Knight",
+                "image": "m4a1s_knight.png",
+                "grade": "pink",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 2798.00,
+                    "MW": 0,
+                    "Souvenir_FN": 2550.00,
+                    "Souvenir_MW": 1585.87
+                }
+            }
+        ],
+        "purple": [
+            {
+                "weapon": "Desert Eagle",
+                "name": "Hand Cannon",
+                "image": "deserteagle_hand_cannon.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 426.42,
+                    "MW": 364.75,
+                    "FT": 404.64,
+                    "WW": 677.72,
+                    "BS": 688.47,
+                    "Souvenir_FN": 620.31,
+                    "Souvenir_MW": 256.44,
+                    "Souvenir_FT": 191.76,
+                    "Souvenir_WW": 165.00,
+                    "Souvenir_BS": 185.00
+                }
+            },
+            {
+                "weapon": "CZ75-Auto",
+                "name": "Chalice",
+                "image": "cz75auto_chalice.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 405.40,
+                    "MW": 521.45,
+                    "Souvenir_FN": 85.45,
+                    "Souvenir_MW": 92.33
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "MP9",
+                "name": "Dark Age",
+                "image": "mp9_dark_age.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 108.84,
+                    "MW": 136.49,
+                    "FT": 173.72,
+                    "Souvenir_FN": 13.91,
+                    "Souvenir_MW": 10.05,
+                    "Souvenir_FT": 10.05
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Chainmail",
+                "image": "p2000_chainmail.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 110.59,
+                    "MW": 113.77,
+                    "FT": 112.89,
+                    "Souvenir_FN": 8.57,
+                    "Souvenir_MW": 5.23,
+                    "Souvenir_FT": 7.58
+                }
+            }
+        ],
+        "light_blue": [
+            {
+                "weapon": "USP-S",
+                "name": "Royal Blue",
+                "image": "usps_royal_blue.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 51.99,
+                    "MW": 18.71,
+                    "FT": 16.11,
+                    "WW": 16.16,
+                    "BS": 15.90,
+                    "Souvenir_FN": 308.92,
+                    "Souvenir_MW": 29.49,
+                    "Souvenir_FT": 10.17,
+                    "Souvenir_WW": 9.36,
+                    "Souvenir_BS": 10.31
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Green Apple",
+                "image": "nova_green_apple.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 16.55,
+                    "MW": 16.53,
+                    "FT": 17.32,
+                    "Souvenir_FN": 7.11,
+                    "Souvenir_MW": 4.05,
+                    "Souvenir_FT": 3.30
+                }
+            },
+            {
+                "weapon": "MAG-7",
+                "name": "Silver",
+                "image": "mag7_silver.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 16.63,
+                    "MW": 24.49,
+                    "Souvenir_FN": 10.54,
+                    "Souvenir_MW": 11.28
+                }
+            },
+            {
+                "weapon": "Sawed-Off",
+                "name": "Rust Coat",
+                "image": "sawedoff_rust_coat.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 17.50,
+                    "MW": 16.04,
+                    "FT": 16.04,
+                    "WW": 20.83,
+                    "BS": 15.64,
+                    "Souvenir_FN": 2.89,
+                    "Souvenir_MW": 0.67,
+                    "Souvenir_FT": 0.63,
+                    "Souvenir_WW": 3.76,
+                    "Souvenir_BS": 2.47
+                }
+            }
+        ],
+        "grey": [
+            {
+                "weapon": "MAC-10",
+                "name": "Indigo",
+                "image": "mac10_indigo.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 17.92,
+                    "MW": 3.67,
+                    "FT": 2.79,
+                    "WW": 2.88,
+                    "BS": 2.43,
+                    "Souvenir_FN": 38.61,
+                    "Souvenir_MW": 4.16,
+                    "Souvenir_FT": 1.32,
+                    "Souvenir_WW": 1.30,
+                    "Souvenir_BS": 1.08
+                }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Storm",
+                "image": "scar20_storm.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.46,
+                    "MW": 2.97,
+                    "FT": 2.79,
+                    "WW": 3.01,
+                    "BS": 2.30,
+                    "Souvenir_FN": 15.00,
+                    "Souvenir_MW": 1.66,
+                    "Souvenir_FT": 0.48,
+                    "Souvenir_WW": 0.51,
+                    "Souvenir_BS": 0.48
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Indigo",
+                "image": "ump45_indigo.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 10.07,
+                    "MW": 3.30,
+                    "FT": 2.75,
+                    "WW": 2.62,
+                    "BS": 2.36,
+                    "Souvenir_FN": 24.73,
+                    "Souvenir_MW": 2.49,
+                    "Souvenir_FT": 0.78,
+                    "Souvenir_WW": 0.70,
+                    "Souvenir_BS": 0.66
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Briar",
+                "image": "dualberettas_briar.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 4.73,
+                    "MW": 3.13,
+                    "FT": 3.43,
+                    "Souvenir_FN": 1.43,
+                    "Souvenir_MW": 1.05,
+                    "Souvenir_FT": 1.05
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Storm",
+                "image": "p90_storm.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 13.47,
+                    "MW": 3.34,
+                    "FT": 2.56,
+                    "WW": 2.41,
+                    "BS": 2.85,
+                    "Souvenir_FN": 17.16,
+                    "Souvenir_MW": 2.37,
+                    "Souvenir_FT": 0.68,
+                    "Souvenir_WW": 0.76,
+                    "Souvenir_BS": 0.41
+                }
+            }
+        ]
+    }
+}

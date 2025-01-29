@@ -492,6 +492,11 @@ export default {
         return path
       }
       
+      // Handle souvenir cases
+      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014') {
+        return `/souvenir_skins/${item.case_type}/${item.image}`
+      }
+      
       const casePath = CASE_MAPPING[item.case_type] || 'weapon_case_1'
       const path = `/skins/${casePath}/${item.image || 'placeholder.png'}`
       return path
