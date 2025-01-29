@@ -14,6 +14,23 @@
       "is_case": false,
       "is_skin": true,
       "image": "fiveseven_hot_shot.png"
+    },
+    "knife": {
+      "weapon": "Karambit",
+      "name": "Crimson Web",
+      "wear": "FN",
+      "float_value": 0.004537856119778726,
+      "rarity": "GOLD",
+      "case_type": "bravo",
+      "base_price": 31178.99,
+      "adjusted_price": 37414.788,
+      "stattrak": true,
+      "image": "karambit_crimson_web.png",
+      "is_sticker": false,
+      "price": 37414.788,
+      "timestamp": 1737912271.8824117,
+      "is_case": false,
+      "favorite": true
     }
   },
   "T": {}

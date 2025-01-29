@@ -1,12 +1,12 @@
 {
-  "balance": 1.4970000000231778,
+  "balance": 8.759319174894026,
   "inventory": [
     {
       "name": "Prisma Case",
       "image": "prisma_case.png",
       "is_case": true,
       "type": "prisma",
-      "quantity": 597
+      "quantity": 592
     },
     {
       "name": "eSports 2014 Summer Case",
@@ -21,7 +21,7 @@
       "image": "cache_dreamhack_2014.png",
       "is_case": true,
       "is_souvenir": true,
-      "quantity": 192,
+      "quantity": 187,
       "price": 500.0
     },
     {
@@ -692,9 +692,149 @@
       "is_case": false,
       "is_skin": true,
       "image": "fiveseven_hot_shot.png"
+    },
+    {
+      "weapon": "MP9",
+      "name": "Setting Sun",
+      "rarity": "blue",
+      "wear": "WW",
+      "stattrak": false,
+      "is_souvenir": false,
+      "price": 4.76,
+      "timestamp": 1738170794.6666124,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.41946366,
+      "is_case": false,
+      "is_skin": true,
+      "image": "mp9_setting_sun.png"
+    },
+    {
+      "weapon": "Negev",
+      "name": "Nuclear Waste",
+      "rarity": "light_blue",
+      "wear": "MW",
+      "stattrak": false,
+      "is_souvenir": false,
+      "price": 1.88,
+      "timestamp": 1738170794.6666124,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.07807797,
+      "is_case": false,
+      "is_skin": true,
+      "image": "negev_nuclear_waste.png"
+    },
+    {
+      "weapon": "SG 553",
+      "name": "Fallout Warning",
+      "rarity": "light_blue",
+      "wear": "MW",
+      "stattrak": false,
+      "is_souvenir": false,
+      "price": 1.92,
+      "timestamp": 1738170794.6666124,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.07606668,
+      "is_case": false,
+      "is_skin": true,
+      "image": "sg553_fallout_warning.png"
+    },
+    {
+      "weapon": "AUG",
+      "name": "Radiation Hazard",
+      "rarity": "light_blue",
+      "wear": "MW",
+      "stattrak": false,
+      "is_souvenir": false,
+      "price": 1.75,
+      "timestamp": 1738170794.6666124,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.10367015,
+      "is_case": false,
+      "is_skin": true,
+      "image": "aug_radiation_hazard.png"
+    },
+    {
+      "weapon": "XM1014",
+      "name": "Bone Machine",
+      "rarity": "blue",
+      "wear": "WW",
+      "stattrak": false,
+      "is_souvenir": false,
+      "price": 5.39,
+      "timestamp": 1738170794.6666124,
+      "case_type": "cache_dreamhack_2014",
+      "float_value": 0.41011084,
+      "is_case": false,
+      "is_skin": true,
+      "image": "xm1014_bone_machine.png"
+    },
+    {
+      "weapon": "P250",
+      "name": "Verdigris",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": false,
+      "price": 0.14,
+      "timestamp": 1738170805.9909842,
+      "case_type": "prisma",
+      "float_value": 0.42325693,
+      "is_case": false,
+      "image": "p250_verdigris.png"
+    },
+    {
+      "weapon": "AWP",
+      "name": "Atheris",
+      "rarity": "PURPLE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 2.22,
+      "timestamp": 1738170805.9919908,
+      "case_type": "prisma",
+      "float_value": 0.56984611,
+      "is_case": false,
+      "image": "awp_atheris.png"
+    },
+    {
+      "weapon": "P250",
+      "name": "Verdigris",
+      "rarity": "BLUE",
+      "wear": "FN",
+      "stattrak": false,
+      "price": 0.39,
+      "timestamp": 1738170805.9919908,
+      "case_type": "prisma",
+      "float_value": 0.02822621,
+      "is_case": false,
+      "image": "p250_verdigris.png"
+    },
+    {
+      "weapon": "P250",
+      "name": "Verdigris",
+      "rarity": "BLUE",
+      "wear": "WW",
+      "stattrak": true,
+      "price": 0.32,
+      "timestamp": 1738170805.9919908,
+      "case_type": "prisma",
+      "float_value": 0.42619091,
+      "is_case": false,
+      "image": "p250_verdigris.png"
+    },
+    {
+      "weapon": "MP7",
+      "name": "Mischief",
+      "rarity": "BLUE",
+      "wear": "BS",
+      "stattrak": false,
+      "price": 0.08,
+      "timestamp": 1738170805.9930496,
+      "case_type": "prisma",
+      "float_value": 0.71311435,
+      "is_case": false,
+      "image": "mp7_mischief.png"
     }
   ],
-  "exp": 44655.32500000001,
+  "exp": 45160.32500000001,
   "rank": 14,
   "upgrades": {
     "click_value": 8,
@@ -736,9 +876,9 @@
         "reward": 100000,
         "exp_reward": 50000,
         "icon": "\ud83c\udfc6",
-        "current_value": 388820.895,
+        "current_value": 388831.1573191749,
         "category": "special",
-        "progress": 38.8820895
+        "progress": 38.88311573191749
       },
       "cases_3": {
         "id": "cases_3",
@@ -748,22 +888,22 @@
         "reward": 1000,
         "exp_reward": 0,
         "icon": "\ud83d\udce6",
-        "current_value": 125,
+        "current_value": 130,
         "category": "cases",
-        "progress": 12.5
+        "progress": 13.0
       }
     },
     "first_sticker": true
   },
   "stats": {
-    "total_earnings": 388820.895,
-    "total_cases_opened": 125,
+    "total_earnings": 388831.1573191749,
+    "total_cases_opened": 130,
     "total_trades_completed": 0,
     "highest_win_streak": 0,
-    "total_clicks": 16611,
+    "total_clicks": 16668,
     "highest_value_item": 0,
     "total_upgrades": 0,
     "total_jackpots_won": 0
   },
-  "case_progress": 0.0
+  "case_progress": 6.0
 }

@@ -1,145 +1,445 @@
 {
   "item": {
-    "weapon": "AWP",
-    "name": "Oni Taiji",
+    "weapon": "Specialist Gloves",
+    "name": "Field Agent",
     "wear": "FN",
-    "float_value": 0.006207269981804678,
-    "rarity": "RED",
-    "case_type": "hydra",
-    "base_price": 709.99,
-    "adjusted_price": 780.989,
-    "stattrak": true,
-    "image": "awp_oni_taiji.png",
+    "float_value": 0.003916692868376034,
+    "rarity": "GOLD",
+    "case_type": "recoil",
+    "base_price": 1265.14,
+    "adjusted_price": 1518.1680000000001,
+    "stattrak": false,
+    "image": "specialistgloves_field_agent.png",
     "is_sticker": false
   },
-  "end_time": "2025-01-26T20:58:24.446695",
-  "current_bid": 238.38374160789434,
+  "end_time": "2025-01-29T19:09:36.792721",
+  "current_bid": 1471.5908399596378,
   "bids": [
     {
-      "bidder": "Lucien_Kai",
-      "amount": 13.331535277464836,
-      "timestamp": "2025-01-26T20:30:41.626709"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 29.117259702914218,
-      "timestamp": "2025-01-26T20:30:57.259865"
-    },
-    {
       "bidder": "ElaraB_23",
-      "amount": 44.809983340069536,
-      "timestamp": "2025-01-26T20:31:38.553343"
+      "amount": 12.709219309483961,
+      "timestamp": "2025-01-29T18:38:37.816148"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 25.375582477036154,
+      "timestamp": "2025-01-29T18:38:55.807015"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 39.0400156012471,
+      "timestamp": "2025-01-29T18:38:55.821614"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 50.14034950868366,
+      "timestamp": "2025-01-29T18:39:15.063845"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 66.72951059457085,
+      "timestamp": "2025-01-29T18:40:55.063211"
     },
     {
       "bidder": "Mira-Eclipse",
-      "amount": 56.49285071356931,
-      "timestamp": "2025-01-26T20:31:58.653628"
+      "amount": 81.0616622823671,
+      "timestamp": "2025-01-29T18:41:13.394994"
     },
     {
-      "bidder": "Lucien_Kai",
-      "amount": 71.82299307297316,
-      "timestamp": "2025-01-26T20:31:58.667732"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 86.94961462573579,
-      "timestamp": "2025-01-26T20:33:35.574913"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 104.80976566330753,
-      "timestamp": "2025-01-26T20:35:16.048088"
+      "bidder": "_Astrid47",
+      "amount": 97.46369560892902,
+      "timestamp": "2025-01-29T18:41:13.914496"
     },
     {
       "bidder": "ElaraB_23",
-      "amount": 117.37737279494851,
-      "timestamp": "2025-01-26T20:35:41.689793"
+      "amount": 112.45563689863081,
+      "timestamp": "2025-01-29T18:42:18.330257"
     },
     {
-      "bidder": "Mira-Eclipse",
-      "amount": 132.9986674880661,
-      "timestamp": "2025-01-26T20:35:46.573787"
+      "bidder": "Orion_Phoenix98",
+      "amount": 126.8386235623858,
+      "timestamp": "2025-01-29T18:43:38.200722"
     },
     {
-      "bidder": "Lucien_Kai",
-      "amount": 145.16408976828663,
-      "timestamp": "2025-01-26T20:36:01.937982"
+      "bidder": "Nova-Lyn",
+      "amount": 137.97682598537216,
+      "timestamp": "2025-01-29T18:44:30.532404"
     },
     {
-      "bidder": "Lucien_Kai",
-      "amount": 160.24104032046012,
-      "timestamp": "2025-01-26T20:38:36.919919"
+      "bidder": "FelixHaven19",
+      "amount": 150.1490486192422,
+      "timestamp": "2025-01-29T18:44:30.549261"
     },
     {
-      "bidder": "Mira-Eclipse",
-      "amount": 173.51307216863682,
-      "timestamp": "2025-01-26T20:38:43.570646"
+      "bidder": "Nova-Lyn",
+      "amount": 162.83370442020004,
+      "timestamp": "2025-01-29T18:44:30.564100"
     },
     {
-      "bidder": "ElaraB_23",
-      "amount": 184.19663703001552,
-      "timestamp": "2025-01-26T20:39:02.388604"
-    },
-    {
-      "bidder": "ElaraB_23",
-      "amount": 198.45381525340414,
-      "timestamp": "2025-01-26T20:39:05.220424"
-    },
-    {
-      "bidder": "Mira-Eclipse",
-      "amount": 210.63434027183794,
-      "timestamp": "2025-01-26T20:39:21.365814"
-    },
-    {
-      "bidder": "Lucien_Kai",
-      "amount": 225.8372626598313,
-      "timestamp": "2025-01-26T20:41:06.415336"
+      "bidder": "FelixHaven19",
+      "amount": 174.3760596358308,
+      "timestamp": "2025-01-29T18:46:06.026392"
     },
     {
       "bidder": "ElaraB_23",
-      "amount": 238.38374160789434,
-      "timestamp": "2025-01-26T20:43:19.498953"
+      "amount": 188.2259284768777,
+      "timestamp": "2025-01-29T18:46:06.042226"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 202.71668002330833,
+      "timestamp": "2025-01-29T18:46:29.920251"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 217.0835792002544,
+      "timestamp": "2025-01-29T18:47:54.242068"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 228.70892035759408,
+      "timestamp": "2025-01-29T18:48:31.701557"
+    },
+    {
+      "bidder": "Kai.Jayden_02",
+      "amount": 239.769972069269,
+      "timestamp": "2025-01-29T18:48:42.295008"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 253.58197986460945,
+      "timestamp": "2025-01-29T18:49:11.787069"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 266.39241399886293,
+      "timestamp": "2025-01-29T18:49:52.934715"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 279.96265514756533,
+      "timestamp": "2025-01-29T18:50:06.552660"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 296.3247368725079,
+      "timestamp": "2025-01-29T18:50:19.337233"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 309.5137898257782,
+      "timestamp": "2025-01-29T18:50:19.351800"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 325.00918868065264,
+      "timestamp": "2025-01-29T18:50:30.918244"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 336.01791003988586,
+      "timestamp": "2025-01-29T18:50:30.932047"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 351.8623941092345,
+      "timestamp": "2025-01-29T18:51:53.922915"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 363.9408176736752,
+      "timestamp": "2025-01-29T18:52:26.324681"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 381.6458994681307,
+      "timestamp": "2025-01-29T18:53:00.430071"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 396.3589476681664,
+      "timestamp": "2025-01-29T18:53:13.859216"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 407.0731035096109,
+      "timestamp": "2025-01-29T18:53:25.395740"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 422.7984740804679,
+      "timestamp": "2025-01-29T18:54:33.391797"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 436.9398290676605,
+      "timestamp": "2025-01-29T18:55:25.296230"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 449.1100813584482,
+      "timestamp": "2025-01-29T18:55:40.470205"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 464.46927490025075,
+      "timestamp": "2025-01-29T18:55:57.859637"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 476.041391642096,
+      "timestamp": "2025-01-29T18:56:15.409266"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 488.3908111142842,
+      "timestamp": "2025-01-29T18:56:27.658937"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 505.75205186115124,
+      "timestamp": "2025-01-29T18:57:22.077490"
+    },
+    {
+      "bidder": "Kai.Jayden_02",
+      "amount": 519.4434736373655,
+      "timestamp": "2025-01-29T18:57:45.691959"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 533.5137200614855,
+      "timestamp": "2025-01-29T18:57:49.852740"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 544.7410454158415,
+      "timestamp": "2025-01-29T18:58:13.735474"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 573.5919868504016,
+      "timestamp": "2025-01-29T18:58:45.021470"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 592.3102639852851,
+      "timestamp": "2025-01-29T18:58:45.037396"
+    },
+    {
+      "bidder": "Aria.Stella85",
+      "amount": 612.0138390718008,
+      "timestamp": "2025-01-29T18:58:54.718541"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 640.0903118318226,
+      "timestamp": "2025-01-29T18:58:58.795396"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 666.1487141534841,
+      "timestamp": "2025-01-29T18:58:59.793897"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 692.3639278259049,
+      "timestamp": "2025-01-29T18:59:12.897729"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 709.988493253276,
+      "timestamp": "2025-01-29T18:59:12.911833"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 738.9366164696481,
+      "timestamp": "2025-01-29T18:59:19.430211"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 763.0011944133432,
+      "timestamp": "2025-01-29T18:59:34.058094"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 785.9396543103546,
+      "timestamp": "2025-01-29T18:59:34.073761"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 816.9367864984646,
+      "timestamp": "2025-01-29T18:59:40.694949"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 836.1626695935876,
+      "timestamp": "2025-01-29T18:59:40.708883"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 864.0248299173645,
+      "timestamp": "2025-01-29T18:59:48.853430"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 884.3799340300681,
+      "timestamp": "2025-01-29T18:59:49.870292"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 909.8159478048478,
+      "timestamp": "2025-01-29T18:59:58.608205"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 936.6776921361874,
+      "timestamp": "2025-01-29T18:59:59.337785"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 967.7709935344276,
+      "timestamp": "2025-01-29T19:00:11.841738"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 992.8649123313467,
+      "timestamp": "2025-01-29T19:00:12.224704"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 1020.526573907671,
+      "timestamp": "2025-01-29T19:00:12.240796"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 1044.0944831247175,
+      "timestamp": "2025-01-29T19:00:22.842624"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 1068.4798924647828,
+      "timestamp": "2025-01-29T19:00:23.293715"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 1096.617089067554,
+      "timestamp": "2025-01-29T19:00:36.317390"
+    },
+    {
+      "bidder": "ElaraB_23",
+      "amount": 1117.2662420321146,
+      "timestamp": "2025-01-29T19:00:37.709578"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 1144.5334199918018,
+      "timestamp": "2025-01-29T19:00:44.637998"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 1174.5670913182903,
+      "timestamp": "2025-01-29T19:00:45.817548"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 1203.9656844140611,
+      "timestamp": "2025-01-29T19:01:07.583226"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 1230.0995189412579,
+      "timestamp": "2025-01-29T19:01:10.119648"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 1261.1566114538714,
+      "timestamp": "2025-01-29T19:01:29.107338"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1286.8921735464298,
+      "timestamp": "2025-01-29T19:01:46.157437"
+    },
+    {
+      "bidder": "Mira-Eclipse",
+      "amount": 1314.371906228548,
+      "timestamp": "2025-01-29T19:01:58.145100"
+    },
+    {
+      "bidder": "Orion_Phoenix98",
+      "amount": 1319.4982135027042,
+      "timestamp": "2025-01-29T19:02:07.547706"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1347.7913755848947,
+      "timestamp": "2025-01-29T19:02:14.429372"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1378.7184064205976,
+      "timestamp": "2025-01-29T19:02:50.648180"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1404.354213366577,
+      "timestamp": "2025-01-29T19:08:37.861789"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1427.6279038358239,
+      "timestamp": "2025-01-29T19:08:38.094279"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1447.8761541529798,
+      "timestamp": "2025-01-29T19:38:37.916525"
+    },
+    {
+      "bidder": "_Astrid47",
+      "amount": 1471.5908399596378,
+      "timestamp": "2025-01-29T19:39:05.723147"
     }
   ],
   "bot_budgets": {
     "_Astrid47": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 1897.71,
+      "status": "online"
     },
     "Kai.Jayden_02": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 632.57,
+      "status": "online"
     },
     "Orion_Phoenix98": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 1319.4982135027042,
+      "status": "online"
     },
     "ElaraB_23": {
-      "budget": 734.3130457846462,
+      "budget": 1225.4717028994428,
       "status": "online"
     },
     "Theo.91": {
-      "budget": 0,
-      "status": "offline"
-    },
-    "Nova-Lyn": {
-      "budget": 0,
-      "status": "offline"
-    },
-    "FelixHaven19": {
-      "budget": 0,
-      "status": "offline"
-    },
-    "Aria.Stella85": {
-      "budget": 0,
-      "status": "offline"
-    },
-    "Lucien_Kai": {
-      "budget": 718.8212926835473,
+      "budget": 1275.2785989589793,
       "status": "online"
     },
+    "Nova-Lyn": {
+      "budget": 1361.0915127008786,
+      "status": "online"
+    },
+    "FelixHaven19": {
+      "budget": 1147.4054330388167,
+      "status": "online"
+    },
+    "Aria.Stella85": {
+      "budget": 632.57,
+      "status": "online"
+    },
+    "Lucien_Kai": {
+      "budget": 0,
+      "status": "offline"
+    },
     "Mira-Eclipse": {
-      "budget": 1064.9850000000001,
+      "budget": 1314.371906228548,
       "status": "online"
     }
   }
