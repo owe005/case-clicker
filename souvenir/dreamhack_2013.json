@@ -811,6 +811,44 @@
                     "Souvenir_WW": 20.58,
                     "Souvenir_BS": 10.61
                 }
+            },
+            {
+                "weapon": "SCAR-20",
+                "name": "Contractor",
+                "image": "scar20_contractor.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.05,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 400.00,
+                    "Souvenir_MW": 10.50,
+                    "Souvenir_FT": 5.80,
+                    "Souvenir_WW": 10.76,
+                    "Souvenir_BS": 5.48
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Sand Dashed",
+                "image": "ppbizon_sand_dashed.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.04,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 500.00,
+                    "Souvenir_MW": 18.58,
+                    "Souvenir_FT": 6.85,
+                    "Souvenir_WW": 14.34,
+                    "Souvenir_BS": 11.54
+                }
             }
         ]
     }
