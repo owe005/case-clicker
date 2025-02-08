@@ -15,6 +15,7 @@ A modern web-based CS:GO case clicker game with various gambling features, tradi
   - Inventory Management
   - Shop System
   - Upgrades
+  - Mines
 
 - 💰 **Economy System**
   - Virtual Currency
