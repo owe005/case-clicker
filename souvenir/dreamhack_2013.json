@@ -3,9 +3,815 @@
     "image": "dreamhack_2013.png",
     "price": 1000,
     "skins": {
-        "purple": [],
-        "blue": [],
-        "light_blue": [],
-        "grey": []
+        "purple": [
+            {
+                "weapon": "M4A1-S",
+                "name": "Nitro",
+                "image": "m4a1s_nitro.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 3.33,
+                    "MW": 0.95,
+                    "FT": 0.29,
+                    "WW": 0.35,
+                    "BS": 0.23,
+                    "Souvenir_FN": 25000.00,
+                    "Souvenir_MW": 900.00,
+                    "Souvenir_FT": 274.41,
+                    "Souvenir_WW": 350.00,
+                    "Souvenir_BS": 200.00
+                }
+            },
+            {
+                "weapon": "AWP",
+                "name": "Pit Viper",
+                "image": "awp_pit_viper.png",
+                "grade": "purple",
+                "valid_wears": ["MW", "FT", "WW", "BS"],
+                "prices": {
+                    "MW": 0.46,
+                    "FT": 0.22,
+                    "WW": 0.37,
+                    "BS": 0.28,
+                    "Souvenir_MW": 516.56,
+                    "Souvenir_FT": 411.48,
+                    "Souvenir_WW": 450.00,
+                    "Souvenir_BS": 375.00
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Cobalt Quartz",
+                "image": "dualberettas_cobalt_quartz.png",
+                "grade": "purple",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 0.19,
+                    "MW": 0.10,
+                    "FT": 0.07,
+                    "WW": 0.20,
+                    "Souvenir_FN": 2058.12,
+                    "Souvenir_MW": 1690.00,
+                    "Souvenir_FT": 258.39,
+                    "Souvenir_WW": 500.00
+                }
+            }
+        ],
+        "blue": [
+            {
+                "weapon": "Glock-18",
+                "name": "Candy Apple",
+                "image": "glock18_candy_apple.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 0.74,
+                    "MW": 0.51,
+                    "FT": 0.39,
+                    "Souvenir_FN": 669.69,
+                    "Souvenir_MW": 242.37,
+                    "Souvenir_FT": 368.00
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Anodized Navy",
+                "image": "mp7_anodized_navy.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 0.65,
+                    "MW": 0.52,
+                    "Souvenir_FN": 49.74,
+                    "Souvenir_MW": 1000.00
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Anodized Navy",
+                "image": "sg553_anodized_navy.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW"],
+                "prices": {
+                    "FN": 0.64,
+                    "MW": 0.53,
+                    "Souvenir_FN": 89.89,
+                    "Souvenir_MW": 393.69
+                }
+            },
+            {
+                "weapon": "SSG 08",
+                "name": "Acid Fade",
+                "image": "ssg08_acid_fade.png",
+                "grade": "blue",
+                "valid_wears": ["FN"],
+                "prices": {
+                    "FN": 0.72,
+                    "Souvenir_FN": 222.41
+                }
+            },
+            {
+                "weapon": "Five-SeveN",
+                "name": "Silver Quartz",
+                "image": "fiveseven_silver_quartz.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW"],
+                "prices": {
+                    "FN": 0.62,
+                    "MW": 0.43,
+                    "FT": 0.24,
+                    "WW": 1.04,
+                    "Souvenir_FN": 233.11,
+                    "Souvenir_MW": 117.67,
+                    "Souvenir_FT": 45.52,
+                    "Souvenir_WW": 75.00
+                }
+            },
+            {
+                "weapon": "USP-S",
+                "name": "Night Ops",
+                "image": "usps_night_ops.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.65,
+                    "MW": 0.43,
+                    "FT": 0.25,
+                    "WW": 0.24,
+                    "BS": 0.22,
+                    "Souvenir_FN": 900.00,
+                    "Souvenir_MW": 442.67,
+                    "Souvenir_FT": 152.43,
+                    "Souvenir_WW": 110.00,
+                    "Souvenir_BS": 100.00
+                }
+            },
+            {
+                "weapon": "P90",
+                "name": "Teardown",
+                "image": "p90_teardown.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.58,
+                    "MW": 0.40,
+                    "FT": 0.26,
+                    "WW": 0.22,
+                    "BS": 0.18,
+                    "Souvenir_FN": 548.83,
+                    "Souvenir_MW": 217.90,
+                    "Souvenir_FT": 121.83,
+                    "Souvenir_WW": 200.00,
+                    "Souvenir_BS": 357.51
+                }
+            },
+            {
+                "weapon": "Sawed-Off",
+                "name": "Full Stop",
+                "image": "sawedoff_full_stop.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.66,
+                    "MW": 0.41,
+                    "FT": 0.24,
+                    "WW": 0.24,
+                    "BS": 0.22,
+                    "Souvenir_FN": 420.69,
+                    "Souvenir_MW": 116.62,
+                    "Souvenir_FT": 111.00,
+                    "Souvenir_WW": 250.00,
+                    "Souvenir_BS": 466.43
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Teardown",
+                "image": "famas_teardown.png",
+                "grade": "blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.61,
+                    "MW": 0.44,
+                    "FT": 0.25,
+                    "WW": 0.31,
+                    "BS": 0.21,
+                    "Souvenir_FN": 109.76,
+                    "Souvenir_MW": 120.00,
+                    "Souvenir_FT": 85.00,
+                    "Souvenir_WW": 999.00,
+                    "Souvenir_BS": 1000.00
+                }
+            }
+        ],
+        "light_blue": [
+            {
+                "weapon": "AWP",
+                "name": "Safari Mesh",
+                "image": "awp_safari_mesh.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.00,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "Souvenir_FN": 4990.00,
+                    "Souvenir_MW": 437.46,
+                    "Souvenir_FT": 100.36,
+                    "Souvenir_WW": 274.41,
+                    "Souvenir_BS": 205.81
+                }
+            },
+            {
+                "weapon": "M4A1-S",
+                "name": "Boreal Forest",
+                "image": "m4a1s_boreal_forest.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 1.36,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "Souvenir_FN": 3000.00,
+                    "Souvenir_MW": 268.13,
+                    "Souvenir_FT": 65.17,
+                    "Souvenir_WW": 143.00,
+                    "Souvenir_BS": 167.18
+                }
+            },
+            {
+                "weapon": "USP-S",
+                "name": "Forest Leaves",
+                "image": "usps_forest_leaves.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.74,
+                    "MW": 0.08,
+                    "FT": 0.04,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "Souvenir_FN": 1000.00,
+                    "Souvenir_MW": 59.21,
+                    "Souvenir_FT": 47.95,
+                    "Souvenir_WW": 90.45,
+                    "Souvenir_BS": 121.84
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Candy Apple",
+                "image": "nova_candy_apple.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT"],
+                "prices": {
+                    "FN": 0.10,
+                    "MW": 0.05,
+                    "FT": 0.05,
+                    "Souvenir_FN": 136.93,
+                    "Souvenir_MW": 62.99,
+                    "Souvenir_FT": 77.79
+                }
+            },
+            {
+                "weapon": "Desert Eagle",
+                "name": "Mudder",
+                "image": "deserteagle_mudder.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.32,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "Souvenir_FN": 800.00,
+                    "Souvenir_MW": 296.72,
+                    "Souvenir_FT": 76.42,
+                    "Souvenir_WW": 287.50,
+                    "Souvenir_BS": 126.80
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Condemned",
+                "image": "aug_condemned.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.32,
+                    "MW": 0.05,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 500.00,
+                    "Souvenir_MW": 123.40,
+                    "Souvenir_FT": 34.00,
+                    "Souvenir_WW": 133.00,
+                    "Souvenir_BS": 61.49
+                }
+            },
+            {
+                "weapon": "MP9",
+                "name": "Orange Peel",
+                "image": "mp9_orange_peel.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.37,
+                    "MW": 0.07,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 300.00,
+                    "Souvenir_MW": 39.63,
+                    "Souvenir_FT": 41.01,
+                    "Souvenir_WW": 95.00,
+                    "Souvenir_BS": 48.00
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "CaliCamo",
+                "image": "xm1014_calicamo.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.08,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.04,
+                    "BS": 0.05,
+                    "Souvenir_FN": 112.54,
+                    "Souvenir_MW": 32.46,
+                    "Souvenir_FT": 24.82,
+                    "Souvenir_WW": 315.53,
+                    "Souvenir_BS": 155.40
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Cyanospatter",
+                "image": "famas_cyanospatter.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.79,
+                    "MW": 0.05,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.03,
+                    "Souvenir_FN": 400.00,
+                    "Souvenir_MW": 73.77,
+                    "Souvenir_FT": 39.99,
+                    "Souvenir_WW": 95.31,
+                    "Souvenir_BS": 54.00
+                }
+            },
+            {
+                "weapon": "PP-Bizon",
+                "name": "Night Ops",
+                "image": "ppbizon_night_ops.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.09,
+                    "MW": 0.05,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 149.99,
+                    "Souvenir_MW": 41.09,
+                    "Souvenir_FT": 33.00,
+                    "Souvenir_WW": 30.00,
+                    "Souvenir_BS": 35.00
+                }
+            },
+            {
+                "weapon": "Galil AR",
+                "name": "VariCamo",
+                "image": "galil_varicamo.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.10,
+                    "MW": 0.06,
+                    "FT": 0.05,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 112.94,
+                    "Souvenir_MW": 45.44,
+                    "Souvenir_FT": 21.52,
+                    "Souvenir_WW": 50.00,
+                    "Souvenir_BS": 80.00
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Blue Steel",
+                "image": "xm1014_blue_steel.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.13,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.03,
+                    "BS": 0.04,
+                    "Souvenir_FN": 400.00,
+                    "Souvenir_MW": 113.33,
+                    "Souvenir_FT": 46.00,
+                    "Souvenir_WW": 31.42,
+                    "Souvenir_BS": 231.64
+                }
+            },
+            {
+                "weapon": "M249",
+                "name": "Gator Mesh",
+                "image": "m249_gator_mesh.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.09,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.05,
+                    "BS": 0.05,
+                    "Souvenir_FN": 137.20,
+                    "Souvenir_MW": 40.00,
+                    "Souvenir_FT": 32.89,
+                    "Souvenir_WW": 100.00,
+                    "Souvenir_BS": 175.53
+                }
+            },
+            {
+                "weapon": "P2000",
+                "name": "Granite Marbleized",
+                "image": "p2000_granite_marbleized.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.19,
+                    "MW": 0.06,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 300.00,
+                    "Souvenir_MW": 43.98,
+                    "Souvenir_FT": 30.98,
+                    "Souvenir_WW": 70.30,
+                    "Souvenir_BS": 63.48
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Stained",
+                "image": "dualberettas_stained.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.12,
+                    "MW": 0.05,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 200.00,
+                    "Souvenir_MW": 50.35,
+                    "Souvenir_FT": 41.66,
+                    "Souvenir_WW": 63.75,
+                    "Souvenir_BS": 48.00
+                }
+            },
+            {
+                "weapon": "UMP-45",
+                "name": "Gunsmoke",
+                "image": "ump45_gunsmoke.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.16,
+                    "MW": 0.05,
+                    "FT": 0.04,
+                    "WW": 0.04,
+                    "BS": 0.04,
+                    "Souvenir_FN": 300.00,
+                    "Souvenir_MW": 67.23,
+                    "Souvenir_FT": 25.00,
+                    "Souvenir_WW": 192.74,
+                    "Souvenir_BS": 111.39
+                }
+            },
+            {
+                "weapon": "G3SG1",
+                "name": "VariCamo",
+                "image": "g3sg1_varicamo.png",
+                "grade": "light_blue",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.09,
+                    "MW": 0.06,
+                    "FT": 0.03,
+                    "WW": 0.05,
+                    "BS": 0.04,
+                    "Souvenir_FN": 156.11,
+                    "Souvenir_MW": 39.00,
+                    "Souvenir_FT": 18.38,
+                    "Souvenir_WW": 100.00,
+                    "Souvenir_BS": 150.95
+                }
+            }
+        ],
+        "grey": [
+            {
+                "weapon": "AUG",
+                "name": "Storm",
+                "image": "aug_storm.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.23,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 450.00,
+                    "Souvenir_MW": 34.50,
+                    "Souvenir_FT": 18.35,
+                    "Souvenir_WW": 21.18,
+                    "Souvenir_BS": 22.54
+                }
+            },
+            {
+                "weapon": "Galil AR",
+                "name": "Sage Spray",
+                "image": "galil_sage_spray.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.14,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 400.00,
+                    "Souvenir_MW": 13.77,
+                    "Souvenir_FT": 8.21,
+                    "Souvenir_WW": 12.52,
+                    "Souvenir_BS": 12.52
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Groundwater",
+                "image": "tec9_groundwater.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.25,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 466.96,
+                    "Souvenir_MW": 30.95,
+                    "Souvenir_FT": 10.66,
+                    "Souvenir_WW": 19.95,
+                    "Souvenir_BS": 13.70
+                }
+            },
+            {
+                "weapon": "Tec-9",
+                "name": "Army Mesh",
+                "image": "tec9_army_mesh.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.02,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 25.90,
+                    "Souvenir_MW": 14.57,
+                    "Souvenir_FT": 9.98,
+                    "Souvenir_WW": 11.77,
+                    "Souvenir_BS": 18.44
+                }
+            },
+            {
+                "weapon": "FAMAS",
+                "name": "Colony",
+                "image": "famas_colony.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.11,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 379.33,
+                    "Souvenir_MW": 15.23,
+                    "Souvenir_FT": 7.55,
+                    "Souvenir_WW": 8.00,
+                    "Souvenir_BS": 15.83
+                }
+            },
+            {
+                "weapon": "SSG 08",
+                "name": "Blue Spruce",
+                "image": "ssg08_blue_spruce.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.17,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 617.43,
+                    "Souvenir_MW": 60.00,
+                    "Souvenir_FT": 18.83,
+                    "Souvenir_WW": 20.50,
+                    "Souvenir_BS": 20.69
+                }
+            },
+            {
+                "weapon": "XM1014",
+                "name": "Blue Spruce",
+                "image": "xm1014_blue_spruce.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.14,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 500.00,
+                    "Souvenir_MW": 41.46,
+                    "Souvenir_FT": 10.24,
+                    "Souvenir_WW": 22.57,
+                    "Souvenir_BS": 20.00
+                }
+            },
+            {
+                "weapon": "SG 553",
+                "name": "Waves Perforated",
+                "image": "sg553_waves_perforated.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.06,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 1371.94,
+                    "Souvenir_MW": 19.98,
+                    "Souvenir_FT": 9.99,
+                    "Souvenir_WW": 20.51,
+                    "Souvenir_BS": 9.60
+                }
+            },
+            {
+                "weapon": "Nova",
+                "name": "Sand Dune",
+                "image": "nova_sand_dune.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.05,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 850.00,
+                    "Souvenir_MW": 18.13,
+                    "Souvenir_FT": 7.75,
+                    "Souvenir_WW": 13.17,
+                    "Souvenir_BS": 20.00
+                }
+            },
+            {
+                "weapon": "AUG",
+                "name": "Contractor",
+                "image": "aug_contractor.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.06,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 333.00,
+                    "Souvenir_MW": 12.43,
+                    "Souvenir_FT": 7.78,
+                    "Souvenir_WW": 7.92,
+                    "Souvenir_BS": 15.00
+                }
+            },
+            {
+                "weapon": "Dual Berettas",
+                "name": "Contractor",
+                "image": "dualberettas_contractor.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.06,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 1000.00,
+                    "Souvenir_MW": 12.18,
+                    "Souvenir_FT": 5.84,
+                    "Souvenir_WW": 18.34,
+                    "Souvenir_BS": 13.31
+                }
+            },
+            {
+                "weapon": "P250",
+                "name": "Boreal Forest",
+                "image": "p250_boreal_forest.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.07,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 919.99,
+                    "Souvenir_MW": 14.99,
+                    "Souvenir_FT": 13.00,
+                    "Souvenir_WW": 26.95,
+                    "Souvenir_BS": 13.72
+                }
+            },
+            {
+                "weapon": "R8 Revolver",
+                "name": "Bone Mask",
+                "image": "r8revolver_bone_mask.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.04,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 50000.00,
+                    "Souvenir_MW": 35000.00,
+                    "Souvenir_FT": 25000.00,
+                    "Souvenir_WW": 30000.00,
+                    "Souvenir_BS": 20000.00
+                }
+            },
+            {
+                "weapon": "G3SG1",
+                "name": "Jungle Dash",
+                "image": "g3sg1_jungle_dash.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.05,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 961.49,
+                    "Souvenir_MW": 7.80,
+                    "Souvenir_FT": 5.50,
+                    "Souvenir_WW": 10.69,
+                    "Souvenir_BS": 10.72
+                }
+            },
+            {
+                "weapon": "MP7",
+                "name": "Army Recon",
+                "image": "mp7_army_recon.png",
+                "grade": "grey",
+                "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
+                "prices": {
+                    "FN": 0.04,
+                    "MW": 0.01,
+                    "FT": 0.01,
+                    "WW": 0.01,
+                    "BS": 0.01,
+                    "Souvenir_FN": 1371.94,
+                    "Souvenir_MW": 15.80,
+                    "Souvenir_FT": 6.21,
+                    "Souvenir_WW": 20.58,
+                    "Souvenir_BS": 10.61
+                }
+            }
+        ]
     }
 }
