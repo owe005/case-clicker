@@ -1,0 +1,11 @@
+{
+    "name": "DreamHack 2013 Souvenir Package",
+    "image": "dreamhack_2013.png",
+    "price": 1000,
+    "skins": {
+        "purple": [],
+        "blue": [],
+        "light_blue": [],
+        "grey": []
+    }
+}

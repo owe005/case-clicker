@@ -1,20 +1,61 @@
 {
   "item": {
-    "weapon": "M4A1-S",
-    "name": "Golden Coil",
+    "weapon": "Desert Eagle",
+    "name": "Ocean Drive",
     "wear": "FN",
-    "float_value": 0.004152271471925548,
+    "float_value": 0.008775489023632375,
     "rarity": "RED",
-    "case_type": "shadow",
-    "base_price": 136.29,
-    "adjusted_price": 163.54799999999997,
-    "stattrak": false,
-    "image": "m4a1s_golden_coil.png",
+    "case_type": "riptide",
+    "base_price": 340.0,
+    "adjusted_price": 374.00000000000006,
+    "stattrak": true,
+    "image": "deserteagle_ocean_drive.png",
     "is_sticker": false
   },
-  "end_time": "2025-02-01T14:03:29.651392",
-  "current_bid": 0,
-  "bids": [],
+  "end_time": "2025-02-08T16:21:57.983921",
+  "current_bid": 111.91258704850209,
+  "bids": [
+    {
+      "bidder": "Theo.91",
+      "amount": 11.63833291156347,
+      "timestamp": "2025-02-08T15:51:58.005710"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 25.406435134168717,
+      "timestamp": "2025-02-08T15:52:16.851425"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 40.7390960920269,
+      "timestamp": "2025-02-08T15:53:03.199762"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 53.904525642894626,
+      "timestamp": "2025-02-08T15:53:20.641612"
+    },
+    {
+      "bidder": "Nova-Lyn",
+      "amount": 69.90466091928292,
+      "timestamp": "2025-02-08T15:53:51.383636"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 83.10207484022182,
+      "timestamp": "2025-02-08T15:55:44.820442"
+    },
+    {
+      "bidder": "FelixHaven19",
+      "amount": 97.77164576670116,
+      "timestamp": "2025-02-08T15:57:35.379914"
+    },
+    {
+      "bidder": "Theo.91",
+      "amount": 111.91258704850209,
+      "timestamp": "2025-02-08T15:57:53.360827"
+    }
+  ],
   "bot_budgets": {
     "_Astrid47": {
       "budget": 0,
@@ -29,20 +70,20 @@
       "status": "offline"
     },
     "ElaraB_23": {
-      "budget": 149.90824633918032,
-      "status": "online"
+      "budget": 0,
+      "status": "offline"
     },
     "Theo.91": {
-      "budget": 124.242626475053,
+      "budget": 361.35726065042894,
       "status": "online"
     },
     "Nova-Lyn": {
-      "budget": 124.22116099277638,
+      "budget": 370.99207031180055,
       "status": "online"
     },
     "FelixHaven19": {
-      "budget": 0,
-      "status": "offline"
+      "budget": 170.0,
+      "status": "online"
     },
     "Aria.Stella85": {
       "budget": 0,
