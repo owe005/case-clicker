@@ -46,7 +46,9 @@ export const CASE_MAPPING = {
 };
 
 export const SOUVENIR_CASE_MAPPING = {
-    'cache_dreamhack_2014': 'cache_dreamhack_2014'
+    'cache_dreamhack_2014': 'cache_dreamhack_2014',
+    'dreamhack_2013': 'dreamhack_2013',
+    'cobblestone_cologne_2014': 'cobblestone_cologne_2014'
 }
 
 // Case rank requirements

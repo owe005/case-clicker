@@ -1128,7 +1128,7 @@ export default {
     async function loadSouvenirCases() {
       try {
         // Load all souvenir cases
-        const cases = ['cache_dreamhack_2014', 'cobblestone_cologne_2014'];
+        const cases = ['cache_dreamhack_2014', 'cobblestone_cologne_2014', 'dreamhack_2013'];
         souvenirCases.value = [];
         
         for (const case_type of cases) {

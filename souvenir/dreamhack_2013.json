@@ -776,8 +776,8 @@
             },
             {
                 "weapon": "G3SG1",
-                "name": "Jungle Dash",
-                "image": "g3sg1_jungle_dash.png",
+                "name": "Jungle Dashed",
+                "image": "g3sg1_jungle_dashed.png",
                 "grade": "grey",
                 "valid_wears": ["FN", "MW", "FT", "WW", "BS"],
                 "prices": {

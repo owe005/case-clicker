@@ -309,7 +309,7 @@ export default {
         return '/skins/placeholder.png'
       }
       // Handle souvenir cases
-      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014') {
+      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014' || item.case_type === 'dreamhack_2013') {
         return `/souvenir_skins/${item.case_type}/${item.image}`
       }
       const casePath = CASE_MAPPING[item.case_type] || item.case_type

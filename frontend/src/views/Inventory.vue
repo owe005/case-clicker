@@ -1151,7 +1151,7 @@ export default {
         return `/sticker_skins/${capsuleType}/${item.image}`
       }
       // For souvenir items, use the souvenir_skins folder
-      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014') {
+      if (item.is_souvenir || item.case_type === 'cache_dreamhack_2014' || item.case_type === 'cobblestone_cologne_2014' || item.case_type === 'dreamhack_2013') {
         // For souvenir items, use the souvenir_skins folder
         return `/souvenir_skins/${item.case_type}/${item.image}`
       }

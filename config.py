@@ -468,7 +468,8 @@ CASE_DATA = {
 
 SOUVENIR_CASE_FILE_MAPPING = {
     'cache_dreamhack_2014': 'cache_dreamhack_2014',
-    'cobblestone_cologne_2014': 'cobblestone_cologne_2014'
+    'cobblestone_cologne_2014': 'cobblestone_cologne_2014',
+    'dreamhack_2013': 'dreamhack_2013'
 }
 
 SOUVENIR_CASE_DATA = {
@@ -485,6 +486,13 @@ SOUVENIR_CASE_DATA = {
         'is_case': True,
         'is_souvenir': True,
         'type': 'cobblestone_cologne_2014'
+    },
+    'dreamhack_2013': {
+        'name': 'DreamHack 2013 Souvenir Package',
+        'image': 'dreamhack_2013.png',
+        'is_case': True,
+        'is_souvenir': True,
+        'type': 'dreamhack_2013'
     }
 }
 
